@@ -1,0 +1,3 @@
+# Module pickoplace
+# RPC service class, partial path of RPC policy file
+com.dimab.pp.client.GreetingService, 01B72AA3BC42903FFFD2225ADEFDBE0D.gwt.rpc

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<datastore-indexes
+  autoGenerate="true">
+  <datastore-index kind="BookingOrders" ancestor="false" source="manual">
+        <property name="clientid" direction="asc"/>
+        <property name="UTCstartSeconds" direction="asc"/>
+    </datastore-index>
+     <datastore-index kind="BookingOrders" ancestor="false" source="manual">
+        <property name="pid" direction="asc"/>
+        <property name="UTCstartSeconds" direction="asc"/>
+    </datastore-index>
+    <datastore-index kind="BookingOrders" ancestor="false" source="manual">
+        <property name="clientid" direction="asc"/>
+        <property name="UTCstartSeconds" direction="desc"/>
+    </datastore-index>
+ </datastore-indexes>

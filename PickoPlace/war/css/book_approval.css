@@ -1,0 +1,200 @@
+.acc_single_booking_ap {
+ position: relative;
+  width: 398px;
+  margin-top: 25px;
+  min-width: 398px;
+  border: 1px solid #A8A8A8;
+  background-color: white;
+  height: 350px;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.73);
+  margin-left: auto;
+  margin-right: auto;
+}
+.ap_list_shaddow {
+  width: 350px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.19);
+}
+.ap_prop_num {
+  width: 26px;
+   margin-left: 10px;
+}
+.ap_prop_im {
+  width: 50px;
+}
+.ap_prop_name {
+  width: 130px;
+}
+.ap_prop_floor {
+  width: 70px;
+}
+.sb_prop_persons {
+
+}
+
+.ap_s_t_img_td {
+width:55px;
+}
+.ap_s_t_name_td {
+width:130px;
+padding-left: 5px;
+}
+.ap_s_t_f_td {
+width: 100px;
+  padding-left: 5px;
+}
+.ap_s_t_num {
+width:30px;
+text-align: center;
+}
+
+.ap_prop {
+  float: left;
+  padding-left: 5px;
+  color: #CBCBCB;
+  font-family: Varela;
+  font-size: 11px;
+  position: relative;
+}
+.confirm_head_ap {
+width: 350px;
+  margin: auto;
+  text-align: center;
+  height: 28px;
+  line-height: 28px;
+  font-family: Muli;
+  color: rgb(116, 116, 116);
+}
+.ap_tbl_head_row {
+height:25px;
+}
+#close_booking_info_ap {
+position: absolute;
+  width: 20px;
+  text-align: center;
+  line-height: 20px;
+  font-family: Varela;
+  font-size: 13px;
+  height: 20px;
+  top: 3px;
+  right: 2px;
+  cursor: pointer;
+  color: rgb(195, 195, 195);
+}
+#close_booking_info_ap:hover {
+  color: red;
+}
+.ap_time_val_td {
+text-align: center;
+}
+.ap_time_label_td {
+font-size: 12px;
+  color: white;
+  font-family: Lato;
+  vertical-align: bottom;
+  text-align: center;
+  height: 20px;
+  line-height: 20px;
+  background-color: rgb(76, 76, 76);
+  border-right: 1px solid rgb(252, 252, 252);
+  /*background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgb(58, 58, 58)), to(rgb(116, 116, 116)));*/
+}
+.ap_allinfo_tbl {
+width: 385px;
+  border-collapse: collapse;
+    margin-top: 10px;
+}
+.ap_info_row {
+  height: 230px;
+  display: block;
+}
+.ap_place_name {
+height:30px;
+}
+.ap_time_val_div {
+font-size: 16px;
+  color: rgb(51, 51, 51);
+  font-family: 'Helvetica Neue', Helvetica, Verdana, sans-serif;
+  margin-top: 4px;
+}
+.ap_list_div {
+padding-left: 10px;
+}
+.ap_list_wrap_div {
+  height: 200px;
+  background-color: whitesmoke;
+}
+.dsdfs {
+float:left;
+  margin-left: 20px;
+}
+.left_p {
+float:left !important;
+  margin-left: 5px;
+}
+.loginsa {
+vertical-align: top;
+  font-family: PT Sans Caption;
+}
+.tdblo {
+vertical-align: top;
+}
+.blue_b_button {
+  float: right;
+  width: 120px;
+  margin-right: 14px;
+  height: 27px;
+  line-height: 26px;
+  border-radius: 2px;
+  text-align: center;
+  font-family: Lato;
+  font-size: 16px;
+  cursor: pointer;
+  color: white;
+  text-decoration: none;
+  background-color: rgb(8, 150, 255);
+  }
+  
+.blue_b_button:hover {
+box-shadow: 1px 1px 1px silver;
+text-shadow: none;
+background-color: #003580 !important;
+}
+#lpr_b {
+  vertical-align: top;
+}
+
+#logpbook {
+  width: 350px;
+  margin: auto;
+  text-align: center;
+  font-family: Varela;
+  color: rgb(98, 98, 98);
+  cursor: pointer;
+  font-size: 14px;
+      -webkit-transition:  font-size 0.2s; /* Safari */
+    transition:  font-size 0.2s;
+	-webkit-transition-timing-function: ease-in-out;
+	transition-timing-function: ease-in-out;
+}
+#logpbook:hover {
+color: black;
+font-size: 15px;
+    -webkit-transition:  font-size 0.2s; /* Safari */
+    transition:  font-size 0.2s;
+	-webkit-transition-timing-function: ease-in-out;
+	transition-timing-function: ease-in-out;
+}
+.login_bok_conf_tr {
+	height:40px;
+	width:398px;
+	border-top: 1px solid silver;
+    background-color: rgb(237, 237, 237);
+}
+#login_info_resp_db {
+	cursor:pointer;
+	
+}
+#login_info_resp_db:hover {
+  color: blue;
+  text-decoration: underline;
+}
