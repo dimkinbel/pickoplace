@@ -7,6 +7,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/GCSClientLibrary"/>
 	<classpathentry kind="lib" path="C:/Users/dima/Desktop/PlaceORD/HTML5-test/js/google-api-services-oauth2-v2-rev37-1.15.0-rc.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/GSON"/>
-	<classpathentry kind="con" path="com.google.appengine.eclipse.core.GAE_CONTAINER/App Engine"/>
+	<classpathentry kind="con" path="com.google.appengine.eclipse.core.GAE_CONTAINER"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>
