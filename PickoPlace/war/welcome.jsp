@@ -47,9 +47,7 @@ function goToDraw(){
 	
 	location.href = "/drawing.jsp";
 }
-function goToCreatePlace() {
-	location.href = "/create_new_place.jsp";
-}
+
 function goToAccountMenu() {
    setSessionData(function(result) {
 	   if(result) {

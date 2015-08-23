@@ -676,37 +676,37 @@ function updatePageView() {
                                   <td><input type="checkbox" id="pbook_sun_cb" class="css-checkbox config_checkbox_place" checked="checked" name="week_checkbox_place"/></td>
 							      <td><div id="config_from_to_sun"></div></td>
 							      <td><div id="open_time_slider_sun"  style="width:400px;"></div></td>
-							      <td><select  id="view_selector_sun"></select></td></tr>
+							      <td class="configuration_irs"><select  id="view_selector_sun"></select></td></tr>
 							  <tr class="row_g_even"><td>Monday</td> 
                                   <td><input type="checkbox" id="pbook_mon_cb" class="css-checkbox config_checkbox_place" checked="checked" name="week_checkbox_place"/></td>
 							      <td><div id="config_from_to_mon"></div></td>
 							      <td><div id="open_time_slider_mon"  style="width:400px;"></div></td>
-							      <td><select  id="view_selector_mon"></select></td></tr>
+							      <td class="configuration_irs"><select  id="view_selector_mon"></select></td></tr>
 							  <tr class="row_g_odd"><td>Tuesday</td> 
                                   <td><input type="checkbox" id="pbook_tue_cb" class="css-checkbox config_checkbox_place" checked="checked" name="week_checkbox_place"/></td>
 							      <td><div id="config_from_to_tue"></div></td>
 							      <td><div id="open_time_slider_tue"  style="width:400px;"></div></td>
-							      <td><select  id="view_selector_tue"></select></td></tr>
+							      <td class="configuration_irs"><select  id="view_selector_tue"></select></td></tr>
 							  <tr class="row_g_even"><td>Wednesday</td> 
                                   <td><input type="checkbox" id="pbook_wed_cb" class="css-checkbox config_checkbox_place" checked="checked" name="week_checkbox_place"/></td>
 							      <td><div id="config_from_to_wed"></div></td>
 							      <td><div id="open_time_slider_wed"  style="width:400px;"></div></td>
-							      <td><select  id="view_selector_wed"></select></td></tr>
+							      <td class="configuration_irs"><select  id="view_selector_wed"></select></td></tr>
 							  <tr class="row_g_odd"><td>Thursday</td> 
                                   <td><input type="checkbox" id="pbook_thu_cb" class="css-checkbox config_checkbox_place" checked="checked" name="week_checkbox_place"/></td>
 							      <td><div id="config_from_to_thu"></div></td>
 							      <td><div id="open_time_slider_thu"  style="width:400px;"></div></td>
-							      <td><select  id="view_selector_thu"></select></td></tr>
+							      <td class="configuration_irs"><select  id="view_selector_thu"></select></td></tr>
 							  <tr class="row_g_even"><td>Friday</td> 
                                   <td><input type="checkbox" id="pbook_fri_cb" class="css-checkbox config_checkbox_place" checked="checked" name="week_checkbox_place"/></td>
 							      <td><div id="config_from_to_fri"></div></td>
 							      <td><div id="open_time_slider_fri"  style="width:400px;"></div></td>
-							      <td><select  id="view_selector_fri"></select></td></tr>
+							      <td class="configuration_irs"><select  id="view_selector_fri"></select></td></tr>
 							  <tr class="row_g_odd"><td>Saturday</td> 
                                   <td><input type="checkbox" id="pbook_sat_cb" class="css-checkbox config_checkbox_place" checked="checked" name="week_checkbox_place"/></td>
 			                      <td><div id="config_from_to_sat"></div></td>
 							      <td><div id="open_time_slider_sat"  style="width:400px;"></div></td>
-							      <td><select  id="view_selector_sat"></select></td></tr>
+							      <td class="configuration_irs"><select  id="view_selector_sat"></select></td></tr>
 			                </table>
 							<div class="params_innner_table_header_div">Set Dates your place will be closed</div>
 							<table cellspacing="0" cellpadding="0" style="border-collapse:collapse;width:100%;">

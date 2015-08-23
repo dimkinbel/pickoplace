@@ -4496,6 +4496,9 @@ top: -2px!important;
   background: #3480FF!important;
   font-family: Varela;
 }
+.configuration_irs .irs  .irs .irs-from,.configuration_irs  .irs .irs-to .irs ,.configuration_irs  .irs  .irs .irs-single{
+	top:0px!important;
+}
 .irs-from:after,.irs-to:after ,.irs-single:after {
   border-top-color: #3480FF!important;
 }

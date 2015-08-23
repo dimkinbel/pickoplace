@@ -58,3 +58,6 @@ function displayMessage(color,message) {
 function updatePlaceInfo() {
 		$('#donerating').raty({ score: parseFloat($("#ratingVal").val()) ,path:'raty/images',readOnly: true,space: false});	  
 }
+function goToCreatePlace() {
+	location.href = "/create_new_place.jsp";
+}
