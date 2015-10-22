@@ -1,6 +1,12 @@
 var map;     
 var allMarkers = [];
-
+var gmap;   
+var geocoder;
+var searchCircle = new google.maps.Circle();
+var searchObj = {};
+var autocomplete;
+var timer = null;
+var accurateAddress = true;
 $(document).ready(function () { 
 	// SET MAP DIMENTIONS
 	updateMapWrapper();
@@ -14,9 +20,47 @@ $(document).ready(function () {
     autocomplete = new google.maps.places.Autocomplete(place_search, options);
     google.maps.event.addListener(autocomplete, 'place_changed', function() {
     	if(map!=undefined) {
-           updateMapRadius();
+    		accurateAddress = false;
+           updateMapRadius('placeAddressAuto');
     	}
     });
+    google.maps.event.addListener(searchCircle, 'radius_changed', function() {
+	    var rad = Math.floor(searchCircle.getRadius()) ;
+	    
+	    if(rad<=10000) {
+	     var slider = $("#range_distanse_slider").data("ionRangeSlider");
+		 var fromInd = rad;
+		 slider.update({
+		     from : fromInd
+		  });
+		 updateDistance('distanceval',rad);
+         searchObj.radius = rad;
+	    }
+ });
+  google.maps.event.addListener(searchCircle, 'center_changed', function() {
+	  if(accurateAddress) {
+	    var clat =  searchCircle.getCenter().lat();
+	    var clng =  searchCircle.getCenter().lng();
+	    var latlng = {lat: parseFloat(clat), lng: parseFloat(clng)};
+	    geocoder.geocode({'location': latlng}, function(results, status) {
+	        if (status === google.maps.GeocoderStatus.OK) {
+	          if (results[0]) {
+	            console.log(results);
+	            $("#placeAddressAuto").val(results[0].formatted_address);
+	          } else {
+	        	  console.log('No results found');
+	          }
+	        } else {
+	          console.log('Geocoder failed due to: ' + status);
+	        }
+	    });
+	  } else {
+		  accurateAddress = true;
+	  }
+	  // Update Cursor
+	  cursor_ = "init";
+	  $("#search-load-more").hide();
+   });
  //   google.maps.event.addListener(map, 'zoom_changed', function() {
  //
    // 	var lat = map.getCenter().lat();
@@ -42,8 +86,10 @@ function updateMapWrapper(){
 	  if(map_width < 200 || map_width < 0.2 * browserWidth) {
 		  $("#map_absolute").hide();
 		  $("#mainLastResults").css("margin","auto");
+		  $("#mainLastResults_wrap").css("margin","auto");
 	  } else {
 		  $("#mainLastResults").css("margin","");
+		  $("#mainLastResults_wrap").css("margin","");
 		  $("#map_absolute").css("top",15 + document.getElementById("header_td_div").offsetHeight + "px");
 		  $("#main_map_wrap_").css("width",map_width +"px");
 		  $("#main_map_wrap_").css("height",browserHeight-document.getElementById("header_td_div").offsetHeight -30 - 24 +"px");
@@ -81,41 +127,17 @@ function updateSearchCircle(center_) {
 
   searchCircle.setOptions(populationOptions);
   
-  google.maps.event.addListener(searchCircle, 'radius_changed', function() {
-	    var rad = Math.floor(searchCircle.getRadius()) ;
-	    if(rad<=10000) {
-	     var slider = $("#range_distanse_slider").data("ionRangeSlider");
-		 var fromInd = rad;
-		 slider.update({
-		     from : fromInd
-		  });
-		 updateDistance('distanceval',rad);
-         searchObj.radius = rad;
-	    }
- });
-  google.maps.event.addListener(searchCircle, 'center_changed', function() {
-	    var clat =  searchCircle.getCenter().lat();
-	    var clng =  searchCircle.getCenter().lng();
-	    var latlng = {lat: parseFloat(clat), lng: parseFloat(clng)};
-	    geocoder.geocode({'location': latlng}, function(results, status) {
-	        if (status === google.maps.GeocoderStatus.OK) {
-	          if (results[0]) {
-	            console.log(results);
-	            $("#placeAddressAuto").val(results[0].formatted_address);
-	          } else {
-	        	  console.log('No results found');
-	          }
-	        } else {
-	          console.log('Geocoder failed due to: ' + status);
-	        }
-	    });
-   });
+
 }
-function updateMapRadius() {
-	 var address = document.getElementById('placeAddressAuto').value;
+
+function updateMapRadius(id) {
+	
+	 var address = document.getElementById(id).value;
      geocoder.geocode( { 'address': address}, function(results, status) {
         if (status == google.maps.GeocoderStatus.OK) {
-
+        	console.log("updateMapRadius()");
+        	console.log(results);
+        	console.log("------------------");
        	    var lat = results[0].geometry.location.lat();
        	    var lng = results[0].geometry.location.lng();
        	    var pos = new google.maps.LatLng(lat,lng);
@@ -216,12 +238,13 @@ function MapInitialize() {
 }
 
 function addMapMarkers(data) {
+	 var hostName = window.location.host; 
 	for (var i=0; i < data.places.length; i++) {
 		var placeInfo =  data.places[i];
 		var userPlace = placeInfo.userPlace;
 		var placeLogo = "";
 		if(placeInfo.placeLogo=="") {
-			placeLogo = "http://www.pickoplace.com/img/pp.png";
+			placeLogo =  "/img/pp.png";
 		} else {
 			placeLogo = placeInfo.placeLogo;
 		}
@@ -244,7 +267,8 @@ function addMapMarkers(data) {
     	                         content: markerInfo
     	                  });
     	   var title = userPlace.place + ',' + userPlace.branch;
-    	   var markerImage = new google.maps.MarkerImage('http://www.pickoplace.com/img/pplogomarker_shaddow.png',
+    	 
+    	   var markerImage = new google.maps.MarkerImage('http://'+hostName+'/img/pplogomarker_shaddow.png',
                    null,
                    new google.maps.Point(0, 0),
                    new google.maps.Point(0, 30),

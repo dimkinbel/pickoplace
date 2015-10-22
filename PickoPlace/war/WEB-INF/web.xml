@@ -32,7 +32,7 @@
        <servlet-name>gettoken</servlet-name>
        <url-pattern>/gettoken</url-pattern>
     </servlet-mapping>
-    
+ 
    <servlet>
        <servlet-name>globalSearch</servlet-name>
        <servlet-class>com.dimab.pp.search.SearchNameGeo</servlet-class>
@@ -41,7 +41,53 @@
        <servlet-name>globalSearch</servlet-name>
        <url-pattern>/globalSearch</url-pattern>
     </servlet-mapping>
+      
+    <servlet>
+       <servlet-name>smstest</servlet-name>
+       <servlet-class>com.dimab.smsmail.SendSMStestServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+       <servlet-name>smstest</servlet-name>
+       <url-pattern>/admin/smstest</url-pattern>
+    </servlet-mapping>   
     
+    <servlet>
+       <servlet-name>plivioresponse</servlet-name>
+       <servlet-class>com.dimab.smsmail.PlivioSMSResponse</servlet-class>
+    </servlet>
+    <servlet-mapping>
+       <servlet-name>plivioresponse</servlet-name>
+       <url-pattern>/plivioresponse</url-pattern>
+    </servlet-mapping> 
+
+    <servlet>
+       <servlet-name>smsVerificationCodeSubmit</servlet-name>
+       <servlet-class>com.dimab.smsmail.SMSVerificationCodeServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+       <servlet-name>smsVerificationCodeSubmit</servlet-name>
+       <url-pattern>/smsVerificationCodeSubmit</url-pattern>
+    </servlet-mapping> 
+    
+    <servlet>
+       <servlet-name>plivoSMSrequest</servlet-name>
+       <servlet-class>com.dimab.smsmail.PlivoSMSValidationServlet</servlet-class>
+    </servlet>
+     <servlet-mapping>
+       <servlet-name>plivoSMSrequest</servlet-name>
+       <url-pattern>/plivoSMSrequest</url-pattern>
+    </servlet-mapping>      
+
+ 
+   <servlet>
+       <servlet-name>wizSearch</servlet-name>
+       <servlet-class>com.dimab.pp.search.SearchWizardServlet</servlet-class>
+    </servlet>
+ 
+    <servlet-mapping>
+       <servlet-name>wizSearch</servlet-name>
+       <url-pattern>/wizSearch</url-pattern>
+    </servlet-mapping>   
    <servlet>
        <servlet-name>nameAutocomplete</servlet-name>
        <servlet-class>com.dimab.pp.search.SearchByNameAutocomplete</servlet-class>
@@ -209,7 +255,7 @@
        <url-pattern>/clientBookingRequest</url-pattern>
     </servlet-mapping>
 
-       <servlet>
+   <servlet>
        <servlet-name>clientBookingHistory</servlet-name>
        <servlet-class>com.dimab.pp.account.ClientBookingHistoryServlet</servlet-class>
     </servlet>
@@ -281,6 +327,7 @@
        <servlet-name>checkPidAvailable</servlet-name>
        <url-pattern>/checkPidAvailable</url-pattern>
     </servlet-mapping>
+    
     <servlet>
        <servlet-name>placebooking</servlet-name>
        <servlet-class>com.dimab.pp.server.PlaceBooking</servlet-class>
@@ -415,7 +462,77 @@
     </auth-constraint>
   </security-constraint>
 
-  <servlet>
+  
+   <servlet>
+    <servlet-name>developerHome</servlet-name>
+    <jsp-file>/developer/devHome.jsp</jsp-file>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>developerHome</servlet-name>
+    <url-pattern>/admin</url-pattern>
+  </servlet-mapping>
+  
+<servlet>
+    <servlet-name>WriteDSServlet</servlet-name>
+     <servlet-class>com.dimab.pp.tests.WriteDSServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>WriteDSServlet</servlet-name>
+    <url-pattern>/admin/w1000</url-pattern>
+ </servlet-mapping>
+  
+<servlet>
+    <servlet-name>DeleteAllIndexes</servlet-name>
+     <servlet-class>com.dimab.pp.search.DeleteAllIndexes</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>DeleteAllIndexes</servlet-name>
+    <url-pattern>/admin/deletesearchindexes</url-pattern>
+ </servlet-mapping>
+ 
+ <servlet>
+    <servlet-name>uploadDrawImages</servlet-name>
+     <servlet-class>com.dimab.pp.developer.uploadDrawImages</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>uploadDrawImages</servlet-name>
+    <url-pattern>/uploadDrawImages</url-pattern>
+ </servlet-mapping>
+  
+<servlet>
+    <servlet-name>GetFilesNames</servlet-name>
+     <servlet-class>com.dimab.pp.developer.GetFilesNames</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>GetFilesNames</servlet-name>
+    <url-pattern>/admin/listfiles</url-pattern>
+ </servlet-mapping>  
+<security-constraint>
+        <web-resource-collection>
+            <web-resource-name>admin</web-resource-name>
+            <url-pattern>/admin/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>admin</role-name>
+        </auth-constraint>
+</security-constraint>
+
+<security-constraint>
+        <web-resource-collection>
+            <web-resource-name>dev</web-resource-name>
+            <url-pattern>/developer/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>admin</role-name>
+        </auth-constraint>
+</security-constraint>
+
+<servlet>
   <servlet-name>appstats</servlet-name>
   <servlet-class>com.google.appengine.tools.appstats.AppstatsServlet</servlet-class>
 </servlet>
@@ -453,7 +570,7 @@
 		<welcome-file>welcome.jsp</welcome-file>
 	</welcome-file-list>
 	<session-config>
-		<session-timeout>60</session-timeout>
+		<session-timeout>720</session-timeout>
 	</session-config>
 
 </web-app>

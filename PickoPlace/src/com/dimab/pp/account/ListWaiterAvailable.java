@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 
 
 
+
 import com.dimab.pp.database.GetPlaceInfoFactory;
 import com.dimab.pp.dto.PlaceInfo;
 import com.dimab.pp.dto.WaiterListAJAXDTO;
@@ -45,7 +46,14 @@ public class ListWaiterAvailable extends HttpServlet {
 		
 		String username = new String();
 		CheckTokenValid tokenValid = new CheckTokenValid(request);
-		GenericUser genuser = tokenValid.getUser();
+		GenericUser genuser = new GenericUser();
+		try {	
+			genuser = tokenValid.getUser();
+		} catch (NullPointerException e) {
+			String returnurl = "/welcome.jsp";
+			response.addHeader("Access-Control-Allow-Origin", "*");
+			response.sendRedirect(returnurl);
+		}
 		if(genuser==null) {
 			waiterlist.setStatus("not_logged");
 		} else {

@@ -16,12 +16,16 @@ import com.dimab.pp.login.GenericUser;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.GeoPt;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Text;
 import com.google.appengine.api.datastore.Transaction;
 import com.google.appengine.api.datastore.TransactionOptions;
+import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
@@ -44,10 +48,12 @@ public class CreatePlaceInfo extends HttpServlet {
 			DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 			TransactionOptions options = TransactionOptions.Builder.withXG(true);
 			Transaction txn = datastore.beginTransaction(options);
-			
+			HttpSession session = request.getSession();
+			  
 			String username = new String();
 			CheckTokenValid tokenValid = new CheckTokenValid(request);
 			GenericUser genuser = tokenValid.getUser();
+			System.out.println("Session:"+session.getId());
 		if(genuser!=null) {
 			username = genuser.getEmail();
 			String placeName = request.getParameter("buisnessName");
@@ -59,7 +65,7 @@ public class CreatePlaceInfo extends HttpServlet {
 			String placeFax = request.getParameter("buisnessFax");
 			//Long time2000 = Long.valueOf(request.getParameter("timeat2000_hidden"));
 			Double UTCoffcet = Double.valueOf(request.getParameter("UTCoffcet_hidden"));
-			
+			GeoPt center = new GeoPt(Float.valueOf(placeLat), Float.valueOf(placeLng));
 			
 			RandomStringGenerator randomGen = new RandomStringGenerator();
 		    String Placerandom =  "PID_"+ randomGen.generateRandomString(12,RandomStringGenerator.Mode.ALPHANUMERIC);
@@ -70,32 +76,145 @@ public class CreatePlaceInfo extends HttpServlet {
     		Entity result = pq.asSingleEntity();
     		if (result != null) {
     			Key userKey = result.getKey();
-    		    Entity userPlace = new Entity("UserPlace",userKey);
-    		    String entityKey = KeyFactory.keyToString(userKey);
-    		    userPlace.setProperty("userKey", entityKey);
-    		    userPlace.setProperty("placeName", placeName);
-    		    userPlace.setProperty("placeBranchName", placeBranchName);
-    		    userPlace.setProperty("placeAddress", placeAddress);
-    		    userPlace.setProperty("placeUniqID", Placerandom);
-    		    //userPlace.setProperty("TimeAt2000", time2000);
-    		    userPlace.setProperty("UTCoffcet",UTCoffcet);
-    		    if (placeLat != null && !placeLat.isEmpty()) {
-    		      userPlace.setProperty("placeLat", Double.parseDouble(placeLat));
-    		      userPlace.setProperty("placeLng", Double.parseDouble(placeLng));
-    		    } else {
-      		      userPlace.setProperty("placeLat", null);
-      		      userPlace.setProperty("placeLng", null);
-    		    }
-    		      userPlace.setProperty("placePhone", placePhone);
-    		      userPlace.setProperty("placeFax", placeFax);
-    		      
-    		      Date date = new Date();
-      			  result.setProperty("lastDateInSec", date.getTime()/1000);
-      			  result.setProperty("lastDate",  date.toString());  
-    		      datastore.put(userPlace);
-    		      datastore.put(result);
-    		  }
-    		txn.commit();
+    			Filter UserPlaceFilterAddress = new  FilterPredicate("placeAddress",FilterOperator.EQUAL,placeAddress);
+    			Filter UserPlaceFilterName    = new  FilterPredicate("placeName",FilterOperator.EQUAL,placeName);
+    			Filter UserPlaceFilterBranch  = new  FilterPredicate("placeBranchName",FilterOperator.EQUAL,placeBranchName);
+    			Filter UserPlaceLat           = new  FilterPredicate("placeLat",FilterOperator.EQUAL,Double.parseDouble(placeLat));
+    			Filter UserPlaceLng           = new  FilterPredicate("placeLng",FilterOperator.EQUAL,Double.parseDouble(placeLng));
+
+    			Filter composeFilter = CompositeFilterOperator.and(UserPlaceFilterAddress,
+    					                                           UserPlaceFilterName,
+    					                                           UserPlaceFilterBranch,
+    					                                           UserPlaceLat,
+    					                                           UserPlaceLng);
+    			Query qup = new Query("UserPlace").setFilter(composeFilter);
+    			PreparedQuery pqup = datastore.prepare(qup);
+    	  		Entity userPlace = pqup.asSingleEntity();
+    	  		
+    	  		System.out.println(placeAddress + " " + placeName + " " + placeBranchName + " " + placeLat + " " + placeLng);
+    	  		System.out.println(userPlace);
+    			if(userPlace==null) {
+    		        userPlace = new Entity("UserPlace",userKey);
+        		    String entityKey = KeyFactory.keyToString(userKey);
+        		    userPlace.setProperty("userKey", entityKey);
+        		    
+        		    userPlace.setProperty("placeName", placeName);
+        		    userPlace.setProperty("placeBranchName", placeBranchName);
+        		    userPlace.setProperty("placeAddress", placeAddress);
+        		    userPlace.setProperty("placeUniqID", Placerandom);
+        		    userPlace.setProperty("sessionSaved", session.getId());
+        		    //userPlace.setProperty("TimeAt2000", time2000);
+        		    userPlace.setProperty("UTCoffcet",UTCoffcet);
+        		    if (placeLat != null && !placeLat.isEmpty()) {
+        		      userPlace.setProperty("placeLat", Double.parseDouble(placeLat));
+        		      userPlace.setProperty("placeLng", Double.parseDouble(placeLng));
+        		      userPlace.setProperty("location", center);
+        		    } else {
+          		      userPlace.setProperty("placeLat", null);
+          		      userPlace.setProperty("placeLng", null);
+        		    }
+        		      userPlace.setUnindexedProperty("placePhone", placePhone);
+        		      userPlace.setUnindexedProperty("placeFax", placeFax);
+        		      
+        		      Date date = new Date();
+          			  result.setUnindexedProperty("lastDateInSec", date.getTime()/1000);
+          			  result.setUnindexedProperty("lastDate",  date.toString());  
+        		      Key userPlaceKey = datastore.put(userPlace);
+        		      datastore.put(result);   
+        		     
+        		      
+        		      // Create canvasStates and ImageVersions
+        		      Entity imageVersionEntity;
+        			  Entity canvasState;
+        			  try {
+        				    Key pidKey = KeyFactory.createKey("ImageVersion", Placerandom);
+        				    imageVersionEntity = datastore.get(pidKey);
+        				    // TBD Place exists        				    
+        				    String returnurl = "/welcome.jsp";
+        	        		response.addHeader("Access-Control-Allow-Origin", "*");
+        	    			response.sendRedirect(returnurl);
+        	    			return;
+        				} catch (EntityNotFoundException e) {
+        					imageVersionEntity = new Entity("ImageVersion", Placerandom);
+        					imageVersionEntity.setProperty("PID", Placerandom);
+        				    datastore.put(imageVersionEntity);
+        				}
+        			  try {
+	      				    Key pidKey = KeyFactory.createKey(userPlaceKey,"CanvasState", Placerandom);
+	      				    canvasState = datastore.get(pidKey);
+	      				    // TBD Place exists        				    
+	      				    String returnurl = "/welcome.jsp";
+	      	        		response.addHeader("Access-Control-Allow-Origin", "*");
+	      	    			response.sendRedirect(returnurl);
+	      	    			return;
+	      				} catch (EntityNotFoundException e) {
+	      					canvasState =  new Entity("CanvasState",Placerandom, userPlaceKey);
+	      					canvasState.setProperty("placeUniqID", Placerandom);
+	      				    datastore.put(canvasState);
+	      				}       			  
+        			  txn.commit();
+    			} else { 
+    				//-------------------------------
+    				// UserPlace exists
+    				//-------------------------------
+    				
+    				String savedSession =  (String)userPlace.getProperty("sessionSaved");
+    				String savedUser =  (String)userPlace.getProperty("userKey");
+    				
+    				if(savedUser.equals(KeyFactory.keyToString(userKey))) {
+    					// Same user
+    					Date date = new Date();
+	          			result.setUnindexedProperty("lastDateInSec", date.getTime()/1000);
+	          			result.setUnindexedProperty("lastDate",  date.toString()); 
+	        		    datastore.put(result);   
+	        		    txn.commit();
+	        		    Placerandom = (String)userPlace.getProperty("placeUniqID");
+	        		    
+    					if(session.getId().equals(savedSession)) {
+        					// Same session    								        		    
+    						if( userPlace.getProperty("mainFloorID") == null ) {
+    	    					// No SAVE applied yet (reload)
+    							// Regular behavior
+    							
+    	    				} else {
+    	    					request.setAttribute("pid", Placerandom);
+    	    					RequestDispatcher dispathser  = request.getRequestDispatcher("/proceedToEdit.jsp");
+    	    					dispathser.forward(request, response);
+    	    					return;
+    	    				}
+        				} else {
+        					// Other session - same User
+        					userPlace.setProperty("sessionSaved", session.getId());
+        					if( userPlace.getProperty("mainFloorID") == null ) {
+    	    					// No SAVE applied yet (reload)
+    							// Regular behavior
+    							
+    	    				} else {
+    	    					request.setAttribute("pid", Placerandom);
+    	    					RequestDispatcher dispathser  = request.getRequestDispatcher("/proceedToEdit.jsp");
+    	    					dispathser.forward(request, response);
+    	    					return;
+    	    				}
+        				}
+    				} else {
+    					System.out.println("ERROR:Place exists.Different User");
+    					String returnurl = "/welcome.jsp";
+    	        		response.addHeader("Access-Control-Allow-Origin", "*");
+    	    			response.sendRedirect(returnurl);
+    	    			return;
+    				}
+    				
+    			}
+
+    		} else {
+    			// TBD : Create User Entity
+    			System.out.println("ERROR:No user exists");
+    			String returnurl = "/welcome.jsp";
+        		response.addHeader("Access-Control-Allow-Origin", "*");
+    			response.sendRedirect(returnurl);
+    			return;
+    		}
+    		
     		
     		request.setAttribute("creatingFlow" , "true");
 			request.setAttribute("placeName", placeName);
@@ -112,8 +231,11 @@ public class CreatePlaceInfo extends HttpServlet {
 			dispathser.forward(request, response);
     			
     	} else {
-    		String returnurl = "http://pickoplace.com/welcome.jsp";
+    		System.out.println("ERROR:No user connection exists");
+    		String returnurl = "/welcome.jsp";
+    		response.addHeader("Access-Control-Allow-Origin", "*");
 			response.sendRedirect(returnurl);
+			return;
     	}
 	}
 }

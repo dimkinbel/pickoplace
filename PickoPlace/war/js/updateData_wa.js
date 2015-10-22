@@ -34,7 +34,9 @@ function updateCanvasShapes(canvas,canvasStateJSON) {
 	canvas.tileh = canvasStateJSON.state.tileh;
 	canvas.valid = false;
 	var shapes = canvasStateJSON.shapes;
-	//alert(JSON.stringify(shapes, "", 4));
+	var bgshapes = canvasStateJSON.bgshapes;
+
+	canvas.bgmode=false;
 	for (var ind in shapes) {
 		var shape = shapes[ind];
 		var booking_options;
@@ -119,7 +121,12 @@ function updateCanvasShapes(canvas,canvasStateJSON) {
 		      canvas.valid = false;
 		  }  else  if (shape.type == "image") {
 			  var options = JSON.parse(JSON.stringify(shape.options));
-			  var origImageID = options.imgID;
+			  var origImageID = "";
+			  if(options.imgID.match(/^server_/)) {
+				  origImageID = options.imgID;
+			  } else {
+			      origImageID = "server_"+options.imgID;
+			  }
 			  if (origImageID.match(/^user_img_/)) {    		  
 	    		  // If user image - it get already created user_img_RAND img element
 			  } else {
@@ -146,6 +153,97 @@ function updateCanvasShapes(canvas,canvasStateJSON) {
 		      canvas.valid = false;
 		  }
 	}
+	canvas.bgmode=true;
+	for (var ind in bgshapes) {
+		var shape = bgshapes[ind];
+		var booking_options;
+
+		 if (shape.type == "rectangle") {
+			 var options = JSON.parse(JSON.stringify(shape.options));
+			 var Sshape = new Shape(canvas, shape.x , shape.y , shape.w, shape.h, "rectangle" , options );
+			 Sshape.rotate = shape.rotate;
+			 Sshape.angle = shape.angle;
+			 Sshape.sid=shape.sid;
+			 
+			 canvas.addShape(Sshape);
+		     canvas.valid = false;
+		  } else if (shape.type == "round") {
+			  var options = JSON.parse(JSON.stringify(shape.options));
+		      var Sshape = new Shape(canvas, shape.x , shape.y , shape.w, shape.h, "round" , options );
+		      Sshape.rotate = shape.rotate;
+		      Sshape.angle = shape.angle;
+		      Sshape.sid=shape.sid;
+		      
+		      canvas.addShape(Sshape);
+		      canvas.valid = false;
+		  } else  if (shape.type == "circle") {
+			  var options = JSON.parse(JSON.stringify(shape.options));
+		      var Sshape = new Shape(canvas, shape.x , shape.y , shape.w, shape.h, "circle" , options );
+		      Sshape.rotate = shape.rotate;
+		      Sshape.angle = shape.angle;
+		      Sshape.sid=shape.sid;
+		      
+		      canvas.addShape(Sshape);
+		      canvas.valid = false;
+		  } else  if (shape.type == "trapex") {
+			  var options = JSON.parse(JSON.stringify(shape.options));
+		      var Sshape = new Shape(canvas, shape.x , shape.y , shape.w, shape.h, "trapex" , options );
+		      Sshape.rotate = shape.rotate;
+		      Sshape.angle = shape.angle;
+		      Sshape.sid=shape.sid;
+
+		      canvas.addShape(Sshape);
+		      canvas.valid = false;
+		  }  else  if (shape.type == "text") {
+			  var options = JSON.parse(JSON.stringify(shape.options));
+		      var Sshape = new Shape(canvas, shape.x , shape.y , shape.w, shape.h, "text" , options );
+		      Sshape.rotate = shape.rotate;
+		      Sshape.angle = shape.angle;
+		      Sshape.sid=shape.sid;
+
+		      canvas.addShape(Sshape);
+		      canvas.valid = false;
+		  }  else  if (shape.type == "line") {
+			  var options = JSON.parse(JSON.stringify(shape.options));
+		      var Sshape = new Shape(canvas, shape.x , shape.y , shape.w, shape.h, "line" , options );
+		      Sshape.rotate = shape.rotate;
+		      Sshape.angle = shape.angle;
+		      Sshape.sid=shape.sid;
+
+		      canvas.addShape(Sshape);
+		      canvas.valid = false;
+		  }  else  if (shape.type == "image") {
+			  var options = JSON.parse(JSON.stringify(shape.options));
+			  var origImageID = "";
+			  if(options.imgID.match(/^server_/)) {
+				  origImageID = options.imgID;
+			  } else {
+			      origImageID = "server_"+options.imgID;
+			  }
+
+			  if (origImageID.match(/^user_img_/)) {    		  
+	    		  // If user image - it get already created user_img_RAND img element
+			  } else {
+				 // if (document.getElementById(origImageID)==null) {
+					  // If no such ID already exists , we'll create it and src to uploaded image by server					  
+					  var mirrorID = "mirror_"+origImageID;
+					  options.imgID = mirrorID;
+				 // } else {
+					  // such image ID exists in a drawing tool
+				 // }
+			  }
+			  options.imgID = origImageID;
+		      var Sshape = new Shape(canvas, shape.x , shape.y , shape.w, shape.h, "image" , options );
+		      Sshape.rotate = shape.rotate;
+		      Sshape.angle = shape.angle;
+		      Sshape.sid=shape.sid;
+
+		      canvas.addShape(Sshape);
+		      canvas.valid = false;
+		  }
+	}
+	canvas.bgmode=false;
+	canvas.valid = false;
 	tl_canvas.valid = false;
 }
 function updateBackgroundImageByServer(stateid) {

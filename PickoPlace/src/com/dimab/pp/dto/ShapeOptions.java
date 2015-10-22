@@ -24,10 +24,10 @@ public class ShapeOptions {
    int shadow_blur;
    String shadow_color = new String();
  
-   int x1;
-   int x2;
-   int y1;
-   int y2;
+   double x1;
+   double x2;
+   double y1;
+   double y2;
    
    public String getText() {
 	return text;

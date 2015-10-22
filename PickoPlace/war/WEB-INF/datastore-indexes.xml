@@ -13,4 +13,14 @@
         <property name="clientid" direction="asc"/>
         <property name="UTCstartSeconds" direction="desc"/>
     </datastore-index>
+    <datastore-index kind="CanvasState" ancestor="false" source="manual">
+        <property name="placeUniqID" direction="asc"/>
+        <property name="PlaceType" direction="asc"/>
+        <property name="PlaceSubType" direction="asc"/>
+        <property name="TotalRating" direction="desc"/>
+    </datastore-index>
+    <datastore-index kind="CanvasState" ancestor="false" source="manual">
+        <property name="placeUniqID" direction="asc"/>
+        <property name="TotalRating" direction="desc"/>
+    </datastore-index>
  </datastore-indexes>

@@ -1,16 +1,12 @@
 /**
  * 
  */
-var gmap;   
-var geocoder;
-var searchCircle = new google.maps.Circle();
-var searchObj = {};
-var autocomplete;
+
 function updateDistance(divid,meter) {
 	$("#"+divid).html(meter+"m");
 }
 
-
+var cursor_ = "init";
 
 $(document).ready(function () { 
 
@@ -40,6 +36,8 @@ $(document).ready(function () {
 			if(searchCircle != undefined) {
         		searchCircle.setRadius(data.from);
         	}
+			cursor_ = "init";
+			$("#search-load-more").hide();
         },
         prettify: function (num) {
             if(num < 1000) {
@@ -51,50 +49,116 @@ $(document).ready(function () {
             }
         }
     });
+	$( "#placeSearchName" ).change(function() {
+		 console.log("Name Input changed");
+		 cursor_ = "init";
+		 $("#search-load-more").hide();
+	 });
+	$( "#placeAddressAuto" ).change(function() {
+		 console.log("Address Input changed");
+		 cursor_ = "init";
+		 $("#search-load-more").hide();
+	 });
 	$("#search_button").click(function(){
+		cursor_="init";
+		$("#search-load-more").hide();
 		SearchGeo(function(valid){
 			if(valid==true) {
-				var value_ = $("#placeSearchName").val();
-				searchObj.name = value_;
-				
-
-			    var json_ = {name:searchObj.name,
-			    		      lat:searchObj.lat,
-			    		      lng:searchObj.lng,
-			    		      rad:searchObj.radius};
-			    console.log(json_);
-			    $.ajax({
-			      url : "/globalSearch",
-			      data: json_,//
-			      beforeSend: function () { 
-			    	  $("#search_material").hide(); 
-			    	  $("#frame_book_ajax_gif_welcome").show();
-			    	  deleteMarkers();
-			      },
-			      success : function(data){	
-			    	  $("#frame_book_ajax_gif_welcome").hide();
-			    	  $("#search_material").show();
-			   	   console.log(data);
-					   	if(data.status=="OK") {
-					   		$("#welcome-load-more").hide();
-					   		center_ = new google.maps.LatLng(searchObj.lat,searchObj.lng);
-					        map.setCenter(center_);
-					        updateSearchCircle(center_);
-					   		updateLastPlaces(data,true,true);
-		            	} else if (data.status=="zero") {
-		            		$("#mainLastResults").empty();
-		            		$("#mainLastResults").append('<div class="no_search_results">Sorry.No places found...</div>');
-		            	}
-			      },
-			      dataType : "JSON",
-			      type : "post"
-			    });
+				var value_ = $("#placeSearchName").val();				
+				if(searchByNameOnly==true && value_.length < 3) {
+					alert("Place name too short. Sorry");
+				} else {
+					searchObj.name = value_;
+					
+				    var json_ = {name:searchObj.name,
+				    		      lat:searchObj.lat,
+				    		      lng:searchObj.lng,
+				    		      rad:searchObj.radius, 
+				    		      nameOnly:searchObj.byName,
+				    		      cursor:cursor_};
+				    console.log(json_);
+				    $.ajax({
+				      url : "/globalSearch",
+				      data: json_,//
+				      beforeSend: function () { 
+				    	  $("#search_material").hide(); 
+				    	  $("#frame_book_ajax_gif_welcome").show();
+				    	  deleteMarkers();
+				      },
+				      success : function(data){	
+				    	  $("#frame_book_ajax_gif_welcome").hide();
+				    	  $("#search_material").show();
+				   	   console.log(data);
+						   	if(data.status=="OK") {
+						   		$("#welcome-load-more").hide();
+						   		$("#wiz-load-more").hide();
+						   		
+							   	if(searchObj.byName=="false") {
+							   		center_ = new google.maps.LatLng(searchObj.lat,searchObj.lng);
+							        map.setCenter(center_);
+							        accurateAddress = false;
+							        updateSearchCircle(center_);
+							   	}
+						        cursor_ = data.cursor;
+						   		updateLastPlaces(data,true,true);
+						   		if(data.cursor!="null") {
+						   			$("#search-load-more").show();
+						   		} else {
+						   			$("#search-load-more").hide();
+						   		}
+			            	} else if (data.status=="zero") {
+			            		$("#mainLastResults").empty();
+			            		$("#mainLastResults").append('<div class="no_search_results">Sorry.No places found...</div>');
+			            	}
+				      },
+				      dataType : "JSON",
+				      type : "post"
+				    });
+				}
 			}
 		});
 
 
 	});
+	$("#search-load-more").click(function(){
+		    var json_ = {name:searchObj.name,
+		    		     lat:searchObj.lat,
+		    		     lng:searchObj.lng,
+		    		     rad:searchObj.radius, 
+		    		     nameOnly:searchObj.byName,
+		    		     cursor:cursor_};
+		    console.log(json_);
+		    $.ajax({
+		      url : "/globalSearch",
+		      data: json_,//
+		      beforeSend: function () { 
+		    	  $("#search_more-text").hide(); 
+		    	  $("#search_loader").show();
+		      },
+		      success : function(data){	
+		    	  $("#search_loader").hide();
+		    	  $("#search_more-text").show();
+		   	   console.log(data);
+				   	if(data.status=="OK") {
+				   		$("#welcome-load-more").hide();
+				   		$("#wiz-load-more").hide();
+				        cursor_ = data.cursor;
+				   		updateLastPlaces(data,false,true);
+				   		if(data.cursor!="null") {
+				   			$("#search-load-more").show();
+				   		} else {
+				   			$("#search-load-more").hide();
+				   		}
+	         	} else if (data.status=="zero") {
+	         		console.log("No more results");
+	         	}
+		      },
+		      dataType : "JSON",
+		      type : "post"
+		    });
 
+
+	});
 
 	$("#advanced_button").click(function() {
 		$("#additional_search_wrap").addClass("header_border_bottom");
@@ -195,22 +259,38 @@ $(document).ready(function () {
 	        .appendTo(ul);
 	    };;
 });
-var timer = null;
+var searchByNameOnly = true;
+
 function SearchGeo(callback) {
 	var address = document.getElementById('placeAddressAuto').value;
     geocoder.geocode( { 'address': address}, function(results, status) {
         if (status == google.maps.GeocoderStatus.OK) {
-
-       	    var lat = results[0].geometry.location.lat();
-       	    var lng = results[0].geometry.location.lng();
-              	document.getElementById("address_hidden_lat").setAttribute("value",lat);
-            	document.getElementById("address_hidden_lng").setAttribute("value",lng);   
-            	searchObj.lat = lat;
-            	searchObj.lng = lng;
+             console.log( results)
+            if(results.length==1  ) {
+            	// Use address
+            	searchByNameOnly = false;
+	       	    var lat = results[0].geometry.location.lat();
+	       	    var lng = results[0].geometry.location.lng();
+	              	document.getElementById("address_hidden_lat").setAttribute("value",lat);
+	            	document.getElementById("address_hidden_lng").setAttribute("value",lng);   
+	            	searchObj.lat = lat;
+	            	searchObj.lng = lng;
+	            	searchObj.byName = "false";
+	            	callback(true);
+            } else {
+            	// Use name only (Search relative to current Position)
+            	searchByNameOnly = true;
+            	searchObj.lat =  searchCircle.getCenter().lat();
+            	searchObj.lng = searchCircle.getCenter().lng();
+            	searchObj.byName = "true";
             	callback(true);
+            }
         } else {
-            alert("Please enter correct address");
-            callback(false);
+        	searchByNameOnly = true;
+        	searchObj.lat =  searchCircle.getCenter().lat();
+        	searchObj.lng = searchCircle.getCenter().lng();
+        	searchObj.byName = "true";
+        	callback(true);
         }
       }); 
 }

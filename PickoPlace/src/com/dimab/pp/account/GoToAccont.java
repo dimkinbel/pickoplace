@@ -66,29 +66,17 @@ public class GoToAccont extends HttpServlet {
 			PreparedQuery pq = datastore.prepare(q);
 	
 			for (Entity userCanvasState : pq.asIterable()) {
-				Key userPlaceKey = (Key) userCanvasState.getProperty("UserPlaceDBKey");
 				String userRnd = (String) userCanvasState.getProperty("usernameRandom");
 				String placeName = (String) userCanvasState.getProperty("placeName");
 				String placeBranchName = (String) userCanvasState.getProperty("placeBranchName");
 				String placeID = (String) userCanvasState.getProperty("placeUniqID");
 				String mainFloorID = (String) userCanvasState.getProperty("mainFloorID");
-				String Address = "";
-				Double Lat = (double) 0;
-			    Double Lng = (double) 0;
+				String Address = (String) userCanvasState.getProperty("address");
+				String Lat = (String) userCanvasState.getProperty("lat");
+				String Lng = (String) userCanvasState.getProperty("lng");
 				// Create place object to pass to JSP
 				UserPlace userPlace = new UserPlace();
-				// Get "UserPlace" Entity for : Address , Lat , Lng , "User" Entity key
-				Filter keyFilter = new FilterPredicate(Entity.KEY_RESERVED_PROPERTY,
-						                      FilterOperator.EQUAL,
-						                      userPlaceKey);
-				Query q_ =  new Query("UserPlace").setFilter(keyFilter);
-				PreparedQuery pq_ = datastore.prepare(q_);
-		  		Entity userPlaceEntity = pq_.asSingleEntity();
-		  		if (userPlaceEntity != null) {
-		  			Address = (String) userPlaceEntity.getProperty("placeAddress");
-		  			Lat = (Double) userPlaceEntity.getProperty("placeLat");
-		  			Lng = (Double) userPlaceEntity.getProperty("placeLng");
-		  		}
+
 		  		//----------------------------------------------------------------
 		  		
 		  		// Get serving Overview URL;
@@ -110,8 +98,8 @@ public class GoToAccont extends HttpServlet {
 		  	    servingUrl = servingUrl + "=s190";
 		  	    userPlace.setOverviewCloudURL(servingUrl);
 		  	    userPlace.setAddress(Address);
-		  	    userPlace.setLat(Lat);
-		  	    userPlace.setLng(Lng);
+		  	    userPlace.setLat(Double.parseDouble(Lat));
+		  	    userPlace.setLng(Double.parseDouble(Lng));
 		  	    userPlace.setPlace(placeName);
 		  	    userPlace.setBranch(placeBranchName);
 		  	    userPlace.setPlaceID(placeID);
@@ -133,7 +121,8 @@ public class GoToAccont extends HttpServlet {
 			RequestDispatcher dispathser  = request.getRequestDispatcher("user_account.jsp");
 			dispathser.forward(request, response);
 		} else {
-			String returnurl = "http://pickoplace.com/welcome.jsp";
+			String returnurl = "/welcome.jsp";
+			response.addHeader("Access-Control-Allow-Origin", "*");
 			response.sendRedirect(returnurl);
 		}
 	}

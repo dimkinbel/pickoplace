@@ -56,10 +56,26 @@
 	<link rel="stylesheet" href="css/CSS_checkbox_full/custom-checkbox.css" type="text/css" media="screen" />
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 	<script type="text/javascript"
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAcwoHVd5eaZfzTdu3Sto_QkSr9TlmvXYk&libraries=places&&sensor=FALSE">
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAaX5Ow6oo_axUKMquFxnPpT6Kd-L7D40k&libraries=places&&sensor=FALSE">
     </script>
     <script type="text/javascript" src="js/maps_google.js"></script>
 	<script type="text/javascript">
+	
+		var canvasMouseOut = false;
+		var canvasMouseDown = false;
+	
+		window.addEventListener('mouseup', function(e) {
+		   if(canvasMouseOut==true) {
+		     canvas_.mouseUpEvent();
+			 canvasMouseOut = false;
+		   }
+		});
+		window.addEventListener('mousemove', function(e) {
+		  if(canvasMouseOut==true) {
+		     canvas_.mouseMoveEvent(e);
+		   }
+		});
+		
        if(typeof document.onselectstart!="undefined") {
 	       document.onselectstart = new Function ("return false");
 	   } else {
@@ -146,7 +162,7 @@
     	 totalImages = all.length+1;
     	 for(var x=0; x < all.length; x++) { 
     		 var serverImageID = all[x].id;
-    	     updateShapeImagesByServerData(serverImageID);   	     
+    	   //  updateShapeImagesByServerData(serverImageID);   	     
     	 }
     	 // Update all canvases
     	 for(var x=0; x < allfloors.length; x++) { 
@@ -189,6 +205,7 @@
 	</script>
 <script type="text/javascript">
 //LOGIN SUCCESS UPDATE
+var phonerequired = true;
 function updatePageView() {
 	  if(fconnected==true) {
 		  //Connected To Facebook
@@ -207,7 +224,8 @@ function updatePageView() {
 		  $("#login_info_resp_db").html(fudata.first_name);
 		  $("#blcon_r").show();
 		  $("#lpr_b").hide();
-		  
+		  $('#facebook_img').attr('src',"http://graph.facebook.com/" + fudata.id + "/picture");
+		  $("#facebook_image_wrap").show();
 
 	  } else if (gconnected==true) {
 		  //Connected To Google
@@ -226,7 +244,7 @@ function updatePageView() {
 		  $("#login_info_resp_db").html(gudata.name.givenName);
 		  $("#blcon_r").show();
 		  $("#lpr_b").hide();
-	  
+		  $("#facebook_image_wrap").hide();
 	  } else {
 		  //Not connected
 		  
@@ -242,6 +260,7 @@ function updatePageView() {
 		  $("#login_info_resp_db").empty();
 		  $("#blcon_r").hide();
 		  $("#lpr_b").show();
+		  $("#facebook_image_wrap").hide();
 	  }
 }
 
@@ -253,9 +272,31 @@ $(document).ready(function () {
 
 });
 $(document).on("click",".stopclick", function (event) {
-	    if(event.target.id == "page_login_prompt") {
-		  $("#page_login_prompt").hide();
-		}
+    if(event.target.id == "page_login_prompt") {
+    	if(gconnected==false && fconnected==false && phoneflow==true) {
+    		if(auth2.isSignedIn.wc) {
+    			// Connected with Google
+    			googleSignOut();
+    		} else if(FB.getUserID() != "") {
+    			// Connected with FB
+    			facebookSignOut();
+    		}
+    	}
+    	phoneflow=false;
+    	$("#sign_in_table_").show();
+		//result.userData.first_name for FB
+		$("#user_name_at_phone").html("");
+		$("#send_sms_ajax").hide(); 
+		$("#send_sms_complete").hide();
+		$("#send_sms").show(); 
+		$("#verification_code").val("");
+		$("#verification_code").prop("readonly",true);
+		$("#verification_submit_inactive").show();
+		$("#verification_submit").hide();
+		$("#smsa_loader").hide(); 
+		$("#phone_wrap_table").hide();
+	    $("#page_login_prompt").hide();
+	}
 });
 
 function applyBookingPre() {
@@ -307,6 +348,46 @@ function SIapplyBooking() {
 				</div>
 			  </td>
 		  </tr>
+		</table> 
+		<table id="phone_wrap_table" cellspacing="0" cellpadding="0" style=" border-collapse: collapse;display:none">
+		    <tr>
+			    <td>
+			      <span class="login_phone_top">Hello, <span id="user_name_at_phone">User</span>. This is your first login.<br> Please provide phone number</span>
+			    </td>
+		    </tr>
+		    <tr>
+			    <td class="ph_pad_top">
+			         <div id="phoneinputwrap">
+	                    <input id="mobile-number" type="tel" autocomplete="off" placeholder="050-123-4567">
+	                  </div>
+			    </td>		    
+		   </tr>
+		    <tr id="send_sms_tr">
+			    <td id="send_sms_td" class="ph_pad_top">
+			      <div id="send_sms">
+	                  <i class="material-icons textsms">textsms</i><span class="sendsmstext">Send SMS</span>
+	              </div>
+	              <div id="send_sms_ajax" style="display:none">
+	                  <i class="material-icons textsms">textsms</i><span class="sendsmstext">SENDING...</span>
+	              </div>
+	              <div id="send_sms_complete"  style="display:none">
+	                  Enter verification code below, or <div id="phone_resend_open">resend</div>
+	              </div>
+			    </td>		    
+		   </tr>
+		   <tr id="phoneInstructions">
+		     <td>
+		       <div id="phone_instructions" >You will receive SMS with verification code</div>
+		     </td>
+		   </tr>
+		   <tr id="verification_code_line">
+		     <td class="ph_pad_top ph_pad_bot"><!-- $("#verification_code").prop("readonly",true); -->
+		       <input type="number" id="verification_code" readonly/><div id="verification_submit" style="display:none">SUBMIT</div>
+		       <div id="verification_submit_inactive">SUBMIT
+		         <img id="smsa_loader" src="js/fr_load.gif" style="display:none;">
+		       </div>
+		     </td>
+		   </tr>
 		</table>  
 		</div>
    </div>
@@ -337,6 +418,11 @@ function SIapplyBooking() {
 		</div>
 	  </div>
        <div class="login_in_header_wrap">
+            <div id="facebook_image_wrap" >
+                         <div id="facebook_image_inner" >
+                            <img id="facebook_img" src="" >
+                         </div>  
+            </div>
 					   	<table id="login_tbl_a" cellspacing="0" cellpadding="0" style=" border-collapse: collapse">
 				             <tr >
 							    <td id="login_prop" style="display:none">
@@ -460,23 +546,14 @@ function SIapplyBooking() {
 							      </select>												 
 							  </div>
 							   <div id="zoom_options_book">
-											<table  cellspacing="0" cellpadding="0" style="border-collapse:collapse">
-											   <tr id="zoom_plus_tr">
-												 <td>
-												   <div id="zoom_plus_div" onclick="sizeUp()">+</div>
-												 </td>
-											   </tr>
-											   <tr id="zoom_minus_tr">
-												 <td>
-												   <div id="zoom_minus_div"  onclick="sizeDown()">-</div>
-												 </td>
-											   </tr>
-											   <tr id="zoom_reset_tr">
-												 <td>
-												   <div id="zoom_reset_div" onclick="zoomResetWrap(canvas_,600,400)">reset</div>
-												 </td>
-											   </tr>				   
-											</table>
+
+									<div id="plus_minus_wrap">
+										   <div id="zoom_plus_div" onclick="sizeUp()" title="Zoom-In">+</div>
+				                           <div id="zoom_split"></div>
+										   <div id="zoom_minus_div"  onclick="sizeDown()"  title="Zoom-Out">-</div>
+						            </div>
+						            <div id="zoom_reset_div" onclick="zoomResetWrap(canvas_,600,400)"><div class="material-icons zoom_reset_mat"  title="Zoom-Reset">fullscreen</div></div>
+										
 								 </div>
 							   <div id="canvas_wrap_not_scroll_conf" >							    
 								    <% 

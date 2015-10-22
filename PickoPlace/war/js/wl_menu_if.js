@@ -979,29 +979,19 @@ $( "#datepicker_wl_from" ).datepicker("setDate", DatepickerSetDate);
 			$("#"+appendTo_).append(appendData);
 			
 			appendData ='<div class="zoom_options_book">';
-			appendData +='			<table  cellspacing="0" cellpadding="0" style="border-collapse:collapse">';
-			appendData +='			   <tr class="zoom_plus_tr">';
-			appendData +='				 <td>';
-			appendData +='				   <div class="zoom_plus_div" onclick="sizeUp(floorCanvases['+floor_ind+'])">+</div>';
-			appendData +='				 </td>';
-			appendData +='			   </tr>';
-			appendData +='			   <tr class="zoom_minus_tr">';
-			appendData +='				 <td>';
-			appendData +='				   <div class="zoom_minus_div"  onclick="sizeDown(floorCanvases['+floor_ind+'])">-</div>';
-			appendData +='				 </td>';
-			appendData +='			   </tr>';
-			appendData +='			   <tr class="zoom_reset_tr">';
-			appendData +='				 <td>';
-			appendData +='<div class="zoom_reset_div" onclick="zoomResetWrap(floorCanvases['+floor_ind+'],\'canvas_appended_wrapper-'+singleFloorID+'\',\'canvas_wrap_not_scroll_conf-'+singleFloorID+'\')">reset</div>';
-			appendData +='				 </td>';
-			appendData +='			   </tr>	';			   
-			appendData +='			</table>';
+			appendData +='<div id="plus_minus_wrap">';
+			appendData +='   <div id="zoom_plus_div" onclick="sizeUp(floorCanvases['+floor_ind+'])" title="Zoom-In">+</div>';
+			appendData +='  <div id="zoom_split"></div>';
+			appendData +='  <div id="zoom_minus_div"  onclick="sizeDown(floorCanvases['+floor_ind+'])"  title="Zoom-Out">-</div>';
+		    appendData +=' </div>';
+		    appendData +='<div id="zoom_reset_div" onclick="zoomResetWrap(floorCanvases['+floor_ind+'],\'canvas_appended_wrapper-'+singleFloorID+'\',\'canvas_wrap_not_scroll_conf-'+singleFloorID+'\')"><div class="material-icons zoom_reset_mat"  title="Zoom-Reset">fullscreen</div></div>';
+ 
 			appendData +='</div>';
 			$("#canvas_appended_wrapper-"+singleFloorID).append(appendData);
 			appendData ="<div class='floor_single_name_fe'>"+canvas_ref.floor_name+"</div>";
 			$("#canvas_appended_wrapper-"+singleFloorID).append(appendData);
 			
-			appendData =' <div id="canvas_wrap_not_scroll_conf-'+singleFloorID+'" class="canvas_wrap_not_scroll_conf"></div>';
+			appendData =' <div id="canvas_wrap_not_scroll_conf-'+singleFloorID+'" class="canvas_wrap_not_scroll_if"></div>';
 			$("#canvas_appended_wrapper-"+singleFloorID).append(appendData);
 			canvas_ref.scrollID = "canvas_wrap_not_scroll_conf-"+singleFloorID;
 			$("#canvas_wrap_not_scroll_conf-"+singleFloorID).css("width",appendToWidth);
@@ -1032,25 +1022,17 @@ $( "#datepicker_wl_from" ).datepicker("setDate", DatepickerSetDate);
 			$("#"+appendTo_).append(appendData);
 			
 			appendData ='<div class="zoom_options_book">';
-			appendData +='			<table  cellspacing="0" cellpadding="0" style="border-collapse:collapse">';
-			appendData +='			   <tr class="zoom_plus_tr">';
-			appendData +='				 <td>';
-			appendData +='				   <div class="zoom_plus_div" onclick="sizeUp(canvas_)">+</div>';
-			appendData +='				 </td>';
-			appendData +='			   </tr>';
-			appendData +='			   <tr class="zoom_minus_tr">';
-			appendData +='				 <td>';
-			appendData +='				   <div class="zoom_minus_div"  onclick="sizeDown(canvas_)">-</div>';
-			appendData +='				 </td>';
-			appendData +='			   </tr>';
-			appendData +='			   <tr class="zoom_reset_tr">';
-			appendData +='				 <td>';
-			appendData +='   <div class="zoom_reset_div" onclick="zoomResetWrap(canvas_,\'canvas_appended_wrapper-both\',\'canvas_wrap_not_scroll_conf-both\')">reset</div>';
-			appendData +='				 </td>';
-			appendData +='			   </tr>	';			   
-			appendData +='			</table>';
+			appendData +='<div id="plus_minus_wrap">';
+			appendData +='   <div id="zoom_plus_div" onclick="sizeUp(canvas_)" title="Zoom-In">+</div>';
+			appendData +='  <div id="zoom_split"></div>';
+			appendData +='  <div id="zoom_minus_div"  onclick="sizeDown(canvas_)"  title="Zoom-Out">-</div>';
+		    appendData +=' </div>';
+		    appendData +='<div id="zoom_reset_div" onclick="zoomResetWrap(canvas_,\'canvas_appended_wrapper-both\',\'canvas_wrap_not_scroll_conf-both\')"><div class="material-icons zoom_reset_mat"  title="Zoom-Reset">fullscreen</div></div>';
+
 			appendData +='</div>';
 			$("#canvas_appended_wrapper-both").append(appendData);
+			
+		if(floorCanvases.length > 1) {	
 			appendData ="<div class='floor_single_name_wrap_fe' id='floor_buttons_wrap'></div>";
 			$("#canvas_appended_wrapper-both").append(appendData);
 			for (var f = 0 ;f < floorCanvases.length ; f++) {              
@@ -1058,10 +1040,10 @@ $( "#datepicker_wl_from" ).datepicker("setDate", DatepickerSetDate);
 				 appendData ='<div class="floor_single_name_click" onclick="selectFloorByID(\''+canvas_ref.floorid+'\')">'+canvas_ref.floor_name+'</div>';
 				 $("#floor_buttons_wrap").append(appendData);	           
               }
+		}	
 			
 			
-			
-			appendData =' <div id="canvas_wrap_not_scroll_conf-both" class="canvas_wrap_not_scroll_conf"></div>';
+			appendData =' <div id="canvas_wrap_not_scroll_conf-both" class="canvas_wrap_not_scroll_if"></div>';
 			$("#canvas_appended_wrapper-both").append(appendData);
 			for (var f = 0 ;f < floorCanvases.length ; f++) {              
 	             canvas_ref = floorCanvases[f];

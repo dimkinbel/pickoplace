@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.dimab.pp.database.GetPlaceInfoFactory;
 import com.dimab.pp.dto.PlaceInfo;
+import com.dimab.pp.dto.SearchPidsAndCursor;
 import com.dimab.pp.dto.SearchRequestJSON;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -23,6 +24,7 @@ import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
+import com.google.appengine.api.search.Cursor;
 import com.google.gson.Gson;
 
 
@@ -34,6 +36,17 @@ public class SearchNameGeo extends HttpServlet {
 		String lats = request.getParameter("lat");
 		String lngs = request.getParameter("lng");
 		String rads = request.getParameter("rad");
+		String nameOnly = request.getParameter("nameOnly");
+		String cursor_ = request.getParameter("cursor");
+		Cursor cursor = Cursor.newBuilder().build();
+		//String cursorString = cursor.toWebSafeString();
+		// Save the string ... and restore:
+		//Cursor cursor = Cursor.newBuilder().build(cursorString));
+		if(cursor_.equals("init")) {
+		   cursor = Cursor.newBuilder().build();
+		} else {
+		   cursor = Cursor.newBuilder().build(cursor_);
+		}
 		Map <String , Object> map = new HashMap<String , Object>();		
 		if(name==null || lats ==null || lngs ==null || rads ==null) {
 			map.put("status", "requestError");
@@ -52,42 +65,47 @@ public class SearchNameGeo extends HttpServlet {
 		searchObject.setLat(lat);
 		searchObject.setLng(lng);
 		searchObject.setRadius(rad);
+		searchObject.setCursor(cursor); 
+		searchObject.setSearchLimit(6);
 		
 		SearchFabric searchIndexFabrix = new SearchFabric();
-		List<String> pids = searchIndexFabrix.getPlacesBySearchObject(searchObject);
-		if(pids==null) {
+		SearchPidsAndCursor searchResult = new SearchPidsAndCursor();
+		if(nameOnly.equals("true")) {
+			System.out.println("NameOnly");
+			searchResult = searchIndexFabrix.getPlacesBySearchObjectNameOnly(searchObject);	
+		} else {
+			searchResult = searchIndexFabrix.getPlacesBySearchObject(searchObject);
+		}
+		if(searchResult ==null) {
 			// Error in search request
 			map.put("status", "searchError");
-        } else if (pids.size()==0) {
+        } else if (searchResult.getPids().size()==0) {
         	// No places found
         	map.put("status", "zero");
         } else {
         	DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-        	List<Filter> subFilters = new ArrayList<Filter>();
-        	for(String pid : pids) {
 
-        		Filter pidFilter =  new FilterPredicate("placeUniqID",
-        				                      FilterOperator.EQUAL,
-        				                      pid);
-        		subFilters.add(pidFilter);
-        	}
         	List<PlaceInfo> places = new ArrayList<PlaceInfo>();
-        	Filter allPidsFilters ;
-        	if(subFilters.size()==1) {
-        		allPidsFilters = subFilters.get(0);
-        	} else {
-        		allPidsFilters = CompositeFilterOperator.or(subFilters);
-        	}
 
-        	Query q = new Query("CanvasState").setFilter(allPidsFilters);
-    		PreparedQuery pq = datastore.prepare(q);
-    		for (Entity canvasEntity : pq.asIterable()) {
-    			GetPlaceInfoFactory placeDataFActory = new GetPlaceInfoFactory();
-    			places.add(placeDataFActory.getPlaceInfo(datastore, canvasEntity, 222));
-    			
-    		}
+           for(String pid_ : searchResult.getPids()) {
+        	   Filter pidFilter =  new FilterPredicate("placeUniqID",
+	                      FilterOperator.EQUAL,
+	                      pid_);
+        	   Query q = new Query("CanvasState").setFilter(pidFilter);
+       	      PreparedQuery pq = datastore.prepare(q);
+       	      if(pq.asSingleEntity()!= null) {
+       	    	GetPlaceInfoFactory placeDataFActory = new GetPlaceInfoFactory();
+    			places.add(placeDataFActory.getPlaceInfo(datastore, pq.asSingleEntity(), 222));
+       	      }
+           }
+
     		map.put("status", "OK");
     		map.put("places", places);
+    		if(searchResult.getCursor()==null) {
+    		  map.put("cursor", "null");
+    		} else {
+    		  map.put("cursor", searchResult.getCursor().toWebSafeString());
+    		}
         }
         response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");

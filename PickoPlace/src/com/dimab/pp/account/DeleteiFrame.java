@@ -48,14 +48,20 @@ public class DeleteiFrame extends HttpServlet {
 
 		String username_email = new String();
 		CheckTokenValid tokenValid = new CheckTokenValid(request);
-		GenericUser genuser = tokenValid.getUser();
-		if(genuser==null) {
-			String returnurl = "http://pickoplace.com/welcome.jsp";
+		try {
+			GenericUser genuser = tokenValid.getUser();
+			if(genuser==null) {
+				String returnurl = "/welcome.jsp";
+				response.addHeader("Access-Control-Allow-Origin", "*");
+				response.sendRedirect(returnurl);
+			} else {
+				username_email = genuser.getEmail();
+			}
+		} catch (NullPointerException e) {
+			String returnurl = "/welcome.jsp";
+			response.addHeader("Access-Control-Allow-Origin", "*");
 			response.sendRedirect(returnurl);
-		} else {
-			username_email = genuser.getEmail();
 		}
-  		
 		String placeIDvalue = request.getParameter("pid");
 		String iFID = request.getParameter("ifid");
 		

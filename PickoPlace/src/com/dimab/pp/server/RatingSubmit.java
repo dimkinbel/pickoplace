@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.dimab.pp.dto.PlaceRatingDTO;
 import com.dimab.pp.login.CheckTokenValid;
 import com.dimab.pp.login.GenericUser;
+import com.dimab.pp.search.SearchFabric;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -40,7 +41,14 @@ public class RatingSubmit extends HttpServlet {
 		
 		String username_email = new String();
 		CheckTokenValid tokenValid = new CheckTokenValid(request);
-		GenericUser genuser = tokenValid.getUser();
+		GenericUser genuser = new GenericUser();
+		try {	
+			genuser = tokenValid.getUser();
+		} catch (NullPointerException e) {
+			String returnurl = "/welcome.jsp";
+			response.addHeader("Access-Control-Allow-Origin", "*");
+			response.sendRedirect(returnurl);
+		}
 		if(genuser==null) {
 			String returnurl = "/welcome.jsp";
 			response.sendRedirect(returnurl);
@@ -66,22 +74,47 @@ public class RatingSubmit extends HttpServlet {
 			ratingEntity.setProperty("food",     rating.getFscore());
 			ratingEntity.setProperty("staff",    rating.getSscore());
 			ratingEntity.setProperty("location", rating.getLscore());
-			ratingEntity.setProperty("review",   rating.getTscore());
+			ratingEntity.setUnindexedProperty("review",   rating.getTscore());
 			
 			Filter pidFilter = new  FilterPredicate("pid",FilterOperator.EQUAL,pid);
 			Query sq_ = new Query("PlaceRating").setFilter(pidFilter);
 			PreparedQuery psq_ = datastore.prepare(sq_);
 	  		Entity PlaceRatingEntity = psq_.asSingleEntity();
+	  		Double averageRating = (double)0;
 			if(PlaceRatingEntity == null) {				
 				PlaceRatingEntity = new Entity("PlaceRating");
 				PlaceRatingEntity.setProperty("pid", pid);
 				Integer total = 1;
-				PlaceRatingEntity.setProperty("food",     rating.getFscore());
-				PlaceRatingEntity.setProperty("foodTotal",      total);
-				PlaceRatingEntity.setProperty("staff",    rating.getSscore());
-				PlaceRatingEntity.setProperty("staffTotal",     total);
-				PlaceRatingEntity.setProperty("location", rating.getLscore());
-				PlaceRatingEntity.setProperty("locationTotal",  total);
+				Double sumRating = (double)0;
+				Integer totalsubmitted = 0;
+				if(rating.getFscore() > 0) {
+					 PlaceRatingEntity.setProperty("food",     rating.getFscore());
+					 PlaceRatingEntity.setProperty("foodTotal",      total);
+					 sumRating+=rating.getFscore();
+					 totalsubmitted+=1;
+				}  else {
+					 PlaceRatingEntity.setProperty("food",     0.0);
+					 PlaceRatingEntity.setProperty("foodTotal",      0);
+				}
+				if(rating.getSscore() > 0) {
+					PlaceRatingEntity.setProperty("staff",    rating.getSscore());
+					PlaceRatingEntity.setProperty("staffTotal",     total);
+					sumRating+=rating.getSscore();
+					totalsubmitted+=1;
+				} else {
+					PlaceRatingEntity.setProperty("staff",    0.0);
+					PlaceRatingEntity.setProperty("staffTotal",     0);
+				}
+				if(rating.getLscore() > 0) {
+					PlaceRatingEntity.setProperty("location", rating.getLscore());
+					PlaceRatingEntity.setProperty("locationTotal",  total);
+					sumRating+=rating.getLscore();
+					totalsubmitted+=1;
+				} else {
+					PlaceRatingEntity.setProperty("location", 0.0);
+					PlaceRatingEntity.setProperty("locationTotal",  0);
+				}
+				averageRating = sumRating / totalsubmitted;
 			} else {
 				Double foodScore = (Double)PlaceRatingEntity.getProperty("food");
 				Integer foodTotal = (int)(long)PlaceRatingEntity.getProperty("foodTotal");
@@ -95,6 +128,7 @@ public class RatingSubmit extends HttpServlet {
 					foodTotal+=1;
 					PlaceRatingEntity.setProperty("food",       average);
 					PlaceRatingEntity.setProperty("foodTotal",  foodTotal);
+					foodScore = average;
 				}
 				if(rating.getSscore() > 0) {
 					
@@ -102,6 +136,7 @@ public class RatingSubmit extends HttpServlet {
 					staffTotal+=1;
 					PlaceRatingEntity.setProperty("staff",       average);
 					PlaceRatingEntity.setProperty("staffTotal",  staffTotal);
+					staffScore = average;
 				}
 				if(rating.getLscore() > 0) {
 					
@@ -109,11 +144,23 @@ public class RatingSubmit extends HttpServlet {
 					locationTotal+=1;
 					PlaceRatingEntity.setProperty("location",       average);
 					PlaceRatingEntity.setProperty("locationTotal",  locationTotal);
+					locationScore = average;
 				}
+				averageRating = (locationScore * locationTotal + staffScore * staffTotal + foodScore * foodTotal) / (foodTotal + staffTotal + locationTotal);
 			}
 			datastore.put(PlaceRatingEntity);
 			datastore.put(ratingEntity);
 			
+			Filter placeIdFilter = new  FilterPredicate("placeUniqID",FilterOperator.EQUAL,pid);
+			Query q = new Query("CanvasState").setFilter(placeIdFilter);
+			PreparedQuery pq = datastore.prepare(q);
+	  		Entity userCanvasState = pq.asSingleEntity();
+	  		userCanvasState.setProperty("TotalRating",averageRating);
+	  		datastore.put(userCanvasState);
+	  		
+	  		SearchFabric searchIndexFabrix = new SearchFabric();
+	  		searchIndexFabrix.updateRating(pid, averageRating);
+	  		
 			Filter bidFilter = new FilterPredicate("bid", FilterOperator.EQUAL,bid);
 			Query sqb_ = new Query("BookingOrders").setFilter(bidFilter);
 			PreparedQuery psqb_ = datastore.prepare(sqb_);
@@ -122,7 +169,7 @@ public class RatingSubmit extends HttpServlet {
 				ShortRating.setTscore(""); // Removing review text
 				String ratingString = gson.toJson(ShortRating);
 				Entity bookingEntity = psqb_.asSingleEntity();
-				bookingEntity.setProperty("rating", ratingString);
+				bookingEntity.setUnindexedProperty("rating", ratingString);
 				datastore.put(bookingEntity);
 			}
 			

@@ -2,6 +2,7 @@ package com.dimab.pp.account;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -13,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.dimab.pp.dto.AdminUser;
+import com.dimab.pp.dto.UserPlace;
 import com.dimab.pp.login.CheckTokenValid;
 import com.dimab.pp.login.GenericUser;
 import com.dimab.pp.search.SearchFabric;
@@ -56,9 +58,17 @@ public class DeletePlaceData extends HttpServlet {
 		
 		String username_email = new String();
 		CheckTokenValid tokenValid = new CheckTokenValid(request);
-		GenericUser genuser = tokenValid.getUser();
+		GenericUser genuser = new GenericUser();
+		try {	
+			genuser = tokenValid.getUser();
+		} catch (NullPointerException e) {
+			String returnurl = "/welcome.jsp";
+			response.addHeader("Access-Control-Allow-Origin", "*");
+			response.sendRedirect(returnurl);
+		}
 		if(genuser==null) {
-			String returnurl = "http://pickoplace.com/welcome.jsp";
+			String returnurl = "/welcome.jsp";
+			response.addHeader("Access-Control-Allow-Origin", "*");
 			response.sendRedirect(returnurl);
 			return;
 		} else {
@@ -71,10 +81,14 @@ public class DeletePlaceData extends HttpServlet {
 			PreparedQuery psq_ = datastore.prepare(sq_);
 	  		Entity canvasEntity = psq_.asSingleEntity();
 	  		String canvasAdmin = (String)canvasEntity.getProperty("username");
+	  		String address = (String)canvasEntity.getProperty("address");
 	  		String placeEditList_str = (String) canvasEntity.getProperty("placeEditList");
 	  		String placeName = (String) canvasEntity.getProperty("placeName");
 	  		String branchName = (String) canvasEntity.getProperty("placeBranchName");
 	  		String adminID =  (String) canvasEntity.getProperty("usernameRandom");
+	  		
+ 
+	  		
 	  		Type placeEditType = new TypeToken<List<AdminUser>>(){}.getType();
 	  		List<AdminUser> placeEditList  = gson.fromJson(placeEditList_str, placeEditType);
 	  		boolean RemovalAllowedbyUser = false;
@@ -82,7 +96,7 @@ public class DeletePlaceData extends HttpServlet {
 	  			System.out.println("Requested user '"+username_email+"' is different from ADMIN user '"+canvasAdmin+"'");
 	  			for (AdminUser adminObj : placeEditList) {
 	  				if(adminObj.getMail().equals(username_email)) {
-	  					if(adminObj.isFull_access() || adminObj.isEdit_place()) {
+	  					if(adminObj.isFull_access() ) {
 	  						RemovalAllowedbyUser = true;
 	  					}
 	  				}
@@ -92,6 +106,51 @@ public class DeletePlaceData extends HttpServlet {
 	  			 RemovalAllowedbyUser = true;
 	  		}
 	  		if(RemovalAllowedbyUser) {
+	  			// Remove from User lists
+	  			for (AdminUser adminObj : placeEditList) {
+	  				Filter UserExists = new  FilterPredicate("username",FilterOperator.EQUAL,adminObj.getMail());
+	  				Query q = new Query("Users").setFilter(UserExists);
+	  				PreparedQuery pq = datastore.prepare(q);
+	  				Entity result = pq.asSingleEntity();
+	  				if (result != null) { 
+	  					Type collectionType = new TypeToken<List<String>>(){}.getType();
+	  					List<String> fa_list = new ArrayList<String>();
+	  					List<String> ep_list = new ArrayList<String>();
+	  					List<String> mo_list = new ArrayList<String>();
+	  					List<String> ba_list = new ArrayList<String>();
+	  					if(result.getProperty("PID_full_access")!=null) {
+	  						fa_list = gson.fromJson((String)result.getProperty("PID_full_access"),collectionType);
+	  						if(fa_list.contains(placeID)) {
+		  						fa_list.remove(placeID);
+		  						result.setUnindexedProperty("PID_full_access",gson.toJson(fa_list));
+		  					}
+	  					} 
+	  					if(result.getProperty("PID_edit_place")!=null) {
+	  						ep_list = gson.fromJson((String)result.getProperty("PID_edit_place"),collectionType);
+	  						if(ep_list.contains(placeID)) {
+		  						ep_list.remove(placeID);
+		  						result.setUnindexedProperty("PID_edit_place",gson.toJson(ep_list));
+		  					}
+	  					}
+	  					if(result.getProperty("PID_move_only")!=null) {
+	  						mo_list = gson.fromJson((String)result.getProperty("PID_move_only"),collectionType);
+	  						if(mo_list.contains(placeID)) {
+		  						mo_list.remove(placeID);
+		  						result.setUnindexedProperty("PID_move_only",gson.toJson(mo_list));
+		  					}
+	  					}
+	  					if(result.getProperty("PID_book_admin")!=null) {
+	  						ba_list = gson.fromJson((String)result.getProperty("PID_book_admin"),collectionType);
+	  						if(ba_list.contains(placeID)) {
+		  						ba_list.remove(placeID);
+		  						result.setUnindexedProperty("PID_book_admin",gson.toJson(ba_list));
+		  					}
+	  					}
+ 
+	  					datastore.put(result);
+	  				}
+	  				
+	  			}
 	  			// Removing cloud files
 	  			GcsService gcsService = GcsServiceFactory.createGcsService(RetryParams.getDefaultInstance());
 	  			ListOptions.Builder b = new ListOptions.Builder();
@@ -105,7 +164,21 @@ public class DeletePlaceData extends HttpServlet {
 	  			    GcsFilename oname = new GcsFilename("pp_images", name);
 	    			gcsService.delete(oname);
 	  			}
-	  			
+	  			// Remove FreePlace JSON
+ 
+		  		 String bucketName = "pp_free_place_json";
+		  		 UserPlace userPlace = new UserPlace();
+		  		 userPlace.setPlace(placeName);
+		  		 userPlace.setBranch(branchName);
+		  		 userPlace.setAddress(address);
+		 	     String placeNameChar = userPlace.getPlaceNameClean();
+		 	     String placeBranchChar = userPlace.getBranchClean();
+		 	     String addrChar = userPlace.getAddressClean();
+		 	     String fileName =  placeID+"/"+"json_free_map.json";
+		 	     System.out.println("JSONDELETE:"+fileName);
+		 	     GcsFilename oname = new GcsFilename(bucketName, fileName);
+    			 gcsService.delete(oname);
+ 
 	  			//Removing "UserPlace" entity
 				Query upsq = new Query("UserPlace").setFilter(pidFilter);
 				PreparedQuery upspq = datastore.prepare(upsq);

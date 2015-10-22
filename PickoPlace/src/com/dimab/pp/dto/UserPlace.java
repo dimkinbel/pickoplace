@@ -39,17 +39,29 @@ public class UserPlace {
 	public String getPlace() {
 		return place;
 	}
+	public String getPlaceNameClean() {
+		String returnplace = place.replaceAll("[^a-zA-Z0-9\\_]", "\\_");
+		return returnplace;
+	}
 	public void setPlace(String place) {
 		this.place = place;
 	}
 	public String getBranch() {
 		return branch;
 	}
+	public String getBranchClean() {
+		String getBranch_ = branch.replaceAll("[^a-zA-Z0-9\\_]", "\\_");
+		return getBranch_;
+	}
 	public void setBranch(String branch) {
 		this.branch = branch;
 	}
 	public String getAddress() {
 		return Address;
+	}
+	public String getAddressClean() {
+		String returnAddress = Address.replaceAll("[^a-zA-Z0-9\\_]", "\\_");
+		return returnAddress;
 	}
 	public void setAddress(String address) {
 		Address = address;

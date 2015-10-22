@@ -199,7 +199,7 @@ $("#wl_load_dates_button").click(function(){
 			applyPosition() ;
 		} else if (id_=="t50xf50f50") {
 		    var cp = positionmanager.currentPosition;
-		    var proposal = calcfloorssize("horisontal",getAvailable(true,cp.right_width),16)
+		    var proposal = calcfloorssize("horisontal",getAvailable(true,cp.right_width),1)
 		    var floorsH = parseInt(proposal.proposed);
 			var totalH = getAvailable(false,cp.right_width);
 			if(floorsH > 0.6 * totalH) {
@@ -254,7 +254,7 @@ $("#wl_load_dates_button").click(function(){
 			applyPosition() ;
 		} else if (id_=="f50f50xt100") {
 		    var cp = positionmanager.currentPosition;
-		    var proposal = calcfloorssize("horisontal",getAvailable(true,cp.right_width),16)
+		    var proposal = calcfloorssize("horisontal",getAvailable(true,cp.right_width),1)
 		    var floorsH = parseInt(proposal.proposed);
 			var totalH = getAvailable(false,cp.right_width);
 			if(floorsH > 0.6 * totalH) {
@@ -297,7 +297,7 @@ $("#wl_load_dates_button").click(function(){
 	});
 	$("#show_bookins_row_btn").click(function(){
 	   if($("#bookings_col_enable").is(":checked")) {
-	       positionmanager.currentPosition.right_width = 30;
+	       positionmanager.currentPosition.right_width = 0;
 		   applyPosition() ;
 		   $("#transition_open").addClass("wl_list_hide");
 	       $("#transition_open").removeClass("wl_list_show");
@@ -350,23 +350,13 @@ $("#wl_load_dates_button").click(function(){
 			$("#"+appendTo_).append(appendData);
 			
 			appendData ='<div class="zoom_options_book">';
-			appendData +='			<table  cellspacing="0" cellpadding="0" style="border-collapse:collapse">';
-			appendData +='			   <tr class="zoom_plus_tr">';
-			appendData +='				 <td>';
-			appendData +='				   <div class="zoom_plus_div" onclick="sizeUp(floorCanvases['+floor_ind+'])">+</div>';
-			appendData +='				 </td>';
-			appendData +='			   </tr>';
-			appendData +='			   <tr class="zoom_minus_tr">';
-			appendData +='				 <td>';
-			appendData +='				   <div class="zoom_minus_div"  onclick="sizeDown(floorCanvases['+floor_ind+'])">-</div>';
-			appendData +='				 </td>';
-			appendData +='			   </tr>';
-			appendData +='			   <tr class="zoom_reset_tr">';
-			appendData +='				 <td>';
-			appendData +='<div class="zoom_reset_div" onclick="zoomResetWrap(floorCanvases['+floor_ind+'],\'canvas_appended_wrapper-'+singleFloorID+'\',\'canvas_wrap_not_scroll_conf-'+singleFloorID+'\')">reset</div>';
-			appendData +='				 </td>';
-			appendData +='			   </tr>	';			   
-			appendData +='			</table>';
+			appendData +='<div id="plus_minus_wrap">';
+			appendData +='   <div id="zoom_plus_div" onclick="sizeUp(floorCanvases['+floor_ind+'])" title="Zoom-In">+</div>';
+			appendData +='  <div id="zoom_split"></div>';
+			appendData +='  <div id="zoom_minus_div"  onclick="sizeDown(floorCanvases['+floor_ind+'])"  title="Zoom-Out">-</div>';
+		    appendData +=' </div>';
+		    appendData +='<div id="zoom_reset_div" onclick="zoomResetWrap(floorCanvases['+floor_ind+'],\'canvas_appended_wrapper-'+singleFloorID+'\',\'canvas_wrap_not_scroll_conf-'+singleFloorID+'\')"><div class="material-icons zoom_reset_mat"  title="Zoom-Reset">fullscreen</div></div>';
+ 
 			appendData +='</div>';
 			$("#canvas_appended_wrapper-"+singleFloorID).append(appendData);
 			appendData ="<div class='floor_single_name'>"+canvas_ref.floor_name+"</div>";
@@ -375,8 +365,8 @@ $("#wl_load_dates_button").click(function(){
 			appendData =' <div id="canvas_wrap_not_scroll_conf-'+singleFloorID+'" class="canvas_wrap_not_scroll_conf"></div>';
 			$("#canvas_appended_wrapper-"+singleFloorID).append(appendData);
 			canvas_ref.scrollID = "canvas_wrap_not_scroll_conf-"+singleFloorID;
-			$("#canvas_wrap_not_scroll_conf-"+singleFloorID).css("width",appendToWidth-16);
-			$("#canvas_wrap_not_scroll_conf-"+singleFloorID).css("height",appendToHeight-16);
+			$("#canvas_wrap_not_scroll_conf-"+singleFloorID).css("width",appendToWidth );
+			$("#canvas_wrap_not_scroll_conf-"+singleFloorID).css("height",appendToHeight );
 			
 			$('#canvas_wrap_not_scroll_conf-'+singleFloorID).append( $('#div_wrap-canvas_'+singleFloorID) );
 			$('#div_wrap-canvas_'+singleFloorID).show();
@@ -403,23 +393,13 @@ $("#wl_load_dates_button").click(function(){
 			$("#"+appendTo_).append(appendData);
 			
 			appendData ='<div class="zoom_options_book">';
-			appendData +='			<table  cellspacing="0" cellpadding="0" style="border-collapse:collapse">';
-			appendData +='			   <tr class="zoom_plus_tr">';
-			appendData +='				 <td>';
-			appendData +='				   <div class="zoom_plus_div" onclick="sizeUp(canvas_)">+</div>';
-			appendData +='				 </td>';
-			appendData +='			   </tr>';
-			appendData +='			   <tr class="zoom_minus_tr">';
-			appendData +='				 <td>';
-			appendData +='				   <div class="zoom_minus_div"  onclick="sizeDown(canvas_)">-</div>';
-			appendData +='				 </td>';
-			appendData +='			   </tr>';
-			appendData +='			   <tr class="zoom_reset_tr">';
-			appendData +='				 <td>';
-			appendData +='   <div class="zoom_reset_div" onclick="zoomResetWrap(canvas_,\'canvas_appended_wrapper-both\',\'canvas_wrap_not_scroll_conf-both\')">reset</div>';
-			appendData +='				 </td>';
-			appendData +='			   </tr>	';			   
-			appendData +='			</table>';
+			appendData +='<div id="plus_minus_wrap">';
+			appendData +='   <div id="zoom_plus_div" onclick="sizeUp(canvas_)" title="Zoom-In">+</div>';
+			appendData +='  <div id="zoom_split"></div>';
+			appendData +='  <div id="zoom_minus_div"  onclick="sizeDown(canvas_)"  title="Zoom-Out">-</div>';
+		    appendData +=' </div>';
+		    appendData +='<div id="zoom_reset_div" onclick="zoomResetWrap(canvas_,\'canvas_appended_wrapper-both\',\'canvas_wrap_not_scroll_conf-both\')"><div class="material-icons zoom_reset_mat"  title="Zoom-Reset">fullscreen</div></div>';
+
 			appendData +='</div>';
 			$("#canvas_appended_wrapper-both").append(appendData);
 			appendData ="<div class='floor_single_name_wrap' id='floor_buttons_wrap'></div>";
@@ -438,8 +418,8 @@ $("#wl_load_dates_button").click(function(){
 	             canvas_ref = floorCanvases[f];
 			     canvas_ref.scrollID = "canvas_wrap_not_scroll_conf-both";
 			}
-			$("#canvas_wrap_not_scroll_conf-both").css("width",appendToWidth-16);
-			$("#canvas_wrap_not_scroll_conf-both").css("height",appendToHeight-16);
+			$("#canvas_wrap_not_scroll_conf-both").css("width",appendToWidth );
+			$("#canvas_wrap_not_scroll_conf-both").css("height",appendToHeight );
 			for (var f = 0 ;f < floorCanvases.length ; f++) {  
 			    canvas_ref = floorCanvases[f];
 				$('#canvas_wrap_not_scroll_conf-both').append( $('#div_wrap-canvas_'+canvas_ref.floorid) );
@@ -476,7 +456,7 @@ $("#wl_load_dates_button").click(function(){
 		var canvasHeight = appendToHeight - 50 - 26;
 		var buttonsWidth =  430 ;
 		document.getElementById('timeline_canvas').height = canvasHeight;
-		document.getElementById('timeline_canvas').width = appendToWidth - 10;
+		document.getElementById('timeline_canvas').width = appendToWidth  ;
 		$("#"+appendTo_).css("position","relative");
 		$('#'+appendTo_).append($('#canvas_timeline_div'));
 		$('#'+appendTo_).append($('#timeline_buttons_wrap'));
@@ -484,14 +464,14 @@ $("#wl_load_dates_button").click(function(){
 		
 
 		
-		$("#timeline_buttons_wrap").css('width',appendToWidth-10);
+		$("#timeline_buttons_wrap").css('width',appendToWidth );
 
-		tl_canvas.width = appendToWidth - 10;
+		tl_canvas.width = appendToWidth  ;
 		tl_canvas.height = canvasHeight;
 		tl_canvas.origHeight = canvasHeight;
 		tl_canvas.origHeightReset = canvasHeight;
 		tl_canvas.lineReset();	
-		var ctw = parseInt(document.getElementById('timeline_canvas').width) + 10;
+		var ctw = parseInt(document.getElementById('timeline_canvas').width) ;
 		
 		$(".slimScrollDiv").remove();
 		$('#canvas_slimscroll').slimScroll({
@@ -502,7 +482,7 @@ $("#wl_load_dates_button").click(function(){
 			size: '10px',
         });
 		$('#canvas_slimscroll').css('height',canvasHeight+"px");
-		$('#canvas_slimscroll').css('width',appendToWidth-10+"px");	
+		$('#canvas_slimscroll').css('width',appendToWidth +"px");	
         timelinediv.updateNowTime();		
 	}
 
@@ -542,7 +522,7 @@ $("#wl_load_dates_button").click(function(){
 		var currentPosition = {};
 		currentPosition.top_perc = 50;
 		currentPosition.bot_perc = 50;
-		currentPosition.right_width = 30;
+		currentPosition.right_width = 2;
 		currentPosition.topleft_perc = 100;
 		currentPosition.topright_perc = 0;
 		currentPosition.botleft_perc = 100;
@@ -612,10 +592,10 @@ $("#wl_load_dates_button").click(function(){
 	  var availableHeight = browserHeight - headerHeight - buttonsRowHeight;
 	  document.getElementById("center_column_like").style.width = availableWidth;
 	  document.getElementById("center_column_like").style.height = availableHeight;
-	  document.getElementById("content_top_row").style.height = (top_perc==0)?"0px":parseInt(0.01 * top_perc * availableHeight) - 10  + "px";
-	  document.getElementById("content_bottom_row").style.height = (bot_perc==0)?"0px":parseInt(0.01 * bot_perc * availableHeight) - 10  + "px";
-	  document.getElementById("content_top_left_cell").style.width = (topleft_perc==0)?"0px":parseInt(0.01 * topleft_perc * availableWidth) - 10  + "px";
-	  document.getElementById("content_top_right_cell").style.width = (topright_perc==0)?"0px":parseInt(0.01 * topright_perc * availableWidth) - 10  + "px";
+	  document.getElementById("content_top_row").style.height = (top_perc==0)?"0px":parseInt(0.01 * top_perc * availableHeight)    + "px";
+	  document.getElementById("content_bottom_row").style.height = (bot_perc==0)?"0px":parseInt(0.01 * bot_perc * availableHeight)    + "px";
+	  document.getElementById("content_top_left_cell").style.width = (topleft_perc==0)?"0px":parseInt(0.01 * topleft_perc * availableWidth)    + "px";
+	  document.getElementById("content_top_right_cell").style.width = (topright_perc==0)?"0px":parseInt(0.01 * topright_perc * availableWidth)    + "px";
 	  document.getElementById("content_bottom_left_cell").style.width = (botleft_perc==0)?"0px":parseInt(0.01 * botleft_perc * availableWidth)  + "px";
 	  document.getElementById("content_bottom_right_cell").style.width = (botright_perc==0)?"0px":parseInt(0.01 * botright_perc * availableWidth) + "px";
 	  if (bot_perc == 0) {	    

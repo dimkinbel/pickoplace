@@ -57,6 +57,8 @@ public class GenerateWelcomePage extends HttpServlet {
 		Integer numInt =  Integer.parseInt(num);
 		if(lastCursor==null || lastCursor.isEmpty() ) {
 			lastCursor = "";
+		} else {
+			System.out.println("Cursor to POST:"+lastCursor);
 		}
 		
 		System.out.println(request.getLocale());
@@ -80,9 +82,10 @@ public class GenerateWelcomePage extends HttpServlet {
 	QueryResultList<Entity> getNEntities(int n,String cursor) {
 		
 		  DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-		  
+		  System.out.println("CURSOR:"+cursor);
 		  FetchOptions fetchOptions = FetchOptions.Builder.withLimit(n);
 		  if(cursor!=null && !cursor.isEmpty() ) {
+			  System.out.println("CURSOR USED");
 			  fetchOptions.startCursor(Cursor.fromWebSafeString(cursor));
 		  }
 		     		  
@@ -91,7 +94,13 @@ public class GenerateWelcomePage extends HttpServlet {
 		  
 		  PreparedQuery pq = datastore.prepare(q);
 		  QueryResultList<Entity> results = pq.asQueryResultList(fetchOptions);
-		  this.lastCursor=results.getCursor().toWebSafeString();
+		 
+		  if(results.getCursor()==null) {
+			  this.lastCursor=null;
+		  } else {
+			  this.lastCursor=results.getCursor().toWebSafeString();
+			  System.out.println("UPDATED CURSOR:"+results.getCursor().toWebSafeString());
+		  }
 		  return results;
 		}
 }

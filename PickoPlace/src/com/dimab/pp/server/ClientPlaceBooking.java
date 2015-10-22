@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.dimab.pp.channel.ChannelMessageFactory;
+import com.dimab.pp.database.FreePlaceFactory;
 import com.dimab.pp.dto.BookingListForJSON;
 import com.dimab.pp.dto.BookingRequest;
 import com.dimab.pp.dto.BookingRequestWrap;
@@ -52,7 +53,14 @@ public class ClientPlaceBooking extends HttpServlet {
 		
 		String username_email = new String();
 		CheckTokenValid tokenValid = new CheckTokenValid(request);
-		GenericUser genuser = tokenValid.getUser();
+		GenericUser genuser = new GenericUser();
+		try {	
+			genuser = tokenValid.getUser();
+		} catch (NullPointerException e) {
+			String returnurl = "/welcome.jsp";
+			response.addHeader("Access-Control-Allow-Origin", "*");
+			response.sendRedirect(returnurl);
+		}
 		if(genuser==null) {
 			map.put("added", false);
 			response.setContentType("application/json");
@@ -64,14 +72,7 @@ public class ClientPlaceBooking extends HttpServlet {
 		}
 		
 		
-     /* boolean signinRequest = false;
-		if( requestSignIn != null ) {
-			signinRequest = true;
-			RequestDispatcher dispatcher = request.getRequestDispatcher("/tempBooking");
-			dispatcher.forward(request, response);
-			return;
-		}*/
-		
+
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 		TransactionOptions options = TransactionOptions.Builder.withXG(true);
 		Transaction txn = datastore.beginTransaction(options);
@@ -79,6 +80,7 @@ public class ClientPlaceBooking extends HttpServlet {
 		map.put("added", true);
 		Gson gson = new Gson();
 		BookingRequestWrap bookingRequestsWrap = gson.fromJson(jsonString,BookingRequestWrap.class);
+		map.put("bid", bookingRequestsWrap.getBookID());
 		bookingRequestsWrap.setClientid(username_email);
 		List<BookingRequest> bookingRequests = bookingRequestsWrap.getBookingList();
 
@@ -99,15 +101,18 @@ public class ClientPlaceBooking extends HttpServlet {
   		if(canvasEntity.getProperty("bookingsCount")!= null) {
   		  bookingsMade = (int)(long) canvasEntity.getProperty("bookingsCount");
   		  bookingsMade+=1;
-  		  canvasEntity.setProperty("bookingsCount", bookingsMade); 
+  		  canvasEntity.setUnindexedProperty("bookingsCount", bookingsMade); 
   		} else {
   			bookingsMade = 1;
-  			canvasEntity.setProperty("bookingsCount", bookingsMade);  			
+  			canvasEntity.setUnindexedProperty("bookingsCount", bookingsMade);  			
   		}
   		Text bookingListGSON = new Text(gson.toJson(bookingRequests));
   		Entity bookingOrder = new Entity("BookingOrders",canvasKey);
-  		bookingOrder.setProperty("bookingList", bookingListGSON);
+  		bookingOrder.setUnindexedProperty("bookingList", bookingListGSON);
   		bookingOrder.setProperty("clientid", username_email);
+  		bookingOrder.setUnindexedProperty("placeName", (String)canvasEntity.getProperty("placeName"));
+  		bookingOrder.setUnindexedProperty("placeBranchName", (String)canvasEntity.getProperty("placeBranchName"));
+  		bookingOrder.setUnindexedProperty("address", (String)canvasEntity.getProperty("address"));
 		bookingOrder.setProperty("bid", bookingRequestsWrap.getBookID());
 		bookingOrder.setProperty("Date", PlaceLocalTime.toString());
 		bookingOrder.setProperty("UTCstartSeconds", secondsRelativeToClient);
@@ -183,6 +188,7 @@ public class ClientPlaceBooking extends HttpServlet {
             	bookAvailable = false;
             }
    		}
+  		List<Entity> shapesEntities = new ArrayList<Entity>();
   		if(bookAvailable) {
 		// Check available places by shapes (else delete BookingOrders entity) isAvailable
   			List<Entity> shapeEntities = new ArrayList<Entity>();
@@ -195,7 +201,7 @@ public class ClientPlaceBooking extends HttpServlet {
 		  		Entity shapeEntity = psq.asSingleEntity();
 		  		if (shapeEntity != null) {
 		  			Key shapeKey = shapeEntity.getKey();
-		  			
+		  			shapesEntities.add(shapeEntity);
 		  			SingleTimeRangeLong OrderBid = new SingleTimeRangeLong();
 		  			OrderBid.setBid(bookingRequest.getBookID());
 		  			OrderBid.setFrom(secondsRelativeToClient);
@@ -213,7 +219,7 @@ public class ClientPlaceBooking extends HttpServlet {
 			  			shapeOrders.setProperty("pid", bookingRequest.getPid());
 			  			ordersList.add(OrderBid, 0);
 			  			Text ordersListJSON = new Text(gson.toJson(ordersList));
-			  			shapeOrders.setProperty("bookingListJSON", ordersListJSON);
+			  			shapeOrders.setUnindexedProperty("bookingListJSON", ordersListJSON);
 			  			shapeEntities.add(shapeOrders);
 			  			//datastore.put(shapeOrders);
 			  			System.out.println("New Orders Entity");
@@ -224,7 +230,7 @@ public class ClientPlaceBooking extends HttpServlet {
 			  			if (added) {
 			  				// OK
 			  				Text ordersListJSON = new Text(gson.toJson(ordersList));
-			  				shapeOrders.setProperty("bookingListJSON", ordersListJSON);
+			  				shapeOrders.setUnindexedProperty("bookingListJSON", ordersListJSON);
 			  				//datastore.put(shapeOrders);
 			  				shapeEntities.add(shapeOrders);
 			  			} else {
@@ -250,6 +256,10 @@ public class ClientPlaceBooking extends HttpServlet {
 			datastore.delete(bookingOrder.getKey());
 			map.put("added", false);
 		}
+  		if((boolean)map.get("added")==true) {
+  			FreePlaceFactory freePlaceFactory = new FreePlaceFactory();
+  			freePlaceFactory.UpdateFreePlace(canvasEntity ,shapesEntities ,bookingRequestsWrap ,datastore );
+  		}
   		txn.commit();
   		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");

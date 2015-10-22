@@ -9,13 +9,27 @@ public class PPSubmitObject {
    String snif = new String();
    String allImageSrc;
    String background;
+   String bgImageSrc;
    String floor_name;
    String floorid;
    boolean mainfloor;
    CanvasState state = new CanvasState();
    List<CanvasShape> shapes = new ArrayList<CanvasShape>();
+   List<CanvasShape> bgshapes = new ArrayList<CanvasShape>();
    
  
+public String getBgImageSrc() {
+	return bgImageSrc;
+}
+public void setBgImageSrc(String bgImageSrc) {
+	this.bgImageSrc = bgImageSrc;
+}
+public List<CanvasShape> getBgshapes() {
+	return bgshapes;
+}
+public void setBgshapes(List<CanvasShape> bgshapes) {
+	this.bgshapes = bgshapes;
+}
 public boolean isMainfloor() {
 	return mainfloor;
 }

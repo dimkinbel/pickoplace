@@ -42,9 +42,17 @@ public class SaveIframe extends HttpServlet {
 
 		String username_email = new String();
 		CheckTokenValid tokenValid = new CheckTokenValid(request);
-		GenericUser genuser = tokenValid.getUser();
+		GenericUser genuser = new GenericUser();
+		try {	
+			genuser = tokenValid.getUser();
+		} catch (NullPointerException e) {
+			String returnurl = "/welcome.jsp";
+			response.addHeader("Access-Control-Allow-Origin", "*");
+			response.sendRedirect(returnurl);
+		}
 		if(genuser==null) {
-			String returnurl = "http://pickoplace.com/welcome.jsp";
+			String returnurl = "/welcome.jsp";
+			response.addHeader("Access-Control-Allow-Origin", "*");
 			response.sendRedirect(returnurl);
 		} else {
 			username_email = genuser.getEmail();
@@ -66,14 +74,14 @@ public class SaveIframe extends HttpServlet {
   			ifidEntity.setProperty("pid", placeIDvalue);
   			ifidEntity.setProperty("savedby", username_email);
   			ifidEntity.setProperty("date", date);
-  			ifidEntity.setProperty("ifjson", gson.toJson(SaveObject));
+  			ifidEntity.setUnindexedProperty("ifjson", gson.toJson(SaveObject));
   			map.put("newifid", true);
   		} else {
   			ifidEntity.setProperty("ifid", ifid);
   			ifidEntity.setProperty("pid", placeIDvalue);
   			ifidEntity.setProperty("savedby", username_email);
   			ifidEntity.setProperty("date", date);
-  			ifidEntity.setProperty("ifjson", gson.toJson(SaveObject));
+  			ifidEntity.setUnindexedProperty("ifjson", gson.toJson(SaveObject));
   			map.put("newifid", false);
   		}
   		datastore.put(ifidEntity);

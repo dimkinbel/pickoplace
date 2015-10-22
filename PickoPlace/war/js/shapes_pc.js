@@ -73,7 +73,7 @@ Shape.prototype.draw = function(ctx, optionalColor) {
   var fillX = this.x;
   var fillY = this.y;
 
-  if (this.angle != 0) {
+  if (this.angle != 0  && this.type!="line") {
     ctx.save();
 	ctx.translate(this.x , this.y );
 	ctx.rotate(this.angle * Math.PI / 180);
@@ -139,6 +139,7 @@ Shape.prototype.draw = function(ctx, optionalColor) {
 	              this.options.imgID,
 				  this.options.alpha);
   }
+ if(false) {
   if (this.state.selection === this && this.type == "line") {
      ctx.strokeStyle = this.state.selectionColor;
      ctx.lineWidth = this.state.selectionWidth;
@@ -223,7 +224,7 @@ Shape.prototype.draw = function(ctx, optionalColor) {
     }
 	ctx.fillStyle = this.state.selectionBoxColor;
   }
-   ctx.restore();
+   
     if (this.state.selection === this && this.angle != 0 && this.type != "line") {
 	  
 	  for (i = 0; i < 9; i += 1) {
@@ -238,6 +239,8 @@ Shape.prototype.draw = function(ctx, optionalColor) {
 	  }
       
 	}
+  }; // Enable edit
+  ctx.restore();
 };
 function getAngle(x,y) {
   if( x != 0 ) {
@@ -384,6 +387,8 @@ function CanvasState(canvas) {
   this.valid = false; // when set to false, the canvas will redraw everything
   this.canvasDrag = false; 
   this.shapes = [];  // the collection of things to be drawn
+  this.bgshapes = [];
+  this.bgmode = false;
   this.dragging = false; // Keep track of when we are dragging
   this.resizeDragging = false; // Keep track of resize
   this.expectResize = -1; // save the # of the selection handle 
@@ -398,7 +403,7 @@ function CanvasState(canvas) {
   this.dragoffy = 0;
   this.rotateDragging = false;
   this.rotateAngle = 0;
-  
+  this.shapeHover = null;
   // New, holds the 8 tiny boxes that will be our selection handles
   // the selection handles will be in this order:
   // 0  1  2
@@ -932,6 +937,26 @@ function CanvasState(canvas) {
       myState.expectResize = -1;
       this.style.cursor = 'auto';
     }
+	 var contains = false;	 
+	 var prevHover = myState.shapeHover;
+     for (i = 0; i <  myState.shapes.length ; i ++) {
+    	 if(myState.shapes[i].type!="text" && myState.shapes[i].type!="line" && myState.shapes[i].booking_options.bookable == true) {
+    		 // Line And Text not bookable
+			  if (myState.shapes[i].contains(myState.ctx ,mx, my)) {
+			    this.style.cursor='pointer';
+				myState.shapeHover = myState.shapes[i];
+				contains = true;
+			  }
+    	 }
+    }
+
+	if (!contains) {
+	   this.style.cursor='auto';
+	   myState.shapeHover = null;
+	} 
+	if(myState.shapeHover!=prevHover) {
+	    myState.valid = false;
+	}
   }, true);
   canvas.addEventListener('mouseup', function(e) {
     myState.dragging = false;
@@ -983,8 +1008,12 @@ CanvasState.prototype.rotateSelection = function(val) {
 
 CanvasState.prototype.addShape = function(shape) {
   "use strict";
-  this.shapes.push(shape);
-
+  if(this.bgmode == true) {
+	   shape.bookableShape=false;
+	   this.bgshapes.push(shape);
+ } else {
+     this.shapes.push(shape);
+ }
   this.valid = false;
 };
 
@@ -1100,7 +1129,7 @@ CanvasState.prototype.draw = function() {
 			ctx.strokeStyle = this.line_color;
 			
 			ctx.fillRect(0,0,this.width/this.zoom,this.height/this.zoom);
-			ctx.strokeRect(0,0,this.width/this.zoom,this.height/this.zoom);
+			//ctx.strokeRect(0,0,this.width/this.zoom,this.height/this.zoom);
 			ctx.fillStyle = fs;    
 			ctx.strokeStyle = ss;
 		} else {
@@ -1156,14 +1185,13 @@ CanvasState.prototype.draw = function() {
 	}
     // draw all shapes
     l = shapes.length;
-    for (i = 0; i < l; i += 1) {
-      shape = shapes[i];
-     // We can skip the drawing of elements that have moved off the screen:
-      if ( shape.x - 0.5*shape.w <= this.width/this.zoom && shape.y - 0.5*shape.h <= this.height/this.zoom &&
-          shape.x + 0.5*shape.w >= 0 && shape.y + 0.5*shape.h >= 0) {
-          shapes[i].draw(ctx);
-      }
-    }
+    for (i = 0; i < this.bgshapes.length; i += 1) {
+		  this.bgshapes[i].draw(ctx);
+	} 
+	 l = shapes.length;
+	for (i = 0; i < l; i += 1) {
+		  shapes[i].draw(ctx);
+	}     
     
     // draw selection
     // right now this is just a stroke along the edge of the selected Shape
@@ -1209,13 +1237,33 @@ CanvasState.prototype.draw = function() {
 				}	 
 				  dbRoundRect(ctx,fillX,fillY,mySel.w+10,mySel.h+10,"#4d90fe","white",0,1,2,20);
 
-			   if (shape.angle != 0) {
+			   if (mySel.angle != 0) {
 				
 			   }	
 			   ctx.restore();		   
 		   }
 		}
 		// ** Add stuff you want drawn on top all the time here **
+		//Draw hover
+		if(this.shapeHover!=null) {
+			  mySel = this.shapeHover;
+			  var fillX = mySel.x ;
+			  var fillY = mySel.y ;
+			  ctx.save();
+			  if (mySel.angle != 0) {
+				   
+				   ctx.translate(mySel.x , mySel.y );
+				   ctx.rotate(mySel.angle * Math.PI / 180);
+				   fillX =  0;
+				   fillY = 0;
+				}	 
+
+                  dbRoundRect(ctx,fillX,fillY,mySel.w+10,mySel.h+10,"#00FF99","white",0,1,2,15);
+			   if (mySel.angle != 0) {
+				
+			   }	
+			   ctx.restore();			
+		}
     }
     this.valid = true;
     if (this.drawAll) {

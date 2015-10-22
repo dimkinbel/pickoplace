@@ -7,6 +7,8 @@ public class AdminUser {
 	 boolean  edit_place;
 	 boolean  move_only ;
 	 boolean  book_admin;
+
+
 	public String getMail() {
 		return mail;
 	}

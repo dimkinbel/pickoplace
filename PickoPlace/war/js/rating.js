@@ -66,12 +66,25 @@ function openFeedback(bid,pid) {
 	 });
 }
 function submitFeedback(bid,pid) {
-    var bid = bid;
-	var pid = pid;
+ 
 	ratingObj = {};
-	var fscore = $('#raty_food').raty('score');
-	var sscore = $('#raty_staf').raty('score');
-	var lscore = $('#raty_loc').raty('score');
+	var fscore = 0;
+	var sscore = 0;
+	var lscore = 0;
+	if($('#raty_food').raty('score') != undefined) {
+		fscore = $('#raty_food').raty('score');
+	} 
+	if($('#raty_staf').raty('score') != undefined) {
+	   sscore = $('#raty_staf').raty('score');
+	}
+	if($('#raty_loc').raty('score') != undefined) {
+		lscore = $('#raty_loc').raty('score');
+	}
+ 
+	if(fscore == 0 && sscore == 0 && lscore == 0) {
+		alert("Please submit any rating value");
+		return;
+	}
 	var tscore = $('#raty_textarea').val();
 	ratingObj.fscore = fscore;
 	ratingObj.sscore = sscore;

@@ -54,9 +54,17 @@ public class EditFormfromAccount extends HttpServlet {
 		
 		String username_email = new String();
 		CheckTokenValid tokenValid = new CheckTokenValid(request);
-		GenericUser genuser = tokenValid.getUser();
+		GenericUser genuser = new GenericUser();
+		try {	
+			genuser = tokenValid.getUser();
+		} catch (NullPointerException e) {
+			String returnurl = "/welcome.jsp";
+			response.addHeader("Access-Control-Allow-Origin", "*");
+			response.sendRedirect(returnurl);
+		}
 		if(genuser==null) {
-			String returnurl = "http://pickoplace.com/welcome.jsp";
+			String returnurl = "/welcome.jsp";
+			response.addHeader("Access-Control-Allow-Origin", "*");
 			response.sendRedirect(returnurl);
 		} else {
 			username_email = genuser.getEmail();
@@ -95,17 +103,11 @@ public class EditFormfromAccount extends HttpServlet {
 			  			String name = (String) shapeEntity.getProperty("name");
 			  			int minP = (int)(long) shapeEntity.getProperty("minP");
 			  			int maxP = (int)(long) shapeEntity.getProperty("maxP");
-			  			String timeRange_ = (String) shapeEntity.getProperty("timeRange");
-			  			String weekDays_ = (String) shapeEntity.getProperty("weekDays");
-			  			
-			  			WeekDays weekDays = gson.fromJson(weekDays_,WeekDays.class);
-			  			Type collectionType_ = new TypeToken<List<SingleTimeRange>>(){}.getType();
-			  			List<SingleTimeRange> timeRange = gson.fromJson(timeRange_,collectionType_);
+
+
 			  			shape.getBooking_options().setGivenName(name);
 			  			shape.getBooking_options().setMaxPersons(maxP);
 			  			shape.getBooking_options().setMinPersons(minP);
-			  			shape.getBooking_options().setTimeRange(timeRange);
-			  			shape.getBooking_options().setWeekDays(weekDays);
 			  		}
 				}
 				
@@ -174,6 +176,7 @@ public class EditFormfromAccount extends HttpServlet {
 	     		  	    imgID2url.setGcsUrl(servingUrl);
 	     		  	    gcsurlUpdated.put(imgID, imgID);
 	     		  	    CanvasStateEdit.getJSONimageID2url().add(imgID2url);
+	     		 
 	                 }
 	
 				}

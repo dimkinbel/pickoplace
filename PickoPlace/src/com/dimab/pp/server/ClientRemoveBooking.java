@@ -1,6 +1,7 @@
 package com.dimab.pp.server;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,7 +11,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.dimab.pp.database.FreePlaceFactory;
 import com.dimab.pp.dto.BookingListForJSON;
+import com.dimab.pp.dto.BookingRequest;
 import com.dimab.pp.dto.BookingSingleShapeList;
 import com.dimab.pp.dto.SingleTimeRangeLong;
 import com.dimab.pp.login.CheckTokenValid;
@@ -28,6 +31,7 @@ import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 public class ClientRemoveBooking extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -44,7 +48,14 @@ public class ClientRemoveBooking extends HttpServlet {
 
 		String username_email = new String();
 		CheckTokenValid tokenValid = new CheckTokenValid(request);
-		GenericUser genuser = tokenValid.getUser();
+		GenericUser genuser = new GenericUser();
+		try {	
+			genuser = tokenValid.getUser();
+		} catch (NullPointerException e) {
+			String returnurl = "/welcome.jsp";
+			response.addHeader("Access-Control-Allow-Origin", "*");
+			response.sendRedirect(returnurl);
+		}
 		if(genuser==null) {
 			map.put("status", "nouser");
 		} else {
@@ -59,19 +70,31 @@ public class ClientRemoveBooking extends HttpServlet {
 			if(psq_.asSingleEntity()!=null) {						
 	  		    Entity bidEntity = psq_.asSingleEntity();
 	  		    String pid = (String)bidEntity.getProperty("pid");
-	  		    Filter placeIdFilter = new  FilterPredicate("pid",FilterOperator.EQUAL,pid);
-		  		Query q = new Query("ShapeOrdersList").setFilter(placeIdFilter);
-		  		PreparedQuery pq = datastore.prepare(q);
-		  		for (Entity shapeList : pq.asIterable()) {
-		  			String sid = (String) shapeList.getProperty("sid");
-	                System.out.println("Removing booking from shape:"+sid);
-		  			String allOrdersJSON =   ((Text) shapeList.getProperty("bookingListJSON")).getValue();
-		  			BookingListForJSON ordersList = gson.fromJson(allOrdersJSON, BookingListForJSON.class);
-		  			ordersList.remove(bid);
-		  			Text ordersListJSON = new Text(gson.toJson(ordersList));
-		  			shapeList.setProperty("bookingListJSON", ordersListJSON);
-		  			datastore.put(shapeList);
-		  		}
+	  		    String bookingListJSON =   ((Text) bidEntity.getProperty("bookingList")).getValue();
+	  		    Type bookinglistType = new TypeToken<List<BookingRequest>>(){}.getType();
+	  		    List<BookingRequest> bookingRequests =   gson.fromJson(bookingListJSON, bookinglistType);
+	  		    
+	  		    for(BookingRequest bookRequest : bookingRequests) {
+	  		    	String bsid = bookRequest.getSid();
+		  		    Filter placeIdFilter = new  FilterPredicate("pid",FilterOperator.EQUAL,pid);
+		  		    Filter sIdFilter = new  FilterPredicate("sid",FilterOperator.EQUAL,bsid);
+		  		    Filter composeFilter = CompositeFilterOperator.and(placeIdFilter,sIdFilter);
+			  		Query q = new Query("ShapeOrdersList").setFilter(composeFilter);
+			  		PreparedQuery pq = datastore.prepare(q);
+			  		if(pq.asSingleEntity()!= null) {
+			  		    Entity shapeList = pq.asSingleEntity();
+			  			String sid = (String) shapeList.getProperty("sid");
+		                System.out.println("Removing booking from shape:"+sid);
+			  			String allOrdersJSON =   ((Text) shapeList.getProperty("bookingListJSON")).getValue();
+			  			BookingListForJSON ordersList = gson.fromJson(allOrdersJSON, BookingListForJSON.class);
+			  			ordersList.remove(bid);
+			  			Text ordersListJSON = new Text(gson.toJson(ordersList));
+			  			shapeList.setUnindexedProperty("bookingListJSON", ordersListJSON);
+			  			datastore.put(shapeList);
+			  		}
+			  }
+	  		    FreePlaceFactory freePlaceFactory = new FreePlaceFactory();
+	  		    freePlaceFactory.UpdateFreePlaceRemoveBooking(bidEntity, bookingRequests,datastore);
 	  		    datastore.delete(bidEntity.getKey());
 	  		    map.put("status", "removed");
 			}

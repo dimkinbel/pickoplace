@@ -1315,18 +1315,40 @@ function createSaveObject() {
 					  "tileh"
 					  ]));
 	  var shapes = [];
+	  var bgshapes = [];
 	  if (state.shapes.length != "undefined") {
 		for (var i = 0; i < state.shapes.length; i += 1) {
 		   var Shape = JSON.parse(JSON.stringify(state.shapes[i],["x","y","w","h","rotate","angle","type","options","prevMX","prevMY","sid"]));
+		   var intAngle = parseInt(Shape.angle);
+		   Shape.angle = intAngle;
 		   var shapeOptions = JSON.parse(JSON.stringify(state.shapes[i].options));
+		   if(shapeOptions.imgID!=undefined) {
+			   var replace_server_prefix = shapeOptions.imgID.replace(/^server_/,"");
+			   shapeOptions.imgID = replace_server_prefix;
+		   }
 		   var bookingOptions = JSON.parse(JSON.stringify(state.shapes[i].booking_options));
 		   Shape.options = shapeOptions;
 		   Shape.booking_options = bookingOptions;
 		   shapes.push(Shape);
 		}
 	  }
+	  if (state.bgshapes.length != "undefined") {
+			for (var i = 0; i < state.bgshapes.length; i += 1) {
+			   var Shape = JSON.parse(JSON.stringify(state.bgshapes[i],["x","y","w","h","rotate","angle","type","options","prevMX","prevMY","sid"]));
+			   var intAngle = parseInt(Shape.angle);
+			   Shape.angle = intAngle;
+			   var shapeOptions = JSON.parse(JSON.stringify(state.bgshapes[i].options));
+			   if(shapeOptions.imgID!=undefined) {
+				   var replace_server_prefix = shapeOptions.imgID.replace(/^server_/,"");
+				   shapeOptions.imgID = replace_server_prefix;
+			   }
+			   Shape.options = shapeOptions;
+			   bgshapes.push(Shape);
+			}
+		  }
     CanvasFloor.shapes=shapes;
-
+    CanvasFloor.bgshapes=bgshapes;
+    
   CanvasFloor.username = user_;
   CanvasFloor.place = document.getElementById("userSetPlaceName").value;
   CanvasFloor.snif = document.getElementById("userSetPlaceBName").value;
@@ -1344,11 +1366,15 @@ function createSaveObject() {
 	  CanvasFloor.background =  document.getElementById("default_bg_image_mirror_"+floorid).src;
   }
 
-  for (var i = 0; i < state.shapes.length; i += 1) {
-      if (state.shapes[i].type == "image") {
-    	  var imgID = state.shapes[i].options.imgID;
-    	  var sid = state.shapes[i].sid;
-    	  var myRegExp = /user_img/;
+  var allshapes = [];
+  allshapes = allshapes.concat(state.shapes);
+  allshapes = allshapes.concat(state.bgshapes);
+  
+  for (var i = 0; i < allshapes.length; i += 1) {
+      if (allshapes[i].type == "image") {
+    	  var imgID = allshapes[i].options.imgID;
+    	  var sid = allshapes[i].sid;
+    	  var myRegExp = /^user_img/;
     	  if(imgID.match(myRegExp)) {
  			  var jsonimgID_2_data = {"imageID":imgID ,"data64": document.getElementById(imgID).src};
 			  JSONbyte64files.push(jsonimgID_2_data);
@@ -1356,12 +1382,17 @@ function createSaveObject() {
 			  JSONSIDlinks.push(jsonSID_2_imgID);    		  
     	  } else {
     		  myregexp = /mirror/;
+    		  var myregexp2 = /^server_/;
     		  var imgKey;
     		  if (imgID.match(myregexp)) {
     			  imgKey = imgID;
+    		  } else if(imgID.match(myregexp2)) {
+    			  imgKey = imgID;
+    			  imgID = imgID.replace(/^server_/,"");
     		  } else {
-    			  imgKey= imgID;
+    			  imgKey="mirror_"+imgID;
     		  }
+    		  
     		  var mirror = document.getElementById(imgKey);
     		  if (imgKey in ImageMirrorUsed) {
     			  // No need to add additional image to JSON object
@@ -1415,7 +1446,11 @@ function sendAJAX(JSON_,url_) {
 	  $.ajax({
 	      url : url_,
 	      data: JSON_,
-	      success : function(data){	    	  
+	      beforeSend: function () { $("#ajax_save_hide").hide(); $("#ajax_save_img_conf").show(); },
+	      success : function(data){
+	    	  $("#ajax_save_img_conf").hide();
+	    	  $("#ajax_save_hide").show();
+	    	  
 	    	  if(proceed_to_edit == 1) {
 	    		  var pid = document.getElementById("placeIDvalue").value;
 	       	      editPlace(pid+"_editform");

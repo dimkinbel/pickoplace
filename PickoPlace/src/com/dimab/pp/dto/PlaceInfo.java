@@ -19,8 +19,44 @@ public class PlaceInfo {
 	   String mainFloorName = new String();
 	   String placeMail = new String();
 	   String placePhone = new String();
+	   String description = "";
+	   List<String> type = new ArrayList<String>();
+	   List<String> subtype = new ArrayList<String>();		
+	   WorkingWeek weekdaysObject  = new WorkingWeek();
        List<JsonimgID_2_data> placeImageThumbnails = new ArrayList<JsonimgID_2_data>();
        PlaceRatingSummary ratingSummary;
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public List<String> getType() {
+		return type;
+	}
+
+	public void setType(List<String> type) {
+		this.type = type;
+	}
+
+	public List<String> getSubtype() {
+		return subtype;
+	}
+
+	public void setSubtype(List<String> subtype) {
+		this.subtype = subtype;
+	}
+
+	public WorkingWeek getWeekdaysObject() {
+		return weekdaysObject;
+	}
+
+	public void setWeekdaysObject(WorkingWeek weekdaysObject) {
+		this.weekdaysObject = weekdaysObject;
+	}
 
 	public PlaceRatingSummary getRating() {
 		return ratingSummary;

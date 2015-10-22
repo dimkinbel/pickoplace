@@ -1,7 +1,8 @@
 $(document).ready(function () { 
 	$("#welcome-load-more").click(function(){
-		requestLastPlaces(5);
+		requestLastPlaces(3);
     });
+
 	$(document).on("mouseover", ".welcome_shadow", function(e) {
 		var id_ = $(this).attr("id");
 		var pid = id_.replace(/welcome-/,"");
@@ -36,9 +37,15 @@ function requestLastPlaces(num){
 	      success : function(data){
 	    	  $("#welcome_loader").hide(); 
 	    	  $("#load_more-text").show();
+
 	    	  uploadLastcursor = data.cursor;
+	    	  
 	    	  updateLastPlaces(data);
 	    	  addMapMarkers(data);
+	    	  if(data.places.length < num) {
+	    		  uploadLastcursor = "";
+	    		  $("#welcome-load-more").hide();
+	    	  }
 	      },
 	      dataType : "JSON",
 	      type : "post"

@@ -9,6 +9,7 @@ public class CheckTokenValid {
 	public CheckTokenValid(HttpServletRequest request) {
 		  HttpServletRequest req_ = (HttpServletRequest) request;
 		  HttpSession session = req_.getSession();
+		 
 		  this.provider = (String) session.getAttribute("provider");
 		  this.accessToken = (String) session.getAttribute("access_token");
 	}

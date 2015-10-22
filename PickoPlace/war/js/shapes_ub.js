@@ -72,8 +72,11 @@ Shape.prototype.draw = function(ctx, optionalColor) {
   ctx.fillStyle = this.fill;
   var fillX = this.x;
   var fillY = this.y;
-
-  if (this.angle != 0) {
+  var hoverAdd = 0;
+  if(this == this.state.shapeHover && this.booking_options.bookable == true) {
+	  hoverAdd = 2;
+  }
+  if (this.angle != 0 && this.type!="line") {
     ctx.save();
 	ctx.translate(this.x , this.y );
 	ctx.rotate(this.angle * Math.PI / 180);
@@ -81,7 +84,7 @@ Shape.prototype.draw = function(ctx, optionalColor) {
 	fillY = 0
    }
   if (this.type == "rectangle" ) {
-    dbDrawRect  (ctx,fillX,fillY,this.w,this.h,
+    dbDrawRect  (ctx,fillX,fillY,this.w+hoverAdd,this.h+hoverAdd,
 	              this.options.lineColor,
 				  this.options.fillColor,
 				  this.options.alpha,
@@ -110,7 +113,7 @@ Shape.prototype.draw = function(ctx, optionalColor) {
 					 this.options.shadow_blur,
 					 this.options.shadow_color);
   } else if (this.type == "round" ) {
-    dbRoundRect (ctx,fillX,fillY,this.w,this.h,
+    dbRoundRect (ctx,fillX,fillY,this.w+hoverAdd,this.h+hoverAdd,
 	              this.options.lineColor,
 				  this.options.fillColor,
 				  this.options.alpha,
@@ -118,7 +121,7 @@ Shape.prototype.draw = function(ctx, optionalColor) {
 				  this.options.sw,
 				  this.options.roundRad);
   } else if (this.type == "circle" ) {
-    dbCircle (ctx,fillX,fillY,this.w,this.h,
+    dbCircle (ctx,fillX,fillY,this.w+hoverAdd,this.h+hoverAdd,
 				  this.options.startA,
 				  this.options.endA,
 	              this.options.lineColor,
@@ -127,7 +130,7 @@ Shape.prototype.draw = function(ctx, optionalColor) {
 				  this.options.salpha,
 				  this.options.sw);
   } else if (this.type == "trapex" ) {
-    dbTrapez (ctx,fillX,fillY,this.w,this.h,
+    dbTrapez (ctx,fillX,fillY,this.w+hoverAdd,this.h+hoverAdd,
 	              this.options.lineColor,
 				  this.options.fillColor,
 				  this.options.alpha,
@@ -135,7 +138,7 @@ Shape.prototype.draw = function(ctx, optionalColor) {
 				  this.options.sw,
 				  this.options.cutX);
   } else if (this.type == "image" ) {
-    dbImage (ctx,fillX,fillY,this.w,this.h,
+    dbImage (ctx,fillX,fillY,this.w+hoverAdd,this.h+hoverAdd,
 	              this.options.imgID,
 				  this.options.alpha);
   }
@@ -289,6 +292,8 @@ function CanvasState(canvas) {
   this.valid = false; // when set to false, the canvas will redraw everything
   this.canvasDrag = false; 
   this.shapes = [];  // the collection of things to be drawn
+  this.bgshapes = [];
+  this.bgmode = false;
   this.dragging = false; // Keep track of when we are dragging
   this.resizeDragging = false; // Keep track of resize
   this.expectResize = -1; // save the # of the selection handle 
@@ -332,7 +337,7 @@ function CanvasState(canvas) {
   // Up, down, and move are for dragging
 
   canvas.addEventListener('mousedown', function(e) {
-   
+	  canvasMouseDown = true;
     var mouse, mx, my, shapes, l, i, mySel;
 	 if(e.which == 3) //1: left, 2: middle, 3: right
        { 
@@ -398,52 +403,35 @@ function CanvasState(canvas) {
       myState.valid = false; // Need to clear the old selection border
 
   }, true);
+  canvas.addEventListener("mouseout", function(e) {	   
+		 myState.mouseOutEvent();
+  }, true);
+
   canvas.addEventListener('mousemove', function(e) {
-    var mouse = myState.getMouse(e),
-        mx = mouse.x,
-        my = mouse.y,
-		mox = mouse.orgx,
-		moy = mouse.orgy,
-		orgx = mouse.orgx , orgy = mouse.orgy ,
-        oldx, oldy, oldw, oldh ,i, cur;
-
-	if (myState.canvasDrag) {
-       
-	    var leftDrag = mox - myState.prevCmx;
-		var topDrag = moy - myState.prevCmy;
-		
-     //  if (myState.main) {
-		 document.getElementById(myState.scrollID).scrollTop -= topDrag;
-		 document.getElementById(myState.scrollID).scrollLeft -= leftDrag;
-	//   }
-		 myState.prevCmx = mox ;
-         myState.prevCmy = moy ;	
-		 myState.valid = false;
-	}
-
-	 var contains = false;	 
-	 var prevHover = myState.shapeHover;
-     for (i = 0; i <  myState.shapes.length ; i ++) {
-    	 if(myState.shapes[i].type!="text" && myState.shapes[i].type!="line" && myState.shapes[i].booking_options.bookable == true) {
-    		 // Line And Text not bookable
-			  if (myState.shapes[i].contains(myState.ctx ,mx, my)) {
-			    this.style.cursor='pointer';
-				myState.shapeHover = myState.shapes[i];
-				contains = true;
-			  }
-    	 }
-    }
-
-	if (!contains) {
-	   this.style.cursor='auto';
-	   myState.shapeHover = null;
-	} 
-	if(myState.shapeHover!=prevHover) {
-	    myState.valid = false;
-	}
-
+	         myState.mouseMoveEvent(e);
   }, true);
   canvas.addEventListener('mouseup', function(e) {
+	    myState.mouseUpEvent();
+  }, true);
+ 
+
+  
+  this.selectionColor = '#CC0000';
+  this.selectionWidth = 2;  
+  this.selectionBoxSize = 6;
+  this.selectionBoxColor = 'darkred';
+  this.interval = 30;
+  setInterval(function() { myState.draw(); }, myState.interval);
+}
+CanvasState.prototype.mouseOutEvent = function() {
+	  if(canvasMouseDown) {
+	     canvasMouseOut = true;
+	  }
+	};
+CanvasState.prototype.mouseUpEvent = function() {
+	var myState = this;
+	canvasMouseDown = false;
+	
     myState.dragging = false;
     myState.resizeDragging = false;
     myState.expectResize = -1;
@@ -471,28 +459,70 @@ function CanvasState(canvas) {
     }
 	if (myState.canvasDrag) {
 	   myState.canvasDrag = false;
-	}
-  }, true);
-
-  
-  this.selectionColor = '#CC0000';
-  this.selectionWidth = 2;  
-  this.selectionBoxSize = 6;
-  this.selectionBoxColor = 'darkred';
-  this.interval = 30;
-  setInterval(function() { myState.draw(); }, myState.interval);
+	}		
 }
+CanvasState.prototype.mouseMoveEvent = function(e) {
+	var myState = this;
+    var mouse = myState.getMouse(e),
+    mx = mouse.x,
+    my = mouse.y,
+	mox = mouse.orgx,
+	moy = mouse.orgy,
+	orgx = mouse.orgx , orgy = mouse.orgy ,
+    oldx, oldy, oldw, oldh ,i, cur;
+	
+	if (myState.canvasDrag) {
+	   
+	    var leftDrag = mox - myState.prevCmx;
+		var topDrag = moy - myState.prevCmy;
+		
+	 //  if (myState.main) {
+		 document.getElementById(myState.scrollID).scrollTop -= topDrag;
+		 document.getElementById(myState.scrollID).scrollLeft -= leftDrag;
+	//   }
+		 myState.prevCmx = mox ;
+	     myState.prevCmy = moy ;	
+		 myState.valid = false;
+	}
+	
+	 var contains = false;	 
+	 var prevHover = myState.shapeHover;
+	 for (i = 0; i <  myState.shapes.length ; i ++) {
+		 if(myState.shapes[i].type!="text" && myState.shapes[i].type!="line" && myState.shapes[i].booking_options.bookable == true) {
+			 // Line And Text not bookable
+			  if (myState.shapes[i].contains(myState.ctx ,mx, my)) {
+				this.canvas.style.cursor='pointer';
+				myState.shapeHover = myState.shapes[i];
+				contains = true;
+			  }
+		 }
+	}
+	
+	if (!contains) {
+	   this.canvas.style.cursor='auto';
+	   myState.shapeHover = null;
+	} 
+	if(myState.shapeHover!=prevHover) {
+	    myState.valid = false;
+	}
 
+};
 CanvasState.prototype.rotateSelection = function(val) {
  if (this.selection != null) {
    this.valid = false;
     this.selection.angle = val;
 	}
-}
+};
 
 CanvasState.prototype.addShape = function(shape) {
   "use strict";
-  this.shapes.push(shape);
+  if(this.bgmode == true) {
+	   shape.bookableShape=false;
+	   this.bgshapes.push(shape);
+  } else {
+      this.shapes.push(shape);
+  }
+ 
   this.valid = false;
 };
 
@@ -574,8 +604,8 @@ function zoomResetWrap(canvas_ref_,dividwrap,scrolled_id) {
    }
 
   
-  var ww = document.getElementById(scrolled_id).offsetWidth - 10;
-  var wh = document.getElementById(scrolled_id).offsetHeight  -10;
+  var ww = document.getElementById(scrolled_id).offsetWidth - 1;
+  var wh = document.getElementById(scrolled_id).offsetHeight  -1;
   
 
   var required_zoom;
@@ -658,7 +688,7 @@ CanvasState.prototype.draw = function() {
 							  ctx.drawImage(this.backgroundImageID,0 + j*this.tilew,0 + i*this.tileh,this.tilew,this.tileh);
 						}	 
 					 }
-					 ctx.strokeRect(0,0,this.width/this.zoom,this.height/this.zoom);
+					// ctx.strokeRect(0,0,this.width/this.zoom,this.height/this.zoom);
 					 ctx.strokeStyle = ss;		 
 			 } else if (this.backgroundType == "asimage") {
 				 var ss = ctx.strokeStyle;
@@ -677,16 +707,14 @@ CanvasState.prototype.draw = function() {
 		}
 
     // draw all shapes
-    l = shapes.length;
-    for (i = 0; i < l; i += 1) {
-      shape = shapes[i];
-     // We can skip the drawing of elements that have moved off the screen:
-      if ( shape.x - 0.5*shape.w <= this.width/this.zoom && shape.y - 0.5*shape.h <= this.height/this.zoom &&
-          shape.x + 0.5*shape.w >= 0 && shape.y + 0.5*shape.h >= 0) {
-          shapes[i].draw(ctx);
-      }
-    }
-    
+
+    for (i = 0; i < this.bgshapes.length; i += 1) {
+		  this.bgshapes[i].draw(ctx);
+	} 
+	 l = shapes.length;
+	for (i = 0; i < l; i += 1) {
+		  shapes[i].draw(ctx);
+	}     
     // draw selection
     // right now this is just a stroke along the edge of the selected Shape
 	
@@ -735,7 +763,7 @@ CanvasState.prototype.draw = function() {
 				}	 
 
                   dbRoundRect(ctx,fillX,fillY,mySel.w+10,mySel.h+10,"#00FF99","white",0,1,2,15);
-			   if (shape.angle != 0) {
+			   if (mySel.angle != 0) {
 				
 			   }	
 			   ctx.restore();			

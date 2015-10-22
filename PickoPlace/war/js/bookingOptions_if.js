@@ -416,7 +416,7 @@ function updatePersonsSpinner() {
 	 var max = 0;
 	 var count = 0;
 
-	   for(var f=0;f < floorCanvases.length;f++) {
+	 for(var f=0;f < floorCanvases.length;f++) {
 	     for(var s= 0 ; s < floorCanvases[f].listSelected.length;s++) {
 		      min+=floorCanvases[f].listSelected[s].booking_options.minPersons;
 			  max+=floorCanvases[f].listSelected[s].booking_options.maxPersons;
@@ -434,7 +434,11 @@ function updatePersonsSpinner() {
 	     $( "#booking_shape_num_persons" ).spinner( "value",  min );
 		 $( "#booking_shape_num_persons").spinner( "enable" );
 	  }
-	}
+	  for(var f = 0 ; f < floorCanvases.length;f++) {
+		    count+=floorCanvases[f].listSelected.length;
+		  }
+	  $("#selected_num").html(count);
+}
 //Function for dynamically check booking availability in terms of "place_closed" OR "time_passed"
 function checkBookingAvailableClosedPassed () {
 	 	 var sliderSeconds = 15*60*parseInt(place_slider_from); // 15 minutes * slider steps
@@ -599,7 +603,7 @@ function appendSelectedImage(shape) {
     appendData+='    <div class="close_selected_" title="Remove from selection" style="display:none" onclick="remove_selected_by_SID(\''+sid+'\')" id="for_close-'+sid+'"><div class="material-icons clear_g_icon">clear</div></div> ';
 
   if(shape.type=="image") {
-     var src=document.getElementById("server_"+shape.options.imgID).src;
+     var src=document.getElementById(shape.options.imgID).src;
 	 appendData+='     <img class="fe_selected_img" src="'+src+'"/>';											  
   } else {
      appendData+='    <canvas  width="50" height="50" class="fe_selected_canvas" id="feb_canvas-'+sid+'"></canvas>';

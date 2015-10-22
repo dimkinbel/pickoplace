@@ -3,25 +3,20 @@ package com.dimab.pp.JSON;
 import com.dimab.pp.dto.AJAXImagesJSON;
 import com.dimab.pp.dto.AdminUser;
 import com.dimab.pp.dto.CanvasShape;
-import com.dimab.pp.dto.JsonImageID_2_GCSurl;
 import com.dimab.pp.dto.JsonSID_2_imgID;
 import com.dimab.pp.dto.JsonimgID_2_data;
 import com.dimab.pp.dto.PPSubmitObject;
-import com.dimab.pp.dto.PlacePhotoUploaded;
 import com.dimab.pp.dto.ShapeBookingOptions;
-import com.dimab.pp.dto.SingleTimeRangeLong;
-import com.dimab.pp.dto.WeekDayOpenClose;
-import com.dimab.pp.functions.RandomStringGenerator;
 import com.dimab.pp.login.CheckTokenValid;
 import com.dimab.pp.login.GenericUser;
 import com.dimab.pp.search.SearchFabric;
-import com.google.appengine.api.blobstore.BlobKey;
-import com.google.appengine.api.blobstore.BlobstoreService;
-import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.GeoPt;
 import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Text;
@@ -31,12 +26,8 @@ import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
-import com.google.appengine.api.images.ImagesService;
-import com.google.appengine.api.images.ImagesServiceFactory;
-import com.google.appengine.api.images.ServingUrlOptions;
 import com.google.appengine.tools.cloudstorage.GcsFileOptions;
 import com.google.appengine.tools.cloudstorage.GcsFilename;
-import com.google.appengine.tools.cloudstorage.GcsInputChannel;
 import com.google.appengine.tools.cloudstorage.GcsOutputChannel;
 import com.google.appengine.tools.cloudstorage.GcsService;
 import com.google.appengine.tools.cloudstorage.GcsServiceFactory;
@@ -44,7 +35,11 @@ import com.google.appengine.tools.cloudstorage.RetryParams;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import java.awt.image.BufferedImage;
+
+
+
+
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -53,12 +48,17 @@ import java.lang.reflect.Type;
 import java.nio.channels.Channels;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.ServletException;
+
+
+
 
 public class AJAXImageImport extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -79,6 +79,9 @@ public class AJAXImageImport extends HttpServlet {
 
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		Map <String , Object> map = new HashMap<String , Object>();
+		map.put("status", "OK");
+		
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 		TransactionOptions options = TransactionOptions.Builder.withXG(true);
 		Transaction txn = datastore.beginTransaction(options);
@@ -86,9 +89,17 @@ public class AJAXImageImport extends HttpServlet {
 		
 		String username_email = new String();
 		CheckTokenValid tokenValid = new CheckTokenValid(request);
-		GenericUser genuser = tokenValid.getUser();
+		GenericUser genuser = new GenericUser();
+		try {	
+			genuser = tokenValid.getUser();
+		} catch (NullPointerException e) {
+			String returnurl = "/welcome.jsp";
+			response.addHeader("Access-Control-Allow-Origin", "*");
+			response.sendRedirect(returnurl);
+		}
 		if(genuser==null) {
-			String returnurl = "http://pickoplace.com/welcome.jsp";
+			String returnurl = "/welcome.jsp";
+			response.addHeader("Access-Control-Allow-Origin", "*");
 			response.sendRedirect(returnurl);
 		} else {
 			username_email = genuser.getEmail();
@@ -98,7 +109,7 @@ public class AJAXImageImport extends HttpServlet {
 		AJAXImagesJSON SaveObject = gson.fromJson(jsonString, AJAXImagesJSON.class);
         String stage = SaveObject.getStage();
 		String userRandom = "";
-
+		GeoPt center = new GeoPt(Float.valueOf(SaveObject.getLat()), Float.valueOf(SaveObject.getLng()));
 		
 		Filter UserExists = new  FilterPredicate("username",FilterOperator.EQUAL,username_email);
 		Query q = new Query("Users").setFilter(UserExists);
@@ -126,19 +137,19 @@ public class AJAXImageImport extends HttpServlet {
 		}
 		if(!fa_list.contains(placeID)) {
 			fa_list.add(placeID);
-			result.setProperty("PID_full_access",gson.toJson(fa_list));
+			result.setUnindexedProperty("PID_full_access",gson.toJson(fa_list));
 		}
 		if(!ep_list.contains(placeID)) {
 			ep_list.add(placeID);
-			result.setProperty("PID_edit_place",gson.toJson(ep_list));
+			result.setUnindexedProperty("PID_edit_place",gson.toJson(ep_list));
 		}
 		if(!mo_list.contains(placeID)) {
 			mo_list.add(placeID);
-			result.setProperty("PID_move_only",gson.toJson(mo_list));
+			result.setUnindexedProperty("PID_move_only",gson.toJson(mo_list));
 		}
 		if(!ba_list.contains(placeID)) {
 			ba_list.add(placeID);
-			result.setProperty("PID_book_admin",gson.toJson(ba_list));
+			result.setUnindexedProperty("PID_book_admin",gson.toJson(ba_list));
 		}
 		datastore.put(result);
 		
@@ -148,8 +159,7 @@ public class AJAXImageImport extends HttpServlet {
 		String place = SaveObject.getPlace_();
 		String snif = SaveObject.getSnif_();
 		List<JsonimgID_2_data> JSONbyte64files = SaveObject.getJSONbyte64files();
-		List<JsonSID_2_imgID> JSONSIDlinks = SaveObject.getJSONSIDlinks();
-		System.out.println(JSONSIDlinks.toString());
+		//System.out.println(JSONSIDlinks.toString());
         GcsFileOptions.Builder optionsBuilder = new GcsFileOptions.Builder();
         GcsOutputChannel outputChannel;
 		
@@ -159,30 +169,78 @@ public class AJAXImageImport extends HttpServlet {
 		// Floor loop
 		String mainFloorID = "";
 		int backgroundVersion ;
+		int backgroundOnlyVersion;
 		int overviewVersion ;
- 	    Filter imageVersion = new  FilterPredicate("PID",FilterOperator.EQUAL,placeID);
- 	    Query piq = new Query("ImageVersion").setFilter(imageVersion);
-        PreparedQuery sbpiq = datastore.prepare(piq);
-  		Entity imageVersionEntity = sbpiq.asSingleEntity();
-  		if (imageVersionEntity == null) {
-  			imageVersionEntity = new Entity("ImageVersion");  			
-  			overviewVersion = 1;
-  			backgroundVersion = 1;
-  			imageVersionEntity.setProperty("PID", placeID);
-  			imageVersionEntity.setProperty("overviewVersion", overviewVersion);
-  			imageVersionEntity.setProperty("backgroundVersion", backgroundVersion);
+		
+		Entity imageVersionEntity;
+		Entity canvasState;
+		Entity userPlaceEntity;
+		Entity freeSpaceEntity;
+		
+		Filter userPlaceEntityFilterByPlaceName = new  FilterPredicate("placeName",FilterOperator.EQUAL,place);
+        Filter userPlaceEntityFilterByBranchName = new  FilterPredicate("placeBranchName",FilterOperator.EQUAL,snif);
+        Filter userPlaceEntityFilterByID = new  FilterPredicate("placeUniqID",FilterOperator.EQUAL,placeID);
+        Filter PlaceAndBranch = CompositeFilterOperator.and(userPlaceEntityFilterByPlaceName,userPlaceEntityFilterByBranchName,userPlaceEntityFilterByID);
+  		Query q_ = new Query("UserPlace").setFilter(PlaceAndBranch);
+  		PreparedQuery pq_ = datastore.prepare(q_);
+  		userPlaceEntity = pq_.asSingleEntity();	
+  		
 
-  		} else {
-  			backgroundVersion = (int)(long)imageVersionEntity.getProperty("backgroundVersion");
-  			overviewVersion = (int)(long)imageVersionEntity.getProperty("overviewVersion");
+		// Load Entities
+			try {
+			    Key pidkey = KeyFactory.createKey("ImageVersion", placeID);
+			    System.out.println("ImageVersion KEY:"+pidkey);
+			    imageVersionEntity = datastore.get(pidkey);
+			} catch (EntityNotFoundException e) {
+				map.put("status", "No-ImageVersion-Exists");
+				response.setContentType("application/json");
+				response.setCharacterEncoding("UTF-8");
+				response.getWriter().write(new Gson().toJson(map));
+				return;
+			}
+			try {
+			    Key pidkey = KeyFactory.createKey(userPlaceEntity.getKey(),"CanvasState", placeID);
+			    System.out.println("CanvasState KEY"+pidkey);
+			    canvasState = datastore.get(pidkey);
+			} catch (EntityNotFoundException e) {
+				map.put("status", "No-CanvasState-Exists");
+				response.setContentType("application/json");
+				response.setCharacterEncoding("UTF-8");
+				response.getWriter().write(new Gson().toJson(map));
+				return;
+			}
+
+          // Update Image Version
+  			if(imageVersionEntity.getProperty("backgroundVersion")!=null) {
+  		    	backgroundVersion = (int)(long)imageVersionEntity.getProperty("backgroundVersion");
+  			} else {
+  				backgroundVersion = 0;
+  			}
+  			if(imageVersionEntity.getProperty("overviewVersion")!=null) {
+  				overviewVersion = (int)(long)imageVersionEntity.getProperty("overviewVersion");
+  			} else {
+  				overviewVersion = 0;
+  			}
+  			if(imageVersionEntity.getProperty("backgroundOnlyVersion")!=null) {
+  				backgroundOnlyVersion = (int)(long)imageVersionEntity.getProperty("backgroundOnlyVersion");
+  			} else {
+  				backgroundOnlyVersion = 0;
+  			}
   			backgroundVersion+=1;
   			overviewVersion+=1;
-  			imageVersionEntity.setProperty("overviewVersion", overviewVersion);
-  			imageVersionEntity.setProperty("backgroundVersion", backgroundVersion);
-  		}		
-  		datastore.put(imageVersionEntity);
+  			backgroundOnlyVersion+=1;
+  			imageVersionEntity.setUnindexedProperty("overviewVersion", overviewVersion);
+  			imageVersionEntity.setUnindexedProperty("backgroundVersion", backgroundVersion);
+  			
+  			if(!stage.equals("Configuration")) {
+  				 imageVersionEntity.setUnindexedProperty("backgroundOnlyVersion", backgroundOnlyVersion);
+  			 }
+  				
+  		 datastore.put(imageVersionEntity);
+  		 
 		 for (PPSubmitObject floor:SaveObject.getFloors()) {
 			String backgroundByte64image = floor.getBackground();
+			String backgroundOnlyByte64image = floor.getBgImageSrc();
 			String overviewByte64image = floor.getAllImageSrc();
 			String floorID = floor.getFloorid();
 			boolean mainfloor = floor.isMainfloor();
@@ -192,22 +250,32 @@ public class AJAXImageImport extends HttpServlet {
 
 	        String backgroundFileName;
 	        String OverviewFileName;
+	        String BGOnlyFileName;
 			// Delete previous versions
   			backgroundVersion-=1;
   			overviewVersion-=1;
+  			backgroundOnlyVersion-=1;
   			backgroundFileName = userRandom+"/"+place+"/"+snif+"/"+placeID+"/"+"main"+"/"+floorID+"/backgroundImage"+"_"+backgroundVersion+".png";
   			OverviewFileName = userRandom+"/"+place+"/"+snif+"/"+placeID+"/"+"main"+"/"+floorID+"/overview"+"_"+overviewVersion+".png";
+  			BGOnlyFileName = userRandom+"/"+place+"/"+snif+"/"+placeID+"/"+"main"+"/"+floorID+"/bgonly"+"_"+backgroundOnlyVersion+".png";
   			GcsFilename bname = new GcsFilename("pp_images", backgroundFileName);
+  			GcsFilename bgname = new GcsFilename("pp_images", BGOnlyFileName);
   			GcsFilename oname = new GcsFilename("pp_images", OverviewFileName);
   			gcsService.delete(bname);
   			gcsService.delete(oname);
+  			
+  			if(!stage.equals("Configuration")) {
+  				 gcsService.delete(bgname);
+  			 }
 
   		   // Update new Version
   			backgroundVersion+=1;
   			overviewVersion+=1;
+  			backgroundOnlyVersion+=1;
 			backgroundFileName = userRandom+"/"+place+"/"+snif+"/"+placeID+"/"+"main"+"/"+floorID+"/backgroundImage"+"_"+backgroundVersion+".png";
 			OverviewFileName = userRandom+"/"+place+"/"+snif+"/"+placeID+"/"+"main"+"/"+floorID+"/overview"+"_"+overviewVersion+".png";
-	
+			BGOnlyFileName = userRandom+"/"+place+"/"+snif+"/"+placeID+"/"+"main"+"/"+floorID+"/bgonly"+"_"+backgroundOnlyVersion+".png";
+  			
 			
 			
 	
@@ -227,6 +295,16 @@ public class AJAXImageImport extends HttpServlet {
 	        outputChannel = gcsService.createOrReplace(Oname, optionsBuilder.build());
 	        copy(decodeBytes(OimageInfo[1]), Channels.newOutputStream(outputChannel));
 	        System.out.println("Overview Image = " + Oname);
+	        
+	        // Saving Background without bookable shapes
+	        if(!stage.equals("Configuration")) {
+		        String[] BGimageInfo = backgroundOnlyByte64image.split(",");
+		        GcsFilename BGname = new GcsFilename("pp_images", BGOnlyFileName);
+		        optionsBuilder.mimeType("image/png");
+		        outputChannel = gcsService.createOrReplace(BGname, optionsBuilder.build());
+		        copy(decodeBytes(BGimageInfo[1]), Channels.newOutputStream(outputChannel));
+		        System.out.println("BG Only Image = " + Oname);
+	        }
 		 }
   	///-------------------------------------------------------------          
         // Saving shapes images
@@ -237,13 +315,20 @@ public class AJAXImageImport extends HttpServlet {
         	String imgID = imgID2byte64.getImageID();
         	String data64 = imgID2byte64.getData64();
         	String fileName = userRandom+"/"+place+"/"+snif+"/"+placeID+"/"+"main"+"/"+imgID+".png";
-        	System.out.println(fileName);
-    		String[] SimageInfo = data64.split(",");
+        	System.out.println(fileName);    		
             GcsFilename Sname = new GcsFilename("pp_images", fileName);
-            optionsBuilder.mimeType("image/png");
-            outputChannel = gcsService.createOrReplace(Sname, optionsBuilder.build());
-            copy(decodeBytes(SimageInfo[1]), Channels.newOutputStream(outputChannel));
-            System.out.println("Shapes Image = " + Sname);
+            
+            if(gcsService.getMetadata(Sname)==null) {
+            	// GCS file(image in that case) doesn't exists.
+            	String[] SimageInfo = data64.split(",");
+                optionsBuilder.mimeType("image/png");
+                outputChannel = gcsService.createOrReplace(Sname, optionsBuilder.build());
+                copy(decodeBytes(SimageInfo[1]), Channels.newOutputStream(outputChannel));
+                System.out.println("Shapes Image = " + Sname);
+            } else {
+            	System.out.println("GCS image with this ID already exists:"+gcsService.getMetadata(Sname).getLength());
+            }
+
         }
 	  }
         // Saving Canvas object
@@ -254,7 +339,7 @@ public class AJAXImageImport extends HttpServlet {
             	floor.setUsername(userRandom);
             	floor.setBackground("");
             	floor.setAllImageSrc(""); 
-            	
+            	floor.setBgImageSrc("");
          	   String name = "";
          	  for (CanvasShape shape : floor.getShapes()) {
          		 ShapeBookingOptions bookingOptions = shape.getBooking_options();
@@ -268,14 +353,8 @@ public class AJAXImageImport extends HttpServlet {
          	   }
          	  }
             }
-            Filter userPlaceEntityFilterByPlaceName = new  FilterPredicate("placeName",FilterOperator.EQUAL,place);
-            Filter userPlaceEntityFilterByBranchName = new  FilterPredicate("placeBranchName",FilterOperator.EQUAL,snif);
-            Filter userPlaceEntityFilterByID = new  FilterPredicate("placeUniqID",FilterOperator.EQUAL,placeID);
-            Filter PlaceAndBranch = CompositeFilterOperator.and(userPlaceEntityFilterByPlaceName,userPlaceEntityFilterByBranchName,userPlaceEntityFilterByID);
-	  		Query q_ = new Query("UserPlace").setFilter(PlaceAndBranch);
-	  		PreparedQuery pq_ = datastore.prepare(q_);
-	  		Entity userPlaceEntity = pq_.asSingleEntity();
-	  		if (userPlaceEntity != null) {
+            
+	  	
 	  		   gson = new Gson();
 	  		   String canvasStateJSON = gson.toJson(CanvasObjectList);
 	  		   String sid2ImageIDJSON = gson.toJson(sid2ImageID);
@@ -283,66 +362,78 @@ public class AJAXImageImport extends HttpServlet {
 	  		   Text Tsid2ImageIDJSON = new Text(sid2ImageIDJSON);
 	  		   System.out.println("Canvas JSON:" + canvasStateJSON);
 
-               Query csq = new Query("CanvasState").setAncestor(userPlaceEntity.getKey());
-               PreparedQuery cspq = datastore.prepare(csq);
-   	  		   Entity canvasState = cspq.asSingleEntity();
-   	  		   if (canvasState == null) {
-   	  			canvasState = new Entity("CanvasState",userPlaceEntity.getKey());
-   	  		    canvasState.setProperty("DateCreated", date.toString());
-   	  	        canvasState.setProperty("DateCreatedSec", date.getTime()/1000);
-   	  	        canvasState.setProperty("logo", "");
-   	  	        canvasState.setProperty("placePhone",SaveObject.getPlacePhone());
-	            canvasState.setProperty("placeFax",SaveObject.getPlaceFax());
-	            canvasState.setProperty("placeMail",SaveObject.getPlaceMail());
-	            canvasState.setProperty("placeURL",SaveObject.getPlaceURL());
-	            canvasState.setProperty("placeDescription",SaveObject.getPlaceDescription());
-	            canvasState.setProperty("automatic_approval",SaveObject.isAutomatic_approval());
-	            canvasState.setProperty("automaticApprovalList",gson.toJson(SaveObject.getAutomaticApprovalList()));
-	            canvasState.setProperty("adminApprovalList",gson.toJson(SaveObject.getAdminApprovalList()));
-	            canvasState.setProperty("placeEditList",gson.toJson(SaveObject.getPlaceEditList()));
-	            canvasState.setProperty("closeDates",gson.toJson(SaveObject.getCloseDates()));
-	            canvasState.setProperty("workinghours",gson.toJson(SaveObject.getWorkinghours()));
-	            canvasState.setProperty("UTCoffcet",SaveObject.getUTCoffset());
-	            canvasState.setProperty("bookingsCount",0);
-   	  		   }
+   	  	  if (canvasState.getProperty("bookingsCount")==null) {
+   	  		  // Initial save
+   	  		    AdminUser adminAccess = new AdminUser();
+   	  		    adminAccess.setMail(username_email);
+   	  		    adminAccess.setFull_access(true);
+                adminAccess.setEdit_place(true);
+                adminAccess.setMove_only(true);
+                adminAccess.setBook_admin(true);
+                List<AdminUser> adminList = new ArrayList<AdminUser>();
+                adminList.add(adminAccess);
+                
+   	  		    canvasState.setUnindexedProperty("DateCreated", date.toString());
+   	  	        canvasState.setUnindexedProperty("DateCreatedSec", date.getTime()/1000);
+   	  	        canvasState.setUnindexedProperty("logo", "");
+   	  	        canvasState.setUnindexedProperty("placePhone",SaveObject.getPlacePhone());
+	            canvasState.setUnindexedProperty("placeFax",SaveObject.getPlaceFax());
+	            canvasState.setUnindexedProperty("placeMail",SaveObject.getPlaceMail());
+	            canvasState.setUnindexedProperty("placeURL",SaveObject.getPlaceURL());
+	            canvasState.setUnindexedProperty("placeDescription",SaveObject.getPlaceDescription());
+	            canvasState.setUnindexedProperty("automatic_approval",SaveObject.isAutomatic_approval());
+	            canvasState.setUnindexedProperty("automaticApprovalList",gson.toJson(SaveObject.getAutomaticApprovalList()));
+	            canvasState.setUnindexedProperty("adminApprovalList",gson.toJson(SaveObject.getAdminApprovalList()));
+	            canvasState.setUnindexedProperty("placeEditList",gson.toJson(adminList));
+	            canvasState.setUnindexedProperty("closeDates",gson.toJson(SaveObject.getCloseDates()));
+	            canvasState.setUnindexedProperty("workinghours",gson.toJson(SaveObject.getWorkinghours()));
+	            canvasState.setUnindexedProperty("UTCoffcet",SaveObject.getUTCoffset());
+	            canvasState.setUnindexedProperty("bookingsCount",0);
+	            canvasState.setProperty("TotalRating",(double)0);
+	            ArrayList<String> typeList = new ArrayList<String>();
+	            typeList.add("AnyType");
+	            ArrayList<String> SubTypeList = new ArrayList<String>();
+	            SubTypeList.add("AnyType");
+	            canvasState.setProperty("PlaceType",typeList);
+	            canvasState.setProperty("PlaceSubType",SubTypeList);
+   	  		 }
    	  		   
-   	  		   if (canvasState.getProperty("bookingsCount")==null) {
-   	  			canvasState.setProperty("bookingsCount",0);
-   	  		   }
                canvasState.setProperty("username", username_email);
                canvasState.setProperty("usernameRandom", userRandom);
                canvasState.setProperty("placeName", place);
                canvasState.setProperty("placeBranchName", snif);
                canvasState.setProperty("UserPlaceDBKey", userPlaceEntity.getKey());
-               canvasState.setProperty("shapesJSON", TcanvasStateJSON);
-               canvasState.setProperty("sid2ImageIDJSON",Tsid2ImageIDJSON);
+               canvasState.setUnindexedProperty("shapesJSON", TcanvasStateJSON);
+               canvasState.setUnindexedProperty("sid2ImageIDJSON",Tsid2ImageIDJSON);
                canvasState.setProperty("placeUniqID", placeID);
                canvasState.setProperty("DateUpdated", date.toString());
   	  	       canvasState.setProperty("DateUpdatedSec", date.getTime()/1000);
-  	  	       canvasState.setProperty("UTCoffcet", (double)  userPlaceEntity.getProperty("UTCoffcet"));
+  	  	       canvasState.setUnindexedProperty("UTCoffcet", (double)  userPlaceEntity.getProperty("UTCoffcet"));
   	  	       canvasState.setProperty("mainFloorID",mainFloorID);
   	  	       userPlaceEntity.setProperty("mainFloorID",mainFloorID);
 
        
   	  	       // Configuration section
 
-  	          canvasState.setProperty("address",SaveObject.getAddress());
-  	          canvasState.setProperty("lat",SaveObject.getLat());
-  	          canvasState.setProperty("lng",SaveObject.getLng());
+  	          canvasState.setUnindexedProperty("address",SaveObject.getAddress());
+  	          canvasState.setUnindexedProperty("lat",SaveObject.getLat());
+  	          canvasState.setUnindexedProperty("lng",SaveObject.getLng());
+  	          canvasState.setProperty("location", center);
+  	    if(stage.equals("Configuration")) { 
+  	    	  
+  	          canvasState.setUnindexedProperty("placePhone",SaveObject.getPlacePhone());
+  	          canvasState.setUnindexedProperty("placeFax",SaveObject.getPlaceFax());
+  	          canvasState.setUnindexedProperty("placeMail",SaveObject.getPlaceMail());
+  	          canvasState.setUnindexedProperty("placeURL",SaveObject.getPlaceURL());
+  	          canvasState.setUnindexedProperty("placeDescription",SaveObject.getPlaceDescription());
+  	          canvasState.setUnindexedProperty("automatic_approval",SaveObject.isAutomatic_approval());
+  	          canvasState.setUnindexedProperty("automaticApprovalList",gson.toJson(SaveObject.getAutomaticApprovalList()));
+  	          canvasState.setUnindexedProperty("adminApprovalList",gson.toJson(SaveObject.getAdminApprovalList()));
+  	          canvasState.setUnindexedProperty("placeEditList",gson.toJson(SaveObject.getPlaceEditList()));
+  	          canvasState.setUnindexedProperty("closeDates",gson.toJson(SaveObject.getCloseDates()));
+  	          canvasState.setUnindexedProperty("workinghours",gson.toJson(SaveObject.getWorkinghours()));
+  	          canvasState.setUnindexedProperty("UTCoffcet",SaveObject.getUTCoffset());
   	          
-  	        if(stage.equals("Configuration")) { 
-  	          canvasState.setProperty("placePhone",SaveObject.getPlacePhone());
-  	          canvasState.setProperty("placeFax",SaveObject.getPlaceFax());
-  	          canvasState.setProperty("placeMail",SaveObject.getPlaceMail());
-  	          canvasState.setProperty("placeURL",SaveObject.getPlaceURL());
-  	          canvasState.setProperty("placeDescription",SaveObject.getPlaceDescription());
-  	          canvasState.setProperty("automatic_approval",SaveObject.isAutomatic_approval());
-  	          canvasState.setProperty("automaticApprovalList",gson.toJson(SaveObject.getAutomaticApprovalList()));
-  	          canvasState.setProperty("adminApprovalList",gson.toJson(SaveObject.getAdminApprovalList()));
-  	          canvasState.setProperty("placeEditList",gson.toJson(SaveObject.getPlaceEditList()));
-  	          canvasState.setProperty("closeDates",gson.toJson(SaveObject.getCloseDates()));
-  	          canvasState.setProperty("workinghours",gson.toJson(SaveObject.getWorkinghours()));
-  	          canvasState.setProperty("UTCoffcet",SaveObject.getUTCoffset());
   	          
   	            List<AdminUser> placeEditList = SaveObject.getPlaceEditList();
   	            for (AdminUser auser : placeEditList) {
@@ -359,7 +450,7 @@ public class AJAXImageImport extends HttpServlet {
 			  	      		} 
 			  	      		if(!fa_list__.contains(placeID)) {
 			  	      			fa_list__.add(placeID);
-			  	      			result__.setProperty("PID_full_access",gson.toJson(fa_list__));
+			  	      			result__.setUnindexedProperty("PID_full_access",gson.toJson(fa_list__));
 			  	      		}
   	      		    	}
   	      		    	if(auser.isEdit_place()) {
@@ -370,7 +461,7 @@ public class AJAXImageImport extends HttpServlet {
 			  	      		} 
 			  	      		if(!ep_list__.contains(placeID)) {
 			  	      			ep_list__.add(placeID);
-			  	      			result__.setProperty("PID_edit_place",gson.toJson(ep_list__));
+			  	      			result__.setUnindexedProperty("PID_edit_place",gson.toJson(ep_list__));
 			  	      		}
   	      		    	}	
   	      		    	if(auser.isMove_only()) {
@@ -381,7 +472,7 @@ public class AJAXImageImport extends HttpServlet {
 			  	      		} 
 			  	      		if(!mo_list__.contains(placeID)) {
 			  	      			mo_list__.add(placeID);
-			  	      			result__.setProperty("PID_move_only",gson.toJson(mo_list__));
+			  	      			result__.setUnindexedProperty("PID_move_only",gson.toJson(mo_list__));
 			  	      		}
   	      		    	}	
   	      		    	if(auser.isBook_admin()) {
@@ -392,7 +483,7 @@ public class AJAXImageImport extends HttpServlet {
 			  	      		} 
 			  	      		if(!ba_list__.contains(placeID)) {
 			  	      			ba_list__.add(placeID);
-			  	      			result__.setProperty("PID_book_admin",gson.toJson(ba_list__));
+			  	      			result__.setUnindexedProperty("PID_book_admin",gson.toJson(ba_list__));
 			  	      		}
   	      		    	}
 		  	      		datastore.put(result__);  	      		    	
@@ -405,18 +496,19 @@ public class AJAXImageImport extends HttpServlet {
            	    userPlaceEntity.setProperty("placeName", place);
            	    userPlaceEntity.setProperty("placeBranchName", snif);
            	    userPlaceEntity.setProperty("placeAddress", SaveObject.getAddress());
-           	    userPlaceEntity.setProperty("UTCoffcet",SaveObject.getUTCoffset());
+           	    userPlaceEntity.setUnindexedProperty("UTCoffcet",SaveObject.getUTCoffset());
       		    userPlaceEntity.setProperty("placeLat", Double.parseDouble(SaveObject.getLat()));
       		    userPlaceEntity.setProperty("placeLng", Double.parseDouble(SaveObject.getLng()));
-        		userPlaceEntity.setProperty("placePhone", SaveObject.getPlacePhone());
-      	    	userPlaceEntity.setProperty("placeFax", SaveObject.getPlaceFax());    	   
+        		userPlaceEntity.setUnindexedProperty("placePhone", SaveObject.getPlacePhone());
+      	    	userPlaceEntity.setUnindexedProperty("placeFax", SaveObject.getPlaceFax());    	
+      	    	userPlaceEntity.setProperty("location", center);
               }  	  	 
   	          if(stage.equals("Configuration")) {
   	        	// Update Logo And photos
   	        	String logo = "logo";
   	        	String data64 = SaveObject.getLogosrc();
   	        	if(data64==null || data64.isEmpty()|| data64 == "") {
-  	        		canvasState.setProperty("logo",""); 
+  	        		canvasState.setUnindexedProperty("logo",""); 
   	        	} else {
 	  	        	String fileName = userRandom+"/"+place+"/"+snif+"/"+placeID +"/"+"main"+"/"+logo+".png";
 	  	        	System.out.println("Saving Logo:"+fileName);
@@ -425,7 +517,7 @@ public class AJAXImageImport extends HttpServlet {
 	  	            optionsBuilder.mimeType("image/png");
 	  	            outputChannel = gcsService.createOrReplace(Sname, optionsBuilder.build());
 	  	            copy(decodeBytes(SimageInfo[1]), Channels.newOutputStream(outputChannel));
-	  	            canvasState.setProperty("logo",fileName);    
+	  	            canvasState.setUnindexedProperty("logo",fileName);    
   	        	}
   		       } 
   	          
@@ -469,7 +561,7 @@ public class AJAXImageImport extends HttpServlet {
 	  	        		  gcsService.delete(new GcsFilename("pp_images", fileName));
 	  	        	  }
 	  	          }
-	  	        canvasState.setProperty("photos",gson.toJson(photosList));
+	  	        canvasState.setUnindexedProperty("photos",gson.toJson(photosList));
   	          }
 
   	           SearchFabric searchIndexFabrix = new SearchFabric();
@@ -492,29 +584,38 @@ public class AJAXImageImport extends HttpServlet {
                    PreparedQuery sbpq = datastore.prepare(sbq);
        	  		   Entity shapeBooking = sbpq.asSingleEntity();
        	  		   if (shapeBooking == null) {
-       	  			 shapeBooking = new Entity("Shapes",userPlaceEntity.getKey());
+       	  			  shapeBooking = new Entity("Shapes",userPlaceEntity.getKey());
        	  		   }
             	   
 
             	   shapeBooking.setProperty("CanvasStateKey", canvasStateKey);
             	   shapeBooking.setProperty("floor_id",floor_id);
             	   shapeBooking.setProperty("sid", sid);
-            	   shapeBooking.setProperty("name", bookingOptions.getGivenName());
+            	   shapeBooking.setUnindexedProperty("name", bookingOptions.getGivenName());
             	   shapeBooking.setProperty("minP", bookingOptions.getMinPersons());
             	   shapeBooking.setProperty("maxP", bookingOptions.getMaxPersons());
-            	   shapeBooking.setProperty("weekDays", gson.toJson(bookingOptions.getWeekDays()));
-            	   shapeBooking.setProperty("timeRange", gson.toJson(bookingOptions.getTimeRange()));
-            	   shapeBooking.setProperty("description", bookingOptions.getDescription());
+            	   shapeBooking.setUnindexedProperty("description", bookingOptions.getDescription());
             	   datastore.put(shapeBooking);
                }
                
              }
              
              txn.commit();
-	  		}
+ 			 response.setContentType("application/json");
+ 			 response.setCharacterEncoding("UTF-8");
+ 			 response.getWriter().write(new Gson().toJson(map));
+ 			 return;
+
 		} else {
 			// No user exists
+			map.put("status", "No-User-Entity-Exists");
+			response.setContentType("application/json");
+			response.setCharacterEncoding("UTF-8");
+			response.getWriter().write(new Gson().toJson(map));
+			
+			return;
 		}
+	
 	}
 	
 	private void copy(byte[] Byteinput, OutputStream output) throws IOException {

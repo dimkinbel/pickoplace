@@ -97,17 +97,11 @@ public class PlaceBooking extends HttpServlet {
 			  			String name = (String) shapeEntity.getProperty("name");
 			  			int minP = (int)(long) shapeEntity.getProperty("minP");
 			  			int maxP = (int)(long) shapeEntity.getProperty("maxP");
-			  			String timeRange_ = (String) shapeEntity.getProperty("timeRange");
-			  			String weekDays_ = (String) shapeEntity.getProperty("weekDays");
 			  			
-			  			WeekDays weekDays = gson.fromJson(weekDays_,WeekDays.class);
-			  			Type collectionType_ = new TypeToken<List<SingleTimeRange>>(){}.getType();
-			  			List<SingleTimeRange> timeRange = gson.fromJson(timeRange_,collectionType_);
+
 			  			shape.getBooking_options().setGivenName(name);
 			  			shape.getBooking_options().setMaxPersons(maxP);
 			  			shape.getBooking_options().setMinPersons(minP);
-			  			shape.getBooking_options().setTimeRange(timeRange);
-			  			shape.getBooking_options().setWeekDays(weekDays);
 			  		}
 				}
 				
@@ -226,18 +220,11 @@ public class PlaceBooking extends HttpServlet {
   		if (CanvasStateEdit.getJSONimageID2url().isEmpty()) {
   			//CanvasStateEdit.getJSONimageID2url().add(new JsonImageID_2_GCSurl());
   		}
-  		String Address = new String();
-  		Double Lat = (double)0;
-  		Double Lng = (double)0;
-  		Filter PlacePIDFilter = new  FilterPredicate("placeUniqID",FilterOperator.EQUAL,placeID_);
-		Query upq = new Query("UserPlace").setFilter(PlacePIDFilter);
-		PreparedQuery pupq = datastore.prepare(upq);
-  		Entity userPlaceEntity = pupq.asSingleEntity();
-  		if (userPlaceEntity != null) {
-  			Address = (String) userPlaceEntity.getProperty("placeAddress");
-  			Lat = (double) userPlaceEntity.getProperty("placeLat");
-  			Lng = (double) userPlaceEntity.getProperty("placeLng");
-  		}
+
+  		String Address = (String) userCanvasState.getProperty("address");
+  		String Lat = (String) userCanvasState.getProperty("lat");
+  		String Lng = (String) userCanvasState.getProperty("lng");
+
   		// Get Place Info Global
   		GetPlaceInfoFactory placeInfoFactory = new GetPlaceInfoFactory();
   		PlaceInfo placeInfo = placeInfoFactory.getPlaceInfo(datastore, userCanvasState, 150);

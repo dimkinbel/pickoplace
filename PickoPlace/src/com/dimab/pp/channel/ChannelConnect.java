@@ -61,7 +61,7 @@ public class ChannelConnect extends HttpServlet {
 	    	connected.add(presence.clientId());
 
 	    	channelEntity.setProperty("pid", pid);
-	    	channelEntity.setProperty("clients", gson.toJson(connected));
+	    	channelEntity.setUnindexedProperty("clients", gson.toJson(connected));
 	    	datastore.put(channelEntity);
 	    } else {
 	    	String clientsJSON = (String)result.getProperty("clients");
@@ -69,7 +69,7 @@ public class ChannelConnect extends HttpServlet {
 	    	List<String> connected  = gson.fromJson(clientsJSON, collectionType);
 	    	if(!connected.contains(presence.clientId())) {
 	    		connected.add(presence.clientId());
-	    		result.setProperty("clients", gson.toJson(connected));
+	    		result.setUnindexedProperty("clients", gson.toJson(connected));
 	    	}
 	    	datastore.put(result);
 	    }

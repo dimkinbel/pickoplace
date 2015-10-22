@@ -62,9 +62,9 @@ public class UserLoginLogoutFacebook extends HttpServlet {
 				userEntity.setProperty("FacebookJSON",gson.toJson(fb_response.getResponse()));
 				userEntity.setProperty("LoggedBy","Facebook");
 				userEntity.setProperty("UserID", random);
-				userEntity.setProperty("firstEntry", date.toString());
-				userEntity.setProperty("lastDateInSec", date.getTime()/1000);
-				userEntity.setProperty("lastDate",  date.toString());
+				userEntity.setUnindexedProperty("firstEntry", date.toString());
+				userEntity.setUnindexedProperty("lastDateInSec", date.getTime()/1000);
+				userEntity.setUnindexedProperty("lastDate",  date.toString());
 				datastore.put(userEntity);
 			} else {
 				// User Not first login
@@ -75,9 +75,9 @@ public class UserLoginLogoutFacebook extends HttpServlet {
 				result.setProperty("LoggedBy","Facebook");
 				result.setProperty("FacebookAccount",true);
 				result.setProperty("FacebookJSON",gson.toJson(fb_response.getResponse()));
-				result.setProperty("firstEntry", date.toString());
-				result.setProperty("lastDateInSec", date.getTime()/1000);
-				result.setProperty("lastDate",  date.toString());  
+				result.setUnindexedProperty("firstEntry", date.toString());
+				result.setUnindexedProperty("lastDateInSec", date.getTime()/1000);
+				result.setUnindexedProperty("lastDate",  date.toString());  
 				datastore.put(result);
 			}			
 		} else {
@@ -90,8 +90,8 @@ public class UserLoginLogoutFacebook extends HttpServlet {
 	    		Entity result = pq.asSingleEntity();
 	    		if (result != null) {
 	    			Date date = new Date();
-	    			result.setProperty("lastDateInSec", date.getTime()/1000);
-	    			result.setProperty("lastDate",  date.toString());   
+	    			result.setUnindexedProperty("lastDateInSec", date.getTime()/1000);
+	    			result.setUnindexedProperty("lastDate",  date.toString());   
 	    			datastore.put(result);
 	    		} 
 			}

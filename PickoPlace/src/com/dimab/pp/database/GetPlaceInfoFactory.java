@@ -2,6 +2,7 @@ package com.dimab.pp.database;
 
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.dimab.pp.dto.CanvasShape;
@@ -11,6 +12,7 @@ import com.dimab.pp.dto.PlaceInfo;
 import com.dimab.pp.dto.PlaceRatingDTO;
 import com.dimab.pp.dto.PlaceRatingSummary;
 import com.dimab.pp.dto.UserPlace;
+import com.dimab.pp.dto.WorkingWeek;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
@@ -28,7 +30,8 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 public class GetPlaceInfoFactory {
-  public PlaceInfo getPlaceInfo (DatastoreService datastore , Entity csEntity , int ovrv_width) {
+  @SuppressWarnings("unchecked")
+public PlaceInfo getPlaceInfo (DatastoreService datastore , Entity csEntity , int ovrv_width) {
 	    PlaceInfo placeInfo = new PlaceInfo();
 	    UserPlace userPlace = new UserPlace();
 	    
@@ -40,19 +43,30 @@ public class GetPlaceInfoFactory {
 		String Address = (String) csEntity.getProperty("address");
 		String mail = new String();
 		String phone = new String();
+		Gson gson = new Gson();
+		
 		if(csEntity.getProperty("placeMail") != null) {
 			mail = (String) csEntity.getProperty("placeMail");
 		}
 		if(csEntity.getProperty("placePhone") != null) {
 			phone = (String) csEntity.getProperty("placePhone");
 		}
+		if(csEntity.getProperty("placeDescription") != null) {
+			placeInfo.setDescription((String)csEntity.getProperty("placeDescription"));			
+		}
+		placeInfo.setType((ArrayList<String>)csEntity.getProperty("PlaceType"));
+		placeInfo.setSubtype((ArrayList<String>)csEntity.getProperty("PlaceSubType"));
+		String weekdays = (String)csEntity.getProperty("workinghours");		
+		WorkingWeek weekdaysObject  = gson.fromJson(weekdays, WorkingWeek.class);
+		placeInfo.setWeekdaysObject(weekdaysObject);
+		
 		Integer bookableShapes = 0;
 	
 		double placeOffset = (double) csEntity.getProperty("UTCoffcet");
 		Double Lat = Double.parseDouble((String) csEntity.getProperty("lat"));
 	    Double Lng = Double.parseDouble((String) csEntity.getProperty("lng"));
 	    String shapesJSON =  ((Text) csEntity.getProperty("shapesJSON")).getValue();
-        Gson gson = new Gson();
+        
 		Type CanvasListcollectionType = new TypeToken<List<PPSubmitObject>>(){}.getType();
 		List<PPSubmitObject> floors = gson.fromJson(shapesJSON, CanvasListcollectionType);
         String mainFloorName = new String();
@@ -70,6 +84,7 @@ public class GetPlaceInfoFactory {
 
   		// Get serving Overview URL;
   		String fileName_ = userRnd +"/"+ placeName + "/" + placeBranchName + "/" + placeID+"/"+"main"+"/"+mainFloorID +"/overview.png";
+  		System.out.println(fileName_);
   		Filter imageVersion = new  FilterPredicate("PID",FilterOperator.EQUAL,placeID);
  	    Query piq = new Query("ImageVersion").setFilter(imageVersion);
         PreparedQuery sbpiq = datastore.prepare(piq);
@@ -78,7 +93,7 @@ public class GetPlaceInfoFactory {
   			int overviewVersion = (int)(long)imageVersionEntity.getProperty("overviewVersion");
   			fileName_ =  userRnd +"/"+ placeName + "/" + placeBranchName+"/"+placeID+"/"+"main"+"/"+mainFloorID+"/overview"+"_"+overviewVersion+".png";
   		}
-        System.out.println(fileName_);
+        
   	    String bucket = "pp_images"; 
   	    GcsFilename gcsFilename = new GcsFilename(bucket, fileName_);
   	    ImagesService is = ImagesServiceFactory.getImagesService(); 
@@ -143,7 +158,7 @@ public class GetPlaceInfoFactory {
 			rating.getRating().setFscore(foodScore);
 			rating.getRating().setSscore(staffScore);
 			rating.getRating().setLscore(locationScore);
-			rating.setAverage((locationScore + staffScore + foodScore) / 3);
+			rating.setAverage((locationScore * locationTotal + staffScore * staffTotal + foodScore * foodTotal) / (foodTotal + staffTotal + locationTotal));
 			rating.setTotal(Math.max(Math.max(foodTotal.intValue(),staffTotal.intValue()),locationTotal.intValue()));
 			placeInfo.setRating(rating);
 		} else {
@@ -180,4 +195,64 @@ public class GetPlaceInfoFactory {
    
 	  return placeInfo;
   }
+  
+  public PlaceInfo getPlaceInfoNoImage (DatastoreService datastore , Entity csEntity ) {
+	    PlaceInfo placeInfo = new PlaceInfo();
+	    UserPlace userPlace = new UserPlace();
+	    
+		String userRnd = (String) csEntity.getProperty("usernameRandom");
+		String placeName = (String) csEntity.getProperty("placeName");
+		String placeBranchName = (String) csEntity.getProperty("placeBranchName");
+		String placeID = (String) csEntity.getProperty("placeUniqID");
+		String mainFloorID = (String) csEntity.getProperty("mainFloorID");
+		String Address = (String) csEntity.getProperty("address");
+		String mail = new String();
+		String phone = new String();
+		if(csEntity.getProperty("placeMail") != null) {
+			mail = (String) csEntity.getProperty("placeMail");
+		}
+		if(csEntity.getProperty("placePhone") != null) {
+			phone = (String) csEntity.getProperty("placePhone");
+		}
+		Integer bookableShapes = 0;
+	
+		double placeOffset = (double) csEntity.getProperty("UTCoffcet");
+		Double Lat = Double.parseDouble((String) csEntity.getProperty("lat"));
+	    Double Lng = Double.parseDouble((String) csEntity.getProperty("lng"));
+	    String shapesJSON =  ((Text) csEntity.getProperty("shapesJSON")).getValue();
+      Gson gson = new Gson();
+		Type CanvasListcollectionType = new TypeToken<List<PPSubmitObject>>(){}.getType();
+		List<PPSubmitObject> floors = gson.fromJson(shapesJSON, CanvasListcollectionType);
+      String mainFloorName = new String();
+      
+		for (PPSubmitObject floor : floors) {
+			if(floor.isMainfloor()) {
+				mainFloorName = floor.getFloor_name();
+			}	
+			for(CanvasShape shape : floor.getShapes()) {
+				if(shape.getBooking_options().isBookable()) {
+					bookableShapes+=1;
+				}
+			}
+		}
+
+      userPlace.setAddress(Address);
+      userPlace.setBranch(placeBranchName);
+      userPlace.setLat(Lat);
+      userPlace.setLng(Lng);
+      userPlace.setPlace(placeName);
+      userPlace.setPlaceID(placeID);
+      userPlace.setUserRand(userRnd);
+      userPlace.setShapesCount(bookableShapes);
+      userPlace.setFloors(floors.size());
+      
+      placeInfo.setUserPlace(userPlace);
+      placeInfo.setPlaceOffcet(placeOffset);
+      placeInfo.setMainFloorID(mainFloorID);
+      placeInfo.setMainFloorName(mainFloorName);
+      placeInfo.setPlaceMail(mail);
+      placeInfo.setPlacePhone(phone);
+ 
+	  return placeInfo;
+}
 }

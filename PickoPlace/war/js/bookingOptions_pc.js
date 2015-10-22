@@ -41,6 +41,7 @@ function updatePhotosAndLogo() {
     }
 }
 function updatePhotoUnique (imapID) {
+	$("#no_image_upload_conf").hide();
 	 var image = {};
    	 var imgData = JSON.parse(document.getElementById(imapID).value);
    	 var imgID = imgData.imageID;
@@ -102,7 +103,7 @@ function updateWorkingHours() {
     }
 }
 function updateAdminSection() {
-	var placeEditJson = JSON.parse(document.getElementById("server_placeEditList").value);
+	/*var placeEditJson = JSON.parse(document.getElementById("server_placeEditList").value);
 	if (placeEditJson.length > 0) {
 		for (var ind in placeEditJson) { 
 		  var user = placeEditJson[ind];
@@ -118,7 +119,7 @@ function updateAdminSection() {
 		  document.getElementById("peat_cb_ba_add").checked = book_admin;
 		  peat_add(true);
 		}
-	}
+	}*/
 	var auto_approval = JSON.parse(document.getElementById("server_automatic_approval").value);
 
   if(!auto_approval) {
@@ -1001,6 +1002,7 @@ $("#admin_params_tab").click(function(){
 						 appendData += '<div class="uploaded_single_image_w" id="uu_wrap_'+imddivID+'"><canvas class="uploaded_single_image_can" id="show_'+imddivID+'"></canvas>';
 						 appendData += '<div class="delete_img_uu" id="delete_uu_'+imddivID+'" onclick="removeImageUU(this)">X</div></div>';
 						 $("#upload_conf_img_append_show").append(appendData);
+						 $("#no_image_upload_conf").hide();
 						 var appendData = "";
 						 appendData += '<img id="'+imddivID+'" name="imup_image"/>';
 						 $("#hidden_img_uploads").append(appendData);

@@ -88,6 +88,7 @@ var iframe = {};
 	   iframe.bookfill = false;
 	}
     var x = $("#iframe_wrap").css('backgroundColor');
+ 
     iframe.color=hexc(x);
 	return iframe;
 }
@@ -132,6 +133,7 @@ $(document).ready(function() {
 	$("#fe_iflist").click(function(){
 		  $("#fe_list_append").html('');
 		   $("#center_column_like").hide();
+		   $("#center_column_like_fe").hide();
 		   $("#right_column_like_fe").hide();
 		   $("#left_column__").hide();
 		   $("#list_iframes").show();
@@ -156,6 +158,7 @@ $(document).ready(function() {
 		   $("#list_iframes").hide();
 		   $("#left_column__").show();
 		   $("#center_column_like").show();
+		   $("#center_column_like_fe").show();
 		   $("#right_column_like_fe").show();   
 		});
 
@@ -182,7 +185,8 @@ $(document).ready(function() {
 	       document.getElementById("frame_prev_wrap_popup_content").style.width=width_+"px";
 	       document.getElementById("frame_prev_wrap_popup_content").style.height=height_+"px";
 	       $("#frame-canvas").hide();
-	       var appendData = '<iframe id="shown_iframe" src="http://pickoplace.com/getiframe?pid='+pid_+'&ifid='+ifid+'"  width="'+width_+'" height="'+height_+'" style="border:none"></iframe>';
+	       var hostName = window.location.host;
+	       var appendData = '<iframe id="shown_iframe" src="https://'+hostName+'/getiframe?pid='+pid_+'&ifid='+ifid+'"  width="'+width_+'" height="'+height_+'" style="border:none"></iframe>';
 	       $("#frame-canvas").append(appendData);
 	       var iframe__ = document.getElementById('shown_iframe');
 	       $("#iframe_loader").show();
@@ -258,7 +262,8 @@ function updateIFlist(data) {
 	          appendData+='	       <td style="width:50px">no</td>'; 
 	         }
 	         appendData+='         <td style="width:150px">'+sb+'</td>';
-	         appendData+='         <td >&lt;iframe src="http://pickoplace.com/getiframe?pid='+pid+'&ifid='+ifid+'"  width="'+iframe.iframedata.iw+'" height="'+iframe.iframedata.ih+'" style="border:none"&gt;&lt;/iframe&gt;</td>';
+	         var hostName = window.location.host;
+	         appendData+='         <td >&lt;iframe src="https://'+hostName+'/getiframe?pid='+pid+'&ifid='+ifid+'"  width="'+iframe.iframedata.iw+'" height="'+iframe.iframedata.ih+'" style="border:none"&gt;&lt;/iframe&gt;</td>';
 	         appendData+='         <td style="display: flex;">';
 	         appendData+='           <div class="edit_iframe_btn_edit " id="if_edit-'+ifid+'">Edit</div>';
 	         appendData+='           <div class="edit_iframe_btn_show" id="if_show-'+ifid+'">Show</div>';

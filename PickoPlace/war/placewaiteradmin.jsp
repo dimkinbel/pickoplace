@@ -48,8 +48,21 @@
 	<link rel="stylesheet" href="css/perfect-scrollbar.css" type="text/css" media="screen" />
 	<link rel="stylesheet" href="css/CSS_checkbox_full/custom-checkbox.css" type="text/css" media="screen" />
 	<link rel="stylesheet" href="css/dropit.css" type="text/css" media="screen" />
-	
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <script type="text/javascript">
+		var canvasMouseOut = false;
+		var canvasMouseDown = false;
+		window.addEventListener('mouseup', function(e) {
+			   if(canvasMouseOut==true) {
+			     canvas_.mouseUpEvent();
+				 canvasMouseOut = false;
+			   }
+			});
+		window.addEventListener('mousemove', function(e) {
+			  if(canvasMouseOut==true) {
+			     canvas_.mouseMoveEvent(e);
+			   }
+		});
        if(typeof document.onselectstart!="undefined") {
 	       document.onselectstart = new Function ("return false");
 	   } else {
@@ -450,23 +463,13 @@ $(document).on("click",".stopclick", function (event) {
 							      </select>												 
 							  </div>
 							   <div id="zoom_options_book">
-											<table  cellspacing="0" cellpadding="0" style="border-collapse:collapse">
-											   <tr id="zoom_plus_tr">
-												 <td>
-												   <div id="zoom_plus_div" onclick="sizeUp()">+</div>
-												 </td>
-											   </tr>
-											   <tr id="zoom_minus_tr">
-												 <td>
-												   <div id="zoom_minus_div"  onclick="sizeDown()">-</div>
-												 </td>
-											   </tr>
-											   <tr id="zoom_reset_tr">
-												 <td>
-												   <div id="zoom_reset_div" onclick="zoomResetWrap(canvas_,600,400)">reset</div>
-												 </td>
-											   </tr>				   
-											</table>
+									<div id="plus_minus_wrap">
+										   <div id="zoom_plus_div" onclick="sizeUp()" title="Zoom-In">+</div>
+				                           <div id="zoom_split"></div>
+										   <div id="zoom_minus_div"  onclick="sizeDown()"  title="Zoom-Out">-</div>
+						            </div>
+						            <div id="zoom_reset_div" onclick="zoomResetWrap(canvas_,600,400)"><div class="material-icons zoom_reset_mat"  title="Zoom-Reset">fullscreen</div></div>
+										
 								 </div>
 							   <div id="canvas_wrap_not_scroll_conf" >							    
 								    <% 

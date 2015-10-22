@@ -10,27 +10,37 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<script type="text/javascript" src="js/jquery-1.11.1.min.js" ></script>
     <script type="text/javascript" src="js/jquery-migrate-1.2.1.js" ></script>
+    <script type="text/javascript" src="js/jquery-ui-1.11.2.custom/jquery-ui.js"></script>
     <script type="text/javascript" src="js/jquery-ui-1.11.4.Autocomplete/jquery-ui.js"></script>
+    
     <script type="text/javascript"
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAcwoHVd5eaZfzTdu3Sto_QkSr9TlmvXYk&libraries=places&&sensor=FALSE">
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAaX5Ow6oo_axUKMquFxnPpT6Kd-L7D40k&libraries=places&&sensor=FALSE">
     </script>
     <script type="text/javascript" src="ion.rangeSlider-2.0.2/js/ion.rangeSlider.js"></script>
     <script type="text/javascript" src="js/loginlogout.js" ></script>
 	<script type="text/javascript" src="js/bootstrap-slider.js" ></script>
 	<script type="text/javascript" src="js/sitefunctions.js" ></script>
 	<script type="text/javascript" src="js/dropit.js" ></script>
-	<script type="text/javascript" src="js/search.js" ></script>
 	<script type="text/javascript" src="js/interactive.js" ></script>
+
 	
 
-    <script type="text/javascript" src="js/mainPageMap.js"></script>
+    <script type="text/javascript" src="js/mainPageMap.js"></script>   
+	<script type="text/javascript" src="js/search.js" ></script>
+
+    <script type="text/javascript" src="js/upDownSpinner.js" ></script>
+    <script type="text/javascript" src="js/searchWizard.js" ></script>
     
+ 
+	
+	<link rel="stylesheet" href="js/jquery-ui-1.11.2.custom/jquery-ui.css" type="text/css" media="screen" />
 	<link rel="stylesheet" href="css/browserWrap.css" type="text/css" media="screen" />
 	<link rel="stylesheet" href="css/login.css" type="text/css" media="screen" />
 	<link rel="stylesheet" href="css/style.css" type="text/css" media="screen" />
 	<link rel="stylesheet" href="css/style2.css" type="text/css" media="screen" />	
 	<link rel="stylesheet" href="ion.rangeSlider-2.0.2/css/ion.rangeSlider.css" type="text/css" media="screen" />
 	<link rel="stylesheet" href="ion.rangeSlider-2.0.2/css/ion.rangeSlider.skinNice.css" type="text/css" media="screen" />
+	
 	<link rel="stylesheet" href="js/jquery-ui-1.11.4.Autocomplete/jquery-ui.css" type="text/css" media="screen" />
 	<link rel="stylesheet" href="css/perfect-scrollbar.css" type="text/css" media="screen" />
 	<link rel="stylesheet" href="css/dropit.css" type="text/css" media="screen" />
@@ -56,8 +66,29 @@ function goToAccountMenu() {
 	});
 }
 var uploadLastcursor = "";
+var from_={};
+var personsSlider = {};
+var phonerequired = true;
+$(document).ready(function () { 
+   var dd = new Date()
+   var hour = dd.getHours();
+   var min = dd.getMinutes();
+   if(min >= 30) {
+      hour+=1;
+	  min = 0;
+	  if(hour==24) {
+	     hour = 0;
+	  }
+   } else {
+      min = 30;
+   }
+   from_ = new myTimeSpinner('from_h_inp','dp_fh_up','dp_fh_down','from_m_inp','dp_fm_up','dp_fm_down',hour,min,15,false);
+   var personsList = [1,2,3,4,5,6,7,8,9,10,15,20];
+   var personsSList = [1,2,3,4,5,6,7,8,9,10,15,20];
+   personsSlider = new upDownSpinner('w_per_inp','wper_up','wper_don',personsList,personsSList,2,true);
+});
 $(document).ready(function() {
-	requestLastPlaces(9);
+	requestLastPlaces(3);
 });
 
 
@@ -76,6 +107,9 @@ function updatePageView() {
 		  $("#fb_logout_div").show();
 		  $("#go_logout_div").hide();
 		  
+		  $('#fg_profile_img').attr('src',"http://graph.facebook.com/" + fudata.id + "/picture");
+		  $("#fg_profile_image_wrap").show();
+		  
 	  } else if (gconnected==true) {
 		  //Connected To Google
 		  $("#page_login_prompt").hide();
@@ -89,6 +123,9 @@ function updatePageView() {
 		  $("#fb_logout_div").hide();
 		  $("#go_logout_div").show();
 		  
+		  $('#fg_profile_img').attr('src',gudata.image.url);
+		  $("#fg_profile_image_wrap").show();
+		  
 	  } else {
 		  //Not connected
 		  
@@ -100,18 +137,41 @@ function updatePageView() {
 		  
 		  $("#fb_logout_div").hide();
 		  $("#go_logout_div").hide();
-		  
+		  $("#fg_profile_image_wrap").hide();
 	  }
 }
 $(document).ready(function () { 
     $("#login_prop_d").click(function(){
+    	
     	$("#page_login_prompt").show();
     });
     $('#advanced_material_drop').dropit({action: 'click'});
 });
 $(document).on("click",".stopclick", function (event) {
 	    if(event.target.id == "page_login_prompt") {
-		  $("#page_login_prompt").hide();
+	    	if(gconnected==false && fconnected==false && phoneflow==true) {
+	    		if(auth2.isSignedIn.wc) {
+	    			// Connected with Google
+	    			googleSignOut();
+	    		} else if(FB.getUserID() != "") {
+	    			// Connected with FB
+	    			facebookSignOut();
+	    		}
+	    	}
+	    	phoneflow=false;
+	    	$("#sign_in_table_").show();
+			//result.userData.first_name for FB
+			$("#user_name_at_phone").html("");
+			$("#send_sms_ajax").hide(); 
+			$("#send_sms_complete").hide();
+			$("#send_sms").show(); 
+			$("#verification_code").val("");
+			$("#verification_code").prop("readonly",true);
+			$("#verification_submit_inactive").show();
+			$("#verification_submit").hide();
+			$("#smsa_loader").hide(); 
+			$("#phone_wrap_table").hide();
+		    $("#page_login_prompt").hide();
 		}
 });
  ///
@@ -122,7 +182,7 @@ $(document).on("click",".stopclick", function (event) {
 <body style="margin: 0px;" class="main_body">
 
    <div id="page_login_prompt" class="login_prompt stopclick" style="display:none;">
-		<div id="login_prompt_wrap" class="stopclick">
+	  <div id="login_prompt_wrap" class="stopclick">
 		<table id="sign_in_table_" cellspacing="0" cellpadding="0" style="width: 100%; border-collapse: collapse">
 		  <tr>
 			<td>
@@ -140,11 +200,51 @@ $(document).on("click",".stopclick", function (event) {
 				</div>
 			  </td>
 		  </tr>
+		</table>
+		<table id="phone_wrap_table" cellspacing="0" cellpadding="0" style=" border-collapse: collapse;display:none">
+		    <tr>
+			    <td>
+			      <span class="login_phone_top">Hello, <span id="user_name_at_phone">User</span>. This is your first login.<br> Please provide phone number</span>
+			    </td>
+		    </tr>
+		    <tr>
+			    <td class="ph_pad_top">
+			         <div id="phoneinputwrap">
+	                    <input id="mobile-number" type="tel" autocomplete="off" placeholder="050-123-4567">
+	                  </div>
+			    </td>		    
+		   </tr>
+		    <tr id="send_sms_tr">
+			    <td id="send_sms_td" class="ph_pad_top">
+			      <div id="send_sms">
+	                  <i class="material-icons textsms">textsms</i><span class="sendsmstext">Send SMS</span>
+	              </div>
+	              <div id="send_sms_ajax" style="display:none">
+	                  <i class="material-icons textsms">textsms</i><span class="sendsmstext">SENDING...</span>
+	              </div>
+	              <div id="send_sms_complete"  style="display:none">
+	                  Enter verification code below, or <div id="phone_resend_open">resend</div>
+	              </div>
+			    </td>		    
+		   </tr>
+		   <tr id="phoneInstructions">
+		     <td>
+		       <div id="phone_instructions" >You will receive SMS with verification code</div>
+		     </td>
+		   </tr>
+		   <tr id="verification_code_line">
+		     <td class="ph_pad_top ph_pad_bot"><!-- $("#verification_code").prop("readonly",true); -->
+		       <input type="number" id="verification_code" readonly/><div id="verification_submit" style="display:none">SUBMIT</div>
+		       <div id="verification_submit_inactive">SUBMIT
+		         <img id="smsa_loader" src="js/fr_load.gif" style="display:none;">
+		       </div>
+		     </td>
+		   </tr>
 		</table>  
-		</div>
+	  </div>
    </div>
 
-			<div id="header_td_div">
+			<div id="header_td_div" class="main_page_header">
 				<div id="header">
 					<div id="logo_"><img src="img/pplogo.png" id="pplogoo"/></div>
 					<div id="search_header" >
@@ -186,6 +286,13 @@ $(document).on("click",".stopclick", function (event) {
                       </div>
                     </div>
 					<div class="login_in_header_wrap">
+					
+					<div id="fg_profile_image_wrap" >
+                         <div id="fg_profile_image_inner" >
+                            <img id="fg_profile_img" src="" >
+                         </div>  
+                     </div>
+
 					   	<table id="login_tbl_a" cellspacing="0" cellpadding="0" style=" border-collapse: collapse">
 				             <tr >
 							    <td id="login_prop" style="display:none">
@@ -239,12 +346,88 @@ $(document).on("click",".stopclick", function (event) {
 			</div>
             <div id="main_wrap_">
 			  <div id="main_container" class="main_container"> 
-
+                   <div id="mainLastResults_wrap">
+                    <div id="free_place_finder_wrap"  >
+					 <div id="wiz_table_wrap">
+					 <table id="wiz_table" cellspacing="0" cellpadding="0" style=" border-collapse: collapse">
+					   <tr >
+					     <td id="address_tr_wiz">
+					       <div id="wiz_header_" >Free place wizard</div>
+						   <div style="position:relative"><input type="text" id="wiz_address_input" class="wiz_address" placeholder="Address" /><i class="material-icons mat_room">room</i></div>
+						 </td>
+						 <td rowspan="2" id="time_persons_wiz_td">
+						    <div id="time_persons_wiz_div">
+							  <table id="wiz_table_date" cellspacing="0" cellpadding="0" style="width: 100%;height:100%; border-collapse: collapse">
+							    <tr >
+								  <td class="wiz_p_top">Date</td>
+								  <td class="wiz_p_top">Time</td>
+								  <td class="wiz_p_top safvaebawf">Persons</td>
+								</tr>
+								<tr >
+								  <td id="wiz_date_picker_td">
+								    <div id="wiz_date_picker">									  
+									  <div id="wiz_week_day" ></div>
+									  <input id="wiz_date_picker_input" type="text"/>			  
+									</div>
+								  </td>
+								  <td id="time_picker_td">
+								    <div id="datepicker_from_wrap">
+									   <div id="dp_fh_wrap" class="left">
+									     <div id="dp_fh_up"><i class="material-icons wiz_arr wiz_arr_top wiz_arr_d">expand_less</i></div>
+										 <input type="text" id="from_h_inp" class="dp_wiz_time" readonly />
+										 <div id="dp_fh_down"><i class="material-icons wiz_arr wiz_arr_bot  wiz_arr_d">expand_more</i></div>
+									   </div>
+									   <div id="h_dots">:</div>
+									   <div id="dp_fm_wrap" class="left">
+									     <div id="dp_fm_up"><i class="material-icons wiz_arr wiz_arr_top  wiz_arr_d">expand_less</i></div>
+										 <input type="text" id="from_m_inp" class="dp_wiz_time" readonly />
+										 <div id="dp_fm_down"><i class="material-icons wiz_arr wiz_arr_bot  wiz_arr_d">expand_more</i></div>
+									   </div>
+									</div>
+								  </td>
+								  <td id="persons_picker_td">
+								      <div id="dp_pers_wrap" class="left">
+									     <div id="wper_up"><i class="material-icons wiz_arr wiz_arr_top  wiz_arr_p">expand_less</i></div>
+										 <input type="text" id="w_per_inp" class="dp_wiz_pers" readonly />
+										 <div id="wper_don"><i class="material-icons wiz_arr wiz_arr_bot wiz_arr_p">expand_more</i></div>
+									   </div>
+									   <div class="material-icons pers_material" style="display:none">supervisor_account</div>
+								  </td>
+								</tr>
+							  </table>
+							</div>
+						 </td>
+					   </tr>
+					   <tr >
+					     <td id="name_tr_wiz">
+						   <div style="position:relative"><input type="text" id="wiz_name_input" class="wiz_address"  placeholder="Place name (opt.)"/>
+						      <img id="autocompleteWizAjax" src="js/ajax-loader-round.gif" style="display:none"/>
+						   </div>
+						 </td>
+					   </tr>
+					 </table>
+					  <div id="wiz_search_btn">
+					     <i class="material-icons search_wiz_" id="searchWizardBtn">search</i> 
+					  </div>
+					  <div id="wiz_search_btn_ajax" style="display:none">
+					     <i class="material-icons search_wiz_ajax search_wiz_ajax_animation" id="searchWizardBtnAjax">search</i> 
+					  </div>
+					</div>
+				  </div>
 			         <div id="mainLastResults" >
 			           
-			           
+       
 			         </div>
-			
+			      	 <div id="welcome-load-more" class="welcome_load_more"><div id="load_more-text">LOAD MORE</div>
+			              <img id="welcome_loader" src="js/fr_load.gif" style="position: relative; margin-top: 5px;display:none"/>
+			         </div>
+			         <div id="search-load-more"  class="welcome_load_more" style="display:none"><div id="search_more-text">LOAD MORE</div>
+			              <img id="search_loader" src="js/fr_load.gif" style="position: relative; margin-top: 5px;display:none"/>
+			         </div>
+			         <div id="wiz-load-more"  class="welcome_load_more" style="display:none"><div id="wiz_more-text">LOAD MORE</div>
+			              <img id="wiz_loader" src="js/fr_load.gif" style="position: relative; margin-top: 5px;display:none"/>
+			         </div>
+			      </div>
 				</div>
 			<div id="map_absolute">
 				<div id="main_map_wrap_" >
@@ -252,9 +435,7 @@ $(document).on("click",".stopclick", function (event) {
 				</div>
 				
 			</div>
-			<div id="welcome-load-more"><div id="load_more-text">LOAD MORE</div>
-			    <img id="welcome_loader" src="js/fr_load.gif" style="position: relative; margin-top: 5px;display:none"/>
-			</div>
+
 
            </div>
 

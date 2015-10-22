@@ -8,5 +8,8 @@
 	<classpathentry kind="lib" path="C:/Users/dima/Desktop/PlaceORD/HTML5-test/js/google-api-services-oauth2-v2-rev37-1.15.0-rc.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/GSON"/>
 	<classpathentry kind="con" path="com.google.appengine.eclipse.core.GAE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
+	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/SMSlibrary"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>

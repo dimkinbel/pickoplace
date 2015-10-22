@@ -581,7 +581,7 @@ function appendSelectedImage(shape) {
     appendData+='    <div class="close_selected_" title="Remove from selection" style="display:none" onclick="remove_selected_by_SID(\''+sid+'\')" id="for_close-'+sid+'"><div class="material-icons clear_g_icon">clear</div></div> ';
 
   if(shape.type=="image") {
-     var src=document.getElementById("server_"+shape.options.imgID).src;
+     var src=document.getElementById(shape.options.imgID).src;
 	 appendData+='     <img class="fe_selected_img" src="'+src+'"/>';											  
   } else {
      appendData+='    <canvas  width="50" height="50" class="fe_selected_canvas" id="feb_canvas-'+sid+'"></canvas>';

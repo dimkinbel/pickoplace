@@ -12,7 +12,7 @@
 	<script type="text/javascript" src="js/bootstrap-slider.js" ></script>
 	<script type="text/javascript" src="js/sitefunctions.js" ></script>
 	<script type="text/javascript"
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAcwoHVd5eaZfzTdu3Sto_QkSr9TlmvXYk&libraries=places&&sensor=FALSE">
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAaX5Ow6oo_axUKMquFxnPpT6Kd-L7D40k&libraries=places&&sensor=FALSE">
     </script>
 	<link rel="stylesheet" href="css/style.css" type="text/css" media="screen" />
 	<link rel="stylesheet" href="css/style2.css" type="text/css" media="screen" />
@@ -58,7 +58,10 @@ $(document).ready(function () {
     var place_search = document.getElementById('buisnessAddress');
     var autocomplete = new google.maps.places.Autocomplete(place_search, options);
 });
+var ongoingCreation = false;
 function BuisnessNameNext(debug) {
+	if(ongoingCreation==false) {
+		ongoingCreation = true;
 	setSessionData(function(result) {
 		   if(result) {
 			 var address = document.getElementById('buisnessAddress').value;
@@ -70,7 +73,7 @@ function BuisnessNameNext(debug) {
 		               	document.getElementById("address_hidden_lat").setAttribute("value",lat);
 		             	document.getElementById("address_hidden_lng").setAttribute("value",lng);             	
 		             	$.ajax({
-		             	   url:"https://maps.googleapis.com/maps/api/timezone/json?location="+lat+","+lng+"&timestamp="+(Math.round((new Date().getTime())/1000)).toString()+"&sensor=false&key=AIzaSyAcwoHVd5eaZfzTdu3Sto_QkSr9TlmvXYk",
+		             	   url:"https://maps.googleapis.com/maps/api/timezone/json?location="+lat+","+lng+"&timestamp="+(Math.round((new Date().getTime())/1000)).toString()+"&sensor=false&key=AIzaSyAaX5Ow6oo_axUKMquFxnPpT6Kd-L7D40k",
 		             	}).done(function(response){
 		             		 //alert(response.rawOffset);
 		             		  var offset = response.rawOffset/3600 + response.dstOffset/3600;
@@ -84,9 +87,12 @@ function BuisnessNameNext(debug) {
 		      
 		         }
 		       }); 
+		   } else {
+			   updatePageView();
 		   }
     });
-    }
+	}
+}
 
 
 //LOGIN SUCCESS UPDATE

@@ -6,6 +6,194 @@ var gudata = {};
 var gconnected = false;
 var fconnected = false;
 var initialPageLoad = true;
+var phoneflow = false;
+var phoneloggedby = "";
+var mobileInput;
+$(document).ready(function () { 
+  
+  $('head').append( $('<link rel="stylesheet" type="text/css" />').attr('href', 'js/intl-tel-input-master/build/css/intlTelInput.css') );
+  mobileInput = $("#mobile-number");
+  $.getScript("js/intl-tel-input-master/build/js/intlTelInput.min.js", function(data, status, jqxhr) {
+	       mobileInput.intlTelInput({
+		   nationalMode: true ,
+		   defaultCountry:"il",
+		   preferredCountries:["il"],
+		   onlyCountries:["il","us","de","ru","ua"],
+		   utilsScript: "js/intl-tel-input-master/lib/libphonenumber/build/utils.js"
+		  });
+		  
+	});
+ 
+  $("#send_sms").hover(     
+		  function() {
+		      $("#phone_instructions").css("opacity","1");
+		  }, function() {
+			  $("#phone_instructions").css("opacity","0");
+		  }
+  );
+  $("#phone_resend_open").click(function(){
+	  $("#send_sms_ajax").hide(); 
+	  $("#send_sms_complete").hide();
+	  $("#send_sms").show(); 
+	  $("#verification_code").val("");
+	  $("#verification_code").prop("readonly",true);
+	  $("#verification_submit_inactive").show();
+	  $("#verification_submit").hide();
+	  $("#smsa_loader").hide(); 
+  });
+  $("#send_sms").click(function(){
+	  var number = $("#mobile-number").intlTelInput("getNumber");
+	  var countryData = $("#mobile-number").intlTelInput("getSelectedCountryData");
+	  var smsrequest = {};
+	  smsrequest.number = number;
+	  smsrequest.countryData = countryData;
+	  var json_ = {jsonObject:JSON.stringify(smsrequest)};
+		console.log(json_);
+		$.ajax({
+		  url : "/plivoSMSrequest",
+		  data: json_,//
+		  beforeSend: function () { 
+			  $("#send_sms").hide(); 
+			  $("#send_sms_ajax").show(); 
+		  },
+		  success : function(data){	
+			  if(data.status=="OK") {
+				  $("#send_sms_ajax").hide();
+				  $("#send_sms_complete").show();
+				  $("#verification_code").val("");
+				  $("#verification_code").prop("readonly",false);
+				  $("#verification_submit_inactive").hide();
+				  $("#verification_submit").show();
+			  } else if (data.status=="NOTLOGGED" || data.status=="WAIT") {
+				  
+				  if(gconnected==false && fconnected==false && phoneflow==true) {
+			    		if(auth2.isSignedIn.wc) {
+			    			// Connected with Google
+			    			googleSignOut();
+			    		} else if(FB.getUserID() != "") {
+			    			// Connected with FB
+			    			facebookSignOut();
+			    		}
+			    	}
+			    	phoneflow=false;
+			    	$("#sign_in_table_").show();
+					//result.userData.first_name for FB
+					$("#user_name_at_phone").html("");
+					$("#send_sms_ajax").hide(); 
+					$("#send_sms_complete").hide();
+					$("#send_sms").show(); 
+					$("#verification_code").val("");
+					$("#verification_code").prop("readonly",true);
+					$("#verification_submit_inactive").show();
+					$("#verification_submit").hide();
+					$("#smsa_loader").hide(); 
+					$("#phone_wrap_table").hide();
+				    $("#page_login_prompt").hide();
+				    if(data.status=="WAIT") {
+						  alert("5 SMS per hour allowed! Contact admin dimkinbel@gmail.com");
+					}
+			  } else if(data.status=="NULL" || data.status=="ERROR" ) {
+				  $("#send_sms_ajax").hide();
+				  $("#send_sms_complete").hide();
+				  $("#send_sms").show(); 
+			  }
+			  console.log(data);
+		  },
+	      error: function(e) {
+	    	  $("#send_sms_ajax").hide();
+		         console.log(e);
+		  },
+		  dataType : "JSON",
+		  type : "post"
+		  });
+    });
+  $("#verification_submit").click(function(){
+	  var codeinput = $("#verification_code").val();
+	  var stringlength = codeinput.length;
+	  var intcode = parseInt(codeinput);
+	  var intlength = intcode.toString().length;
+	  if(stringlength != intlength) {
+		  $("#verification_code").addClass("redborder");
+	  } else {
+		    var json_ = {code:codeinput};
+			console.log(json_);
+			$.ajax({
+			  url : "/smsVerificationCodeSubmit",
+			  data: json_,//
+			  beforeSend: function () { 
+				  $("#verification_submit").hide();
+				  $("#verification_submit_inactive").show(); 
+				  $("#smsa_loader").show(); 
+			  },
+			  success : function(data){	
+				  $("#smsa_loader").hide();
+				  $("#verification_submit").show();
+				  $("#verification_submit_inactive").hide();
+				  if(data.status=="OK") {
+					  phoneflow=false;
+					  if(phoneloggedby == "google") {
+					      onSignInCallback(auth2.currentUser.get().getAuthResponse());//phoneloggedby = "google";
+					  } else if(phoneloggedby == "FB") {
+						  $("#page_login_prompt").hide();
+		        		  fconnected = true;
+					  }
+					    $("#user_name_at_phone").html("");
+						$("#send_sms_ajax").hide(); 
+						$("#send_sms_complete").hide();
+						$("#send_sms").show(); 
+						$("#verification_code").val("");
+						$("#verification_code").prop("readonly",true);
+						$("#verification_submit_inactive").show();
+						$("#verification_submit").hide();
+						$("#smsa_loader").hide(); 
+						$("#phone_wrap_table").hide();
+						$("#sign_in_table_").show();
+				  } else if (data.status=="NOTLOGGED") {
+					  if(gconnected==false && fconnected==false && phoneflow==true) {
+				    		if(auth2.isSignedIn.wc) {
+				    			// Connected with Google
+				    			googleSignOut();
+				    		} else if(FB.getUserID() != "") {
+				    			// Connected with FB
+				    			facebookSignOut();
+				    		}
+				    	}
+				    	phoneflow=false;
+				    	
+						//result.userData.first_name for FB
+						$("#user_name_at_phone").html("");
+						$("#send_sms_ajax").hide(); 
+						$("#send_sms_complete").hide();
+						$("#send_sms").show(); 
+						$("#verification_code").val("");
+						$("#verification_code").prop("readonly",true);
+						$("#verification_submit_inactive").show();
+						$("#verification_submit").hide();
+						$("#smsa_loader").hide(); 
+						$("#phone_wrap_table").hide();
+						$("#sign_in_table_").show();
+					    $("#page_login_prompt").hide();
+				   } else if(data.status=="NOCODE" ) {
+					   $("#phone_resend_open").click();
+				   }  else if(data.status=="WRONG" ) {
+					   $("#verification_code").addClass("redborder");
+				   }
+				  console.log(data);
+			  },
+		      error: function(e) {
+		    	  $("#send_sms_ajax").hide();
+			      console.log(e);
+			  },
+			  dataType : "JSON",
+			  type : "post"
+			  });		  
+	  }
+  });
+  $("#verification_code").on("keyup change", function() {
+	  $("#verification_code").removeClass("redborder");
+  });
+});
+
 //gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse().access_token
 (function() {
     var po = document.createElement('script');
@@ -137,7 +325,9 @@ var helper = (function() {
 	      request.execute(function(profile) {
 	          if (profile.error) {
 	        	  gudata = {};
-	            return;
+	        	  gconnected=false;
+	        	  googleSignOut();
+	              return;
 	          }
 	          gudata = profile;
 	          updatePageView();
@@ -194,7 +384,19 @@ var helper = (function() {
 				     	  onSignInCallback(auth2.currentUser.get().getAuthResponse());
 			      });
 	        	} else {
-	  	          onSignInCallback(auth2.currentUser.get().getAuthResponse());
+	        		if(result.phone==true) {
+	        			onSignInCallback(auth2.currentUser.get().getAuthResponse());
+	        		} else if(phonerequired != undefined && phonerequired == true){
+	        			$("#sign_in_table_").hide();
+	        			//result.userData.first_name for FB
+	        			$("#user_name_at_phone").html(result.userData.given_name);
+	        			$("#send_sms_ajax").hide(); 
+	        			$("#send_sms_complete").hide();
+	        			$("#send_sms").show(); 
+	        			$("#phone_wrap_table").show();
+	        			phoneflow = true;
+	        			phoneloggedby = "google";
+	        		}
 	        	}
 	          console.log(result);
 	        },
@@ -329,6 +531,20 @@ var helper = (function() {
 		        	  FB.logout(function(response) {
 				 		  statusChangeCallback(response);
 				         });
+		          } else {		        	   
+		        	  if(result.phone==false && phonerequired != undefined && phonerequired == true) {		        			 
+		        			$("#sign_in_table_").hide();
+		        			//result.userData.first_name for FB
+		        			$("#user_name_at_phone").html(result.userData.first_name);
+		        			$("#send_sms_ajax").hide(); 
+		        			$("#send_sms_complete").hide();
+		        			$("#send_sms").show(); 
+		        			$("#phone_wrap_table").show();
+		        			 $("#page_login_prompt").show();
+		        			fconnected = false;
+		        			phoneflow = true;
+		        			phoneloggedby = "FB";
+		        		}
 		          }
 		          console.log(result);
 		        },

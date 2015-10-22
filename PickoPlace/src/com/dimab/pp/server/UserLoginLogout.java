@@ -71,24 +71,24 @@ public class UserLoginLogout extends HttpServlet {
     			userEntity.setProperty("FacebookAccount","");
     			userEntity.setProperty("LoggedBy","Google");
     			userEntity.setProperty("UserID", random);
-    			userEntity.setProperty("firstEntry", date.toString());
-    			userEntity.setProperty("lastDateInSec", date.getTime()/1000);
-    			userEntity.setProperty("lastDate",  date.toString());
+    			userEntity.setUnindexedProperty("firstEntry", date.toString());
+    			userEntity.setUnindexedProperty("lastDateInSec", date.getTime()/1000);
+    			userEntity.setUnindexedProperty("lastDate",  date.toString());
     			
                 List<String> pids = new ArrayList<String>();
-    			userEntity.setProperty("PID_full_access", gson.toJson(pids));
-    			userEntity.setProperty("PID_edit_place", gson.toJson(pids));
-    			userEntity.setProperty("PID_move_only", gson.toJson(pids));
-    			userEntity.setProperty("PID_book_admin", gson.toJson(pids));
+    			userEntity.setUnindexedProperty("PID_full_access", gson.toJson(pids));
+    			userEntity.setUnindexedProperty("PID_edit_place", gson.toJson(pids));
+    			userEntity.setUnindexedProperty("PID_move_only", gson.toJson(pids));
+    			userEntity.setUnindexedProperty("PID_book_admin", gson.toJson(pids));
     			datastore.put(userEntity);
     		} else {
     			// User Not first login
     			Date date = new Date();
     			result.setProperty("LoggedBy","Google");
     			result.setProperty("GoogleAccount",true);
-    			result.setProperty("firstEntry", date.toString());
-    			result.setProperty("lastDateInSec", date.getTime()/1000);
-    			result.setProperty("lastDate",  date.toString());  
+    			result.setUnindexedProperty("firstEntry", date.toString());
+    			result.setUnindexedProperty("lastDateInSec", date.getTime()/1000);
+    			result.setUnindexedProperty("lastDate",  date.toString());  
     			datastore.put(result);
     		}
     		        
@@ -101,11 +101,12 @@ public class UserLoginLogout extends HttpServlet {
     		Entity result = pq.asSingleEntity();
     		if (result != null) {
     			Date date = new Date();
-    			result.setProperty("lastDateInSec", date.getTime()/1000);
-    			result.setProperty("lastDate",  date.toString());   
+    			result.setUnindexedProperty("lastDateInSec", date.getTime()/1000);
+    			result.setUnindexedProperty("lastDate",  date.toString());   
     			datastore.put(result);
     		} 
-    		returnurl = "http://pickoplace.com/welcome.jsp";
+    		returnurl = "/welcome.jsp";
+    		resp.addHeader("Access-Control-Allow-Origin", "*");
         }	
         txn.commit();
         resp.sendRedirect(returnurl);	

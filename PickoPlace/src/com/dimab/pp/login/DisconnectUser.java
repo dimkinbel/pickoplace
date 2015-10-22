@@ -124,8 +124,8 @@ public class DisconnectUser extends HttpServlet {
 			Entity result = pq.asSingleEntity();
 			if (result != null) {
 				Date date = new Date();
-				result.setProperty("lastDateInSec", date.getTime()/1000);
-				result.setProperty("lastDate",  date.toString());   
+				result.setUnindexedProperty("lastDateInSec", date.getTime()/1000);
+				result.setUnindexedProperty("lastDate",  date.toString());   
 				datastore.put(result);
 			} 
 	 	    

@@ -200,23 +200,13 @@
 		   <img id="chosed_background_orig" style="display:none"/>
 		</div>
 		  <div id="zoom_options">
-			    <table  cellspacing="0" cellpadding="0" style="border-collapse:collapse">
-				   <tr id="zoom_plus_tr">
-				     <td>
-					   <div id="zoom_plus_div" onclick="sizeUp()">+</div>
-					 </td>
-                   </tr>
-                   <tr id="zoom_minus_tr">
-				     <td>
-					   <div id="zoom_minus_div"  onclick="sizeDown()">-</div>
-					 </td>
-                   </tr>
-                   <tr id="zoom_reset_tr">
-				     <td>
-					   <div id="zoom_reset_div" onclick="zoomReset()">reset</div>
-					 </td>
-                   </tr>				   
-				</table>
+			    <div id="plus_minus_wrap">
+										   <div id="zoom_plus_div" onclick="sizeUp()" title="Zoom-In">+</div>
+				                           <div id="zoom_split"></div>
+										   <div id="zoom_minus_div"  onclick="sizeDown()"  title="Zoom-Out">-</div>
+			    </div>
+				<div id="zoom_reset_div" onclick="zoomReset()"><div class="material-icons zoom_reset_mat"  title="Zoom-Reset">fullscreen</div></div>
+										
 		  </div>
 		<div id="canvas_td">
 			 <div id="canvas_wrapper">

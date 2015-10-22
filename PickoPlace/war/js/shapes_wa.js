@@ -73,7 +73,7 @@ Shape.prototype.draw = function(ctx, optionalColor) {
   var fillX = this.x;
   var fillY = this.y;
 
-  if (this.angle != 0) {
+  if (this.angle != 0  && this.type!="line") {
     ctx.save();
 	ctx.translate(this.x , this.y );
 	ctx.rotate(this.angle * Math.PI / 180);
@@ -141,7 +141,7 @@ Shape.prototype.draw = function(ctx, optionalColor) {
   }
   if (this.state.selection === this && this.type == "line") {
 
-  } else if (this.state.selection === this && this.type != "line") {
+  } else if (this.state.selection === this && this.type != "line"  && this.state.listSelected.length < 2) {
     ctx.strokeStyle = this.state.selectionColor;
     ctx.lineWidth = this.state.selectionWidth;
     //ctx.strokeRect(fillX-0.5*this.w,fillY-0.5*this.h,this.w,this.h);
@@ -173,7 +173,7 @@ Shape.prototype.draw = function(ctx, optionalColor) {
 	ctx.fillStyle = this.state.selectionBoxColor;
   }
    ctx.restore();
-    if (this.state.selection === this && this.angle != 0 && this.type != "line") {
+    if (this.state.selection === this && this.angle != 0 && this.type != "line"  && this.state.listSelected.length < 2) {
 	  
 	  for (i = 0; i < 1; i += 1) {
            cur = this.state.selectionHandles[i];
@@ -334,6 +334,8 @@ function CanvasState(canvas) {
   this.valid = false; // when set to false, the canvas will redraw everything
   this.canvasDrag = false; 
   this.shapes = [];  // the collection of things to be drawn
+  this.bgshapes = [];
+  this.bgmode = false;
   this.dragging = false; // Keep track of when we are dragging
   this.resizeDragging = false; // Keep track of resize
   this.expectResize = -1; // save the # of the selection handle 
@@ -348,7 +350,7 @@ function CanvasState(canvas) {
   this.dragoffy = 0;
   this.rotateDragging = false;
   this.rotateAngle = 0;
-  
+  this.shapeHover = null;
   // New, holds the 8 tiny boxes that will be our selection handles
   // the selection handles will be in this order:
   // 0  1  2
@@ -377,7 +379,7 @@ function CanvasState(canvas) {
   // Up, down, and move are for dragging
 
   canvas.addEventListener('mousedown', function(e) {
-   
+	  canvasMouseDown = true;
     var mouse, mx, my, shapes, l, i, mySel;
 	
     if (myState.expectResize !== -1 || myState.lexpectResize !== -1) {
@@ -445,7 +447,7 @@ function CanvasState(canvas) {
 			}			
 		      myState.valid = false;             			
 		  } else {
-		  regular_behavior = true;
+		    regular_behavior = true;
 		  }
 		  
 
@@ -453,9 +455,7 @@ function CanvasState(canvas) {
 		    var prevSelection = myState.selection;
 			myState.listSelected = [];
 			
-			if(prevSelection == mySel) {
-			  myState.selection = null;
-			} else {
+
 			  myState.listSelected.push(mySel);
 			// Keep track of where in the object we clicked
 			// so we can move it smoothly (see mousemove)
@@ -463,7 +463,7 @@ function CanvasState(canvas) {
 			  myState.dragoffy = my - mySel.y;
 			  myState.dragging = true;
 			  myState.selection = mySel;
-			}
+			
 			myState.valid = false;
 		}
         return;
@@ -472,8 +472,9 @@ function CanvasState(canvas) {
     // havent returned means we have failed to select anything.
     // If there was an object selected, we deselect it
     myState.mousemoveclicked = null;
-    if (myState.selection) {
-
+    if (myState.selection || myState.listSelected.length > 0 ) {
+      myState.listSelected = [];
+      myState.selection = null;
 	  myState.canvasDrag  = true;
 	 
 	  myState.prevCmx = mox ;
@@ -486,257 +487,36 @@ function CanvasState(canvas) {
       myState.prevCmy = moy ;	
 	}
   }, true);
-  canvas.addEventListener('mousemove', function(e) {
-    var mouse = myState.getMouse(e),
-        mx = mouse.x,
-        my = mouse.y,
-		mox = mouse.orgx,
-		moy = mouse.orgy,
-		orgx = mouse.orgx , orgy = mouse.orgy ,
-        oldx, oldy, oldw, oldh ,i, cur;
+  canvas.addEventListener("mouseout", function(e) {
+		 myState.mouseOutEvent();
+ }, true);
 
-	if (myState.canvasDrag) {
-       
-	    var leftDrag = mox - myState.prevCmx;
-		var topDrag = moy - myState.prevCmy;
-		
-     //  if (myState.main) {
-		 document.getElementById(myState.scrollID).scrollTop -= topDrag;
-		 document.getElementById(myState.scrollID).scrollLeft -= leftDrag;
-	//   }
-		 myState.prevCmx = mox ;
-         myState.prevCmy = moy ;	
-		 myState.valid = false;
-	}
-    if (myState.dragging){
-  	  if (myState.mousemoveclicked != null &&  myState.selection == null) {
- 	     myState.listSelected.push(myState.mousemoveclicked);	
- 		 myState.selection = myState.mousemoveclicked;
- 		// myState.mousemoveclicked = null;
- 		// addShapeConfigSelected(myState.selection);
- 	  } 
-	  mouse = myState.getMouse(e);
-	  var difx = mouse.x - myState.dragoffx - myState.selection.x;
-	  var dify = mouse.y - myState.dragoffy - myState.selection.y;
-		  if (myState.selection.type == "line") {
-			 
-			  myState.selection.x = mouse.x - myState.dragoffx;
-			  myState.selection.y = mouse.y - myState.dragoffy;  
-			  myState.selection.options.x1 +=  difx;
-			  myState.selection.options.x2 +=  difx;
-			  myState.selection.options.y1 +=  dify;
-			  myState.selection.options.y2 +=  dify;
-			  myState.valid = false; // Something's dragging so we must redraw
-		  } else {
-			  
-			  // We don't want to drag the object by its top-left corner, we want to drag it
-			  // from where we clicked. Thats why we saved the offset and use it here
-			  myState.selection.x = mouse.x - myState.dragoffx;
-			  myState.selection.y = mouse.y - myState.dragoffy;   
-			  myState.valid = false; // Something's dragging so we must redraw
-		  }
+   canvas.addEventListener('mousemove', function(e) {
+	         myState.mouseMoveEvent(e);
 
-	 if (myState.listSelected.length > 1) {
-	     for (var i = 0; i < myState.listSelected.length ; i++) {
-		    var shape = myState.listSelected[i];
-			if (shape != myState.selection) {
-			   	 if (shape.type == "line") {
-					  shape.x +=  difx;
-					  shape.y +=  dify;  
-					  shape.options.x1 +=  difx;
-					  shape.options.x2 +=  difx;
-					  shape.options.y1 +=  dify;
-					  shape.options.y2 +=  dify;
-					  myState.valid = false; // Something's dragging so we must redraw
-				  } else {
-					  
-					  // We don't want to drag the object by its top-left corner, we want to drag it
-					  // from where we clicked. Thats why we saved the offset and use it here
-					  shape.x +=  difx;
-					  shape.y +=  dify;   
-					  myState.valid = false; // Something's dragging so we must redraw
-				  }			
-			}
-		 }
-	  }
-    } else if (myState.resizeDragging) {
-      // time ro resize!
-      if (myState.selection.type == "line" || myState.selection.type == "text") {
-
-	  } else {
-		  var prevX;
-		  var prevY;
-		  var prevAngle;
-		  
-		  if ( myState.selection.startX == null) {
-			  myState.selection.startX = myState.selection.x;
-			  myState.selection.startY = myState.selection.y;
-		  }
-		  var omx = mx;
-		  var omy = my;
-		  var movedX = mx - myState.selection.startX;
-		  var movedY = my - myState.selection.startY;
-		  var radius = Math.sqrt(Math.pow(movedX,2) + Math.pow(movedY,2));
-		  var initAngle =  toRadians(myState.selection.angle);
-		  var mouseAngle = getAngle(movedX,movedY);
-		  mx = parseInt(radius * Math.cos(  mouseAngle - initAngle));
-		  my = parseInt(radius * Math.sin(  mouseAngle - initAngle));  	  
-		  
-		  if ( myState.selection.prevMX == null) {
-			myState.selection.prevMX = mx;
-			myState.selection.prevMY = my;
-			myState.selection.prevAngle = mouseAngle;
-		  } 
-			prevX = myState.selection.prevMX;
-			prevY = myState.selection.prevMY;
-			prevAngle = myState.selection.prevAngle;
-		  
-		  var difX = mx - prevX;
-		  var difY = my - prevY;
-		  var difAngle = toDegrees(mouseAngle) - toDegrees(prevAngle);
-		  
-		  
-		  // 0  1  2
-		  // 3     4
-		  // 5  6  7
-
-		  switch (myState.expectResize) {
-			case 0:
-			  myState.selection.angle += difAngle;
-			  if (myState.selection.angle >360) {
-				myState.selection.angle-=360;
-			  } else if (myState.selection.angle < 0) {
-				myState.selection.angle+=360;
-			  } 
-			//  $('#rotate_slider').slider('setValue', myState.selection.angle)
-			  break;
-		  }
-			myState.selection.prevMX = mx;
-			myState.selection.prevMY = my;
-			myState.selection.prevAngle = mouseAngle;
-			myState.valid = false; // Something's dragging so we must redraw
-		}
-    }
-    // if there's a selection see if we grabbed one of the selection handles
-	if (myState.selection !== null && !myState.resizeDragging && ( myState.selection.type == "line" || myState.selection.type == "text")) {
-
-	}
-    if (myState.selection !== null && !myState.resizeDragging && myState.selection.type != "line") {
-
-      for (i = 0; i < 1; i += 1) {
-        // 0  1  2
-        // 3     4
-        // 5  6  7
-        
-        cur = myState.selectionHandles[i];
-		var curX = cur.x;
-		var curY = cur.y;
-		var mxt = mx;
-		var myt = my;
-        var centerX = curX ;
-        var centerY = curY ;
-		var topCornerX = curX - 3;
-		var topCornerY = curY - 3;
-  
-
-        // we dont need to use the ghost context because
-        // selection handles will always be rectangles
-        if (mxt >= topCornerX && mxt <= topCornerX + myState.selectionBoxSize &&
-            myt >= topCornerY && myt <= topCornerY + myState.selectionBoxSize) {
-          // we found one!
-          myState.expectResize = i;
-          myState.valid = false;
-			  var nw_resize = 'nw-resize'; //  
-			  var n_resize  = 'n-resize '; //  |
-			  var ne_resize = 'ne-resize'; //  /
-			  var w_resize  = 'w-resize '; //  ->
-			  var e_resize  = 'e-resize '; //  <-
-			  var sw_resize = 'sw-resize'; //  /
-			  var s_resize  = 's-resize '; //  |
-			  var se_resize = 'se-resize'; //  
-                 if (337.5 <= myState.selection.angle && myState.selection.angle < 22.5 ) {
-  		  
-		  } else if (22.5 <= myState.selection.angle && myState.selection.angle < 67.5 ) {
-			  var nw_resize = 'n-resize'; //  
-			  var n_resize  = 'ne-resize '; //  |
-			  var ne_resize = 'w-resize'; //  /
-			  var e_resize  = 'se-resize '; //  <-
-			  var se_resize = 's-resize'; //	
-			  var s_resize  = 'ne-resize '; //  |
-			  var sw_resize = 'w-resize'; //  /
-			  var w_resize  = 'nw-resize '; //  ->			  	  
-		  } else if (67.5 <= myState.selection.angle && myState.selection.angle < 112.5 ) {
-			  var nw_resize = 'ne-resize '; //  
-			  var n_resize  = 'w-resize  '; //  |
-			  var ne_resize = 'se-resize '; //  /
-			  var e_resize  = 's-resize  '; //  <-
-			  var se_resize = 'ne-resize '; //	
-			  var s_resize  = 'w-resize  '; //  |
-			  var sw_resize = 'nw-resize '; //  /
-			  var w_resize  = 'n-resize '; //  ->		
-		  
-		  } else if (112.5 <= myState.selection.angle && myState.selection.angle < 157.5 ) {
-			  var nw_resize = 'w-resize  '; //  
-			  var n_resize  = 'se-resize '; //  |
-			  var ne_resize = 's-resize  '; //  /
-			  var e_resize  = 'ne-resize '; //  <-
-			  var se_resize = 'w-resize  '; //	
-			  var s_resize  = 'nw-resize '; //  |
-			  var sw_resize = 'n-resize  '; //  /
-			  var w_resize  = 'ne-resize '; //  ->			  
-		  } else if (157.5 <= myState.selection.angle && myState.selection.angle < 202.5 ) {
-			  var nw_resize = 'se-resize '; //  
-			  var n_resize  = 's-resize  '; //  |
-			  var ne_resize = 'ne-resize '; //  /
-			  var e_resize  = 'w-resize  '; //  <-
-			  var se_resize = 'nw-resize '; //	
-			  var s_resize  = 'n-resize  '; //  |
-			  var sw_resize = 'ne-resize '; //  /
-			  var w_resize  = 'w-resize '; //  ->			  
-		  } else if (202.5 <= myState.selection.angle && myState.selection.angle < 247.5 ) {
-			  var nw_resize = 's-resize  '; //  
-			  var n_resize  = 'ne-resize '; //  |
-			  var ne_resize = 'w-resize  '; //  /
-			  var e_resize  = 'nw-resize '; //  <-
-			  var se_resize = 'n-resize  '; //	
-			  var s_resize  = 'ne-resize '; //  |
-			  var sw_resize = 'w-resize  '; //  /
-			  var w_resize  = 'se-resize '; //  ->			  
-		  } else if (247.5 <= myState.selection.angle && myState.selection.angle < 292.5 ) {
-			  var nw_resize = 'ne-resize '; //  
-			  var n_resize  = 'w-resize  '; //  |
-			  var ne_resize = 'nw-resize '; //  /
-			  var e_resize  = 'n-resize  '; //  <-
-			  var se_resize = 'ne-resize '; //	
-			  var s_resize  = 'w-resize  '; //  |
-			  var sw_resize = 'se-resize '; //  /
-			  var w_resize  = 's-resize '; //  ->		  
-		  } else if (292.5 <= myState.selection.angle && myState.selection.angle < 337.5 ) {
-			  var nw_resize = 'w-resize  '; //  
-			  var n_resize  = 'nw-resize '; //  |
-			  var ne_resize = 'n-resize  '; //  /
-			  var e_resize  = 'ne-resize '; //  <-
-			  var se_resize = 'w-resize  '; //	
-			  var s_resize  = 'se-resize '; //  |
-			  var sw_resize = 's-resize  '; //  /
-			  var w_resize  = 'ne-resize '; //  ->			  
-		  } 
-          switch (i) {
-			case 0:
-              this.style.cursor='pointer';
-              break;
-          }
-          return;
-        }
-        
-      }
-      // not over a selection box, return to normal
-      myState.resizeDragging = false;
-      myState.expectResize = -1;
-      this.style.cursor = 'auto';
-    }
-  }, true);
+	  }, true);
+   
   canvas.addEventListener('mouseup', function(e) {
+	    myState.mouseUpEvent();
+   }, true);
+ 
+ 
+  
+  this.selectionColor = '#CC0000';
+  this.selectionWidth = 2;  
+  this.selectionBoxSize = 6;
+  this.selectionBoxColor = 'darkred';
+  this.interval = 30;
+  setInterval(function() { myState.draw(); }, myState.interval);
+}
+CanvasState.prototype.mouseOutEvent = function() {
+	  if(canvasMouseDown) {
+	     canvasMouseOut = true;
+	  }
+	}
+CanvasState.prototype.mouseUpEvent = function(e) {
+	var myState = this;
+	canvasMouseDown = false;
     myState.dragging = false;
     myState.resizeDragging = false;
     myState.expectResize = -1;
@@ -764,28 +544,218 @@ function CanvasState(canvas) {
     }
 	if (myState.canvasDrag) {
 	   myState.canvasDrag = false;
-	}
-  }, true);
+	}	
+}
+CanvasState.prototype.mouseMoveEvent = function(e) {
+	var myState = this;
+    var mouse = myState.getMouse(e),
+    mx = mouse.x,
+    my = mouse.y,
+	mox = mouse.orgx,
+	moy = mouse.orgy,
+	orgx = mouse.orgx , orgy = mouse.orgy ,
+    oldx, oldy, oldw, oldh ,i, cur;
 
-  
-  this.selectionColor = '#CC0000';
-  this.selectionWidth = 2;  
-  this.selectionBoxSize = 6;
-  this.selectionBoxColor = 'darkred';
-  this.interval = 30;
-  setInterval(function() { myState.draw(); }, myState.interval);
+if (myState.canvasDrag) {
+   
+    var leftDrag = mox - myState.prevCmx;
+	var topDrag = moy - myState.prevCmy;
+	
+ //  if (myState.main) {
+	 document.getElementById(myState.scrollID).scrollTop -= topDrag;
+	 document.getElementById(myState.scrollID).scrollLeft -= leftDrag;
+//   }
+	 myState.prevCmx = mox ;
+     myState.prevCmy = moy ;	
+	 myState.valid = false;
+}
+if (myState.dragging){
+	  if (myState.mousemoveclicked != null &&  myState.selection == null) {
+	     myState.listSelected.push(myState.mousemoveclicked);	
+		 myState.selection = myState.mousemoveclicked;
+		// myState.mousemoveclicked = null;
+		// addShapeConfigSelected(myState.selection);
+	  } 
+  mouse = myState.getMouse(e);
+  var difx = mouse.x - myState.dragoffx - myState.selection.x;
+  var dify = mouse.y - myState.dragoffy - myState.selection.y;
+	  if (myState.selection.type == "line") {
+		 
+		  myState.selection.x = mouse.x - myState.dragoffx;
+		  myState.selection.y = mouse.y - myState.dragoffy;  
+		  myState.selection.options.x1 +=  difx;
+		  myState.selection.options.x2 +=  difx;
+		  myState.selection.options.y1 +=  dify;
+		  myState.selection.options.y2 +=  dify;
+		  myState.valid = false; // Something's dragging so we must redraw
+	  } else {
+		  
+		  // We don't want to drag the object by its top-left corner, we want to drag it
+		  // from where we clicked. Thats why we saved the offset and use it here
+		  myState.selection.x = mouse.x - myState.dragoffx;
+		  myState.selection.y = mouse.y - myState.dragoffy;   
+		  myState.valid = false; // Something's dragging so we must redraw
+	  }
+
+ if (myState.listSelected.length > 1) {
+     for (var i = 0; i < myState.listSelected.length ; i++) {
+	    var shape = myState.listSelected[i];
+		if (shape != myState.selection) {
+		   	 if (shape.type == "line") {
+				  shape.x +=  difx;
+				  shape.y +=  dify;  
+				  shape.options.x1 +=  difx;
+				  shape.options.x2 +=  difx;
+				  shape.options.y1 +=  dify;
+				  shape.options.y2 +=  dify;
+				  myState.valid = false; // Something's dragging so we must redraw
+			  } else {
+				  
+				  // We don't want to drag the object by its top-left corner, we want to drag it
+				  // from where we clicked. Thats why we saved the offset and use it here
+				  shape.x +=  difx;
+				  shape.y +=  dify;   
+				  myState.valid = false; // Something's dragging so we must redraw
+			  }			
+		}
+	 }
+  }
+} else if (myState.resizeDragging) {
+  // time ro resize!
+  if (myState.selection.type == "line" || myState.selection.type == "text") {
+
+  } else {
+	  var prevX;
+	  var prevY;
+	  var prevAngle;
+	  
+	  if ( myState.selection.startX == null) {
+		  myState.selection.startX = myState.selection.x;
+		  myState.selection.startY = myState.selection.y;
+	  }
+	  var omx = mx;
+	  var omy = my;
+	  var movedX = mx - myState.selection.startX;
+	  var movedY = my - myState.selection.startY;
+	  var radius = Math.sqrt(Math.pow(movedX,2) + Math.pow(movedY,2));
+	  var initAngle =  toRadians(myState.selection.angle);
+	  var mouseAngle = getAngle(movedX,movedY);
+	  mx = parseInt(radius * Math.cos(  mouseAngle - initAngle));
+	  my = parseInt(radius * Math.sin(  mouseAngle - initAngle));  	  
+	  
+	  if ( myState.selection.prevMX == null) {
+		myState.selection.prevMX = mx;
+		myState.selection.prevMY = my;
+		myState.selection.prevAngle = mouseAngle;
+	  } 
+		prevX = myState.selection.prevMX;
+		prevY = myState.selection.prevMY;
+		prevAngle = myState.selection.prevAngle;
+	  
+	  var difX = mx - prevX;
+	  var difY = my - prevY;
+	  var difAngle = toDegrees(mouseAngle) - toDegrees(prevAngle);
+	  
+	  
+	  // 0  1  2
+	  // 3     4
+	  // 5  6  7
+
+	  switch (myState.expectResize) {
+		case 0:
+		  myState.selection.angle += difAngle;
+		  if (myState.selection.angle >360) {
+			myState.selection.angle-=360;
+		  } else if (myState.selection.angle < 0) {
+			myState.selection.angle+=360;
+		  } 
+		//  $('#rotate_slider').slider('setValue', myState.selection.angle)
+		  break;
+	  }
+		myState.selection.prevMX = mx;
+		myState.selection.prevMY = my;
+		myState.selection.prevAngle = mouseAngle;
+		myState.valid = false; // Something's dragging so we must redraw
+	}
+}
+// if there's a selection see if we grabbed one of the selection handles
+if (myState.selection !== null && !myState.resizeDragging && ( myState.selection.type == "line" || myState.selection.type == "text")) {
+
+}
+if (myState.selection !== null && !myState.resizeDragging && myState.selection.type != "line") {
+
+  for (i = 0; i < 1; i += 1) {
+    // 0  1  2
+    // 3     4
+    // 5  6  7
+    
+    cur = myState.selectionHandles[i];
+	var curX = cur.x;
+	var curY = cur.y;
+	var mxt = mx;
+	var myt = my;
+	var topCornerX = curX - 3;
+	var topCornerY = curY - 3;
+
+
+    // we dont need to use the ghost context because
+    // selection handles will always be rectangles
+    if (mxt >= topCornerX && mxt <= topCornerX + myState.selectionBoxSize &&
+        myt >= topCornerY && myt <= topCornerY + myState.selectionBoxSize) {
+      // we found one!
+      myState.expectResize = i;
+      myState.valid = false;
+
+      switch (i) {
+		case 0:
+		  this.canvas.style.cursor='pointer';
+          break;
+      }
+      return;
+    }
+    
+  }
+  // not over a selection box, return to normal
+  myState.resizeDragging = false;
+  myState.expectResize = -1;
+  this.canvas.style.cursor = 'auto';
+}
+ var contains = false;	 
+ var prevHover = myState.shapeHover;
+ for (i = 0; i <  myState.shapes.length ; i ++) {
+	 if(myState.shapes[i].type!="text" && myState.shapes[i].type!="line" && myState.shapes[i].booking_options.bookable == true) {
+		 // Line And Text not bookable
+		  if (myState.shapes[i].contains(myState.ctx ,mx, my)) {
+			this.canvas.style.cursor='pointer';
+			myState.shapeHover = myState.shapes[i];
+			contains = true;
+		  }
+	 }
 }
 
+if (!contains) {
+	this.canva.style.cursor='auto';
+   myState.shapeHover = null;
+} 
+if(myState.shapeHover!=prevHover) {
+    myState.valid = false;
+}
+};
 CanvasState.prototype.rotateSelection = function(val) {
  if (this.selection != null) {
-   this.valid = false;
+    this.valid = false;
     this.selection.angle = val;
 	}
-}
+};
 
 CanvasState.prototype.addShape = function(shape) {
   "use strict";
-  this.shapes.push(shape);
+  if(this.bgmode == true) {
+	   shape.bookableShape=false;
+	   this.bgshapes.push(shape);
+ } else {
+     this.shapes.push(shape);
+ }
   this.valid = false;
 };
 
@@ -867,8 +837,8 @@ function zoomResetWrap(canvas_ref_,dividwrap,scrolled_id) {
    }
 
   
-  var ww = document.getElementById(dividwrap).offsetWidth - 22;
-  var wh = document.getElementById(dividwrap).offsetHeight - 22 ;
+  var ww = document.getElementById(dividwrap).offsetWidth - 2;
+  var wh = document.getElementById(dividwrap).offsetHeight - 2 ;
   
 
   var required_zoom;
@@ -951,7 +921,7 @@ CanvasState.prototype.draw = function() {
 							  ctx.drawImage(this.backgroundImageID,0 + j*this.tilew,0 + i*this.tileh,this.tilew,this.tileh);
 						}	 
 					 }
-					 ctx.strokeRect(0,0,this.width/this.zoom,this.height/this.zoom);
+					// ctx.strokeRect(0,0,this.width/this.zoom,this.height/this.zoom);
 					 ctx.strokeStyle = ss;		 
 			 } else if (this.backgroundType == "asimage") {
 				 var ss = ctx.strokeStyle;
@@ -971,14 +941,13 @@ CanvasState.prototype.draw = function() {
 
     // draw all shapes
     l = shapes.length;
-    for (i = 0; i < l; i += 1) {
-      shape = shapes[i];
-     // We can skip the drawing of elements that have moved off the screen:
-      if ( shape.x - 0.5*shape.w <= this.width/this.zoom && shape.y - 0.5*shape.h <= this.height/this.zoom &&
-          shape.x + 0.5*shape.w >= 0 && shape.y + 0.5*shape.h >= 0) {
-          shapes[i].draw(ctx);
-      }
-    }
+    for (i = 0; i < this.bgshapes.length; i += 1) {
+		  this.bgshapes[i].draw(ctx);
+	} 
+	 l = shapes.length;
+	for (i = 0; i < l; i += 1) {
+		  shapes[i].draw(ctx);
+	}     
     
     // draw selection
     // right now this is just a stroke along the edge of the selected Shape
@@ -999,9 +968,9 @@ CanvasState.prototype.draw = function() {
 			   fillY = - 0.5 * this.selection.h
 		  }
 		  ctx.globalAlpha = 0.6;
-		  ctx.strokeRect(fillX,fillY,mySel.w,mySel.h);
-		  ctx.strokeStyle = "white";
-		  ctx.strokeRect(fillX+1,fillY+1,mySel.w-2,mySel.h-2);
+		 // ctx.strokeRect(fillX,fillY,mySel.w,mySel.h);
+		 // ctx.strokeStyle = "white";
+		 // ctx.strokeRect(fillX+1,fillY+1,mySel.w-2,mySel.h-2);
 		  ctx.globalAlpha = 1;
 		   if (this.selection.angle != 0) {
 			  
@@ -1024,14 +993,33 @@ CanvasState.prototype.draw = function() {
 				}	 
 				  dbRoundRect(ctx,fillX,fillY,mySel.w+10,mySel.h+10,"#4d90fe","white",0,1,2,20);
 
-			   if (shape.angle != 0) {
+			   if (mySel.angle != 0) {
 				
 			   }	
 			   ctx.restore();		   
 		   }
 		}
 		// ** Add stuff you want drawn on top all the time here **
-    
+		//Draw hover
+		if(this.shapeHover!=null) {
+			  mySel = this.shapeHover;
+			  var fillX = mySel.x ;
+			  var fillY = mySel.y ;
+			  ctx.save();
+			  if (mySel.angle != 0) {
+				   
+				   ctx.translate(mySel.x , mySel.y );
+				   ctx.rotate(mySel.angle * Math.PI / 180);
+				   fillX =  0;
+				   fillY = 0;
+				}	 
+
+                  dbRoundRect(ctx,fillX,fillY,mySel.w+10,mySel.h+10,"#00FF99","white",0,1,2,15);
+			   if (mySel.angle != 0) {
+				
+			   }	
+			   ctx.restore();			
+		}
     this.valid = true;
 
 	

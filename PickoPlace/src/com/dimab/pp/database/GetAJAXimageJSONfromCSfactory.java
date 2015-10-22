@@ -62,18 +62,12 @@ public class GetAJAXimageJSONfromCSfactory {
 		  			String name = (String) shapeEntity.getProperty("name");
 		  			int minP = (int)(long) shapeEntity.getProperty("minP");
 		  			int maxP = (int)(long) shapeEntity.getProperty("maxP");
-		  			String timeRange_ = (String) shapeEntity.getProperty("timeRange");
-		  			String weekDays_ = (String) shapeEntity.getProperty("weekDays");
 		  			String description = (String) shapeEntity.getProperty("description");
 		  			
-		  			WeekDays weekDays = gson.fromJson(weekDays_,WeekDays.class);
-		  			Type collectionType_ = new TypeToken<List<SingleTimeRange>>(){}.getType();
-		  			List<SingleTimeRange> timeRange = gson.fromJson(timeRange_,collectionType_);
+		  			
 		  			shape.getBooking_options().setGivenName(name);
 		  			shape.getBooking_options().setMaxPersons(maxP);
 		  			shape.getBooking_options().setMinPersons(minP);
-		  			shape.getBooking_options().setTimeRange(timeRange);
-		  			shape.getBooking_options().setWeekDays(weekDays);
 		  			shape.getBooking_options().setDescription(description);;
 		  		}
 			}

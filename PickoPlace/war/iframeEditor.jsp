@@ -53,7 +53,20 @@
 	<link rel="stylesheet" href="css/dropit.css" type="text/css" media="screen" />
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <script type="text/javascript">
+var canvasMouseOut = false;
+var canvasMouseDown = false;
 
+window.addEventListener('mouseup', function(e) {
+   if(canvasMouseOut==true) {
+     canvas_.mouseUpEvent();
+	 canvasMouseOut = false;
+   }
+});
+window.addEventListener('mousemove', function(e) {
+  if(canvasMouseOut==true) {
+     canvas_.mouseMoveEvent(e);
+   }
+});
 	function goToAccountMenu() {
 		setSessionData(function(result) {
 			   if(result) {
@@ -117,7 +130,7 @@ $(document).ready(function() {
     	 totalImages = all.length+1;
     	 for(var x=0; x < all.length; x++) { 
     		 var serverImageID = all[x].id;
-    	     updateShapeImagesByServerData(serverImageID);   	     
+    	    // updateShapeImagesByServerData(serverImageID);   	     
     	 }
     	 // Update all canvases
     	 for(var x=0; x < allfloors.length; x++) { 
@@ -405,25 +418,15 @@ function updatePageView() {
 							      </select>												 
 							  </div>
 							   <div id="zoom_options_book">
-											<table  cellspacing="0" cellpadding="0" style="border-collapse:collapse">
-											   <tr id="zoom_plus_tr">
-												 <td>
-												   <div id="zoom_plus_div" onclick="sizeUp()">+</div>
-												 </td>
-											   </tr>
-											   <tr id="zoom_minus_tr">
-												 <td>
-												   <div id="zoom_minus_div"  onclick="sizeDown()">-</div>
-												 </td>
-											   </tr>
-											   <tr id="zoom_reset_tr">
-												 <td>
-												   <div id="zoom_reset_div" onclick="zoomResetWrap(canvas_,600,400)">reset</div>
-												 </td>
-											   </tr>				   
-											</table>
+									<div id="plus_minus_wrap">
+										   <div id="zoom_plus_div" onclick="sizeUp()" title="Zoom-In">+</div>
+				                           <div id="zoom_split"></div>
+										   <div id="zoom_minus_div"  onclick="sizeDown()"  title="Zoom-Out">-</div>
+						            </div>
+						            <div id="zoom_reset_div" onclick="zoomResetWrap(canvas_,600,400)"><div class="material-icons zoom_reset_mat"  title="Zoom-Reset">fullscreen</div></div>
+										
 								 </div>
-							   <div id="canvas_wrap_not_scroll_conf" >							    
+							   <div id="canvas_wrap_not_scroll_if" >							    
 								    <% 
 								      for (PPSubmitObject floor : canvasStateList) {
 								    	   String floorid = floor.getFloorid();
@@ -639,7 +642,7 @@ function updatePageView() {
 						  <td><div id="iframe_width_left" class="dim_triangle">&#9664;</div></td>
 						  <td class="for_slider_td">
 						  <div class="for_slider_fe"  >
-								<div id="iframe_width" style="width:170px;"/>
+								<div id="iframe_width" style="width:170px;"></div>
 						   </div>
 						   </td>
 						   <td><div id="iframe_width_right" class="dim_triangle">&#9654;</div></td>
@@ -652,7 +655,7 @@ function updatePageView() {
 						   <td><div id="iframe_height_left" class="dim_triangle">&#9664;</div></td>
 						  <td class="for_slider_td">						 
 						  <div class="for_slider_fe"  >
-								<div id="iframe_height" style="width:170px;"/>
+								<div id="iframe_height" style="width:170px;"></div>
 						   </div>
 						   </td>
 						   <td><div id="iframe_height_right" class="dim_triangle">&#9654;</div></td>
@@ -677,7 +680,7 @@ function updatePageView() {
 						   <td><div id="floor_width_left" class="dim_triangle">&#9664;</div></td>
 						  <td class="for_slider_td">
 						  <div class="for_slider_fe"  >
-								<div id="border_width" style="width:170px;"/>
+								<div id="border_width" style="width:170px;"></div>
 						   </div>
 						   </td>
 						    <td><div id="floor_width_right" class="dim_triangle">&#9654;</div></td>
@@ -690,7 +693,7 @@ function updatePageView() {
 						   <td><div id="floor_height_left" class="dim_triangle">&#9664;</div></td>
 						  <td class="for_slider_td">
 						  <div class="for_slider_fe"  >
-								<div id="border_height" style="width:170px;"/>
+								<div id="border_height" style="width:170px;"></div>
 						   </div>
 						   </td>
 						   <td><div id="floor_height_right" class="dim_triangle">&#9654;</div></td>

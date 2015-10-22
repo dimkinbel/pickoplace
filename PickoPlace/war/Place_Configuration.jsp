@@ -33,7 +33,7 @@
 	<script type="text/javascript" src="js/updateData_pc.js"></script>
     <script type="text/javascript" src="js/bookingOptions_pc.js"></script>
 	<script type="text/javascript"
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAcwoHVd5eaZfzTdu3Sto_QkSr9TlmvXYk&libraries=places&&sensor=FALSE">
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAaX5Ow6oo_axUKMquFxnPpT6Kd-L7D40k&libraries=places&&sensor=FALSE">
     </script>
 	
     <link rel="stylesheet" href="css/colpick.css" type="text/css"/>
@@ -48,6 +48,7 @@
 	<link rel="stylesheet" href="css/perfect-scrollbar.css" type="text/css" media="screen" />
 	<link rel="stylesheet" href="css/CSS_checkbox_full/custom-checkbox.css" type="text/css" media="screen" />
     <script type="text/javascript" src="js/maps_google.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 	<script type="text/javascript">
        if(typeof document.onselectstart!="undefined") {
 	       document.onselectstart = new Function ("return false");
@@ -181,7 +182,7 @@
     	               	document.getElementById("address_hidden_lat").setAttribute("value",lat);
     	             	document.getElementById("address_hidden_lng").setAttribute("value",lng);             	
     	             	$.ajax({
-    	             	   url:"https://maps.googleapis.com/maps/api/timezone/json?location="+lat+","+lng+"&timestamp="+(Math.round((new Date().getTime())/1000)).toString()+"&sensor=false&key=AIzaSyAcwoHVd5eaZfzTdu3Sto_QkSr9TlmvXYk",
+    	             	   url:"https://maps.googleapis.com/maps/api/timezone/json?location="+lat+","+lng+"&timestamp="+(Math.round((new Date().getTime())/1000)).toString()+"&sensor=false&key=AIzaSyAaX5Ow6oo_axUKMquFxnPpT6Kd-L7D40k",
     	             	}).done(function(response){
     	             		 //alert(response.rawOffset);
     	             		 var zoneID = response.timeZoneId;
@@ -400,7 +401,7 @@ function updatePageView() {
     	   
     %>
       <input type="text" id="server_canvasState_<%=floorid %>" name="server_canvasState" value='<%=gson.toJson(floor)%>'/>
-      <img    id="server_background_<%=floorid %>" name="server_background" src="<%=backgroundURL%>"/>
+      <img    id="server_background_<%=floorid %>" crossorigin="anonymous" name="server_background" src="<%=backgroundURL%>"/>
       <img  id="server_overview_<%=floorid %>" name="server_overview" src="<%=overviewURL%>"/>
       <input type="text" id="server_floor_name_<%=floorid %>" value="<%=floor.getFloor_name() %>"/>
       <canvas id="canvas_tmp_<%=floorid %>"></canvas>
@@ -443,7 +444,7 @@ function updatePageView() {
 
        <% if (imgID2URL != null && !imgID2URL.isEmpty()) {
     	  for (JsonImageID_2_GCSurl img2url : imgID2URL) {%>    
-        <img id="server_<%=img2url.getImageID() %>" name="shape_images_from_server" src="<%=img2url.getGcsUrl() %>"/>
+        <img id="server_<%=img2url.getImageID() %>" crossorigin="anonymous" name="shape_images_from_server" src="<%=img2url.getGcsUrl() %>"/>
       <%} 
       }%>
      <input  id="address_hidden_lat" name="address_hidden_lat" style="display: none;"> 
@@ -523,7 +524,10 @@ function updatePageView() {
 			<div id="show_canvas_place_btn">
 			</div>
 			<div id="tour_buttons_wrap_">
-			  <div class="tour_menu_button" id="save_configuration" onclick="SIsaveState()">Save</div>
+			  <div class="tour_menu_button" id="save_configuration" onclick="SIsaveState()">
+			     <span id="ajax_save_hide">Save</span>			     
+			     <img class="sfdcvsadd" id="ajax_save_img_conf" style="display:none" src="js/saving.GIF">
+			  </div>
 			  <div class="tour_menu_button" id="back_drawing" onclick="editPlaceAndSave('<%=placeID%>_editform')">Edit Place</div>
 			  <div class="tour_menu_button" id="goto_frame" onclick="SaveAndIFrame('<%=placeID%>_iframeform')">iFrame Editor</div>
 			  <div class="tour_menu_button" id="publish">Publish</div>
@@ -557,7 +561,7 @@ function updatePageView() {
 				               <tr style="height:0px;overflow-y:visible"><td></td><td></td>
 				                  <td rowspan=9 class="row7">
 				                        <div id="upload_logo_btn" onclick="fileUpload('user_logo_upload')">Upload logo (100px)</div>
-										<div id="canvas_logo_w" >
+										<div id="canvas_logo_w" title="Upload LOGO" onclick="fileUpload('user_logo_upload')" style="cursor:pointer">
 										  <canvas id="upload_logo_canvas" width="100" height="100"></canvas>
 										</div>
 										<div id="map_div_config">
@@ -594,7 +598,13 @@ function updatePageView() {
 							 <table cellspacing="0" cellpadding="0" style="border-collapse:collapse;width:100%;">
 							   <tr ><td><div id="upload_image_conf_btn" onclick="fileUpload('hidden_image_upload')">Upload Image (Max 1Mb)</div></td></tr>
 							   <tr><td>
-							      <div id="upload_conf_img_append_show" >
+							      <div id="upload_conf_img_append_show"  >
+							         <div id="no_image_upload_conf" onclick="fileUpload('hidden_image_upload')">
+							            <div id="image_upload_btn_config">
+							                <div class="material-icons image_upload_btn_config_mat">cloud_upload</div>
+							                <div class="uptext_">UPLOAD IMAGE</div>
+							            </div>
+							         </div>
 								  </div>
 								  <div id="hidden_img_uploads" style="display:none"></div>
 								  <img id="uploaded_image_temp" style="display:none"/>
@@ -617,23 +627,12 @@ function updatePageView() {
 							      </select>												 
 							  </div>
 							   <div id="zoom_options_book">
-											<table  cellspacing="0" cellpadding="0" style="border-collapse:collapse">
-											   <tr id="zoom_plus_tr">
-												 <td>
-												   <div id="zoom_plus_div" onclick="sizeUp()">+</div>
-												 </td>
-											   </tr>
-											   <tr id="zoom_minus_tr">
-												 <td>
-												   <div id="zoom_minus_div"  onclick="sizeDown()">-</div>
-												 </td>
-											   </tr>
-											   <tr id="zoom_reset_tr">
-												 <td>
-												   <div id="zoom_reset_div" onclick="zoomResetWrap(canvas_,600,400)">reset</div>
-												 </td>
-											   </tr>				   
-											</table>
+									<div id="plus_minus_wrap">
+										   <div id="zoom_plus_div" onclick="sizeUp()" title="Zoom-In">+</div>
+				                           <div id="zoom_split"></div>
+										   <div id="zoom_minus_div"  onclick="sizeDown()"  title="Zoom-Out">-</div>
+								    </div>
+								    <div id="zoom_reset_div" onclick="zoomReset()"><div class="material-icons zoom_reset_mat"  title="Zoom-Reset">fullscreen</div></div>
 								 </div>
 							   <div id="canvas_wrap_not_scroll_conf" >							    
 								    <% 
@@ -675,38 +674,38 @@ function updatePageView() {
 			                  <tr class="row_g_odd"><td>Sunday</td> 
                                   <td><input type="checkbox" id="pbook_sun_cb" class="css-checkbox config_checkbox_place" checked="checked" name="week_checkbox_place"/></td>
 							      <td><div id="config_from_to_sun"></div></td>
-							      <td><div id="open_time_slider_sun"  style="width:400px;"></div></td>
-							      <td class="configuration_irs"><select  id="view_selector_sun"></select></td></tr>
+							      <td class="configuration_irs"><div id="open_time_slider_sun"  style="width:400px;"></div></td>
+							      <td ><select  id="view_selector_sun"></select></td></tr>
 							  <tr class="row_g_even"><td>Monday</td> 
                                   <td><input type="checkbox" id="pbook_mon_cb" class="css-checkbox config_checkbox_place" checked="checked" name="week_checkbox_place"/></td>
 							      <td><div id="config_from_to_mon"></div></td>
-							      <td><div id="open_time_slider_mon"  style="width:400px;"></div></td>
-							      <td class="configuration_irs"><select  id="view_selector_mon"></select></td></tr>
+							      <td class="configuration_irs"><div id="open_time_slider_mon"  style="width:400px;"></div></td>
+							      <td><select  id="view_selector_mon"></select></td></tr>
 							  <tr class="row_g_odd"><td>Tuesday</td> 
                                   <td><input type="checkbox" id="pbook_tue_cb" class="css-checkbox config_checkbox_place" checked="checked" name="week_checkbox_place"/></td>
 							      <td><div id="config_from_to_tue"></div></td>
-							      <td><div id="open_time_slider_tue"  style="width:400px;"></div></td>
-							      <td class="configuration_irs"><select  id="view_selector_tue"></select></td></tr>
+							      <td class="configuration_irs"><div id="open_time_slider_tue"  style="width:400px;"></div></td>
+							      <td><select  id="view_selector_tue"></select></td></tr>
 							  <tr class="row_g_even"><td>Wednesday</td> 
                                   <td><input type="checkbox" id="pbook_wed_cb" class="css-checkbox config_checkbox_place" checked="checked" name="week_checkbox_place"/></td>
 							      <td><div id="config_from_to_wed"></div></td>
-							      <td><div id="open_time_slider_wed"  style="width:400px;"></div></td>
-							      <td class="configuration_irs"><select  id="view_selector_wed"></select></td></tr>
+							      <td class="configuration_irs"><div id="open_time_slider_wed"  style="width:400px;"></div></td>
+							      <td><select  id="view_selector_wed"></select></td></tr>
 							  <tr class="row_g_odd"><td>Thursday</td> 
                                   <td><input type="checkbox" id="pbook_thu_cb" class="css-checkbox config_checkbox_place" checked="checked" name="week_checkbox_place"/></td>
 							      <td><div id="config_from_to_thu"></div></td>
-							      <td><div id="open_time_slider_thu"  style="width:400px;"></div></td>
-							      <td class="configuration_irs"><select  id="view_selector_thu"></select></td></tr>
+							      <td class="configuration_irs"><div id="open_time_slider_thu"  style="width:400px;"></div></td>
+							      <td><select  id="view_selector_thu"></select></td></tr>
 							  <tr class="row_g_even"><td>Friday</td> 
                                   <td><input type="checkbox" id="pbook_fri_cb" class="css-checkbox config_checkbox_place" checked="checked" name="week_checkbox_place"/></td>
 							      <td><div id="config_from_to_fri"></div></td>
-							      <td><div id="open_time_slider_fri"  style="width:400px;"></div></td>
-							      <td class="configuration_irs"><select  id="view_selector_fri"></select></td></tr>
+							      <td class="configuration_irs"><div id="open_time_slider_fri"  style="width:400px;"></div></td>
+							      <td><select  id="view_selector_fri"></select></td></tr>
 							  <tr class="row_g_odd"><td>Saturday</td> 
                                   <td><input type="checkbox" id="pbook_sat_cb" class="css-checkbox config_checkbox_place" checked="checked" name="week_checkbox_place"/></td>
 			                      <td><div id="config_from_to_sat"></div></td>
-							      <td><div id="open_time_slider_sat"  style="width:400px;"></div></td>
-							      <td class="configuration_irs"><select  id="view_selector_sat"></select></td></tr>
+							      <td class="configuration_irs"><div id="open_time_slider_sat"  style="width:400px;"></div></td>
+							      <td><select  id="view_selector_sat"></select></td></tr>
 			                </table>
 							<div class="params_innner_table_header_div">Set Dates your place will be closed</div>
 							<table cellspacing="0" cellpadding="0" style="border-collapse:collapse;width:100%;">
@@ -737,16 +736,51 @@ function updatePageView() {
                                    <td class="peat_  width12p" >Delete</td>								   
 								</tr>
 								<tr class="pea_user_row"><td colspan=6>
+<%
+String sessionEmail = (String) request.getSession().getAttribute("userEmail"); 
+List<AdminUser> adminList = responseJSON.getPlaceEditList();
+%>
 								 <div id="peat_append" style="width:100%">
-								  <table  class="peat_single" id="peat_dimkinbel@gmail.com" cellspacing="0" cellpadding="0" style="border-collapse:collapse;width:100%;"><tr class="peat_user_row_">
-								   <td class="width40p"><div class="peat_val_user" id="peat_mail_dimkinbel@gmail.com">dimkinbel@gmail.com</div></td>
+<% for(AdminUser user : adminList)  {
+	    if(user.getMail().equals(sessionEmail)) {%>							 
+								  <table name="table_peat_append"  class="peat_single" id="peat_<%=sessionEmail%>" cellspacing="0" cellpadding="0" style="border-collapse:collapse;width:100%;">
+								   <tr class="peat_user_row_">
+								   <td class="width40p"><div class="peat_val_user" id="peat_mail_<%=sessionEmail%>"><%=sessionEmail%></div></td>
 								   <td  class="peat_cb width12p"><img src="img/vlogo2.png" width=20 height=20/></td>
 								   <td  class="peat_cb width12p"><img src="img/vlogo2.png" width=20 height=20/></td>
 								   <td  class="peat_cb width12p"><img src="img/vlogo2.png" width=20 height=20/></td>
 								   <td  class="peat_cb width12p"><img src="img/vlogo2.png" width=20 height=20/></td>
-								   <td  class="peat_cb width12p">Admin</td>
-								  </tr>
+								   <td  class="peat_cb width12p">You</td>
+								  </tr>								  
 								  </table>
+								  <div style="display:none">
+									  <div class="peat_val_user" id="peat_mail_<%=user.getMail()%>"><%=user.getMail()%></div>
+								      <input name="peat_cb" type="checkbox" id="peat_cb_fa_<%=user.getMail()%>"   checked />
+							          <input name="peat_cb" type="checkbox" id="peat_cb_ep_<%=user.getMail()%>"   checked />
+							          <input name="peat_cb" type="checkbox" id="peat_cb_mo_<%=user.getMail()%>"   checked />
+							          <input name="peat_cb" type="checkbox" id="peat_cb_ba_<%=user.getMail()%>"   checked />						  
+								  </div>
+	<%} else { 
+		 String fa = user.isFull_access()?"checked":"";
+	     String ep = user.isEdit_place()?"checked":"";
+	     String mo = user.isMove_only()?"checked":"";
+	     String ba = user.isBook_admin()?"checked":"";	
+	%>
+	     
+		 <table name="table_peat_append" class="peat_single" id="peat_<%=user.getMail()%>" cellspacing="0" cellpadding="0" style="border-collapse:collapse;width:100%;">
+		   <tr class="peat_user_row_">
+	         <td class="width40p"><div class="peat_val_user" id="peat_mail_<%=user.getMail()%>"><%=user.getMail()%></div></td>
+	         <td  class="peat_cb width12p"><input name="peat_cb" type="checkbox" id="peat_cb_fa_<%=user.getMail()%>" class = "peat_checkbox" <%=fa %> /></td>
+             <td  class="peat_cb width12p"><input name="peat_cb" type="checkbox" id="peat_cb_ep_<%=user.getMail()%>" class = "peat_checkbox" <%=ep %> /></td>
+             <td  class="peat_cb width12p"><input name="peat_cb" type="checkbox" id="peat_cb_mo_<%=user.getMail()%>" class = "peat_checkbox" <%=mo %> /></td>
+             <td  class="peat_cb width12p"><input name="peat_cb" type="checkbox" id="peat_cb_ba_<%=user.getMail()%>" class = "peat_checkbox" <%=ba %> /></td>
+             <td  class="peat_cb width12p"><div id="peat_delete_'+mail+'" class="peat_delete" onclick="peat_delete(\'<%=user.getMail()%>\')">Delete</div></td>
+           </tr>
+       </table>
+	
+	<%}
+	    
+   }%>
 								 </div>
 								</td></tr>
 								<tr><td colspan=6 class="add_user_peat_td_text">Add new user</td></tr>

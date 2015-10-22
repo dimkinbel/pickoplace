@@ -34,6 +34,8 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Text;
+import com.google.appengine.api.datastore.Transaction;
+import com.google.appengine.api.datastore.TransactionOptions;
 import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
@@ -64,27 +66,105 @@ public class ConfigurationEditRequest extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+		TransactionOptions options = TransactionOptions.Builder.withXG(true);
+		Transaction txn = datastore.beginTransaction(options);
+		
 		String placeIDvalue = request.getParameter("placeIDvalue");
 		
 		String username = new String();
 		CheckTokenValid tokenValid = new CheckTokenValid(request);
-		GenericUser genuser = tokenValid.getUser();
-		if(genuser==null) {
-			String returnurl = "http://pickoplace.com/welcome.jsp";
+		try {
+			GenericUser genuser = tokenValid.getUser();
+			if(genuser==null) {
+				String returnurl = "/welcome.jsp";
+				response.addHeader("Access-Control-Allow-Origin", "*");
+				response.sendRedirect(returnurl);
+			} else {
+				username = genuser.getEmail();
+			}
+		} catch (NullPointerException e) {
+			String returnurl = "/welcome.jsp";
+			response.addHeader("Access-Control-Allow-Origin", "*");
 			response.sendRedirect(returnurl);
-		} else {
-			username = genuser.getEmail();
 		}
-
-		Filter usernameFilter = new  FilterPredicate("username",FilterOperator.EQUAL,username);
-		Filter placeIdFilter = new  FilterPredicate("placeUniqID",FilterOperator.EQUAL,placeIDvalue);
-		Filter composeFilter = CompositeFilterOperator.and(usernameFilter,placeIdFilter);
-		Query q = new Query("CanvasState").setFilter(composeFilter);
+		 
+		Filter placeIdFilter = new  FilterPredicate("placeUniqID",FilterOperator.EQUAL,placeIDvalue); 
+		Query q = new Query("CanvasState").setFilter(placeIdFilter);
 		PreparedQuery pq = datastore.prepare(q);
   		Entity userCanvasState = pq.asSingleEntity();
   		AJAXImagesJSON CanvasStateEdit = new AJAXImagesJSON();
   		
   		if (userCanvasState != null) {
+  			Gson gson = new Gson();
+			List<AdminUser> placeEditList = new ArrayList<AdminUser>();
+			if(userCanvasState.getProperty("placeEditList")!=null) {
+				String placeEditListJSON = (String)userCanvasState.getProperty("placeEditList");
+				Type collectionType = new TypeToken<List<AdminUser>>(){}.getType();
+				placeEditList = gson.fromJson(placeEditListJSON, collectionType);
+				if(placeEditList.size() > 0) {
+					Boolean fullAccessApproved = false;
+					for(AdminUser user_ : placeEditList) {
+						if(user_.getMail().equals(username)) {
+							if(user_.isFull_access()) {
+								fullAccessApproved = true;
+							}
+						}
+					}
+					if(!fullAccessApproved ){
+						 if(username.equals((String)userCanvasState.getProperty("username"))) {
+							    AdminUser adminAccess = new AdminUser();
+				   	  		    adminAccess.setMail(username);
+				   	  		    adminAccess.setFull_access(true);
+				                adminAccess.setEdit_place(true);
+				                adminAccess.setMove_only(true);
+				                adminAccess.setBook_admin(true);
+				                placeEditList.add(adminAccess);
+				                userCanvasState.setUnindexedProperty("placeEditList",gson.toJson(placeEditList));
+				                datastore.put(userCanvasState);
+						} else {
+							System.out.println("No full_name access in list");
+							String returnurl = "/welcome.jsp";
+							response.addHeader("Access-Control-Allow-Origin", "*");
+							response.sendRedirect(returnurl);
+						}
+					}
+				} else {
+					System.out.println("Admin List zero");
+					if(!username.equals((String)userCanvasState.getProperty("username"))) {
+						String returnurl = "/welcome.jsp";
+						response.addHeader("Access-Control-Allow-Origin", "*");
+						response.sendRedirect(returnurl);
+					} else {
+						AdminUser adminAccess = new AdminUser();
+		   	  		    adminAccess.setMail(username);
+		   	  		    adminAccess.setFull_access(true);
+		                adminAccess.setEdit_place(true);
+		                adminAccess.setMove_only(true);
+		                adminAccess.setBook_admin(true);
+		                placeEditList.add(adminAccess);
+		                userCanvasState.setUnindexedProperty("placeEditList",gson.toJson(placeEditList));
+		                datastore.put(userCanvasState);
+					}
+				}
+			} else {
+				if(!username.equals((String)userCanvasState.getProperty("username"))) {
+					String returnurl = "/welcome.jsp";
+					response.addHeader("Access-Control-Allow-Origin", "*");
+					response.sendRedirect(returnurl);
+				} else {
+					AdminUser adminAccess = new AdminUser();
+	   	  		    adminAccess.setMail(username);
+	   	  		    adminAccess.setFull_access(true);
+	                adminAccess.setEdit_place(true);
+	                adminAccess.setMove_only(true);
+	                adminAccess.setBook_admin(true);
+	                placeEditList.add(adminAccess);
+	                userCanvasState.setUnindexedProperty("placeEditList",gson.toJson(placeEditList));
+	                datastore.put(userCanvasState);
+				}
+			}
+			txn.commit();
+  			
   			String shapesJSON =  ((Text) userCanvasState.getProperty("shapesJSON")).getValue();
   			String sid2ImageIDJSON =  ((Text) userCanvasState.getProperty("sid2ImageIDJSON")).getValue();
   			String placeID = (String) userCanvasState.getProperty("placeUniqID");
@@ -98,7 +178,7 @@ public class ConfigurationEditRequest extends HttpServlet {
   				UTCoffcet = (double) userCanvasState.getProperty("UTCoffcet");
   				
   			}
-  			Gson gson = new Gson();
+  			
   			Type CanvasListcollectionType = new TypeToken<List<PPSubmitObject>>(){}.getType();
 			List<PPSubmitObject> floors = gson.fromJson(shapesJSON, CanvasListcollectionType);
 			// Restore shapes booking options
@@ -113,18 +193,12 @@ public class ConfigurationEditRequest extends HttpServlet {
 			  			String name = (String) shapeEntity.getProperty("name");
 			  			int minP = (int)(long) shapeEntity.getProperty("minP");
 			  			int maxP = (int)(long) shapeEntity.getProperty("maxP");
-			  			String timeRange_ = (String) shapeEntity.getProperty("timeRange");
-			  			String weekDays_ = (String) shapeEntity.getProperty("weekDays");
 			  			String description = (String) shapeEntity.getProperty("description");
 			  			
-			  			WeekDays weekDays = gson.fromJson(weekDays_,WeekDays.class);
-			  			Type collectionType_ = new TypeToken<List<SingleTimeRange>>(){}.getType();
-			  			List<SingleTimeRange> timeRange = gson.fromJson(timeRange_,collectionType_);
+
 			  			shape.getBooking_options().setGivenName(name);
 			  			shape.getBooking_options().setMaxPersons(maxP);
 			  			shape.getBooking_options().setMinPersons(minP);
-			  			shape.getBooking_options().setTimeRange(timeRange);
-			  			shape.getBooking_options().setWeekDays(weekDays);
 			  			shape.getBooking_options().setDescription(description);;
 			  		}
 				}
@@ -261,12 +335,7 @@ public class ConfigurationEditRequest extends HttpServlet {
 				collectionType = new TypeToken<List<String>>(){}.getType();
 				adminApprovalList = gson.fromJson(adminApprovalListJSON, collectionType);
 			}
-			List<AdminUser> placeEditList = new ArrayList<AdminUser>();
-			if(userCanvasState.getProperty("placeEditList")!=null) {
-				String placeEditListJSON = (String)userCanvasState.getProperty("placeEditList");
-				collectionType = new TypeToken<List<AdminUser>>(){}.getType();
-				placeEditList = gson.fromJson(placeEditListJSON, collectionType);
-			}
+
 			List<Integer> closeDates =  new ArrayList<Integer>();
 			if (userCanvasState.getProperty("closeDates")!=null) {
 				String closeDatesJSON = (String)userCanvasState.getProperty("closeDates");

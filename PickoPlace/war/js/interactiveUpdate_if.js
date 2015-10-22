@@ -105,7 +105,7 @@ function drawConfirmation() {
 		appendData += '										   <td class="ap_s_t_num">'+i+'</td>';
 		appendData += '										   <td class="ap_s_t_img_td"><div class="sbimgd">';
 		if(shape.type=="image") {
-		     var src=document.getElementById("server_"+shape.options.imgID).src;
+		     var src=document.getElementById(shape.options.imgID).src;
 		     appendData += '										     <img class="sid_ovr_img" src="'+src+'=s50"/></div>';										  
 		} else {
 	        appendData += '										     <canvas  width="50" height="50" class="sid_ovr_canvas" id="sb_canvas-'+shape.sid+'"></canvas></div>';
