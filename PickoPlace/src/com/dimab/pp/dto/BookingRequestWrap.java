@@ -1,7 +1,10 @@
 package com.dimab.pp.dto;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+
+import com.dimab.pp.login.GenericUser;
 
 public class BookingRequestWrap {
 	  List<BookingRequest> bookingList = new ArrayList<BookingRequest>();
@@ -9,17 +12,46 @@ public class BookingRequestWrap {
 	  String testID;
 	  String bookID;
 	  Long dateSeconds;
+	  GenericUser user;
 	  Integer time;
 	  Integer period;
 	  int clientOffset;
 	  double placeOffcet;
 	  String clientid;
 	  int weekday;
+	  Date placeLocalTime= new Date();
 	  String textRequest = new String();
 	  int num;
+	  String userEntityKeyString;
 	  
 	  
 	  
+	public String getUserEntityKeyString() {
+		return userEntityKeyString;
+	}
+	public void setUserEntityKeyString(String userEntityKeyString) {
+		this.userEntityKeyString = userEntityKeyString;
+	}
+	public Integer getTotalPersons() {
+		Integer persons = 0;
+		for(BookingRequest singlePlace : bookingList) {
+			persons+=singlePlace.getPersons();
+		}
+		return persons;
+	}
+	public Date getPlaceLocalTime() {
+		return placeLocalTime;
+	}
+	public void setPlaceLocalTime(Date placeLocalTime) {
+		this.placeLocalTime = placeLocalTime;
+	}
+ 
+	public GenericUser getUser() {
+		return user;
+	}
+	public void setUser(GenericUser user) {
+		this.user = user;
+	}
 	public int getNum() {
 		return num;
 	}

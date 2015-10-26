@@ -762,7 +762,7 @@ CanvasState.prototype.draw = function() {
 				   fillY = 0;
 				}	 
 
-                  dbRoundRect(ctx,fillX,fillY,mySel.w+10,mySel.h+10,"#00FF99","white",0,1,2,15);
+                 // dbRoundRect(ctx,fillX,fillY,mySel.w+10,mySel.h+10,"#00FF99","white",0,1,2,15);
 			   if (mySel.angle != 0) {
 				
 			   }	

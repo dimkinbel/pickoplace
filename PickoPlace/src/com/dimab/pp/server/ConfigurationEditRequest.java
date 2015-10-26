@@ -299,21 +299,21 @@ public class ConfigurationEditRequest extends HttpServlet {
 			}
 			String placeFax;
 			if (userCanvasState.getProperty("placeFax")!= null) {
-				placeFax   = "";
-			} else {
 				placeFax   = (String)userCanvasState.getProperty("placeFax");
+			} else {
+				placeFax   = "";
 			}
 			String placeMail ;
 			if (userCanvasState.getProperty("placeMail") != null) {
-				placeMail  = "";
-			} else {
 				placeMail  = (String)userCanvasState.getProperty("placeMail");
+			} else {
+				placeMail  = "";
 			}
 			String placeURL ;
 			if (userCanvasState.getProperty("placeURL") != null) {
-				placeURL   = "";
-			} else {
 				placeURL   = (String)userCanvasState.getProperty("placeURL");
+			} else {
+				placeURL   = "";
 			}
 			String placeDescription  = "";
 			if (userCanvasState.getProperty("placeDescription") != null) {

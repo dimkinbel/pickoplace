@@ -111,8 +111,8 @@ function updatePageView() {
 		  
 		  $("#fb_logout_div").show();
 		  $("#go_logout_div").hide();
-		  $('#facebook_img').attr('src',"http://graph.facebook.com/" + fudata.id + "/picture");
-		  $("#facebook_image_wrap").show();
+		  $('#fg_profile_img').attr('src',"http://graph.facebook.com/" + fudata.id + "/picture");
+		  $("#fg_profile_image_wrap").show();
 		  setSessionData(function(result) {
 			   if(result) {
 				  loadFuture(10);
@@ -131,7 +131,8 @@ function updatePageView() {
 		  
 		  $("#fb_logout_div").hide();
 		  $("#go_logout_div").show();
-		  $("#facebook_image_wrap").hide();
+		  $('#fg_profile_img').attr('src',gudata.image.url);
+		  $("#fg_profile_image_wrap").show();
 		  setSessionData(function(result) {
 			   if(result) {
 				  loadFuture(10);
@@ -142,7 +143,7 @@ function updatePageView() {
 		  //Not connected
 		  console.log("update_no_connected");
 		  location.href = "/welcome.jsp";
-		  
+		  $("#fg_profile_image_wrap").hide();
 	  }
 }
 </script>
@@ -156,11 +157,11 @@ function updatePageView() {
 				<div id="header">
 					<div id="logo_"><img src="img/pplogo.png" id="pplogoo"/></div>
 					<div class="login_in_header_wrap">
-						<div id="facebook_image_wrap" >
-	                         <div id="facebook_image_inner" >
-	                            <img id="facebook_img" src="" >
-	                         </div>  
-	                     </div>
+						<div id="fg_profile_image_wrap" >
+                         <div id="fg_profile_image_inner" >
+                            <img id="fg_profile_img" src="" >
+                         </div>  
+                       </div>
 					   	<table id="login_tbl_a" cellspacing="0" cellpadding="0" style=" border-collapse: collapse">
 				             <tr >
 							    <td id="login_prop" style="display:none">

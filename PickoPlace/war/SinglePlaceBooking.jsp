@@ -224,8 +224,8 @@ function updatePageView() {
 		  $("#login_info_resp_db").html(fudata.first_name);
 		  $("#blcon_r").show();
 		  $("#lpr_b").hide();
-		  $('#facebook_img').attr('src',"http://graph.facebook.com/" + fudata.id + "/picture");
-		  $("#facebook_image_wrap").show();
+		  $('#fg_profile_img').attr('src',"http://graph.facebook.com/" + fudata.id + "/picture");
+		  $("#fg_profile_image_wrap").show();
 
 	  } else if (gconnected==true) {
 		  //Connected To Google
@@ -244,7 +244,9 @@ function updatePageView() {
 		  $("#login_info_resp_db").html(gudata.name.givenName);
 		  $("#blcon_r").show();
 		  $("#lpr_b").hide();
-		  $("#facebook_image_wrap").hide();
+		  
+		  $('#fg_profile_img').attr('src',gudata.image.url);
+		  $("#fg_profile_image_wrap").show();
 	  } else {
 		  //Not connected
 		  
@@ -260,7 +262,7 @@ function updatePageView() {
 		  $("#login_info_resp_db").empty();
 		  $("#blcon_r").hide();
 		  $("#lpr_b").show();
-		  $("#facebook_image_wrap").hide();
+		  $("#fg_profile_image_wrap").hide();
 	  }
 }
 
@@ -418,10 +420,10 @@ function SIapplyBooking() {
 		</div>
 	  </div>
        <div class="login_in_header_wrap">
-            <div id="facebook_image_wrap" >
-                         <div id="facebook_image_inner" >
-                            <img id="facebook_img" src="" >
-                         </div>  
+            <div id="fg_profile_image_wrap" >
+                <div id="fg_profile_image_inner" >
+                   <img id="fg_profile_img" src="" >
+                </div>  
             </div>
 					   	<table id="login_tbl_a" cellspacing="0" cellpadding="0" style=" border-collapse: collapse">
 				             <tr >

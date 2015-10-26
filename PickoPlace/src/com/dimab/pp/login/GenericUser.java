@@ -15,6 +15,24 @@ public class GenericUser {
 			return "__";
 		}
 	}
+	public String getName(){
+		if(google) {
+			return gouser.getGiven_name();
+		} else if (facebook) {
+			return fbuser.getFirst_name();
+		} else {
+			return "__";
+		}
+	}
+	public String getFamily(){
+		if(google) {
+			return gouser.getFamily_name();
+		} else if (facebook) {
+			return fbuser.getLast_name();
+		} else {
+			return "__";
+		}
+	}
 	public FBmeResponseJSON getFbuser() {
 		return fbuser;
 	}
