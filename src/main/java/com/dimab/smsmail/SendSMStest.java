@@ -1,4 +1,6 @@
 package com.dimab.smsmail;
+
+/* todo(egor): review
 import org.smslib.AGateway;
 import org.smslib.IGatewayStatusNotification;
 import org.smslib.IOutboundMessageNotification;
@@ -9,8 +11,10 @@ import org.smslib.AGateway.GatewayStatuses;
 import org.smslib.smpp.BindAttributes;
 import org.smslib.smpp.BindAttributes.BindType;
 import org.smslib.smpp.jsmpp.JSMPPGateway;
+*/
 
 public class SendSMStest {
+/*
 	public void doIt() throws Exception
 	{
 		GatewayStatusNotification statusNotification = new GatewayStatusNotification();
@@ -51,4 +55,5 @@ public class SendSMStest {
 			System.out.println(">>> Gateway Status change for " + gateway.getGatewayId() + ", OLD: " + oldStatus + " -> NEW: " + newStatus);
 		}
 	}
+*/
 }

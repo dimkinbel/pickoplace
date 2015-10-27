@@ -9,12 +9,9 @@ import java.nio.channels.Channels;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import org.apache.tools.ant.types.CommandlineJava.SysProperties;
 
 import com.dimab.pp.dto.BookingRequest;
 import com.dimab.pp.dto.BookingRequestWrap;
@@ -29,15 +26,12 @@ import com.dimab.pp.dto.UserPlace;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
-import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.GeoPt;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Text;
-import com.google.appengine.api.datastore.Transaction;
-import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
@@ -765,5 +759,4 @@ public boolean UpdateFreePlaceRemoveBooking(Entity bookEntity , List<BookingRequ
 		}
 		return outmap;
 	}
-
 }
