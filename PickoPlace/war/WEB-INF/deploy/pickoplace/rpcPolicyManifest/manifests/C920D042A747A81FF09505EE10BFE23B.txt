@@ -1,2 +1,0 @@
-serviceClass: com.dimab.pp.client.GreetingService
-path: 01B72AA3BC42903FFFD2225ADEFDBE0D.gwt.rpc
