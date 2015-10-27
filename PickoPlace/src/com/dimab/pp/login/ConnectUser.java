@@ -157,6 +157,7 @@ public class ConnectUser extends HttpServlet {
 			    	userEntity.setProperty("FacebookAccount","");
 			    	userEntity.setProperty("LoggedBy","Google");
 			    	userEntity.setProperty("UserID", random);
+			    	userEntity.setProperty("emailsend", true);
 			    	userEntity.setUnindexedProperty("firstEntry", date.toString());
 			    	userEntity.setUnindexedProperty("lastDateInSec", date.getTime()/1000);
 			    	userEntity.setUnindexedProperty("lastDate",  date.toString());
@@ -176,6 +177,9 @@ public class ConnectUser extends HttpServlet {
 			    	result.setProperty("GoogleAccount",true);
 			    	result.setUnindexedProperty("lastDateInSec", date.getTime()/1000);
 			    	result.setUnindexedProperty("lastDate",  date.toString());
+			    	if(result.getProperty("emailsend")==null) {
+			    		result.setProperty("emailsend", true);
+			    	}
 			    	if(result.getProperty("phone")!=null) {
 			    		String phone = (String) result.getProperty("phone");
 				    	if(phone.isEmpty()) {
@@ -236,6 +240,7 @@ public class ConnectUser extends HttpServlet {
 						userEntity.setProperty("FacebookAccount",true);
 						userEntity.setProperty("LoggedBy","Facebook");
 						userEntity.setProperty("UserID", random);
+						userEntity.setProperty("emailsend", true);
 						userEntity.setUnindexedProperty("firstEntry", date.toString());
 						userEntity.setUnindexedProperty("lastDateInSec", date.getTime()/1000);
 						userEntity.setUnindexedProperty("lastDate",  date.toString());
@@ -253,6 +258,10 @@ public class ConnectUser extends HttpServlet {
 						result.setProperty("FacebookAccount",true);
 						result.setUnindexedProperty("lastDateInSec", date.getTime()/1000);
 						result.setUnindexedProperty("lastDate",  date.toString());  
+
+						if(result.getProperty("emailsend")==null) {
+				    		result.setProperty("emailsend", true);
+				    	}
 						if(result.getProperty("phone")!=null) {
 				    		String phone = (String) result.getProperty("phone");
 					    	if(phone.isEmpty()) {

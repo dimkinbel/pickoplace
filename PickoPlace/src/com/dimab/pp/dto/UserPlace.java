@@ -1,5 +1,7 @@
 package com.dimab.pp.dto;
 
+import java.util.List;
+
 public class UserPlace {
 	   String userRand;
 	   String place;
@@ -11,7 +13,36 @@ public class UserPlace {
 	   String PlaceID;
 	   int shapesCount;
 	   int floors;
-	   
+	   List<PPSubmitObject> Canvasfloors;
+
+	public String getNameBySid(String sid) {
+		String name = "";
+		for(PPSubmitObject floor:this.Canvasfloors) {
+			for(CanvasShape shape : floor.getShapes()) {
+				if(shape.getSid().equals(sid)) {
+					return shape.getBooking_options().getGivenName();
+				}
+			}
+		}
+		return name;
+	}
+	public String getFloorBySid(String sid) {
+		String flor = "";
+		for(PPSubmitObject floor:this.Canvasfloors) {
+			for(CanvasShape shape : floor.getShapes()) {
+				if(shape.getSid().equals(sid)) {
+					return floor.getFloor_name();
+				}
+			}
+		}
+		return flor;
+	}
+	public List<PPSubmitObject> getCanvasfloors() {
+		return Canvasfloors;
+	}
+	public void setCanvasfloors(List<PPSubmitObject> canvasfloors) {
+		Canvasfloors = canvasfloors;
+	}
 	public int getFloors() {
 		return floors;
 	}

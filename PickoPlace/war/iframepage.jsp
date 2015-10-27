@@ -333,7 +333,7 @@ function SIapplyBooking() {
       <%} %>
             
       <img  id="server_main_logo" src="img/pp.png"/>
-      <img  id="server_v_logo" src="img/vlogo2.png"/>
+      <img  id="server_v_logo" src="img/vlogo2.png"/>HELLO
       <img  id="server_passed_back" src="img/back_passed.png"/>
       <img  id="server_clock20" src="img/clock20.png"/>
       <%for ( JsonimgID_2_data imgID2byte64 : responseJSON.getPlacePhotos()) {

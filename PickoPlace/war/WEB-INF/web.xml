@@ -282,6 +282,41 @@
        <url-pattern>/userLoginFacebook</url-pattern>
     </servlet-mapping>
 
+	<servlet>
+		<servlet-name>ppunsubscribe</servlet-name>
+		<jsp-file>/unsubscribepage.jsp</jsp-file>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ppunsubscribe</servlet-name>
+		<url-pattern>/ppunsubscribe</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>unsubscribe</servlet-name>
+		<servlet-class>com.dimab.smsmail.Unsubscribe</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>unsubscribe</servlet-name>
+		<url-pattern>/unsubscribe</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>frommailaction</servlet-name>
+		<jsp-file>/frommailroute.jsp</jsp-file>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>frommailaction</servlet-name>
+		<url-pattern>/frommailaction</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>userbookings</servlet-name>
+		<jsp-file>/my_bookings.jsp</jsp-file>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>userbookings</servlet-name>
+		<url-pattern>/userbookings</url-pattern>
+	</servlet-mapping>
 
 	<servlet>
 		<servlet-name>toolkitWidget</servlet-name>

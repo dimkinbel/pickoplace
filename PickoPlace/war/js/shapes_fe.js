@@ -718,27 +718,31 @@ CanvasState.prototype.draw = function() {
 	
 
 		// draw multiple selection
-		if(this.listSelected.length > 0) {
-		   for (var i = 0 ; i < this.listSelected.length ; i ++) {
-				mySel = this.listSelected[i];
-				var fillX = mySel.x ;
-				var fillY = mySel.y ;
-			  ctx.save();
+	if(this.listSelected.length > 0) {
+	    for (var s = 0; s < this.listSelected.length ; s++) {
+			  mySel = this.listSelected[s];
+			  var fillX = mySel.x ;
+			  var fillY = mySel.y ;
 			  if (mySel.angle != 0) {
-				   
+				   ctx.save();
 				   ctx.translate(mySel.x , mySel.y );
 				   ctx.rotate(mySel.angle * Math.PI / 180);
 				   fillX =  0;
 				   fillY = 0;
-				}	 
-				  dbRoundRect(ctx,fillX,fillY,mySel.w+10,mySel.h+10,"#00FF99","white",0,1,2,15);
-
+			  }
 			   if (mySel.angle != 0) {
-				
-			   }	
-			   ctx.restore();		   
-		   }
+				  ctx.restore();
+			   }
+			   var mins;
+			   if (mySel.h < 50 || mySel.w < 50) {
+				   mins = (mySel.h < mySel.w ? mySel.h : mySel.w) * 0.8;
+
+			   } else {
+				   mins = 40;
+			   }
+			   ctx.drawImage(document.getElementById("server_v_logo"),mySel.x ,mySel.y-mins,mins,mins);
 		}
+	}
 		// ** Add stuff you want drawn on top all the time here **
     
     this.valid = true;

@@ -54,6 +54,12 @@ public PlaceInfo getPlaceInfo (DatastoreService datastore , Entity csEntity , in
 		if(csEntity.getProperty("placeDescription") != null) {
 			placeInfo.setDescription((String)csEntity.getProperty("placeDescription"));			
 		}
+  	    String placeURL ;
+		if (csEntity.getProperty("placeURL") == null) {
+			placeURL   = "";
+		} else {
+			placeURL   = (String)csEntity.getProperty("placeURL");
+		}
 		placeInfo.setType((ArrayList<String>)csEntity.getProperty("PlaceType"));
 		placeInfo.setSubtype((ArrayList<String>)csEntity.getProperty("PlaceSubType"));
 		String weekdays = (String)csEntity.getProperty("workinghours");		
@@ -101,12 +107,7 @@ public PlaceInfo getPlaceInfo (DatastoreService datastore , Entity csEntity , in
   	    String servingUrl = is.getServingUrl(ServingUrlOptions.Builder.withGoogleStorageFileName(filename).secureUrl(true));
   	    servingUrl = servingUrl + "=s"+ovrv_width;
   	    
-  	    String placeURL ;
-		if (csEntity.getProperty("placeURL") != null) {
-			placeURL   = "";
-		} else {
-			placeURL   = (String)csEntity.getProperty("placeURL");
-		}
+
 		// Update logo and images
 		String logoUrl = "";
 		if (csEntity.getProperty("logo")!= null && !((String)csEntity.getProperty("logo")).isEmpty() && (String)csEntity.getProperty("logo")!= ""){ 
@@ -192,7 +193,7 @@ public PlaceInfo getPlaceInfo (DatastoreService datastore , Entity csEntity , in
         placeInfo.setMainFloorName(mainFloorName);
         placeInfo.setPlaceMail(mail);
         placeInfo.setPlacePhone(phone);
-   
+
 	  return placeInfo;
   }
   
@@ -208,11 +209,15 @@ public PlaceInfo getPlaceInfo (DatastoreService datastore , Entity csEntity , in
 		String Address = (String) csEntity.getProperty("address");
 		String mail = new String();
 		String phone = new String();
+		String url = new String();
 		if(csEntity.getProperty("placeMail") != null) {
 			mail = (String) csEntity.getProperty("placeMail");
 		}
 		if(csEntity.getProperty("placePhone") != null) {
 			phone = (String) csEntity.getProperty("placePhone");
+		}
+		if(csEntity.getProperty("placeURL") != null) {
+			url = (String) csEntity.getProperty("placeURL");
 		}
 		Integer bookableShapes = 0;
 	
@@ -245,14 +250,14 @@ public PlaceInfo getPlaceInfo (DatastoreService datastore , Entity csEntity , in
       userPlace.setUserRand(userRnd);
       userPlace.setShapesCount(bookableShapes);
       userPlace.setFloors(floors.size());
-      
+      userPlace.setCanvasfloors(floors);
       placeInfo.setUserPlace(userPlace);
       placeInfo.setPlaceOffcet(placeOffset);
       placeInfo.setMainFloorID(mainFloorID);
       placeInfo.setMainFloorName(mainFloorName);
       placeInfo.setPlaceMail(mail);
       placeInfo.setPlacePhone(phone);
- 
+      placeInfo.setPlaceSiteURL(url);
 	  return placeInfo;
 }
 }

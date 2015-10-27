@@ -15,14 +15,17 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.dimab.pp.channel.ChannelMessageFactory;
 import com.dimab.pp.database.FreePlaceFactory;
+import com.dimab.pp.database.GetPlaceInfoFactory;
 import com.dimab.pp.dto.BookingListForJSON;
 import com.dimab.pp.dto.BookingRequest;
 import com.dimab.pp.dto.BookingRequestWrap;
+import com.dimab.pp.dto.PlaceInfo;
 import com.dimab.pp.dto.SingleTimeRangeLong;
 import com.dimab.pp.dto.WeekDayOpenClose;
 import com.dimab.pp.dto.WorkingWeek;
 import com.dimab.pp.login.CheckTokenValid;
 import com.dimab.pp.login.GenericUser;
+import com.dimab.smsmail.MailSenderFabric;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -81,7 +84,7 @@ public class ClientPlaceBooking extends HttpServlet {
 		Gson gson = new Gson();
 		BookingRequestWrap bookingRequestsWrap = gson.fromJson(jsonString,BookingRequestWrap.class);
 		map.put("bid", bookingRequestsWrap.getBookID());
-		bookingRequestsWrap.setClientid(username_email);
+
 		List<BookingRequest> bookingRequests = bookingRequestsWrap.getBookingList();
 
 		Long fromSeconds = bookingRequestsWrap.getDateSeconds() + bookingRequestsWrap.getTime();
@@ -90,7 +93,10 @@ public class ClientPlaceBooking extends HttpServlet {
 		Long secondsRelativeToClient = fromSeconds - bookingRequestsWrap.getClientOffset()*60 - (long)(bookingRequestsWrap.getPlaceOffcet()*3600);	
 		Date PlaceLocalTime = new Date((secondsRelativeToClient + (long)(bookingRequestsWrap.getPlaceOffcet()*3600))*1000);
 		
-		
+		bookingRequestsWrap.setClientid(username_email);
+		bookingRequestsWrap.setUser(genuser);
+		bookingRequestsWrap.setPlaceLocalTime(PlaceLocalTime);
+
 		// Get CanvasState by PID
 		Filter pidFilter = new  FilterPredicate("placeUniqID",FilterOperator.EQUAL,bookingRequestsWrap.getPid());
 		Query sq_ = new Query("CanvasState").setFilter(pidFilter);
@@ -259,6 +265,15 @@ public class ClientPlaceBooking extends HttpServlet {
   		if((boolean)map.get("added")==true) {
   			FreePlaceFactory freePlaceFactory = new FreePlaceFactory();
   			freePlaceFactory.UpdateFreePlace(canvasEntity ,shapesEntities ,bookingRequestsWrap ,datastore );
+
+  			GetPlaceInfoFactory placeFactory = new GetPlaceInfoFactory();
+  			PlaceInfo placeInfo = placeFactory.getPlaceInfoNoImage(datastore, canvasEntity);
+  			MailSenderFabric mailFabric  = new MailSenderFabric();
+  			if(mailFabric.isSubscribed(datastore, genuser)) {
+  				String userKeyString = mailFabric.getUserKey(datastore, genuser);
+  				bookingRequestsWrap.setUserEntityKeyString(userKeyString);
+  				mailFabric.SendConfirmationEmail("pickoplace@appspot.gserviceaccount.com", genuser.getEmail(), bookingRequestsWrap, placeInfo);
+  			}
   		}
   		txn.commit();
   		response.setContentType("application/json");

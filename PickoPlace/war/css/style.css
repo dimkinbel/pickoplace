@@ -4455,13 +4455,13 @@ box-shadow: rgba(45, 45, 45, 0.32) 0px 0px 10px;
 }
 #timeline_buttons_wrap {
   position: absolute;
-  z-index: 3;
-  bottom: 3px;
+  z-index: 15;
+  bottom: 0px;
   left: 0px;
   background-color: rgba(59, 59, 59, 1);
   border: 1px solid rgb(48, 48, 48);
   /* padding-left: 230px; */
-  box-shadow: 0 -3px 5px rgba(0, 0, 0, 0.39);
+  /*box-shadow: 0 -3px 5px rgba(0, 0, 0, 0.39);*/
   text-align: center;
   border-bottom-left-radius: 6px;
   border-bottom-right-radius: 6px;

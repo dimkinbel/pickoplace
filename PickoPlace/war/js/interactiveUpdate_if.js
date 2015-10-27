@@ -29,7 +29,7 @@ function drawConfirmation() {
 			  }
 		  }
 	  }
-      var shapeCanvases = {};
+      var shapeCanvases = [];
 		
 	  if (1) {
 

@@ -26,6 +26,17 @@ public class PlaceInfo {
        List<JsonimgID_2_data> placeImageThumbnails = new ArrayList<JsonimgID_2_data>();
        PlaceRatingSummary ratingSummary;
 
+
+	public PlaceRatingSummary getRatingSummary() {
+		return ratingSummary;
+	}
+
+	public void setRatingSummary(PlaceRatingSummary ratingSummary) {
+		this.ratingSummary = ratingSummary;
+	}
+
+
+
 	public String getDescription() {
 		return description;
 	}
