@@ -18,6 +18,12 @@
         <maven.compiler.showDeprecation>true</maven.compiler.showDeprecation>
     </properties>
 
+    <scm>
+        <connection>scm:git:git://github.com/dimkinbel/pickoplace.git</connection>
+        <developerConnection>scm:git:git@github.com/dimkinbel/pickoplace.git</developerConnection>
+        <url>https://github.com/dimkinbel/pickoplace/</url>
+    </scm>
+
     <prerequisites>
         <maven>3.3.3</maven>
     </prerequisites>
