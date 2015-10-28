@@ -10,7 +10,6 @@
     <artifactId>pickoplace</artifactId>
 
     <properties>
-        <app.id>pickoplace-egor</app.id> <!--todo(egor): extract to settings.xml-->
         <app.version>1</app.version>
         <appengine.version>1.9.27</appengine.version>
         <gcloud.plugin.version>2.0.9.83.v20151021</gcloud.plugin.version>

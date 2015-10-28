@@ -27,7 +27,6 @@
 
     <script type="text/javascript" src="js/mainPageMap.js"></script>   
 	<script type="text/javascript" src="js/search.js" ></script>
-
     <script type="text/javascript" src="js/upDownSpinner.js" ></script>
     <script type="text/javascript" src="js/searchWizard.js" ></script>
     
