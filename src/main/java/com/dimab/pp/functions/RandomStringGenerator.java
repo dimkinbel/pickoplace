@@ -2,7 +2,7 @@ package com.dimab.pp.functions;
 
 public class RandomStringGenerator {
 	
-	public static enum Mode {
+	public  enum Mode {
 	    ALPHA, ALPHANUMERIC, NUMERIC 
 	}
 	
@@ -31,6 +31,9 @@ public class RandomStringGenerator {
 		for (int i = 0; i < length; i++) {
 			double index = Math.random() * charactersLength;
 			buffer.append(characters.charAt((int) index));
+		}
+		if(Character.toString(buffer.charAt(0)).matches("0")) {
+			buffer.setCharAt(0,'1');
 		}
 		return buffer.toString();
 	}
