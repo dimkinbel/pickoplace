@@ -318,14 +318,7 @@
 		<url-pattern>/userbookings</url-pattern>
 	</servlet-mapping>
 
-	<servlet>
-		<servlet-name>toolkitWidget</servlet-name>
-		<jsp-file>/toolkit.jsp</jsp-file>
-	</servlet> 
-	<servlet-mapping>
-		<servlet-name>toolkitWidget</servlet-name>
-		<url-pattern>/toolkitWidget</url-pattern>
-	</servlet-mapping>
+
 
     <servlet>
        <servlet-name>checkGoogleStatus</servlet-name>
