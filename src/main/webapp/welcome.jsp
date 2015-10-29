@@ -23,15 +23,11 @@
 	<script type="text/javascript" src="js/dropit.js" ></script>
 	<script type="text/javascript" src="js/interactive.js" ></script>
 
-	
-
     <script type="text/javascript" src="js/mainPageMap.js"></script>   
 	<script type="text/javascript" src="js/search.js" ></script>
     <script type="text/javascript" src="js/upDownSpinner.js" ></script>
     <script type="text/javascript" src="js/searchWizard.js" ></script>
-    
- 
-	
+
 	<link rel="stylesheet" href="js/jquery-ui-1.11.2.custom/jquery-ui.css" type="text/css" media="screen" />
 	<link rel="stylesheet" href="css/browserWrap.css" type="text/css" media="screen" />
 	<link rel="stylesheet" href="css/login.css" type="text/css" media="screen" />

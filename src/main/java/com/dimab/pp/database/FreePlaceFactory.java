@@ -415,6 +415,7 @@ public boolean UpdateFreePlaceRemoveBooking(Entity bookEntity , List<BookingRequ
        GcsInputChannel readChannel = null;
        Gson gson = new Gson(); 
 	   GcsFilename Sname = new GcsFilename(bucketName, fileName);
+	   System.out.println(Sname);
 	   try {
 			  if(gcsService.getMetadata(Sname)==null) {
 				  // Not occupied place
