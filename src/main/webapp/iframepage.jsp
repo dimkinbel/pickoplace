@@ -6,7 +6,7 @@
     import = "com.google.gson.reflect.TypeToken"
     import = "java.util.*"
     import = "java.lang.reflect.Type"%>
-<!DOCTYPE >
+<!DOCTYPE html>
    <%
    Gson gson = new Gson();
    
