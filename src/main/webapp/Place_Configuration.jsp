@@ -526,7 +526,7 @@ function updatePageView() {
 			<div id="tour_buttons_wrap_">
 			  <div class="tour_menu_button" id="save_configuration" onclick="SIsaveState()">
 			     <span id="ajax_save_hide">Save</span>			     
-			     <img class="sfdcvsadd" id="ajax_save_img_conf" style="display:none" src="js/saving.GIF">
+			     <img class="sfdcvsadd" id="ajax_save_img_conf" style="display:none" src="img/gif/saving.GIF">
 			  </div>
 			  <div class="tour_menu_button" id="back_drawing" onclick="editPlaceAndSave('<%=placeID%>_editform')">Edit Place</div>
 			  <div class="tour_menu_button" id="goto_frame" onclick="SaveAndIFrame('<%=placeID%>_iframeform')">iFrame Editor</div>

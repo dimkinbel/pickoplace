@@ -163,7 +163,7 @@ width: 245px;
 <div id="flowpagewrap" style="width:100%;height:100%">
   <div id="ppwelcomeflow">PickoPlace authorization request</div>
   <div id="flow_ajax_spinner" style="width:200px;padding-top:100px;margin:auto">
-    <img  style="width: 100px;" src="js/ajaxSpinner.gif" />
+    <img  style="width: 100px;" src="img/gif/ajaxSpinner.gif" />
   </div>
   <div id="loginbuttonsflow" style="margin:auto;display:none;">
   		<table id="sign_in_table_" cellspacing="0" cellpadding="0" style="border-collapse: collapse">

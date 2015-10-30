@@ -231,7 +231,7 @@ $(document).on("click",".stopclick", function (event) {
 		     <td class="ph_pad_top ph_pad_bot"><!-- $("#verification_code").prop("readonly",true); -->
 		       <input type="number" id="verification_code" readonly/><div id="verification_submit" style="display:none">SUBMIT</div>
 		       <div id="verification_submit_inactive">SUBMIT
-		         <img id="smsa_loader" src="js/fr_load.gif" style="display:none;">
+		         <img id="smsa_loader" src="img/gif/fr_load.gif" style="display:none;">
 		       </div>
 		     </td>
 		   </tr>
@@ -257,14 +257,14 @@ $(document).on("click",".stopclick", function (event) {
                       <div class="left" style="position:relative">
 
 			                  <input  type="text" name="buisnessName" id="placeSearchName"  placeholder="place name (opt.)"/>
-			                  <img id="autocompleteSearchAjax" src="/js/ajax-loader-round.gif" style="display:none"/>
+			                  <img id="autocompleteSearchAjax" src="img/gif/ajax-loader-round.gif" style="display:none"/>
 
                       </div>
             
                       <div class="left">
                              <div id="search_button">
                                  <div class="material-icons" id="search_material">search</div>
-                                 <img id="frame_book_ajax_gif_welcome" src="/js/ajax-loader-round.gif" style="display:none"/>
+                                 <img id="frame_book_ajax_gif_welcome" src="img/gif/ajax-loader-round.gif" style="display:none"/>
                              </div>
 						     
                       </div>
@@ -396,7 +396,7 @@ $(document).on("click",".stopclick", function (event) {
 					   <tr >
 					     <td id="name_tr_wiz">
 						   <div style="position:relative"><input type="text" id="wiz_name_input" class="wiz_address"  placeholder="Place name (opt.)"/>
-						      <img id="autocompleteWizAjax" src="js/ajax-loader-round.gif" style="display:none"/>
+						      <img id="autocompleteWizAjax" src="img/gif/ajax-loader-round.gif" style="display:none"/>
 						   </div>
 						 </td>
 					   </tr>
@@ -414,13 +414,13 @@ $(document).on("click",".stopclick", function (event) {
        
 			         </div>
 			      	 <div id="welcome-load-more" class="welcome_load_more"><div id="load_more-text">LOAD MORE</div>
-			              <img id="welcome_loader" src="js/fr_load.gif" style="position: relative; margin-top: 5px;display:none"/>
+			              <img id="welcome_loader" src="img/gif/fr_load.gif" style="position: relative; margin-top: 5px;display:none"/>
 			         </div>
 			         <div id="search-load-more"  class="welcome_load_more" style="display:none"><div id="search_more-text">LOAD MORE</div>
-			              <img id="search_loader" src="js/fr_load.gif" style="position: relative; margin-top: 5px;display:none"/>
+			              <img id="search_loader" src="img/gif/fr_load.gif" style="position: relative; margin-top: 5px;display:none"/>
 			         </div>
 			         <div id="wiz-load-more"  class="welcome_load_more" style="display:none"><div id="wiz_more-text">LOAD MORE</div>
-			              <img id="wiz_loader" src="js/fr_load.gif" style="position: relative; margin-top: 5px;display:none"/>
+			              <img id="wiz_loader" src="img/gif/fr_load.gif" style="position: relative; margin-top: 5px;display:none"/>
 			         </div>
 			      </div>
 				</div>

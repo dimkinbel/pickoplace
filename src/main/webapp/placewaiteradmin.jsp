@@ -567,7 +567,7 @@ $(document).on("click",".stopclick", function (event) {
 					 </tr>
 					 <tr>
 					   <td><div id="wl_load_dates_button">update</div>
-					       <div id="wa_load_ajax" style="display:none;height: 20px;"><img class="sb_ajax_gif_small" src="/js/299.GIF" /></div>
+					       <div id="wa_load_ajax" style="display:none;height: 20px;"><img class="sb_ajax_gif_small" src="img/gif/299.GIF" /></div>
 					   </td>
 					 </tr>
 					</table>

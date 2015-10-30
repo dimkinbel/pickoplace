@@ -337,7 +337,7 @@ $(document).on("click",".stopclick", function (event) {
 			      <div class="material-icons material_save">save</div>SAVE
 			 </div>
 			 <div id="savingPH"  class="save_buttons" style="display:none"> 
-				  <img class="sfdcvsadd" src="js/saving.GIF">
+				  <img class="sfdcvsadd" src="img/gif/saving.GIF">
 			 </div>
 			 <div id="drawingConfigButton_disabled"  class="save_buttons" >ADMIN</div>
 			 <div id="drawingConfigButton" class="save_buttons" style="display:none" onclick="SIPlaceConfiguration('<%=(String)request.getAttribute("placeUniqID")%>')"><div class="material-icons material_config">tune</div>ADMIN</div>

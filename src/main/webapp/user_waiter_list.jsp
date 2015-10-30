@@ -157,7 +157,7 @@ function updatePageView() {
 		    <td class="left_content_td"></td>
 			<td id="content_td_ac">
 			  <div class="fp_head" >Places available</div>
-			  <div class="sb_loading" style="display:none" id="sb_ajax_gif_future"><img class="sb_ajax_gif" src="/js/299.GIF" /></div>
+			  <div class="sb_loading" style="display:none" id="sb_ajax_gif_future"><img class="sb_ajax_gif" src="img/gif/299.GIF" /></div>
               
               <div id="waiter_wrap_list">
               

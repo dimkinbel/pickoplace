@@ -491,7 +491,7 @@ function SIapplyBooking() {
 		     <td class="ph_pad_top ph_pad_bot"><!-- $("#verification_code").prop("readonly",true); -->
 		       <input type="number" id="verification_code" readonly/><div id="verification_submit" style="display:none">SUBMIT</div>
 		       <div id="verification_submit_inactive">SUBMIT
-		         <img id="smsa_loader" src="js/fr_load.gif" style="display:none;">
+		         <img id="smsa_loader" src="img/gif/fr_load.gif" style="display:none;">
 		       </div>
 		     </td>
 		   </tr>
@@ -526,7 +526,7 @@ function SIapplyBooking() {
 									<td class="book_btn_td" rowspan="2" id="buttons_book_col">
 									 	<div id="place_order_button" class="blue_e_button marginhor2" onclick="applyBookingPre()" style="display:''">BOOK</div>
 							            <div id="place_order_button_invalid" class="blue_e_button_invalid marginhor2" style="display:none"></div>
-							            <img id="frame_book_ajax_gif" src="js/ajax-loader-round.gif" style="display:none"/>
+							            <img id="frame_book_ajax_gif" src="img/gif/ajax-loader-round.gif" style="display:none"/>
 									</td>
 							  </tr>
 							  <tr id="book_fe_values">
