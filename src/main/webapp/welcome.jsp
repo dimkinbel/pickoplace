@@ -368,23 +368,23 @@ $(document).on("click",".stopclick", function (event) {
 								  <td id="time_picker_td">
 								    <div id="datepicker_from_wrap">
 									   <div id="dp_fh_wrap" class="left">
-									     <div id="dp_fh_up"><i class="material-icons wiz_arr wiz_arr_top wiz_arr_d">expand_less</i></div>
+									     <div id="dp_fh_up" class="dflex"><i class="material-icons wiz_arr wiz_arr_top wiz_arr_d">expand_less</i></div>
 										 <input type="text" id="from_h_inp" class="dp_wiz_time" readonly />
-										 <div id="dp_fh_down"><i class="material-icons wiz_arr wiz_arr_bot  wiz_arr_d">expand_more</i></div>
+										 <div id="dp_fh_down"  class="dflex"><i class="material-icons wiz_arr wiz_arr_bot  wiz_arr_d">expand_more</i></div>
 									   </div>
 									   <div id="h_dots">:</div>
 									   <div id="dp_fm_wrap" class="left">
-									     <div id="dp_fm_up"><i class="material-icons wiz_arr wiz_arr_top  wiz_arr_d">expand_less</i></div>
+									     <div id="dp_fm_up"  class="dflex"><i class="material-icons wiz_arr wiz_arr_top  wiz_arr_d">expand_less</i></div>
 										 <input type="text" id="from_m_inp" class="dp_wiz_time" readonly />
-										 <div id="dp_fm_down"><i class="material-icons wiz_arr wiz_arr_bot  wiz_arr_d">expand_more</i></div>
+										 <div id="dp_fm_down"  class="dflex"><i class="material-icons wiz_arr wiz_arr_bot  wiz_arr_d">expand_more</i></div>
 									   </div>
 									</div>
 								  </td>
 								  <td id="persons_picker_td">
 								      <div id="dp_pers_wrap" class="left">
-									     <div id="wper_up"><i class="material-icons wiz_arr wiz_arr_top  wiz_arr_p">expand_less</i></div>
+									     <div id="wper_up"  class="dflex"><i class="material-icons wiz_arr wiz_arr_top  wiz_arr_p">expand_less</i></div>
 										 <input type="text" id="w_per_inp" class="dp_wiz_pers" readonly />
-										 <div id="wper_don"><i class="material-icons wiz_arr wiz_arr_bot wiz_arr_p">expand_more</i></div>
+										 <div id="wper_don"  class="dflex"><i class="material-icons wiz_arr wiz_arr_bot wiz_arr_p">expand_more</i></div>
 									   </div>
 									   <div class="material-icons pers_material" style="display:none">supervisor_account</div>
 								  </td>

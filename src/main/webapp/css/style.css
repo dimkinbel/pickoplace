@@ -22,6 +22,9 @@ background-color:white;
 #result_wrapper {
 border:1px solid grey;
 }
+.dflex {
+display:flex;
+}
 .obj_mirror {
 border:1px solid red;
 }
