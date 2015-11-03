@@ -34,9 +34,7 @@ function updateCanvasShapes(canvas,canvasStateJSON) {
 	canvas.tileh = canvasStateJSON.state.tileh;
 	canvas.valid = false;
 	var shapes = canvasStateJSON.shapes;
-	var bgshapes = canvasStateJSON.bgshapes;
-
-	canvas.bgmode=false;
+	//alert(JSON.stringify(shapes, "", 4));
 	for (var ind in shapes) {
 		var shape = shapes[ind];
 		var booking_options;
@@ -121,12 +119,7 @@ function updateCanvasShapes(canvas,canvasStateJSON) {
 		      canvas.valid = false;
 		  }  else  if (shape.type == "image") {
 			  var options = JSON.parse(JSON.stringify(shape.options));
-			  var origImageID = "";
-			  if(options.imgID.match(/^server_/)) {
-				  origImageID = options.imgID;
-			  } else {
-			      origImageID = "server_"+options.imgID;
-			  }
+			  var origImageID = options.imgID;
 			  if (origImageID.match(/^user_img_/)) {    		  
 	    		  // If user image - it get already created user_img_RAND img element
 			  } else {
@@ -153,97 +146,6 @@ function updateCanvasShapes(canvas,canvasStateJSON) {
 		      canvas.valid = false;
 		  }
 	}
-	canvas.bgmode=true;
-	for (var ind in bgshapes) {
-		var shape = bgshapes[ind];
-		var booking_options;
-
-		 if (shape.type == "rectangle") {
-			 var options = JSON.parse(JSON.stringify(shape.options));
-			 var Sshape = new Shape(canvas, shape.x , shape.y , shape.w, shape.h, "rectangle" , options );
-			 Sshape.rotate = shape.rotate;
-			 Sshape.angle = shape.angle;
-			 Sshape.sid=shape.sid;
-			 
-			 canvas.addShape(Sshape);
-		     canvas.valid = false;
-		  } else if (shape.type == "round") {
-			  var options = JSON.parse(JSON.stringify(shape.options));
-		      var Sshape = new Shape(canvas, shape.x , shape.y , shape.w, shape.h, "round" , options );
-		      Sshape.rotate = shape.rotate;
-		      Sshape.angle = shape.angle;
-		      Sshape.sid=shape.sid;
-		      
-		      canvas.addShape(Sshape);
-		      canvas.valid = false;
-		  } else  if (shape.type == "circle") {
-			  var options = JSON.parse(JSON.stringify(shape.options));
-		      var Sshape = new Shape(canvas, shape.x , shape.y , shape.w, shape.h, "circle" , options );
-		      Sshape.rotate = shape.rotate;
-		      Sshape.angle = shape.angle;
-		      Sshape.sid=shape.sid;
-		      
-		      canvas.addShape(Sshape);
-		      canvas.valid = false;
-		  } else  if (shape.type == "trapex") {
-			  var options = JSON.parse(JSON.stringify(shape.options));
-		      var Sshape = new Shape(canvas, shape.x , shape.y , shape.w, shape.h, "trapex" , options );
-		      Sshape.rotate = shape.rotate;
-		      Sshape.angle = shape.angle;
-		      Sshape.sid=shape.sid;
-
-		      canvas.addShape(Sshape);
-		      canvas.valid = false;
-		  }  else  if (shape.type == "text") {
-			  var options = JSON.parse(JSON.stringify(shape.options));
-		      var Sshape = new Shape(canvas, shape.x , shape.y , shape.w, shape.h, "text" , options );
-		      Sshape.rotate = shape.rotate;
-		      Sshape.angle = shape.angle;
-		      Sshape.sid=shape.sid;
-
-		      canvas.addShape(Sshape);
-		      canvas.valid = false;
-		  }  else  if (shape.type == "line") {
-			  var options = JSON.parse(JSON.stringify(shape.options));
-		      var Sshape = new Shape(canvas, shape.x , shape.y , shape.w, shape.h, "line" , options );
-		      Sshape.rotate = shape.rotate;
-		      Sshape.angle = shape.angle;
-		      Sshape.sid=shape.sid;
-
-		      canvas.addShape(Sshape);
-		      canvas.valid = false;
-		  }  else  if (shape.type == "image") {
-			  var options = JSON.parse(JSON.stringify(shape.options));
-			  var origImageID = "";
-			  if(options.imgID.match(/^server_/)) {
-				  origImageID = options.imgID;
-			  } else {
-			      origImageID = "server_"+options.imgID;
-			  }
-
-			  if (origImageID.match(/^user_img_/)) {    		  
-	    		  // If user image - it get already created user_img_RAND img element
-			  } else {
-				 // if (document.getElementById(origImageID)==null) {
-					  // If no such ID already exists , we'll create it and src to uploaded image by server					  
-					  var mirrorID = "mirror_"+origImageID;
-					  options.imgID = mirrorID;
-				 // } else {
-					  // such image ID exists in a drawing tool
-				 // }
-			  }
-			  options.imgID = origImageID;
-		      var Sshape = new Shape(canvas, shape.x , shape.y , shape.w, shape.h, "image" , options );
-		      Sshape.rotate = shape.rotate;
-		      Sshape.angle = shape.angle;
-		      Sshape.sid=shape.sid;
-
-		      canvas.addShape(Sshape);
-		      canvas.valid = false;
-		  }
-	}
-	canvas.bgmode=false;
-	canvas.valid = false;
 	tl_canvas.valid = false;
 }
 function updateBackgroundImageByServer(stateid) {
@@ -430,7 +332,7 @@ function updateShapeImagesByServerData(imgID) {
     	  }
 
 }
-
+var timegrid;
 function UpdateHeader() {
    document.getElementById("header_place_name_").innerHTML  = document.getElementById("server_placeName").value + "," + document.getElementById("server_placeBranchName").value;
    document.getElementById("header_place_address_").innerHTML  = "("+document.getElementById("server_Address").value+")";  
@@ -443,6 +345,7 @@ function InitialCanvasTimeline(cid) {
  
  tl_canvas = new BCanvasState(document.getElementById(cid),from,to,offset);	
  timelinediv = new TimelineDiv(tl_canvas,"canvas_timeline_div");
+ timegrid = new TimeGrid(tl_canvas,"timegridwrap");
  bookingsManager = new BookingListManager();
  
  var shapesBooked = InitialBookings.shapesBooked;
@@ -522,22 +425,18 @@ function InitialCanvasTimeline(cid) {
         tl_canvas.organizeShapes();
 		tl_canvas.valid = false;
 		timelinediv.redraw();
-
+        timegrid.redraw();
 }
-function InitialBookingList(data) {
+function InitialBookingList() {
  // Update Bookings List
-  var Bookings = {};
- if(data!=undefined) {
-	 Bookings = data;
- } else {
-	 Bookings = JSON.parse(document.getElementById("server_bookings").value);
- }
-
+ var Bookings = JSON.parse(document.getElementById("server_bookings").value);
  for (var b =0 ; b < Bookings.length ; b++ ) {
+     console.log(Bookings[b]);
      var from = Bookings[b].time;
 	 var to = Bookings[b].time + Bookings[b].period;
 	 var bid = Bookings[b].bookID;
 	 var num = Bookings[b].num;
+	 var user = Bookings[b].user;
 	 var type = "approved";
 	 var places = Bookings[b].bookingList.length;
 	 var names = [];
@@ -547,11 +446,20 @@ function InitialBookingList(data) {
 	    persons+=Bookings[b].bookingList[s].persons;
 		var name_={};
 		name_.name = tl_canvas.shapeViews[Bookings[b].bookingList[s].sid].booking_options.givenName;
+		for (var cf = 0 ; cf < floorCanvases.length ; cf++) {
+		   var floor = floorCanvases[cf];
+		   for (var sd = 0 ; sd < floor.shapes.length ; sd++) {
+			 if(floor.shapes[sd].sid == Bookings[b].bookingList[s].sid) {
+  			  name_.floorname = floor.floor_name;
+			  break;
+			 }
+		   }
+		}
 		name_.sid= Bookings[b].bookingList[s].sid;
 		name_.persons = Bookings[b].bookingList[s].persons;
 		names.push(name_);
 	 }
-	 var bshapeAll = new BShapeAll( from , to , bid , persons , type , names , places,num);
+	 var bshapeAll = new BShapeAll( from , to , bid , persons , type , names , places,num,user);
 	 bookingsManager.addBooking(bshapeAll);
  }
 }

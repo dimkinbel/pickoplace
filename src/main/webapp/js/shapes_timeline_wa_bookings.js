@@ -4,6 +4,34 @@
   //   pshape.x = X
   //   pshape.y = Y
   //   pshape.bookings = [];
+function TimeGrid(state,id) {
+  this.id=id;
+  this.state = state;
+}
+TimeGrid.prototype.redraw = function() {
+var shapeLineHeight = this.state.shapeLineHeight  ;
+var width = this.state.width - shapeLineHeight-1;
+var canvasPeriod = this.state.drawPeriodto - this.state.drawPeriodfrom ; // total seconds in canvas
+var oneSecondInPixels = width / canvasPeriod;
+   document.getElementById(this.id).innerHTML = "";
+   document.getElementById(this.id).style.width=this.state.width+"px";
+   document.getElementById(this.id).style.height=this.state.height+"px";
+   
+   var appendData = "<div id='gridborderleft' style='position:absolute;left:0px;height:100%;border-left: 1px solid black;'></div>";
+  // $("#"+this.id).append(appendData);
+   var appendData = "<div id='gridborderRight' style='position:absolute;right:0px;height:100%;border-left: 1px solid black;'></div>";
+   //$("#"+this.id).append(appendData);
+   var appendData = "<div id='gridimageright' style='position:absolute;left:"+parseInt(shapeLineHeight-0.5)+"px;height:100%;border-left: 1px solid black;'></div>";
+   $("#"+this.id).append(appendData);
+   
+ 	for (var p = shapeLineHeight ; p <  this.state.height ; p+=shapeLineHeight) {   
+	   var appendData = "<div class='gridlinediv' style='top:"+p +"px; width:"+width+"px;left:"+parseInt(shapeLineHeight)+"px'></div>";
+	   $("#"+this.id).append(appendData);
+     }
+   
+				//	  <div class="gridlinediv" style="position:absolute;top:14px;width:100%;border-bottom: 1px solid darkgrey;"></div>
+					 
+}
 function TimelineDiv(state,id) {
   this.id=id;
   this.state = state;
@@ -13,13 +41,13 @@ TimelineDiv.prototype.redraw = function() {
 
    var shapeLineHeight = this.state.shapeLineHeight  ;
 
-	var width = this.state.width - shapeLineHeight;
+	var width = this.state.width - shapeLineHeight ;
 	var canvasPeriod = this.state.drawPeriodto - this.state.drawPeriodfrom ; // total seconds in canvas
 
 	var oneSecondInPixels = width / canvasPeriod;
    var leftOffset = shapeLineHeight;
    document.getElementById(this.id).innerHTML = "";
-   document.getElementById(this.id).style.width=width+"px";
+   document.getElementById(this.id).style.width=width+2+"px";
    document.getElementById(this.id).style.height=height+"px";
    var withborder_left = shapeLineHeight - 1.5;
    $("#"+this.id).css("left",withborder_left + "px");
@@ -42,25 +70,35 @@ TimelineDiv.prototype.redraw = function() {
 	 startSeconds= startSecondsGlobal - this.state.drawPeriodfrom;
 	 
 	 var startSecondspx = startSeconds*oneSecondInPixels;
-	 start_tline = parseFloat(startSecondspx.toFixed(2));
+	 start_tline = parseInt(startSecondspx.toFixed(2));
    }
 
-   for (var i = 0; i < tline_hours_px.length ; i++) {
+   for (var i = 1; i < tline_hours_px.length-1 ; i++) {
      var hours_px = tline_hours_px[i];
 	 var hoursString = hours_px.toString();
 	 var divid = "div_hours_"+hoursString.replace(/\./, "-");
 	 var appendData = "<div id='"+divid+"' class='timeline_line'></div>";
 	 $("#"+this.id).append(appendData);
 	 $("#"+divid).css("left",hours_px+"px");
+	 if(i>0 && i<tline_hours_px.length-1) {
+		 var appendData = "<div id='"+divid+"_grid' class='timeline_line_grid'></div>";
+		 $("#"+this.id).append(appendData);
+		 $("#"+divid+"_grid").css("left",hours_px+"px");
+	 }
 	 if (tline_hours_sec[i]/3600/24 % 1 == 0) {
 		 var top_ = 0;
 		 $("#"+divid).css("top",top_+"px");
-		 $("#"+divid).css("height","50px"); 
+		 $("#"+divid).css("height",50+"px"); 
 	 } else {
 		 var top_ = height - 5;
 		 $("#"+divid).css("top",top_+"px");
-		 $("#"+divid).css("height","5px");	 
+		 $("#"+divid).css("height",5 +"px");	 
 	 }
+	 if(i>0 && i<tline_hours_px.length-1) {
+	     var top_ = height ;
+		 $("#"+divid+"_grid").css("top",top_+"px");
+		 $("#"+divid+"_grid").css("height", this.state.height+"px"); 
+     }
    }
    var started = false;
    var dcount = 0;
@@ -112,9 +150,9 @@ TimelineDiv.prototype.redraw = function() {
    min_ = Date_.getMinutes();if(min_ < 10) {min_ = "0"+min_;}
    document.getElementById("end_time").innerHTML = hour_+":"+min_;
    $("#start_time").css("left","0px");
-   $("#start_time").css("top","18px");
+   $("#start_time").css("top","14px");
    $("#end_time").css("right","0px");
-   $("#end_time").css("top","18px");
+   $("#end_time").css("top","14px");
    
    appendData = "<div id='current_time_line' ><div id='current_time_value' class='canvas_times_div_current'></div></div>"
    $("#"+this.id).append(appendData);
@@ -153,7 +191,7 @@ TimelineDiv.prototype.updateNowTime = function() {
 }
 TimelineDiv.prototype.updateCurrent = function(mx) {
     var sec = mx/this.state.oneSecondInPixels;
-	var left__ = mx - 1;
+	var left__ = mx ;
 	$("#current_time_line").css("left",left__+"px");
 	var d = new Date();
     var clientOffset = d.getTimezoneOffset();
@@ -199,7 +237,11 @@ function BShape(state, from , to , bid , persons , type , name , sid) {
      this.color="grey";
 	 this.colorto="grey";
   } 
-  this.sfillAlpha = state.sfillAlpha;
+  if(type=="closed") {
+     this.sfillAlpha = state.sfillAlpha;
+	} else {
+	 this.sfillAlpha = state.sfillAlpha;
+	}
 
   this.from = from;
   this.to = to;
@@ -231,14 +273,24 @@ BShape.prototype.draw = function(ctx, optionalColor) {
   var canvasPeriod = this.state.drawPeriodto - this.state.drawPeriodfrom; // total seconds in canvas
   var oneSecondInPixels = this.state.width / canvasPeriod;
   var pixelsOffset = this.state.offset * 3600 * oneSecondInPixels;
-
+  
+  if(this.type == "booked") {
+  //(ctx,x,y,w,h,strokeColor,fillColor,alpha,salpha,sw,R) {
+    dbRoundRectT  (ctx,parseInt(this.x+1),this.y+1.5 ,parseInt(this.w-1),this.h-2.5,
+	              "#7195c4",
+				  grd,
+				  1,
+				  1,
+				  2,
+				  4);
+  } else {
     dbDrawRectT  (ctx,this.x,this.y,this.w,this.h,
 	              "white",
 				  grd,
-				  this.sfillAlpha,
-				  1,
+				  0.3,
+				  0,
 				  0);
-
+   }
 	//dbLine(ctx,this.x + 2 ,this.y+2,this.x + 2,this.y + this.h - 2 ,2,1,"white");
 	//dbLine(ctx,this.x + 2 ,this.y + this.h - 2,this.x + this.w -2,this.y + this.h - 2 ,2,1,"white");
 };
@@ -283,8 +335,8 @@ function BCanvasState(canvas,pfrom,pto,offset) {
   this.type_closed_color="rgba(187, 187, 187, 0.47)";
   this.type_closed_colorto="rgba(187, 187, 187, 0.47)";
   this.type_ordered_color="red";
-  this.type_book_color="rgb(0, 134, 191)";
-  this.type_book_colorto="rgb(0, 83, 143)";
+  this.type_book_color="#e0e9f6";
+  this.type_book_colorto="#b4c9e6";
   this.sortType = "time"; // nameabc , custom , xy , time ,bid
   this.bidSort = "";
   this.drawPeriodfrom = pfrom;
@@ -525,7 +577,8 @@ function BCanvasState(canvas,pfrom,pto,offset) {
     myState.expectResize = -1;
     if (myState.selection !== null) {
 		
- 
+		// printLog('logs_window','CURRENT SHAPE'+ JSON.stringify(myState.selection,["x","w","h","color","type","options","tsid"]),'black');
+		 
     }
   }, true);
 
@@ -712,18 +765,21 @@ BCanvasState.prototype.lineSmaller  = function() {
   this.organizeShapes();
   this.valid=false;
   timelinediv.redraw();
+  timegrid.redraw();
 }
 BCanvasState.prototype.lineBigger  = function() {
   this.origHeight *= 1.1;
   this.organizeShapes();
   this.valid=false;
   timelinediv.redraw();
+  timegrid.redraw();
 }
 BCanvasState.prototype.lineReset  = function() {
   this.origHeight = this.origHeightReset;
   this.organizeShapes();
   this.valid=false;
   timelinediv.redraw();
+  timegrid.redraw();
 }
 BCanvasState.prototype.selectedTop = function() {
    if(this.listSelected.length > 1) {
@@ -832,6 +888,7 @@ BCanvasState.prototype.organizeShapes = function() {
 	this.shapeLineHeight = shapeLineHeight;
 	this.height = this.SIDsorted.length * shapeLineHeight
 	document.getElementById('timeline_canvas').height = this.height;
+	$('#timeline_canvas').css("height",this.height+"px");
 	//console.log(shapeLineHeight);
 	var canvasPeriod = this.drawPeriodto - this.drawPeriodfrom ; // total seconds in canvas
 	var oneSecondInPixels = (this.width - shapeLineHeight)/ canvasPeriod;
@@ -948,6 +1005,7 @@ BCanvasState.prototype.emptyBookings = function() {
   }
   this.valid = false;
 };
+
 BCanvasState.prototype.zoomLeft = function(sec) {
 	if (this.drawPeriodfrom - sec >= this.fromOrig) {
 	this.drawPeriodfrom -= sec;
@@ -955,6 +1013,7 @@ BCanvasState.prototype.zoomLeft = function(sec) {
 	this.organizeShapes();
 	this.valid = false;
 	timelinediv.redraw();
+	timegrid.redraw();
 	}
 }
 BCanvasState.prototype.zoomRight = function(sec) {
@@ -964,6 +1023,7 @@ BCanvasState.prototype.zoomRight = function(sec) {
 	this.organizeShapes();
 	this.valid = false;
 	timelinediv.redraw();
+	timegrid.redraw();
 	}
 }
 BCanvasState.prototype.zoomIn = function() {
@@ -973,6 +1033,7 @@ BCanvasState.prototype.zoomIn = function() {
 	this.organizeShapes();
 	this.valid = false;
 	timelinediv.redraw();
+	timegrid.redraw();
 }
 BCanvasState.prototype.zoomOut = function() {
   	var canvasPeriod = this.drawPeriodto - this.drawPeriodfrom ; // total seconds in canvas
@@ -989,6 +1050,7 @@ BCanvasState.prototype.zoomOut = function() {
 	this.organizeShapes();
 	this.valid = false;
 	timelinediv.redraw();
+	timegrid.redraw();
 }
 BCanvasState.prototype.zoomReset = function() {
     this.drawPeriodfrom = this.fromOrig;
@@ -996,6 +1058,7 @@ BCanvasState.prototype.zoomReset = function() {
 	this.organizeShapes();
 	this.valid = false;
 	timelinediv.redraw();
+	timegrid.redraw();
 }
 BCanvasState.prototype.clear = function() {
   "use strict";
@@ -1014,7 +1077,7 @@ BCanvasState.prototype.draw = function() {
     this.clear();
 	
 	//ctx.drawImage(document.getElementById("canvas_timeline_div_background"),0,0,this.width,this.height);
-    dbDrawRectT(ctx,0,0,this.width,this.height,"white","white",1,0.3,0)
+    dbDrawRectT(ctx,0,0,this.width,this.height,"transparent","white",0.3,0,0)
     // draw all shapes
     l = shapes.length;
 	
@@ -1026,7 +1089,7 @@ BCanvasState.prototype.draw = function() {
 	 var currentY = 0;
 	
 	for (p = 0 ; p < this.SIDsorted.length ; p++) {   
-       dbLine(ctx,this.shapeLineHeight,currentY,this.width,currentY,0.2,1,'black');
+       //dbLine(ctx,this.shapeLineHeight,currentY,this.width,currentY,0.2,1,'black');
 	   //dbDrawRectT(ctx,0,currentY,this.shapeLineHeight,this.shapeLineHeight,"grey","white",1,0.3,1)
 	   currentY = currentY +  this.shapeLineHeight;
      }
@@ -1041,10 +1104,10 @@ BCanvasState.prototype.draw = function() {
 	 var column_line_sec = this.drawPeriodfrom;
 	 while (column_line_sec < this.drawPeriodto) {
 	    column_line_sec += 3600;
-	    dbLine(ctx,(column_line_sec - this.drawPeriodfrom)*oneSecondInPixels + this.shapeLineHeight,0,(column_line_sec - this.drawPeriodfrom)*oneSecondInPixels + this.shapeLineHeight,this.height,0.2,0.3,'grey');
+	 //  dbLine(ctx,(column_line_sec - this.drawPeriodfrom)*oneSecondInPixels + this.shapeLineHeight,0,(column_line_sec - this.drawPeriodfrom)*oneSecondInPixels + this.shapeLineHeight,this.height,0.2,0.3,'grey');
 		
 	 }
-
+	//printLog('logs_window','Shapes'+ l,'blue');
     for (i = 0; i < l; i += 1) {
 	     var bfrom = shapes[i].from;
 		 var bto = shapes[i].to;
@@ -1060,24 +1123,30 @@ BCanvasState.prototype.draw = function() {
     // right now this is just a stroke along the edge of the selected Shape
     if (this.listSelected.length > 0) {
       for(var l = 0 ; l < this.listSelected.length ; l++) {
-	      
-		  ctx.strokeStyle = "black";
-		  ctx.lineWidth = 1;
 		  mySel = this.listSelected[l];
-		  var fillX = mySel.x;
-		  var fillY = mySel.y;
+  
 		  
-		  ctx.globalAlpha = 1;
-		  ctx.strokeRect(fillX+0.5,fillY+0.5,mySel.w-1,mySel.h-1);
-		  ctx.lineWidth = 2;
-		  ctx.strokeStyle = "#FF8080";
-		  ctx.strokeRect(fillX+2,fillY+2,mySel.w-4,mySel.h-4);
-		  ctx.strokeStyle = "white";
-		  ctx.globalAlpha = 1;
+	     var grd=ctx.createLinearGradient(mySel.x,mySel.y,mySel.x,mySel.y + mySel.h);
+         grd.addColorStop(0,"#99ffc0");
+         grd.addColorStop(1,"#25e66c");
+		 var addToHeight=0;
+         if(mySel.sid==this.SIDsorted[0]) {
+		    addToHeight = 1;			
+		 } else {
+		    addToHeight = 2;
+		 }
+			dbRoundRectT  (ctx,parseInt(mySel.x+1),parseInt(mySel.y+addToHeight),parseInt(mySel.w-1),parseInt(mySel.h-addToHeight),
+						  "#36943A",
+						  grd,
+						  1,
+						  1,
+						  2,
+						  0);      
+
 		  }
     }
 	ctx.strokeStyle = "white";
-	ctx.strokeRect(0,0,this.width,this.height);
+	//ctx.strokeRect(0,0,this.width,this.height);
 	
 
 	var tline = 0;
@@ -1087,7 +1156,7 @@ BCanvasState.prototype.draw = function() {
 	var currentY = 0;
 	
 	for (p = 0 ; p < this.SIDsorted.length ; p++) {	   
-	   dbDrawRectT(ctx,0,parseInt(currentY),this.shapeLineHeight+1,parseInt(this.shapeLineHeight+4),"black","white",1,1,1)
+	   //dbDrawRectT(ctx,0,parseInt(currentY),this.shapeLineHeight+1,parseInt(this.shapeLineHeight+4),"black","white",1,1,1)
 	   currentY = currentY +  this.shapeLineHeight;
      }	   	
     // ** Add stuff you want drawn on top all the time here **    
@@ -1199,7 +1268,50 @@ BCanvasState.prototype.getMouse = function(e) {
 //init();
 var canvas_ = "";
 
-
+function dbRoundRectT (ctx,x,y,w,h,strokeColor,fillColor,alpha,salpha,sw,R) {
+//
+//    (cx,cy)   (cx+r,cy)   (cx+w/2,cy)      (cx+w-r,cy)  (cx+w,cy)      
+//    (cx,cy+r)                                           (cx+w,cy+r)
+//    (cx,cy+h/2)                                         (cx+w,cy+h/2)
+//    (cx,cy+h-r)                                         (cx+w,cy+h-r)
+//    (cx,cy+h) (cx+r,cy+h) (cx+w/2,cy+h)   (cx+w-r,cy+h) (cx+w,cy+h)
+//
+//
+//
+ ctx.save();
+  var r = R;
+  var cx = x ;
+  var cy = y ;
+  ctx.lineWidth = sw;
+  
+  ctx.strokeStyle = strokeColor;
+  ctx.fillStyle = fillColor;
+  if (sw == 0) {
+    ctx.strokeStyle = ctx.fillStyle;
+  }
+   
+	ctx.globalAlpha = salpha;
+    ctx.beginPath();
+    ctx.moveTo(cx+w/2,cy);
+    ctx.lineTo(cx+w-r,cy);
+    ctx.quadraticCurveTo(cx+w,cy,cx+w,cy+r);
+    ctx.lineTo(cx+w,cy+h-r);
+    ctx.quadraticCurveTo(cx+w,cy+h,cx+w-r,cy+h);
+    ctx.lineTo(cx+r,cy+h);
+    ctx.quadraticCurveTo(cx,cy+h,cx,cy+h-r);
+    ctx.lineTo(cx,cy+r);
+    ctx.quadraticCurveTo(cx,cy,cx+r,cy);
+    ctx.lineTo(cx+w/2,cy);
+	ctx.globalAlpha = alpha;
+    ctx.fill();
+	if (sw > 0) {
+	  ctx.globalAlpha = salpha;
+      ctx.stroke();
+	  }
+	ctx.globalAlpha = 1; 
+    ctx.lineWidth = 1;
+	ctx.restore();
+}
 function dbDrawRectT(ctx,x,y,w,h,strokeColor,fillColor,alpha,salpha,sw) {
   ctx.lineWidth = sw;
   ctx.strokeStyle = strokeColor;

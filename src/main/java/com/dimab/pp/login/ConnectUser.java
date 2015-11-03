@@ -189,7 +189,9 @@ public class ConnectUser extends HttpServlet {
 					    		Boolean phoneVerified = (boolean)result.getProperty("phoneValid");
 					    		if(!phoneVerified) {
 					    			map.put("phone",false);
-					    		}
+					    		} else {
+									request.getSession().setAttribute("phone", phone);
+								}
 				    		} else {
 				    			map.put("phone",false);
 				    		}
@@ -271,7 +273,9 @@ public class ConnectUser extends HttpServlet {
 						    		Boolean phoneVerified = (boolean)result.getProperty("phoneValid");
 						    		if(!phoneVerified) {
 						    			map.put("phone",false);
-						    		}
+						    		}else {
+										request.getSession().setAttribute("phone", phone);
+									}
 					    		} else {
 					    			map.put("phone",false);
 					    		}

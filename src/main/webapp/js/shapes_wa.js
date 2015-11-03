@@ -734,7 +734,7 @@ if (myState.selection !== null && !myState.resizeDragging && myState.selection.t
 }
 
 if (!contains) {
-	this.canva.style.cursor='auto';
+	this.canvas.style.cursor='auto';
    myState.shapeHover = null;
 } 
 if(myState.shapeHover!=prevHover) {
@@ -830,15 +830,9 @@ function zoomReset(state_) {
 }
 function zoomResetWrap(canvas_ref_,dividwrap,scrolled_id) {
   var state = canvas_ref_;
-   for (var f = 0 ;f < 0 ; f++) {
-     if(floorid_ == floorCanvases[f].floorid) {
-	     state = floorCanvases[f];
-	 }
-   }
 
-  
-  var ww = document.getElementById(dividwrap).offsetWidth - 2;
-  var wh = document.getElementById(dividwrap).offsetHeight - 2 ;
+  var ww = document.getElementById(dividwrap).offsetWidth   ;
+  var wh = document.getElementById(dividwrap).offsetHeight  ;
   
 
   var required_zoom;

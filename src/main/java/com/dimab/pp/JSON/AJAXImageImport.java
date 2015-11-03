@@ -347,8 +347,8 @@ public class AJAXImageImport extends HttpServlet {
          	      name = bookingOptions.getGivenName() ;
          	   } else {
          		  mk += 1;
-         		  name = place + "/" + snif +"/" + mk;
-         		  name = name.replaceAll(" ", "_");
+         		  name = "S" + mk;
+         		//  name = name.replaceAll(" ", "_");
          		  shape.getBooking_options().setGivenName(name);
          	   }
          	  }

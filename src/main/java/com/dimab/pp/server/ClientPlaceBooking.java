@@ -96,6 +96,7 @@ public class ClientPlaceBooking extends HttpServlet {
 		bookingRequestsWrap.setClientid(username_email);
 		bookingRequestsWrap.setUser(genuser);
 		bookingRequestsWrap.setPlaceLocalTime(PlaceLocalTime);
+		String sessionPhone = (String) request.getSession().getAttribute("phone");
 
 		// Get CanvasState by PID
 		Filter pidFilter = new  FilterPredicate("placeUniqID",FilterOperator.EQUAL,bookingRequestsWrap.getPid());
@@ -119,6 +120,10 @@ public class ClientPlaceBooking extends HttpServlet {
   		bookingOrder.setUnindexedProperty("placeName", (String)canvasEntity.getProperty("placeName"));
   		bookingOrder.setUnindexedProperty("placeBranchName", (String)canvasEntity.getProperty("placeBranchName"));
   		bookingOrder.setUnindexedProperty("address", (String)canvasEntity.getProperty("address"));
+		bookingOrder.setUnindexedProperty("genuser", gson.toJson(genuser));
+		bookingOrder.setUnindexedProperty("UTCdateProper", UTCdateProper);
+		bookingOrder.setUnindexedProperty("userPhone", sessionPhone);
+
 		bookingOrder.setProperty("bid", bookingRequestsWrap.getBookID());
 		bookingOrder.setProperty("Date", PlaceLocalTime.toString());
 		bookingOrder.setProperty("UTCstartSeconds", secondsRelativeToClient);

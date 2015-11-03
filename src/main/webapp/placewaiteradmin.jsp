@@ -1,3 +1,4 @@
+
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"
     import = "com.dimab.pp.dto.*"
@@ -6,26 +7,53 @@
     import = "com.google.gson.reflect.TypeToken"
     import = "java.util.*"
     import = "java.lang.reflect.Type"%>
-<!DOCTYPE html>
+<!DOCTYPE html >
 
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Waiter Admin</title>
-	<script type="text/javascript" src="js/jquery-1.11.1.min.js" ></script>
+	<!-- Latest compiled and minified CSS -->
+     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+ 
+    <link rel="stylesheet" href="css/colpick.css" type="text/css"/>
+	<link rel="stylesheet" href="css/slider.css" type="text/css"/>
+	<link rel="stylesheet" href="css/book_approval.css" type="text/css"/>
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<link rel="stylesheet" href="css/style.css" type="text/css" media="screen" />
+	
+	<link rel="stylesheet" href="css/style2.css" type="text/css" media="screen" />
+	<link rel="stylesheet" href="js/jquery-ui-1.11.2.custom/jquery-ui.css" type="text/css" media="screen" />
+	<link rel="stylesheet" href="js/jquery-ui-1.11.4.datepicker-grey/jquery-ui.theme.min.css" type="text/css" media="screen" />
+	<link rel="stylesheet" href="ion.rangeSlider-2.0.2/css/ion.rangeSlider.css" type="text/css" media="screen" />
+	<link rel="stylesheet" href="ion.rangeSlider-2.0.2/css/ion.rangeSlider.skinNice.css" type="text/css" media="screen" />
+	<link rel="stylesheet" href="css/perfect-scrollbar.css" type="text/css" media="screen" />
+	<link rel="stylesheet" href="css/CSS_checkbox_full/custom-checkbox.css" type="text/css" media="screen" />
+	<link rel="stylesheet" href="css/dropit.css" type="text/css" media="screen" />
+	<link rel="stylesheet" href="css/timelineslimscroll.css" type="text/css" media="screen" />
+	<link rel="stylesheet" href="css/login.css" type="text/css" media="screen" />
+
+
+     <!-- jQuery library -->
+     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script type="text/javascript" src="js/jquery-migrate-1.2.1.js" ></script>
 	<script type="text/javascript" src="js/jquery-ui-1.11.2.custom/jquery-ui.js"></script>
-	<script type="text/javascript" src="js/loginlogout.js" ></script>
-	<script type="text/javascript" src="ion.rangeSlider-2.0.2/js/ion.rangeSlider.js"></script>
-	<script type="text/javascript" src="js/bootstrap-slider.js" ></script>
+	<script type="text/javascript" src="ion.rangeSlider-2.0.2/js/ion.rangeSlider.js"></script> 
+	<script type="text/javascript" src="js/bootstrap-slider.js" ></script>	
+     <!-- Latest compiled JavaScript -->
+     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+	 
+ 
+
+
 	<script type="text/javascript" src="js/colpick.js" ></script>    
+	<script type="text/javascript" src="js/loginlogout.js" ></script>
 	
 	<script type="text/javascript" src="js/perfect-scrollbar.js"></script>
     <script type="text/javascript" src="js/jquery.contextmenu.js"></script>
 	<script type="text/javascript" src="js/sitefunctions.js"></script>
     
-	<script type="text/javascript" src="js/shapes_wa.js"></script>
-	<script type="text/javascript" src="js/shapes_timeline_wa.js"></script>
+	<script type="text/javascript" src="js/shapes_wa.js"></script> 
 	<script type="text/javascript" src="js/shapes_timeline_wa_bookings.js"></script>
 	<script type="text/javascript" src="js/printlog_wa.js"></script>
 	<script type="text/javascript" src="js/updateData_wa.js"></script>
@@ -33,22 +61,13 @@
 	<script type="text/javascript" src="js/dropit.js" ></script>
 	<script type="text/javascript" src="js/jquery.slimscroll.min.js" ></script>
 	<script type="text/javascript" src="js/bookingListManagement_wa.js" ></script>
+	
 	<script type="text/javascript" src="js/interactiveUpdate_wa.js" ></script>
 	<script src='/_ah/channel/jsapi'></script>
     <script language="javascript" src='js/chatChannel.js'></script>
     
-    <link rel="stylesheet" href="css/colpick.css" type="text/css"/>
-	<link rel="stylesheet" href="css/slider.css" type="text/css"/>
-	<link rel="stylesheet" href="css/style.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="css/style2.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="css/login.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="js/jquery-ui-1.11.2.custom/jquery-ui.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="ion.rangeSlider-2.0.2/css/ion.rangeSlider.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="ion.rangeSlider-2.0.2/css/ion.rangeSlider.skinNice.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="css/perfect-scrollbar.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="css/CSS_checkbox_full/custom-checkbox.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="css/dropit.css" type="text/css" media="screen" />
-	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	
+
 <script type="text/javascript">
 		var canvasMouseOut = false;
 		var canvasMouseDown = false;
@@ -162,6 +181,7 @@ $(document).ready(function() {
 		railVisible: true,
 	    size: '10px',
     });
+	updatePageDimentions();
 	ApplyInitialPosition();
 	InitialBookingList();
 });
@@ -257,64 +277,9 @@ $(document).on("click",".stopclick", function (event) {
     <div id="browser_window_wrap">
 	
 	</div>
-	<table id="body_table" cellspacing="0" cellpadding="0"
-		style="width: 100%; height: 100%; border-collapse: collapse">
-		<tr id="header_tr">
-			<td id="header_td">
-				<div id="header">
-					<div id="logo_"><img src="img/pplogo.png" id="pplogoo"/></div>
-					<div id="header_info_wrap" style="width:100%">
-						<div id="header_info">
-						   <table style="border-collapse: collapse;" cellspacing="0" cellpadding="0"  >
-							   <tr><td>
-								  <div id="header_place_name_"></div>
-								  <div id="header_place_address_"></div>
-							   </td>
-							  </tr>
-						   </table>
-						</div>
-					</div>
-					<div class="login_in_header_wrap">
-					   	<table id="login_tbl_a" cellspacing="0" cellpadding="0" style=" border-collapse: collapse">
-				             <tr >
-							    <td id="login_prop" style="display:none">
-								  <div id="login_prop_d">Log In</div>
-								</td>
-								<td id="login_info_resp" style="display:none">
-								  Hello, <div id="login_info_resp_d" class="userNikname"></div>
-								</td>
-							    <td id="account_drop"  style="display:none">
-								 <div id="account_drop_div">
-								    <ul id="account_dropit" >
-				                       <li class="acc_trig"><a href="#" class="account_dropit" style="text-decoration: none">Account</a>
-						                   <ul class="account_dropit_ul">
-							                   <li>
-											     <div id="acc_head_menu_wrap">
-												   <div id="acc_arrow"></div>
-												   <div id="gotoaccountmenu" class="topAccOptList" onclick="goToAccountMenu()">Go to Account</div>
-												   <div id="gotobookings" class="topAccOptList">My bookings</div>
-												   <div id="dotoadminzone" class="topAccOptList">AdminZone</div>
-												   <div id="create_new_place_btn"  class="topAccOptList" onclick="goToCreatePlace()">Create New Place</div>
-												   <div id="fb_logout_div" class="topAccOptList" onClick="facebookSignOut()">Log out</div>
-												   <div id="go_logout_div" class="topAccOptList" onClick="googleSignOut()">Log out</div>
-												 </div>
-												<div id="all_ac_forms" style="display:none">
-												  <form id="master_account" action="gotoaccountmenu" method="post">
-												  </form>
-												</div>
-											   </li>
-										   </ul>
-										</li>
-									</ul>
-								  </div>
-								</td>
-							 </tr>
-					   	</table>				
-				    </div>
-				</div>
-			</td>
-		</tr>
-   <%
+	<div id="temp_appends" style="height:400px;width:400px;position:absolute!important;left:-2000px;top:-300px;"></div>
+	
+	   <%
    Gson gson = new Gson();
    WaiterInitialDTO waiterResponse = (WaiterInitialDTO)request.getAttribute("waiterResponse");
    String WaiterBookings = (String)request.getAttribute("waiterBookings");
@@ -340,10 +305,10 @@ $(document).on("click",".stopclick", function (event) {
    String placeLng = responseJSON.getLng();
    double    placeUTSoffset = responseJSON.getUTCoffset();
    %>
-		<tr id="content_tr">
-		 <td id="content_td">
-   <div id="hiden_values_from_edit" style="display:none">
-    <% 
+	
+    <div id="hiden_values_from_edit" style="display:none">
+    
+          <% 
       for (PPSubmitObject floor : canvasStateList) {
     	   String backgroundURL = "";
     	   String overviewURL = "";
@@ -493,21 +458,24 @@ $(document).on("click",".stopclick", function (event) {
 				  <div id="canvas_timeline_div">	
 					
 				  </div>
-				  <div id="timeline_buttons_wrap">
-				   <div class="centered__" style="display: inline-block;">
-					  <div id="div_zoom_left" class="zoom_button_wl" onclick="c_zoomLeft()"  title="Step 1-hour left"><img class="zoom_img_wl" src="img/zoom-left2.png"/></div>
-					  <div id="div_zoom_vertical_in" class="zoom_button_wl" onclick="c_zoomBig()" title="Zoom-IN Vertical"><img class="zoom_img_wl" src="img/zoom-vert-in2.png"/></div>
-					  <div id="div_zoom_vertical_out" class="zoom_button_wl"  onclick="c_zoomSmall()" title="Zoom-OUT Vertical"><img class="zoom_img_wl" src="img/zoom-vert-out2.png"/></div>
-					  <div id="div_zoom_vertical_reset" class="zoom_button_wl"  onclick="c_zoomLineReset()" title="Reset Vertical">reset</div>
-					  <div id="div_zoom_horizontal_in" class="zoom_button_wl" onclick="c_zoomIN()"  title="Zoom-IN Horisontal (less time)"><img class="zoom_img_wl" src="img/zoom-hor-in2.png"/></div>
-					  <div id="div_zoom_horizontal_out" class="zoom_button_wl" onclick="c_zoomOUT()"   title="Zoom-OUT Horisontal (more time)"><img class="zoom_img_wl" src="img/zoom-hor-out2.png"/></div>					  
-					  <div id="div_zoom_horizontal_in" class="zoom_button_wl" onclick="c_zoomRESET()"  title="Reset horizontal (2days)">reset</div>
-					  <div id="div_zoom_right" class="zoom_button_wl" onclick="c_zoomRight()" title="Step 1-hour right"><img class="zoom_img_wl" src="img/zoom-right2.png"/></div>
-					 </div>
-				  </div>
 
+                  <div class="zoom_options_book" id="timeline_buttons_wrap">
+				        <div id="plus_minus_wrap">   
+						 <div id="zoom_plus_div" onclick="c_zoomBig()" title="Zoom-In">+</div>  
+						 <div id="zoom_split"></div>  
+						 <div id="zoom_minus_div" onclick="c_zoomSmall()" title="Zoom-Out">-</div> 
+						</div>
+						<div id="zoom_reset_div" onclick="c_zoomLineReset()">
+						   <div class="material-icons zoom_reset_mat" title="Zoom-Reset">fullscreen</div>
+						</div>
+				  </div>
 				  <div id="canvas_slimscroll" style="height:800px"  >
-					<canvas id="timeline_canvas" width="800" height="300"></canvas>
+				   <div id="canvas_grid_wrap" style="position:relative;display: flex;">
+					  <canvas id="timeline_canvas" width="800" height="300"></canvas>
+					  <div id="timegridwrap" style="position:absolute;z-index:3;width:100%;height:100%;pointer-events:none;top:0px;left:0px;">
+					  
+					</div>
+					</div>
 				  </div>
 			 </div> 
 			
@@ -556,212 +524,200 @@ $(document).on("click",".stopclick", function (event) {
 				   </table>
               </div>		   
 		   </div>	 
-		 <table id="account_content"  cellspacing="0" cellpadding="0" style="width: 100%; height: 100%; border-collapse: collapse">
-		   <tr>
-		    <td class="left_content_td" id="left_column__"> 
-               <div id="wl_left_buttons_div">
-               		<div id="daypiskers_wl">
-					<table id="daypiskers_wl_tbl">
-					 <tr>
-					   <td><div><input id="datepicker_wl_from" type="text" /></div></td>
-					 </tr>
-					 <tr>
-					   <td><div id="wl_load_dates_button">update</div>
-					       <div id="wa_load_ajax" style="display:none;height: 20px;"><img class="sb_ajax_gif_small" src="img/gif/299.GIF" /></div>
-					   </td>
-					 </tr>
-					</table>
-				   </div>
-			       <div id="view_options_btn" class="left_wl_button top_left_wl_button">
-				       <ul id="view_options_btn_dropit" >
-				          <li><a href="#" class="left_mwnu_dropit">View options</a>
-						     <ul class="left-submenu">
-							   <li><div class="sub_left_menu">
-							      <div class="top-submenu-row"></div>
-								  <table id="view_op_table" cellspacing="0" cellpadding="0" style=" border-collapse: collapse">
-								    <tr>
-									 <td class="top_row_p" colspan="2">
-								      
-									 </td></tr>
-									 <tr>
-									  <td class="view_option_">
-									    <div class="vo_wrap_div" id="t100x100">
-										  <div class="wlm_h100">
-										    <div class="wlm_w100 wlm_time">Timeline</div>
-										 </div>
-										</div>
-									  </td>
-									  <td class="view_option_">
-									     <div class="vo_wrap_div"  id="af100x100">
-											 <div class="wlm_h100">
-												<div class="wlm_w100 wlm_flr">all-floors</div>
-											 </div>
-										 </div>
-									  </td> 
-									  </tr>
-									 <tr>
-									  <td class="view_option_">
-									    <div class="vo_wrap_div"  id="t50xaf50">
-										  <div class="wlm_h50">
-										    <div class="wlm_w100 wlm_time">Timeline</div>
-											<div ></div>
-										 </div>
-										 <div class="wlm_h50">
-										    <div class="wlm_w100 wlm_flr">all-floors</div>
-											<div></div>
-										 </div>
-										</div>
-									  </td>
-									  <td class="view_option_">
-									     <div class="vo_wrap_div"  id="t50xf50f50">
-									      <div class="wlm_h50">
-										    <div class="wlm_w100 wlm_time">Timeline</div>
-											<div ></div>
-										 </div>
-										 <div class="wlm_h50">
-										    <div class="wlm_w50l wlm_flr">floor</div>
-											<div class="wlm_w50r wlm_flr">floor</div>
-										 </div>
-										 </div>
-									  </td>
-									  
-									  </tr>
-									   <tr>
-									  <td class="view_option_">
-									    <div class="vo_wrap_div"  id="af100xt100">
-											<div class="wlm_h50">
-												<div class="wlm_w100 wlm_flr">all-floors</div>
-												<div></div>
-											 </div>
-											  <div class="wlm_h50">
-												<div class="wlm_w100 wlm_time">Timeline</div>
-												<div ></div>
-											 </div>
-										</div>
-									  </td>
-									  <td class="view_option_">
-									     <div class="vo_wrap_div"  id="f50f50xt100">
-										 <div class="wlm_h50">
-										    <div class="wlm_w50l wlm_flr">floor</div>
-											<div class="wlm_w50r wlm_flr">floor</div>
-										 </div>
-									      <div class="wlm_h50">
-										    <div class="wlm_w100 wlm_time">Timeline</div>
-											<div ></div>
-										 </div>
-										 </div>
-									  </td>
-									  
-									  </tr>
-								  </table>
-							   </div></li>
-							 </ul>
-						  </li>
-						</ul>
-				   </div>
-				   <div id="show_bookins_row_btn" class="left_wl_button">
-	                     Show bookings
-				   </div>
-				   <input type="checkbox" class="menu_chekc"  id="bookings_col_enable" style="display:none"/>
-			   </div>
+		   </div>
+	<!-- <div style="position:fixed;background-color:red;width:100px;height:100px;pointer-events:none"></div> -->
+	<table id="body_table" cellspacing="0" cellpadding="0" style="width: 100%;  border-collapse: collapse">
+		<tr id="header_tr" style="display:none">
+			<td id="header_td" colspan="2">
+				<div id="header">
+					<div id="logo_">PickoPlace</div>
+					<div id="header_info_wrap" style="width:100%">
+						<div id="header_info">
+						   <table style="border-collapse: collapse;" cellspacing="0" cellpadding="0"  >
+							   <tr><td>
+								  <div id="header_place_name_"></div>
+								  <div id="header_place_address_"></div>
+							   </td>
+							  </tr>
+						   </table>
+						</div>
+					</div>
+					<div class="login_in_header_wrap">
+					   	
+					       <input id="loggedBy_" style="display:none" value="Google"/>
+					       <table style="border-collapse: collapse;" cellspacing="0" cellpadding="0"  >		
+					         <tr><td>	      
+					       <div class="oneline">Welcome, <span class="userNikname">dimkinbel</span>.</div> 
+					         </td>
+					         <td class="fbgatab">
+					        <div id="loginAccountOptions" class="oneline"><span class="acctoplinks">Account</span>
+					          <div id="accountHiddenOptions" style="display:none;">
+					            <table id="topOptionsTable"  cellspacing="0" cellpadding="0"  style="width:100%;">
+					             <tr><td>
+					                <div id="gotoaccountmenu" class="topAccOptList" onclick="goToAccountMenu()">Go to Account</div>
+					                <form id="master_account" action="gotoaccountmenu" method="post"></form>
+					              </td></tr>
+					              <tr><td>
+					                <div id="gotobookings" class="topAccOptList">My bookings</div>
+					              </td></tr>
+					              <tr><td>
+					                <div id="dotoadminzone" class="topAccOptList">AdminZone</div>
+					              </td></tr>
+					              <tr><td>
+					                <div id="logoutmenu" class="topAccOptList">
+					                  <a  class="loginLink loginlogout" href="http://pickoplace.com/_ah/logout?continue=https://www.google.com/accounts/Logout%3Fcontinue%3Dhttps://appengine.google.com/_ah/logout%253Fcontinue%253Dhttp://pickoplace.com/userLogin%26service%3Dah">Logout</a>
+					                </div>
+					              </td></tr>
+					            </table>
+					          </div>
+					        </div>
+					        </td></tr>	
+					        </table>					 
+					   				
+				</div>
+				</div>
 			</td>
-		    <td id="content_td_ac_wl">
-		      <div id="content_header_row"></div>
-			  <div id="center_column_like">
-			       
-				   <div id="content_top_row" >
-					  <div id="content_top_left_cell"></div>
-					  <div id="content_top_right_cell"></div>
-				   </div>
-				   <div id="content_bottom_row" >
-					  <div id="content_bottom_left_cell"></div>
-					  <div id="content_bottom_right_cell"></div>
-				   </div>
+		</tr>
+   
+		<tr id="content_tr">
+		 <td id="wa_left_column" style="background-color:#555"  >
+		   <div class="dropdown" id="wl_pp_dd">
+		    <div id="pp_left_wl_logo" class=" dropdown-toggle" type="button" data-toggle="dropdown">
+			  <img id="pplm_img" src="img/pplogomarker.png">
+			</div>
+			<ul class="dropdown-menu  " id="wl_pp_ddmenu">
+				<li><a href="#">HTML</a></li>
+				<li><a href="#">CSS</a></li>
+				<li><a href="#">JavaScript</a></li>
+			</ul>
+		   </div>
+		   <div class="wl_left_menu_button_w wll_selected" id="floors_open">
+		     <div class="material-icons wlmb_mat">layers</div>
+		     <div class="wlmb_text">Floors</div>
+		   </div> 
+		   <div class="wl_left_menu_button_w" id="timeline_open">
+		     <div class="material-icons wlmb_mat">access_time</div>
+		     <div class="wlmb_text">Timeline</div>
+		   </div>
+		   <div class="wl_left_menu_button_w" id="settings_open">
+		     <div class="material-icons wlmb_mat">settings</div>
+		     <div class="wlmb_text">Settings</div>
+		   </div>
+		 </td>
+		 <td id="content_td">
+          <div id="content_td_inner_div" style="width:100%;height:100%">
+		     <div id="main_views_div">
+			  <div id="floors_page" class="data_pages_">
+			   <div id="mv_top_tabs" class="top_main_tabs">
+			   <% 
+				 for (PPSubmitObject floor : canvasStateList) {
+					  String floorid = floor.getFloorid();  
+					   if(floor.isMainfloor()) { 
+						  %> <div class="mv_top_tab mv_top_selected" id="floor_tab_mv_<%=floorid%>"><%=floor.getFloor_name()%></div> 
+			    <%     }
+                } 
+				%>
+			   <% 
+				 for (PPSubmitObject floor : canvasStateList) {
+					  String floorid = floor.getFloorid();  
+					   if(!floor.isMainfloor()) { 
+						  %> <div class="mv_top_tab " id="floor_tab_mv_<%=floorid%>"><%=floor.getFloor_name()%></div> 
+			    <%     }
+                } 
+				%> 
 			   </div>
-               <div id="right_column_like">
+			   <div  class="show_pages">
+			   <% 
+				 for (PPSubmitObject floor : canvasStateList) {
+					  String floorid = floor.getFloorid();  
 
+				%> <div class="floor_page" id="floor_wrap_view_<%=floorid%>">
+				
+				   </div> 
+			    <%     
+                } 
+				%>
 			   </div>
-			   <div id="temp_appends" style="height:400px;width:400px;position:absolute;left:-2000px;top:-300px;"></div>
-			   <div id="open_bookings_list_btn">BOOKINGS</div>
-			   <div id="transition_open"><div id="close_transition_bookings">hide >></div>
-			   <div id="wl_list_bookings_wrap">
-			      <table id="wl_list_bookings_table"  cellspacing="0" cellpadding="0" style="width: 100%; height: 100%; border-collapse: collapse">
-				    <tr >
-					   <td id="wl_list_bookings_table_head">
-					     <div id="wl_list_bookings_table_head_div">Orders</div>
-						    <table id="wl_list_bookings_head_table"  cellspacing="0" cellpadding="0" style="width: 100%; height: 100%; border-collapse: collapse">
-							  <tr>
-							    <td class="wl_list_head_ch_box"><input type="checkbox" class="wl_list_checkbox" checked="checked" id="wl_bookings_current" /></td>
-							    <td class="wl_list_head_ch_name">Ongoing</td>
-								<td class="wl_list_head_ch_box"><input type="checkbox"  class="wl_list_checkbox"  checked="checked"  id="wl_bookings_next" /></td>
-								<td class="wl_list_head_ch_name">Next</td>
-								<td class="wl_list_head_ch_box"><input type="checkbox"  class="wl_list_checkbox"  checked="checked"  id="wl_bookings_past" /></td>
-								<td class="wl_list_head_ch_name">Past</td>
-							   </tr>
-							</table>				 
-					   </td>
-					</tr>
-					<tr id="wl_list_current_list_row">
-					  <td >
-					     <div class="wl_list_section_head"> Ongoing orders
-				         </div>
-						 <div class="wl_list_section_head_tbl_cols">
-						   <div class="wl_list_section_head_tbl_col_bid" >BookID</div>
-						   <div class="wl_list_section_head_tbl_col_time" >Began</div>
-						   <div class="wl_list_section_head_tbl_col_period" >Period</div>
-						   <div class="wl_list_section_head_tbl_col_pers" >Persons</div>
-						   <div class="wl_list_section_head_tbl_col_place" >Places</div>						   
-						 </div>
-						 <div id="append_current_wl_list">
-
-						 </div>
-					  </td>
-					</tr>
-                    <tr id="wl_list_next_list_row">
-					  <td >
-					     <div class="wl_list_section_head"> Next orders
-				         </div>
-						 <div class="wl_list_section_head_tbl_cols">
-						   <div class="wl_list_section_head_tbl_col_next_bid" >BookID</div>
-						   <div class="wl_list_section_head_tbl_col_next_time" >Time</div>
-						   <div class="wl_list_section_head_tbl_col_next_period" >Period</div>
-						   <div class="wl_list_section_head_tbl_col_next_pers" >Persons</div>
-						   <div class="wl_list_section_head_tbl_col_next_place" >Places</div>
-						   <div class="wl_list_section_head_tbl_col_next_left" >Left</div>
-						 </div>
-						 <div id="append_next_wl_list">
-	
-						 </div>
-					  </td>
-					</tr>
-                    <tr id="wl_list_past_list_row">
-					  <td >
-					     <div class="wl_list_section_head"> Past orders
-				         </div>
-						 <div class="wl_list_section_head_tbl_cols">
-						   <div class="wl_list_section_head_tbl_col_past_bid" >BookID</div>
-						   <div class="wl_list_section_head_tbl_col_past_time" >Time</div>
-						   <div class="wl_list_section_head_tbl_col_past_period" >Period</div>
-						   <div class="wl_list_section_head_tbl_col_past_pers" >Persons</div>
-						   <div class="wl_list_section_head_tbl_col_past_place" >Places</div>
-						 </div>
-						 <div id="append_past_wl_list">
-
-						 </div>
-					  </td>
-					</tr>
-				  </table>
 			  </div>
+ 
+			  <div id="timeline_page"  style="display:none"  class="data_pages_">
+			   <div id="timeline_top_tabs" class="top_main_tabs">
+			    <div class="timeline_top_tab mv_top_selected" id="timeline_horisontal_tab">Horisontal</div>
+				<div class="timeline_navigation">
+				   <div class="tn_button" onclick="c_zoomLeft()" data-toggle="tooltip" data-placement="bottom" title="TIME LEFT" ><div class="material-icons tnm">navigate_before</div></div>
+				   <div class="tnz_group">
+				      <div class="tn_button" onclick="c_zoomOUT()" data-toggle="tooltip" data-placement="bottom" title="ZOOM-OUT (horisontal)" ><div class="material-icons tnm tnmsmall">remove</div></div>
+					  <div class="tn_button"  onclick="c_zoomRESET()"  >
+						  <div class="material-icons  tnm tnmsmall"  data-toggle="tooltip" data-placement="bottom" title="ZOOM-RESET (horisontal)">swap_horiz</div> 
+					  </div>
+					  <div class="tn_button"  onclick="c_zoomIN()" data-toggle="tooltip" data-placement="bottom" title="ZOOM-IN (horisontal)"><div class="material-icons tnm tnmsmall">add</div></div>
+				   </div>
+				   <div class="tn_button" onclick="c_zoomRight()" data-toggle="tooltip" data-placement="bottom" title="TIME RIGHT"><div class="material-icons tnm">navigate_next</div></div>
+				</div>
+			   </div>
+			   <div  class="show_pages">
+			     <div class="timeline_page" id="timeline_horisontal_">
+				     <div id="timeline_horisontal_inner"></div>
+				 </div>
+				 <div class="timeline_page" id="timeline_vertical_" style="display:none">
+				 
+				 </div>			   
+			   </div>
 			  </div>
-			</td>
-		  </tr>
-		  </table>
+			  <div id="settings_page" style="display:none"  class="data_pages_">
+			   <div id="settings_top_tabs" class="top_main_tabs">
+			     
+			   </div>
+			   <div  class="show_pages">
+			   
+			   </div>
+			  </div>
+
+			 </div>
+			 <div id="bookings_right_div">
+			   <div id="bk_top_tabs">
+			      <div class="booking_top_tab booking_top_tab_selected">Reservations</div>
+				  <div class="booking_top_tab ">WaitList</div>
+			   </div>
+			   <div id="book_tabs_wrap">
+			      <div id="bookings_list_page" >
+				    <div id="bookings_list_page_head">
+					  <div class="bookings_buttons_ bookings_buttons_left selected_bb"  id="bokbtn_current">Current</div>
+					  <div class="bookings_buttons_ " id="bokbtn_next">Next</div>
+					  <div class="bookings_buttons_ bookings_buttons_right" id="bokbtn_past">Past</div>
+					</div>
+					<div class="book_list_" id="book_list_current" name="book_list_scroll" >
+					
+					</div>
+					<div class="book_list_" id="book_list_next" name="book_list_scroll" style="display:none">
+                      
+					</div>
+					<div class="book_list_" id="book_list_past"  name="book_list_scroll" style="display:none">
+					
+					</div>
+				  </div>
+			   </div>
+			 </div>
+		  </div>
 		  </td>
 		</tr>
-		<tr id="footer_tr">
-			<td id="footer_td">
-				<div id="footer" style="display: none">Belousov Dmitry</div>
-			</td>
+		<tr id="bottom_buttons_tr">
+		  <td id="left_bottom_corner_td" class="btn-success" >
+		    <div class="material-icons wa_fullscreen "    data-toggle="tooltip" data-placement="right" title="FULL SCREEN"  onclick="toggleFullScreen()">fullscreen</div>
+		  </td>
+		  <td id="bottom_buttons_td" style="background-color:#555">
+		    <div id="bottom_buttons_wrap" >
+			   <div class="row">
+				  <div class="col-md-4 bottom_row_buttons" id="button_left_btns"></div>
+				  <div class="col-md-4 bottom_row_buttons" id="button_center_btns">
+				    <div id="bottom_date">
+					   <input id="datepicker_wl_bottom" type="text" readonly>
+					</div>
+				  </div>
+				  <div class="col-md-4 bottom_row_buttons" id="button_rigt_btns"></div>
+				</div>
+			</div>
+		  </td>
 		</tr>
 	</table>
 </body>

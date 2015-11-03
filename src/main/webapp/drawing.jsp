@@ -1398,7 +1398,7 @@ $(document).on("click",".stopclick", function (event) {
 			    <div class="booking_name_var border_bottom_grey">
 				  <div class="booking_name_">Name</div>
 				  <div class="booking_var_ for_input_custom">
-				      <input class="booking_text_input booking_value" type="text" id="booking_shape_name"/>
+				      <input class="booking_text_input booking_value" type="text" id="booking_shape_name" maxlength="4"/>
 				      <div id="name_Error_bottom" style="display:none">SUCH NAME EXISTS</div>
 				  </div>
 				</div>
