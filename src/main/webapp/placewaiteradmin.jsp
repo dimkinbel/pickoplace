@@ -711,7 +711,10 @@ $(document).on("click",".stopclick", function (event) {
 				  <div class="col-md-4 bottom_row_buttons" id="button_left_btns"></div>
 				  <div class="col-md-4 bottom_row_buttons" id="button_center_btns">
 				    <div id="bottom_date">
+				      <div style="position:relative;display: inline-block;text-align: center;">
 					   <input id="datepicker_wl_bottom" type="text" readonly>
+                       <img id="wl_date_loader" src="img/gif/712.gif"  style="display:none">
+					  </div>
 					</div>
 				  </div>
 				  <div class="col-md-4 bottom_row_buttons" id="button_rigt_btns"></div>

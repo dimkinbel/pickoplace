@@ -1,7 +1,13 @@
 $(document).ready(function() {  
  $(function() {
     // Bootstrap
-	 
+	   $(".timeline_page").hover(
+		  function() {
+		      $("#current_time_line").css("opacity","1");
+		  }, function() {
+			  $("#current_time_line").css("opacity","0");
+		  }
+       );
 	  $('[data-toggle="tooltip"]').tooltip()
 	  $('.hidden_user_book_data').on('shown.bs.collapse', function () {
          var all=document.getElementsByName("book_list_scroll");
@@ -144,7 +150,7 @@ $("#datepicker_wl_bottom").datepicker({
 	autoClose:true,
 	dateFormat: "D ,d MM",
     onSelect: function(dateText, inst) {
- 
+         requestWlBookings();
     	},
     onClose: function(dateText, inst) {
     	}

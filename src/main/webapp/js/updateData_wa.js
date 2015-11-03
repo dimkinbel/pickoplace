@@ -427,9 +427,14 @@ function InitialCanvasTimeline(cid) {
 		timelinediv.redraw();
         timegrid.redraw();
 }
-function InitialBookingList() {
- // Update Bookings List
- var Bookings = JSON.parse(document.getElementById("server_bookings").value);
+function InitialBookingList(data) {
+ // Update Bookings List 
+  var Bookings = {};
+ if(data!=undefined) {
+	 Bookings = data;
+ } else {
+	 Bookings = JSON.parse(document.getElementById("server_bookings").value);
+ }
  for (var b =0 ; b < Bookings.length ; b++ ) {
      console.log(Bookings[b]);
      var from = Bookings[b].time;
