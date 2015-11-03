@@ -281,7 +281,7 @@ var helper = (function() {
 	        FB.getLoginStatus(function(response) {
 	        	console.log("FACEBOOK: FB.getLoginStatus() on google signed-in" );
 	        	if (response.status === 'connected') {
-	        		 facebookSignOut();
+	        		// facebookSignOut();
 	        	}
 	  	    });
 	        
