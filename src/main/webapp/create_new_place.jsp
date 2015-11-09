@@ -78,6 +78,7 @@ function BuisnessNameNext(debug) {
 		             		 //alert(response.rawOffset);
 		             		  var offset = response.rawOffset/3600 + response.dstOffset/3600;
 		                 	 document.getElementById("UTCoffcet_hidden").setAttribute("value",offset);
+		                 	 document.getElementById("timeZoneId").setAttribute("value",response.timeZoneId);
 		                     document.getElementById("createPlaceInfo").submit();
 		             	});
 		         } else {
@@ -263,6 +264,7 @@ $(document).on("click",".stopclick", function (event) {
 					                    <input  id="address_hidden_lat" name="address_hidden_lat" style="display: none;"> 
 					                    <input  id="address_hidden_lng" name="address_hidden_lng" style="display: none;">
 					                    <input  id="UTCoffcet_hidden" name="UTCoffcet_hidden" style="display: none;">
+					                    <input  id="timeZoneId" name="timeZoneId" style="display: none;">
 									    <p id="address_validate_message" style="display:none;"></p>
 					                </td>
 					              </tr>

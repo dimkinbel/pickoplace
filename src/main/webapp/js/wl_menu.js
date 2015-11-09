@@ -151,12 +151,13 @@ $("#datepicker_wl_bottom").datepicker({
 	dateFormat: "D ,d MM",
     onSelect: function(dateText, inst) {
          requestWlBookings();
+         updateBookingListRange();
     	},
     onClose: function(dateText, inst) {
     	}
 });
 $( "#datepicker_wl_bottom" ).datepicker("setDate", DatepickerSetDate);
-
+updateBookingListRange();
 
   
   //-------------------------------------------------
@@ -218,6 +219,7 @@ $( "#datepicker_wl_bottom" ).datepicker("setDate", DatepickerSetDate);
     waitForFinalEvent(function(){
      // applyPosition() ;
 	  updatePageDimentions();
+	  ApplyInitialPosition();
       //...
     }, 500, "some unique string");
    });
@@ -389,6 +391,7 @@ $( "#datepicker_wl_bottom" ).datepicker("setDate", DatepickerSetDate);
 	});
 });
 	function floorAppend(appendTo_,singleBoth,singleFloorID,temp) {
+
 	        var appendToWidth = $("#"+appendTo_).width() ;
             var appendToHeight = $("#"+appendTo_).height() ;
 			var temp_ = false;
@@ -406,85 +409,84 @@ $( "#datepicker_wl_bottom" ).datepicker("setDate", DatepickerSetDate);
               }
 
 			if(temp_) {
+			    // Move to temp
 				$('#'+appendTo_).append( $('#div_wrap-canvas_'+singleFloorID) );
 				return;
 			} else {
 			   if(document.getElementById("canvas_appended_wrapper-"+singleFloorID) != null) {
-			     var element = document.getElementById("canvas_appended_wrapper-"+singleFloorID);
-			     element.outerHTML = "";
-	             delete element;
+			     // Element already exists
+			     $("#"+appendTo_).append($("#canvas_appended_wrapper-"+singleFloorID));
+			   } else {
+			     // Create initial
+
+			      var appendData ="<div id='canvas_appended_wrapper-"+singleFloorID+"' class='canvas_shown_wrapper'></div>";
+			      $("#"+appendTo_).append(appendData);
+				  appendData ='<div class="zoom_options_book">';
+				  appendData +='<div id="plus_minus_wrap">';
+				  appendData +='   <div id="zoom_plus_div" onclick="sizeUp(floorCanvases['+floor_ind+'])" title="Zoom-In">+</div>';
+				  appendData +='  <div id="zoom_split"></div>';
+				  appendData +='  <div id="zoom_minus_div"  onclick="sizeDown(floorCanvases['+floor_ind+'])"  title="Zoom-Out">-</div>';
+				  appendData +=' </div>';
+				  appendData +='<div id="zoom_reset_div" onclick="zoomResetWrap(floorCanvases['+floor_ind+'],\'canvas_appended_wrapper-'+singleFloorID+'\',\'canvas_wrap_not_scroll_conf-'+singleFloorID+'\')"><div class="material-icons zoom_reset_mat"  title="Zoom-Reset">fullscreen</div></div>';
+				  appendData +='</div>';
+				  $("#canvas_appended_wrapper-"+singleFloorID).append(appendData);
+
+				  appendData =' <div id="canvas_wrap_not_scroll_conf-'+singleFloorID+'" class="canvas_wrap_not_scroll_conf"></div>';
+				  $("#canvas_appended_wrapper-"+singleFloorID).append(appendData);
+				  canvas_ref.scrollID = "canvas_wrap_not_scroll_conf-"+singleFloorID;
 			   }
 			}
-	        
-	        var appendData ="<div id='canvas_appended_wrapper-"+singleFloorID+"' class='canvas_shown_wrapper'></div>";
-			$("#"+appendTo_).append(appendData);
-			
-			appendData ='<div class="zoom_options_book">';
-			appendData +='<div id="plus_minus_wrap">';
-			appendData +='   <div id="zoom_plus_div" onclick="sizeUp(floorCanvases['+floor_ind+'])" title="Zoom-In">+</div>';
-			appendData +='  <div id="zoom_split"></div>';
-			appendData +='  <div id="zoom_minus_div"  onclick="sizeDown(floorCanvases['+floor_ind+'])"  title="Zoom-Out">-</div>';
-		    appendData +=' </div>';
-		    appendData +='<div id="zoom_reset_div" onclick="zoomResetWrap(floorCanvases['+floor_ind+'],\'canvas_appended_wrapper-'+singleFloorID+'\',\'canvas_wrap_not_scroll_conf-'+singleFloorID+'\')"><div class="material-icons zoom_reset_mat"  title="Zoom-Reset">fullscreen</div></div>';
- 
-			appendData +='</div>';
-			$("#canvas_appended_wrapper-"+singleFloorID).append(appendData);
- 
-			appendData =' <div id="canvas_wrap_not_scroll_conf-'+singleFloorID+'" class="canvas_wrap_not_scroll_conf"></div>';
-			$("#canvas_appended_wrapper-"+singleFloorID).append(appendData);
-			canvas_ref.scrollID = "canvas_wrap_not_scroll_conf-"+singleFloorID;
+
 			$("#canvas_wrap_not_scroll_conf-"+singleFloorID).css("width",appendToWidth );
 			$("#canvas_wrap_not_scroll_conf-"+singleFloorID).css("height",appendToHeight );
-			
-			$('#canvas_wrap_not_scroll_conf-'+singleFloorID).append( $('#div_wrap-canvas_'+singleFloorID) ); 
+			$('#canvas_wrap_not_scroll_conf-'+singleFloorID).append( $('#div_wrap-canvas_'+singleFloorID) );
 			zoomResetWrap(floorCanvases[floor_ind],'canvas_appended_wrapper-'+singleFloorID,'canvas_wrap_not_scroll_conf-'+singleFloorID);
-						
+
 	   } else {
 	          var canvas_ref;
 			  var floor_ind;
-             
+
 			if(temp_) {
 			  for (var f = 0 ;f < floorCanvases.length ; f++) {
                  $('#'+appendTo_).append( $('#div_wrap-canvas_'+floorCanvases[f].floorid) );
-              }	
+              }
 			  return;
 			} else {
 			   if(document.getElementById("canvas_appended_wrapper-both") != null) {
-			     var element = document.getElementById("canvas_appended_wrapper-both");
-			     element.outerHTML = "";
-	             delete element;
+					$("#"+appendTo_).append($("#canvas_appended_wrapper-both"));
+			   } else {
+					var appendData ="<div id='canvas_appended_wrapper-both' class='canvas_shown_wrapper'></div>";
+					$("#"+appendTo_).append(appendData);
+
+					appendData ='<div class="zoom_options_book">';
+					appendData +='<div id="plus_minus_wrap">';
+					appendData +='   <div id="zoom_plus_div" onclick="sizeUp(canvas_)" title="Zoom-In">+</div>';
+					appendData +='  <div id="zoom_split"></div>';
+					appendData +='  <div id="zoom_minus_div"  onclick="sizeDown(canvas_)"  title="Zoom-Out">-</div>';
+					appendData +=' </div>';
+					appendData +='<div id="zoom_reset_div" onclick="zoomResetWrap(canvas_,\'canvas_appended_wrapper-both\',\'canvas_wrap_not_scroll_conf-both\')"><div class="material-icons zoom_reset_mat"  title="Zoom-Reset">fullscreen</div></div>';
+
+					appendData +='</div>';
+					$("#canvas_appended_wrapper-both").append(appendData);
+					appendData ="<div class='floor_single_name_wrap' id='floor_buttons_wrap'></div>";
+					$("#canvas_appended_wrapper-both").append(appendData);
+
+					for (var f = 0 ;f < floorCanvases.length ; f++) {
+						 canvas_ref = floorCanvases[f];
+						 appendData ='<div class="floor_single_name_click" onclick="selectFloorByID(\''+canvas_ref.floorid+'\')">'+canvas_ref.floor_name+'</div>';
+						 $("#floor_buttons_wrap").append(appendData);
+					  }
+
+					appendData =' <div id="canvas_wrap_not_scroll_conf-both" class="canvas_wrap_not_scroll_conf"></div>';
+					$("#canvas_appended_wrapper-both").append(appendData);
+					for (var f = 0 ;f < floorCanvases.length ; f++) {
+						 canvas_ref = floorCanvases[f];
+						 canvas_ref.scrollID = "canvas_wrap_not_scroll_conf-both";
+					}
 			   }
 			}
-			  
-	        var appendData ="<div id='canvas_appended_wrapper-both' class='canvas_shown_wrapper'></div>";
-			$("#"+appendTo_).append(appendData);
-			
-			appendData ='<div class="zoom_options_book">';
-			appendData +='<div id="plus_minus_wrap">';
-			appendData +='   <div id="zoom_plus_div" onclick="sizeUp(canvas_)" title="Zoom-In">+</div>';
-			appendData +='  <div id="zoom_split"></div>';
-			appendData +='  <div id="zoom_minus_div"  onclick="sizeDown(canvas_)"  title="Zoom-Out">-</div>';
-		    appendData +=' </div>';
-		    appendData +='<div id="zoom_reset_div" onclick="zoomResetWrap(canvas_,\'canvas_appended_wrapper-both\',\'canvas_wrap_not_scroll_conf-both\')"><div class="material-icons zoom_reset_mat"  title="Zoom-Reset">fullscreen</div></div>';
 
-			appendData +='</div>';
-			$("#canvas_appended_wrapper-both").append(appendData);
-			appendData ="<div class='floor_single_name_wrap' id='floor_buttons_wrap'></div>";
-			$("#canvas_appended_wrapper-both").append(appendData);
-			for (var f = 0 ;f < floorCanvases.length ; f++) {              
-	             canvas_ref = floorCanvases[f];
-				 appendData ='<div class="floor_single_name_click" onclick="selectFloorByID(\''+canvas_ref.floorid+'\')">'+canvas_ref.floor_name+'</div>';
-				 $("#floor_buttons_wrap").append(appendData);	           
-              }
-			
-			
-			
-			appendData =' <div id="canvas_wrap_not_scroll_conf-both" class="canvas_wrap_not_scroll_conf"></div>';
-			$("#canvas_appended_wrapper-both").append(appendData);
-			for (var f = 0 ;f < floorCanvases.length ; f++) {              
-	             canvas_ref = floorCanvases[f];
-			     canvas_ref.scrollID = "canvas_wrap_not_scroll_conf-both";
-			}
+
 			$("#canvas_wrap_not_scroll_conf-both").css("width",appendToWidth );
 			$("#canvas_wrap_not_scroll_conf-both").css("height",appendToHeight );
 			for (var f = 0 ;f < floorCanvases.length ; f++) {  
@@ -810,7 +812,7 @@ function updatePageDimentions() {
 	   $("#timeline_horisontal_inner").css("width",$("#timeline_page").width() +"px");
 	   $(".settings_page").css("height",$("#settings_page").height() - $("#settings_top_tabs").outerHeight() +"px");
 	   $(".settings_page").css("width",$("#settings_page").width()+"px");
-	   $(".book_list_").css("height",$("#book_tabs_wrap").height() - $("#bookings_list_page_head").outerHeight(true)+1+"px");
+	   $(".book_list_").css("height",$("#book_tabs_wrap").height() - $("#bookings_list_page_head").outerHeight(true)-$("#list_time_range").outerHeight(true)+"px");
 	   var all=document.getElementsByName("book_list_scroll");
       for(var x=0; x < all.length; x++) {
 		    $("#"+all[x].id).perfectScrollbar();
@@ -838,7 +840,20 @@ function toggleFullScreen() {
       document.webkitCancelFullScreen();  
     }  
   }  
-}	
+}
+
+function updateBookingListRange() {
+   var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun","Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+   var currentDate = $( "#datepicker_wl_bottom" ).datepicker( "getDate" );
+   var day = currentDate.getDate();
+   var mon = monthNames[currentDate.getMonth()];
+   var tomorrow = new Date();
+   tomorrow.setDate(currentDate.getDate()+1);
+   var nextDay = tomorrow.getDate();
+   var nextMon = monthNames[tomorrow.getMonth()];
+   $("#list_time_range").html(day+" "+mon+" - "+nextDay+" "+nextMon);
+}
+
 var waitForFinalEvent = (function () {
   var timers = {};
   return function (callback, ms, uniqueId) {

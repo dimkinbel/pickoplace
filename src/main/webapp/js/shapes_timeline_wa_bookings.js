@@ -24,7 +24,7 @@ var oneSecondInPixels = width / canvasPeriod;
    var appendData = "<div id='gridimageright' style='position:absolute;left:"+parseInt(shapeLineHeight-0.5)+"px;height:100%;border-left: 1px solid black;'></div>";
    $("#"+this.id).append(appendData);
    
- 	for (var p = shapeLineHeight ; p <  this.state.height ; p+=shapeLineHeight) {   
+ 	for (var p = shapeLineHeight ; p <  this.state.height - 0.5*shapeLineHeight ; p+=shapeLineHeight) {
 	   var appendData = "<div class='gridlinediv' style='top:"+p +"px; width:"+width+"px;left:"+parseInt(shapeLineHeight)+"px'></div>";
 	   $("#"+this.id).append(appendData);
      }

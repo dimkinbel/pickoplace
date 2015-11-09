@@ -5,4 +5,11 @@
     <description>Clean up sessions</description>
     <schedule>every 24 hours</schedule>
   </cron>
+
+    <cron>
+        <url>/cron/updateTimezones</url>
+        <description>Update Timezone offsets</description>
+        <schedule>every 1 hours</schedule>
+    </cron>
+    <!--every 1 hour from 00:05 to 06:05 -->
 </cronentries>

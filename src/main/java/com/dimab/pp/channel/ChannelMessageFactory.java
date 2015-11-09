@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.dimab.pp.dto.BookingRequestWrap;
 import com.google.appengine.api.channel.ChannelFailureException;
 import com.google.appengine.api.channel.ChannelMessage;
 import com.google.appengine.api.channel.ChannelService;
@@ -25,7 +26,7 @@ import com.google.gson.reflect.TypeToken;
 
 public class ChannelMessageFactory {
 	 private static ChannelService channelService = ChannelServiceFactory.getChannelService();
-	 public boolean SendBookingUpdate(String pid,String message) {
+	 public boolean SendBookingUpdate(String pid,BookingRequestWrap message) {
 		 DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 		 Gson gson = new Gson();
 		 Filter UserExists = new  FilterPredicate("pid",FilterOperator.EQUAL,pid);
@@ -45,9 +46,9 @@ public class ChannelMessageFactory {
 	            	 map.put("status", "valid");
 	            	 map.put("subject", "booking");
 	            	 map.put("message",message);
-	            	 sendMessageToChannel(cliendID,new Gson().toJson(map));
-	            	try{ 
-	            	 
+
+	            	try{
+					  sendMessageToChannel(cliendID,new Gson().toJson(map));
 	                }catch (ChannelFailureException channelFailure) {
 		    	      System.out.println("Failed in sending message to channel:"+channelFailure);
 	                

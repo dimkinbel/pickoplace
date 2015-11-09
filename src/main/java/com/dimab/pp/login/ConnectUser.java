@@ -191,6 +191,7 @@ public class ConnectUser extends HttpServlet {
 					    			map.put("phone",false);
 					    		} else {
 									request.getSession().setAttribute("phone", phone);
+									System.out.println(phone);
 								}
 				    		} else {
 				    			map.put("phone",false);
@@ -275,6 +276,7 @@ public class ConnectUser extends HttpServlet {
 						    			map.put("phone",false);
 						    		}else {
 										request.getSession().setAttribute("phone", phone);
+										System.out.println(phone);
 									}
 					    		} else {
 					    			map.put("phone",false);

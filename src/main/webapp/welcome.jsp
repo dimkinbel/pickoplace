@@ -8,6 +8,18 @@
 <html >
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<link rel="stylesheet" href="js/jquery-ui-1.11.2.custom/jquery-ui.css" type="text/css" media="screen" />
+	<link rel="stylesheet" href="css/browserWrap.css" type="text/css" media="screen" />
+	<link rel="stylesheet" href="css/login.css" type="text/css" media="screen" />
+	<link rel="stylesheet" href="css/style.css" type="text/css" media="screen" />
+	<link rel="stylesheet" href="css/style2.css" type="text/css" media="screen" />
+	<link rel="stylesheet" href="ion.rangeSlider-2.0.2/css/ion.rangeSlider.css" type="text/css" media="screen" />
+	<link rel="stylesheet" href="ion.rangeSlider-2.0.2/css/ion.rangeSlider.skinNice.css" type="text/css" media="screen" />
+
+	<link rel="stylesheet" href="js/jquery-ui-1.11.4.Autocomplete/jquery-ui.css" type="text/css" media="screen" />
+	<link rel="stylesheet" href="css/perfect-scrollbar.css" type="text/css" media="screen" />
+	<link rel="stylesheet" href="css/dropit.css" type="text/css" media="screen" />
+
 	<script type="text/javascript" src="js/jquery-1.11.1.min.js" ></script>
     <script type="text/javascript" src="js/jquery-migrate-1.2.1.js" ></script>
     <script type="text/javascript" src="js/jquery-ui-1.11.2.custom/jquery-ui.js"></script>
@@ -28,17 +40,7 @@
     <script type="text/javascript" src="js/upDownSpinner.js" ></script>
     <script type="text/javascript" src="js/searchWizard.js" ></script>
 
-	<link rel="stylesheet" href="js/jquery-ui-1.11.2.custom/jquery-ui.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="css/browserWrap.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="css/login.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="css/style.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="css/style2.css" type="text/css" media="screen" />	
-	<link rel="stylesheet" href="ion.rangeSlider-2.0.2/css/ion.rangeSlider.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="ion.rangeSlider-2.0.2/css/ion.rangeSlider.skinNice.css" type="text/css" media="screen" />
-	
-	<link rel="stylesheet" href="js/jquery-ui-1.11.4.Autocomplete/jquery-ui.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="css/perfect-scrollbar.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="css/dropit.css" type="text/css" media="screen" />
+
 	
 	
 	<link href="raty/raty.css" media="screen" rel="stylesheet" type="text/css">

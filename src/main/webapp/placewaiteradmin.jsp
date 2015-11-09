@@ -14,7 +14,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Waiter Admin</title>
 	<!-- Latest compiled and minified CSS -->
-     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+     <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css">
  
     <link rel="stylesheet" href="css/colpick.css" type="text/css"/>
 	<link rel="stylesheet" href="css/slider.css" type="text/css"/>
@@ -41,7 +41,7 @@
 	<script type="text/javascript" src="ion.rangeSlider-2.0.2/js/ion.rangeSlider.js"></script> 
 	<script type="text/javascript" src="js/bootstrap-slider.js" ></script>	
      <!-- Latest compiled JavaScript -->
-     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+     <script src="js/bootstrap/bootstrap.min.js"></script>
 	 
  
 
@@ -686,6 +686,7 @@ $(document).on("click",".stopclick", function (event) {
 					  <div class="bookings_buttons_ " id="bokbtn_next">Next</div>
 					  <div class="bookings_buttons_ bookings_buttons_right" id="bokbtn_past">Past</div>
 					</div>
+					<div id="list_time_range"></div>
 					<div class="book_list_" id="book_list_current" name="book_list_scroll" >
 					
 					</div>
@@ -713,7 +714,7 @@ $(document).on("click",".stopclick", function (event) {
 				    <div id="bottom_date">
 				      <div style="position:relative;display: inline-block;text-align: center;">
 					   <input id="datepicker_wl_bottom" type="text" readonly>
-                       <img id="wl_date_loader" src="img/gif/712.gif"  style="display:none">
+                       <img id="wl_date_loader" src="img/gif/712.GIF"  style="display:none">
 					  </div>
 					</div>
 				  </div>
