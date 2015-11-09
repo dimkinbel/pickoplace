@@ -8,6 +8,18 @@
 <html >
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<link rel="stylesheet" href="js/jquery-ui-1.11.2.custom/jquery-ui.css" type="text/css" media="screen" />
+	<link rel="stylesheet" href="css/browserWrap.css" type="text/css" media="screen" />
+	<link rel="stylesheet" href="css/login.css" type="text/css" media="screen" />
+	<link rel="stylesheet" href="css/style.css" type="text/css" media="screen" />
+	<link rel="stylesheet" href="css/style2.css" type="text/css" media="screen" />
+	<link rel="stylesheet" href="ion.rangeSlider-2.0.2/css/ion.rangeSlider.css" type="text/css" media="screen" />
+	<link rel="stylesheet" href="ion.rangeSlider-2.0.2/css/ion.rangeSlider.skinNice.css" type="text/css" media="screen" />
+
+	<link rel="stylesheet" href="js/jquery-ui-1.11.4.Autocomplete/jquery-ui.css" type="text/css" media="screen" />
+	<link rel="stylesheet" href="css/perfect-scrollbar.css" type="text/css" media="screen" />
+	<link rel="stylesheet" href="css/dropit.css" type="text/css" media="screen" />
+
 	<script type="text/javascript" src="js/jquery-1.11.1.min.js" ></script>
     <script type="text/javascript" src="js/jquery-migrate-1.2.1.js" ></script>
     <script type="text/javascript" src="js/jquery-ui-1.11.2.custom/jquery-ui.js"></script>
@@ -28,17 +40,7 @@
     <script type="text/javascript" src="js/upDownSpinner.js" ></script>
     <script type="text/javascript" src="js/searchWizard.js" ></script>
 
-	<link rel="stylesheet" href="js/jquery-ui-1.11.2.custom/jquery-ui.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="css/browserWrap.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="css/login.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="css/style.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="css/style2.css" type="text/css" media="screen" />	
-	<link rel="stylesheet" href="ion.rangeSlider-2.0.2/css/ion.rangeSlider.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="ion.rangeSlider-2.0.2/css/ion.rangeSlider.skinNice.css" type="text/css" media="screen" />
-	
-	<link rel="stylesheet" href="js/jquery-ui-1.11.4.Autocomplete/jquery-ui.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="css/perfect-scrollbar.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="css/dropit.css" type="text/css" media="screen" />
+
 	
 	
 	<link href="raty/raty.css" media="screen" rel="stylesheet" type="text/css">
@@ -231,7 +233,7 @@ $(document).on("click",".stopclick", function (event) {
 		     <td class="ph_pad_top ph_pad_bot"><!-- $("#verification_code").prop("readonly",true); -->
 		       <input type="number" id="verification_code" readonly/><div id="verification_submit" style="display:none">SUBMIT</div>
 		       <div id="verification_submit_inactive">SUBMIT
-		         <img id="smsa_loader" src="js/fr_load.gif" style="display:none;">
+		         <img id="smsa_loader" src="img/gif/fr_load.gif" style="display:none;">
 		       </div>
 		     </td>
 		   </tr>
@@ -257,14 +259,14 @@ $(document).on("click",".stopclick", function (event) {
                       <div class="left" style="position:relative">
 
 			                  <input  type="text" name="buisnessName" id="placeSearchName"  placeholder="place name (opt.)"/>
-			                  <img id="autocompleteSearchAjax" src="/js/ajax-loader-round.gif" style="display:none"/>
+			                  <img id="autocompleteSearchAjax" src="img/gif/ajax-loader-round.gif" style="display:none"/>
 
                       </div>
             
                       <div class="left">
                              <div id="search_button">
                                  <div class="material-icons" id="search_material">search</div>
-                                 <img id="frame_book_ajax_gif_welcome" src="/js/ajax-loader-round.gif" style="display:none"/>
+                                 <img id="frame_book_ajax_gif_welcome" src="img/gif/ajax-loader-round.gif" style="display:none"/>
                              </div>
 						     
                       </div>
@@ -368,23 +370,23 @@ $(document).on("click",".stopclick", function (event) {
 								  <td id="time_picker_td">
 								    <div id="datepicker_from_wrap">
 									   <div id="dp_fh_wrap" class="left">
-									     <div id="dp_fh_up"><i class="material-icons wiz_arr wiz_arr_top wiz_arr_d">expand_less</i></div>
+									     <div id="dp_fh_up" class="dflex"><i class="material-icons wiz_arr wiz_arr_top wiz_arr_d">expand_less</i></div>
 										 <input type="text" id="from_h_inp" class="dp_wiz_time" readonly />
-										 <div id="dp_fh_down"><i class="material-icons wiz_arr wiz_arr_bot  wiz_arr_d">expand_more</i></div>
+										 <div id="dp_fh_down"  class="dflex"><i class="material-icons wiz_arr wiz_arr_bot  wiz_arr_d">expand_more</i></div>
 									   </div>
 									   <div id="h_dots">:</div>
 									   <div id="dp_fm_wrap" class="left">
-									     <div id="dp_fm_up"><i class="material-icons wiz_arr wiz_arr_top  wiz_arr_d">expand_less</i></div>
+									     <div id="dp_fm_up"  class="dflex"><i class="material-icons wiz_arr wiz_arr_top  wiz_arr_d">expand_less</i></div>
 										 <input type="text" id="from_m_inp" class="dp_wiz_time" readonly />
-										 <div id="dp_fm_down"><i class="material-icons wiz_arr wiz_arr_bot  wiz_arr_d">expand_more</i></div>
+										 <div id="dp_fm_down"  class="dflex"><i class="material-icons wiz_arr wiz_arr_bot  wiz_arr_d">expand_more</i></div>
 									   </div>
 									</div>
 								  </td>
 								  <td id="persons_picker_td">
 								      <div id="dp_pers_wrap" class="left">
-									     <div id="wper_up"><i class="material-icons wiz_arr wiz_arr_top  wiz_arr_p">expand_less</i></div>
+									     <div id="wper_up"  class="dflex"><i class="material-icons wiz_arr wiz_arr_top  wiz_arr_p">expand_less</i></div>
 										 <input type="text" id="w_per_inp" class="dp_wiz_pers" readonly />
-										 <div id="wper_don"><i class="material-icons wiz_arr wiz_arr_bot wiz_arr_p">expand_more</i></div>
+										 <div id="wper_don"  class="dflex"><i class="material-icons wiz_arr wiz_arr_bot wiz_arr_p">expand_more</i></div>
 									   </div>
 									   <div class="material-icons pers_material" style="display:none">supervisor_account</div>
 								  </td>
@@ -396,7 +398,7 @@ $(document).on("click",".stopclick", function (event) {
 					   <tr >
 					     <td id="name_tr_wiz">
 						   <div style="position:relative"><input type="text" id="wiz_name_input" class="wiz_address"  placeholder="Place name (opt.)"/>
-						      <img id="autocompleteWizAjax" src="js/ajax-loader-round.gif" style="display:none"/>
+						      <img id="autocompleteWizAjax" src="img/gif/ajax-loader-round.gif" style="display:none"/>
 						   </div>
 						 </td>
 					   </tr>
@@ -414,13 +416,13 @@ $(document).on("click",".stopclick", function (event) {
        
 			         </div>
 			      	 <div id="welcome-load-more" class="welcome_load_more"><div id="load_more-text">LOAD MORE</div>
-			              <img id="welcome_loader" src="js/fr_load.gif" style="position: relative; margin-top: 5px;display:none"/>
+			              <img id="welcome_loader" src="img/gif/fr_load.gif" style="position: relative; margin-top: 5px;display:none"/>
 			         </div>
 			         <div id="search-load-more"  class="welcome_load_more" style="display:none"><div id="search_more-text">LOAD MORE</div>
-			              <img id="search_loader" src="js/fr_load.gif" style="position: relative; margin-top: 5px;display:none"/>
+			              <img id="search_loader" src="img/gif/fr_load.gif" style="position: relative; margin-top: 5px;display:none"/>
 			         </div>
 			         <div id="wiz-load-more"  class="welcome_load_more" style="display:none"><div id="wiz_more-text">LOAD MORE</div>
-			              <img id="wiz_loader" src="js/fr_load.gif" style="position: relative; margin-top: 5px;display:none"/>
+			              <img id="wiz_loader" src="img/gif/fr_load.gif" style="position: relative; margin-top: 5px;display:none"/>
 			         </div>
 			      </div>
 				</div>

@@ -26,7 +26,7 @@ function openFeedback(bid,pid) {
 	appendData+='		    <tr ><td class="rat_text" colspan="3">';
 	appendData+='			     <textarea id="raty_textarea" placeholder="Short review..."></textarea></td></tr>';
 	appendData+='			<tr ><td class="rat_text rat_sub_btn" colspan="3">';
-	appendData+='		<img id="rating_ajax_gif" src="js/ajax-loader-round.gif" style="display:none"/>	    <div id="raty_submit" onclick="submitFeedback(\''+bid+'\',\''+pid+'\')">SUBMIT</div></td></tr>';
+	appendData+='		<img id="rating_ajax_gif" src="img/gif/ajax-loader-round.gif" style="display:none"/>	    <div id="raty_submit" onclick="submitFeedback(\''+bid+'\',\''+pid+'\')">SUBMIT</div></td></tr>';
 	appendData+='		   </table>';
 	appendData+='		 </div>    ';
 	

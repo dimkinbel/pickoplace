@@ -5,8 +5,8 @@ function requestWlBookings() {
     var pid = document.getElementById("server_placeID").value;
     var placeOffset = document.getElementById("server_placeUTC").value;
     
-	var TimeOfTheDatePicker_1970 = +$("#datepicker_wl_from").datepicker( "getDate" ).getTime()/1000; // The time is relative to client browser
-	var dayOfweek = +$("#datepicker_wl_from").datepicker( "getDate" ).getDay();
+	var TimeOfTheDatePicker_1970 = +$("#datepicker_wl_bottom").datepicker( "getDate" ).getTime()/1000; // The time is relative to client browser
+	var dayOfweek = +$("#datepicker_wl_bottom").datepicker( "getDate" ).getDay();
 	var d = new Date();
 	var clientOffset = -1*d.getTimezoneOffset()/60;
 	
@@ -24,10 +24,10 @@ function requestWlBookings() {
 	$.ajax({
 	      url : "/WaUpdateDateBookings",
 	      data: jsonData,
-	      beforeSend: function () { $("#wa_load_ajax").show(); $("#wl_load_dates_button").hide();},
+	      beforeSend: function () { $("#wl_date_loader").show(); },
 	      success : function(data){
 	    	 // alert(data);
-	    	  $("#wa_load_ajax").hide(); $("#wl_load_dates_button").show();
+	    	  $("#wl_date_loader").hide();
 	    	  console.log(data);
 	    	  updateLoadedTimeline(data.orderedResponse);
 	    	  InitialBookingList(data.bookings);
@@ -127,4 +127,5 @@ function updateLoadedTimeline(data) {
         tl_canvas.organizeShapes();
 		tl_canvas.valid = false;
 		timelinediv.redraw();
+		timegrid.redraw();
 }

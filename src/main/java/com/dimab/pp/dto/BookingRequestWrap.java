@@ -11,6 +11,9 @@ public class BookingRequestWrap {
 	  String pid;
 	  String testID;
 	  String bookID;
+
+
+	  String phone;
 	  Long dateSeconds;
 	  GenericUser user;
 	  Integer time;
@@ -24,7 +27,14 @@ public class BookingRequestWrap {
 	  int num;
 	  String userEntityKeyString;
 
-	  
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
 	  
 	public String getUserEntityKeyString() {
 		return userEntityKeyString;

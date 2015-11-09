@@ -65,6 +65,7 @@ public class CreatePlaceInfo extends HttpServlet {
 			String placeFax = request.getParameter("buisnessFax");
 			//Long time2000 = Long.valueOf(request.getParameter("timeat2000_hidden"));
 			Double UTCoffcet = Double.valueOf(request.getParameter("UTCoffcet_hidden"));
+			String TimeZoneID = request.getParameter("timeZoneId");
 			GeoPt center = new GeoPt(Float.valueOf(placeLat), Float.valueOf(placeLng));
 			
 			RandomStringGenerator randomGen = new RandomStringGenerator();
@@ -105,6 +106,9 @@ public class CreatePlaceInfo extends HttpServlet {
         		    userPlace.setProperty("sessionSaved", session.getId());
         		    //userPlace.setProperty("TimeAt2000", time2000);
         		    userPlace.setProperty("UTCoffcet",UTCoffcet);
+					userPlace.setProperty("TimeZoneID",TimeZoneID);
+
+
         		    if (placeLat != null && !placeLat.isEmpty()) {
         		      userPlace.setProperty("placeLat", Double.parseDouble(placeLat));
         		      userPlace.setProperty("placeLng", Double.parseDouble(placeLng));
@@ -205,6 +209,10 @@ public class CreatePlaceInfo extends HttpServlet {
     				}
     				
     			}
+
+
+				TimeZoneService timezoneService = new TimeZoneService();
+				timezoneService.updateTimeZonePID(TimeZoneID,UTCoffcet,Placerandom,Double.parseDouble(placeLat),Double.parseDouble(placeLng));
 
     		} else {
     			// TBD : Create User Entity

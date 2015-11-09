@@ -13,6 +13,7 @@ import com.dimab.pp.dto.PPSubmitObject;
 import com.dimab.pp.dto.PlaceInfo;
 import com.dimab.pp.dto.ShapeInfo;
 import com.dimab.pp.dto.SingleShapeBookingResponse;
+import com.dimab.pp.login.GenericUser;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
@@ -105,9 +106,14 @@ public class GetBookingShapesDataFactory {
 				Integer weekday = (int)(long)BookingEntity.getProperty("weekday");
 				Integer num  = (int)(long)BookingEntity.getProperty("num");
 				String textRequest = "";
+				String userPhone = "";
 				if(BookingEntity.getProperty("textRequest") != null) {
 					textRequest = (String)BookingEntity.getProperty("textRequest");
-				} 
+				}
+				if(BookingEntity.getProperty("userPhone") != null) {
+					userPhone = (String)BookingEntity.getProperty("userPhone");
+				}
+
 				String bookingListJSON = ((Text) BookingEntity.getProperty("bookingList")).getValue();
 				Type bookingListType = new TypeToken<List<BookingRequest>>(){}.getType();
 				List<BookingRequest> bookingShapesList = gson.fromJson(bookingListJSON, bookingListType);
@@ -121,7 +127,14 @@ public class GetBookingShapesDataFactory {
 				booking.setWeekday(weekday);
 				booking.setTextRequest(textRequest);
 				booking.setClientid(client);
+				booking.setPhone(userPhone);
 				booking.setBookingList(bookingShapesList);
+				if(BookingEntity.getProperty("genuser")!=null) {
+					Type genuserType = new TypeToken<GenericUser>(){}.getType();
+					GenericUser genuser = gson.fromJson((String)BookingEntity.getProperty("genuser"), genuserType);
+					booking.setUser(genuser);
+				}
+
 				bookings.add(booking);
 	        }
 		    return bookings;

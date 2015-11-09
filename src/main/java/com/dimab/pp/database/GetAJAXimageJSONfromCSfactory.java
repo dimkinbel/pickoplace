@@ -71,9 +71,11 @@ public class GetAJAXimageJSONfromCSfactory {
 		  			shape.getBooking_options().setDescription(description);;
 		  		}
 			}
-			
+
+			String floorID=floor.getFloorid();
+
 			if (!floor.getState().getBackgroundType().contains("color")) {
-				String floorID=floor.getFloorid();
+
 				String fileName_ = usernameRandom +"/"+ placeName + "/" + placeBranchName + "/" + placeID+"/"+"main"+"/"+floorID +"/backgroundImage.png";
 		  	    Filter imageVersion = new  FilterPredicate("PID",FilterOperator.EQUAL,placeID);
 		 	    Query piq = new Query("ImageVersion").setFilter(imageVersion);
@@ -94,7 +96,27 @@ public class GetAJAXimageJSONfromCSfactory {
 		  	    floor.setBackground(servingUrl);
 			} else {
 				floor.setBackground("");
+
 			}
+
+			String fileName_ = usernameRandom +"/"+ placeName + "/" + placeBranchName + "/" + placeID+"/"+"main"+"/"+floorID +"/overview.png";
+			System.out.println(fileName_);
+			Filter imageVersion = new  FilterPredicate("PID",FilterOperator.EQUAL,placeID);
+			Query piq = new Query("ImageVersion").setFilter(imageVersion);
+			PreparedQuery sbpiq = datastore.prepare(piq);
+			Entity imageVersionEntity = sbpiq.asSingleEntity();
+			if (imageVersionEntity != null) {
+				int overviewVersion = (int)(long)imageVersionEntity.getProperty("overviewVersion");
+				fileName_ =  usernameRandom +"/"+ placeName + "/" + placeBranchName+"/"+placeID+"/"+"main"+"/"+floorID+"/overview"+"_"+overviewVersion+".png";
+			}
+
+			String bucket = "pp_images";
+			GcsFilename gcsFilename = new GcsFilename(bucket, fileName_);
+			ImagesService is = ImagesServiceFactory.getImagesService();
+			String filename = String.format("/gs/%s/%s", gcsFilename.getBucketName(), gcsFilename.getObjectName());
+			String servingUrl = is.getServingUrl(ServingUrlOptions.Builder.withGoogleStorageFileName(filename).secureUrl(true));
+			servingUrl = servingUrl + "=s"+300;
+			floor.setAllImageSrc(servingUrl);
 		}
 		Type collectionType = new TypeToken<List<JsonSID_2_imgID>>(){}.getType();
 		List<JsonSID_2_imgID> sid2imgID = gson.fromJson(sid2ImageIDJSON, collectionType);

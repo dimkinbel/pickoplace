@@ -1,5 +1,72 @@
 $(document).ready(function() {  
  $(function() {
+    // Bootstrap
+	   $(".timeline_page").hover(
+		  function() {
+		      $("#current_time_line").css("opacity","1");
+		  }, function() {
+			  $("#current_time_line").css("opacity","0");
+		  }
+       );
+	  $('[data-toggle="tooltip"]').tooltip()
+	  $('.hidden_user_book_data').on('shown.bs.collapse', function () {
+         var all=document.getElementsByName("book_list_scroll");
+         for(var x=0; x < all.length; x++) { 
+            $("#"+all[x].id).perfectScrollbar('update'); 
+         }
+      })
+	  $('.hidden_user_book_data').on('hidden.bs.collapse', function () {
+         var all=document.getElementsByName("book_list_scroll");
+         for(var x=0; x < all.length; x++) { 
+            $("#"+all[x].id).perfectScrollbar('update'); 
+         }
+      })
+	 $("#bokbtn_next").click(function(){
+	      $(".bookings_buttons_").removeClass("selected_bb");
+		  $("#"+this.id).addClass("selected_bb");
+		  $(".book_list_").hide();
+		  $("#book_list_next").show();
+		  $("#book_list_next").perfectScrollbar('update'); 		  
+	 });
+	 $("#bokbtn_current").click(function(){
+	      $(".bookings_buttons_").removeClass("selected_bb");
+		  $("#"+this.id).addClass("selected_bb");
+		  $(".book_list_").hide();
+		  $("#book_list_current").show();
+		  $("#book_list_current").perfectScrollbar('update'); 		  
+	 });
+	 $("#bokbtn_past").click(function(){
+	      $(".bookings_buttons_").removeClass("selected_bb");
+		  $("#"+this.id).addClass("selected_bb");
+		  $(".book_list_").hide();
+		  $("#book_list_past").show();
+		  $("#book_list_past").perfectScrollbar('update'); 		  
+	 });
+     $(".mv_top_tab").click(function(){
+         var fid = this.id.replace(/floor_tab_mv_/,""); 
+		 $(".mv_top_tab").removeClass("mv_top_selected");
+		 $("#"+this.id).addClass("mv_top_selected");
+		 $(".floor_page").hide();
+		 $("#floor_wrap_view_"+fid).show();
+     });	
+     $("#floors_open").click(function(){ 
+	    $(".wl_left_menu_button_w").removeClass("wll_selected");
+		$("#"+this.id).addClass("wll_selected");
+	    $(".data_pages_").hide();
+		$("#floors_page").show();
+     });
+     $("#timeline_open").click(function(){ 
+	 $(".wl_left_menu_button_w").removeClass("wll_selected");
+		$("#"+this.id).addClass("wll_selected");
+	    $(".data_pages_").hide();
+		$("#timeline_page").show();
+     });
+     $("#settings_open").click(function(){ 
+	 $(".wl_left_menu_button_w").removeClass("wll_selected");
+		$("#"+this.id).addClass("wll_selected");
+	    $(".data_pages_").hide();
+		$("#settings_page").show();
+     });	 
     $('#timeline_canvas').contextMenu('#wl_menu',{
     // Randomly enable or disable each option
 	  constrainToScreen:true,
@@ -45,7 +112,10 @@ $(document).ready(function() {
 	  }
    });
   });
-  
+ 
+$(".shown_user_book_data").click(function(){
+   var id_ = $(this).attr("id");
+}); 
   // DATEPICKER -------------------------------------
 var placeUTCOffsetGlobal = document.getElementById("server_placeUTC").value;
 var d = new Date();
@@ -67,28 +137,28 @@ $("#datepicker_wl_from").datepicker({
 	dateFormat: "dd/mm/yy",
     onSelect: function(dateText, inst) {
     	//alert("ONSELECT:"+dateText);
-    	
+    	//requestWlBookings();
     	},
     onClose: function(dateText, inst) {
     	}
 });
 $( "#datepicker_wl_from" ).datepicker("setDate", DatepickerSetDate);
 
-var initial_page_load_update = true;
-$("#wl_load_dates_button").click(function(){
-	if(initial_page_load_update) {
-		initial_page_load_update = false;
-	    requestWlBookings();
-	} else {
-		setSessionData(function(result) {
- 		   if(result) {
- 			  requestWlBookings();
- 			} else {
- 				updatePageView();
- 			}
- 		});
-	}
+$("#datepicker_wl_bottom").datepicker({
+    currentText: "Now",
+	defaultDate: DatepickerSetDate,
+	autoClose:true,
+	dateFormat: "D ,d MM",
+    onSelect: function(dateText, inst) {
+         requestWlBookings();
+         updateBookingListRange();
+    	},
+    onClose: function(dateText, inst) {
+    	}
 });
+$( "#datepicker_wl_bottom" ).datepicker("setDate", DatepickerSetDate);
+updateBookingListRange();
+
   
   //-------------------------------------------------
   $("#wl_up").click(function(){
@@ -147,7 +217,9 @@ $("#wl_load_dates_button").click(function(){
 	});
 	$(window).resize(function () {
     waitForFinalEvent(function(){
-      applyPosition() ;
+     // applyPosition() ;
+	  updatePageDimentions();
+	  ApplyInitialPosition();
       //...
     }, 500, "some unique string");
    });
@@ -319,8 +391,9 @@ $("#wl_load_dates_button").click(function(){
 	});
 });
 	function floorAppend(appendTo_,singleBoth,singleFloorID,temp) {
-	        var appendToWidth = document.getElementById(appendTo_).offsetWidth;
-            var appendToHeight = document.getElementById(appendTo_).offsetHeight;
+
+	        var appendToWidth = $("#"+appendTo_).width() ;
+            var appendToHeight = $("#"+appendTo_).height() ;
 			var temp_ = false;
 			if(temp!= undefined && temp == true) {
 			    temp_ = true;
@@ -336,88 +409,84 @@ $("#wl_load_dates_button").click(function(){
               }
 
 			if(temp_) {
+			    // Move to temp
 				$('#'+appendTo_).append( $('#div_wrap-canvas_'+singleFloorID) );
 				return;
 			} else {
 			   if(document.getElementById("canvas_appended_wrapper-"+singleFloorID) != null) {
-			     var element = document.getElementById("canvas_appended_wrapper-"+singleFloorID);
-			     element.outerHTML = "";
-	             delete element;
+			     // Element already exists
+			     $("#"+appendTo_).append($("#canvas_appended_wrapper-"+singleFloorID));
+			   } else {
+			     // Create initial
+
+			      var appendData ="<div id='canvas_appended_wrapper-"+singleFloorID+"' class='canvas_shown_wrapper'></div>";
+			      $("#"+appendTo_).append(appendData);
+				  appendData ='<div class="zoom_options_book">';
+				  appendData +='<div id="plus_minus_wrap">';
+				  appendData +='   <div id="zoom_plus_div" onclick="sizeUp(floorCanvases['+floor_ind+'])" title="Zoom-In">+</div>';
+				  appendData +='  <div id="zoom_split"></div>';
+				  appendData +='  <div id="zoom_minus_div"  onclick="sizeDown(floorCanvases['+floor_ind+'])"  title="Zoom-Out">-</div>';
+				  appendData +=' </div>';
+				  appendData +='<div id="zoom_reset_div" onclick="zoomResetWrap(floorCanvases['+floor_ind+'],\'canvas_appended_wrapper-'+singleFloorID+'\',\'canvas_wrap_not_scroll_conf-'+singleFloorID+'\')"><div class="material-icons zoom_reset_mat"  title="Zoom-Reset">fullscreen</div></div>';
+				  appendData +='</div>';
+				  $("#canvas_appended_wrapper-"+singleFloorID).append(appendData);
+
+				  appendData =' <div id="canvas_wrap_not_scroll_conf-'+singleFloorID+'" class="canvas_wrap_not_scroll_conf"></div>';
+				  $("#canvas_appended_wrapper-"+singleFloorID).append(appendData);
+				  canvas_ref.scrollID = "canvas_wrap_not_scroll_conf-"+singleFloorID;
 			   }
 			}
-	        
-	        var appendData ="<div id='canvas_appended_wrapper-"+singleFloorID+"' class='canvas_shown_wrapper'></div>";
-			$("#"+appendTo_).append(appendData);
-			
-			appendData ='<div class="zoom_options_book">';
-			appendData +='<div id="plus_minus_wrap">';
-			appendData +='   <div id="zoom_plus_div" onclick="sizeUp(floorCanvases['+floor_ind+'])" title="Zoom-In">+</div>';
-			appendData +='  <div id="zoom_split"></div>';
-			appendData +='  <div id="zoom_minus_div"  onclick="sizeDown(floorCanvases['+floor_ind+'])"  title="Zoom-Out">-</div>';
-		    appendData +=' </div>';
-		    appendData +='<div id="zoom_reset_div" onclick="zoomResetWrap(floorCanvases['+floor_ind+'],\'canvas_appended_wrapper-'+singleFloorID+'\',\'canvas_wrap_not_scroll_conf-'+singleFloorID+'\')"><div class="material-icons zoom_reset_mat"  title="Zoom-Reset">fullscreen</div></div>';
- 
-			appendData +='</div>';
-			$("#canvas_appended_wrapper-"+singleFloorID).append(appendData);
-			appendData ="<div class='floor_single_name'>"+canvas_ref.floor_name+"</div>";
-			$("#canvas_appended_wrapper-"+singleFloorID).append(appendData);
-			
-			appendData =' <div id="canvas_wrap_not_scroll_conf-'+singleFloorID+'" class="canvas_wrap_not_scroll_conf"></div>';
-			$("#canvas_appended_wrapper-"+singleFloorID).append(appendData);
-			canvas_ref.scrollID = "canvas_wrap_not_scroll_conf-"+singleFloorID;
+
 			$("#canvas_wrap_not_scroll_conf-"+singleFloorID).css("width",appendToWidth );
 			$("#canvas_wrap_not_scroll_conf-"+singleFloorID).css("height",appendToHeight );
-			
 			$('#canvas_wrap_not_scroll_conf-'+singleFloorID).append( $('#div_wrap-canvas_'+singleFloorID) );
-			$('#div_wrap-canvas_'+singleFloorID).show();
 			zoomResetWrap(floorCanvases[floor_ind],'canvas_appended_wrapper-'+singleFloorID,'canvas_wrap_not_scroll_conf-'+singleFloorID);
-						
+
 	   } else {
 	          var canvas_ref;
 			  var floor_ind;
-             
+
 			if(temp_) {
 			  for (var f = 0 ;f < floorCanvases.length ; f++) {
                  $('#'+appendTo_).append( $('#div_wrap-canvas_'+floorCanvases[f].floorid) );
-              }	
+              }
 			  return;
 			} else {
 			   if(document.getElementById("canvas_appended_wrapper-both") != null) {
-			     var element = document.getElementById("canvas_appended_wrapper-both");
-			     element.outerHTML = "";
-	             delete element;
+					$("#"+appendTo_).append($("#canvas_appended_wrapper-both"));
+			   } else {
+					var appendData ="<div id='canvas_appended_wrapper-both' class='canvas_shown_wrapper'></div>";
+					$("#"+appendTo_).append(appendData);
+
+					appendData ='<div class="zoom_options_book">';
+					appendData +='<div id="plus_minus_wrap">';
+					appendData +='   <div id="zoom_plus_div" onclick="sizeUp(canvas_)" title="Zoom-In">+</div>';
+					appendData +='  <div id="zoom_split"></div>';
+					appendData +='  <div id="zoom_minus_div"  onclick="sizeDown(canvas_)"  title="Zoom-Out">-</div>';
+					appendData +=' </div>';
+					appendData +='<div id="zoom_reset_div" onclick="zoomResetWrap(canvas_,\'canvas_appended_wrapper-both\',\'canvas_wrap_not_scroll_conf-both\')"><div class="material-icons zoom_reset_mat"  title="Zoom-Reset">fullscreen</div></div>';
+
+					appendData +='</div>';
+					$("#canvas_appended_wrapper-both").append(appendData);
+					appendData ="<div class='floor_single_name_wrap' id='floor_buttons_wrap'></div>";
+					$("#canvas_appended_wrapper-both").append(appendData);
+
+					for (var f = 0 ;f < floorCanvases.length ; f++) {
+						 canvas_ref = floorCanvases[f];
+						 appendData ='<div class="floor_single_name_click" onclick="selectFloorByID(\''+canvas_ref.floorid+'\')">'+canvas_ref.floor_name+'</div>';
+						 $("#floor_buttons_wrap").append(appendData);
+					  }
+
+					appendData =' <div id="canvas_wrap_not_scroll_conf-both" class="canvas_wrap_not_scroll_conf"></div>';
+					$("#canvas_appended_wrapper-both").append(appendData);
+					for (var f = 0 ;f < floorCanvases.length ; f++) {
+						 canvas_ref = floorCanvases[f];
+						 canvas_ref.scrollID = "canvas_wrap_not_scroll_conf-both";
+					}
 			   }
 			}
-			  
-	        var appendData ="<div id='canvas_appended_wrapper-both' class='canvas_shown_wrapper'></div>";
-			$("#"+appendTo_).append(appendData);
-			
-			appendData ='<div class="zoom_options_book">';
-			appendData +='<div id="plus_minus_wrap">';
-			appendData +='   <div id="zoom_plus_div" onclick="sizeUp(canvas_)" title="Zoom-In">+</div>';
-			appendData +='  <div id="zoom_split"></div>';
-			appendData +='  <div id="zoom_minus_div"  onclick="sizeDown(canvas_)"  title="Zoom-Out">-</div>';
-		    appendData +=' </div>';
-		    appendData +='<div id="zoom_reset_div" onclick="zoomResetWrap(canvas_,\'canvas_appended_wrapper-both\',\'canvas_wrap_not_scroll_conf-both\')"><div class="material-icons zoom_reset_mat"  title="Zoom-Reset">fullscreen</div></div>';
 
-			appendData +='</div>';
-			$("#canvas_appended_wrapper-both").append(appendData);
-			appendData ="<div class='floor_single_name_wrap' id='floor_buttons_wrap'></div>";
-			$("#canvas_appended_wrapper-both").append(appendData);
-			for (var f = 0 ;f < floorCanvases.length ; f++) {              
-	             canvas_ref = floorCanvases[f];
-				 appendData ='<div class="floor_single_name_click" onclick="selectFloorByID(\''+canvas_ref.floorid+'\')">'+canvas_ref.floor_name+'</div>';
-				 $("#floor_buttons_wrap").append(appendData);	           
-              }
-			
-			
-			
-			appendData =' <div id="canvas_wrap_not_scroll_conf-both" class="canvas_wrap_not_scroll_conf"></div>';
-			$("#canvas_appended_wrapper-both").append(appendData);
-			for (var f = 0 ;f < floorCanvases.length ; f++) {              
-	             canvas_ref = floorCanvases[f];
-			     canvas_ref.scrollID = "canvas_wrap_not_scroll_conf-both";
-			}
+
 			$("#canvas_wrap_not_scroll_conf-both").css("width",appendToWidth );
 			$("#canvas_wrap_not_scroll_conf-both").css("height",appendToHeight );
 			for (var f = 0 ;f < floorCanvases.length ; f++) {  
@@ -450,30 +519,29 @@ $("#wl_load_dates_button").click(function(){
 	}
 
 	function appendTimeline(appendTo_) {
-	    var appendToWidth = document.getElementById(appendTo_).offsetWidth;
-        var appendToHeight = document.getElementById(appendTo_).offsetHeight;
-		//var canvasHeight = appendToHeight - document.getElementById("canvas_timeline_div").offsetHeight - document.getElementById("timeline_buttons_wrap").offsetHeight;
-		var canvasHeight = appendToHeight - 50 - 26;
+	    var appendToWidth = $("#"+appendTo_).width();
+        var appendToHeight = $("#"+appendTo_).height();
+		 
+		var canvasHeight = appendToHeight - 50 ;
 		var buttonsWidth =  430 ;
+		 $('#timeline_canvas').css("height",canvasHeight+"px");
+		$('#timeline_canvas').css("width",appendToWidth+"px"); 
 		document.getElementById('timeline_canvas').height = canvasHeight;
-		document.getElementById('timeline_canvas').width = appendToWidth  ;
+		document.getElementById('timeline_canvas').width = appendToWidth ;
 		$("#"+appendTo_).css("position","relative");
 		$('#'+appendTo_).append($('#canvas_timeline_div'));
 		$('#'+appendTo_).append($('#timeline_buttons_wrap'));
 		$('#'+appendTo_).append($('#canvas_slimscroll'));
 		
-
-		
-		$("#timeline_buttons_wrap").css('width',appendToWidth );
-
-		tl_canvas.width = appendToWidth  ;
+		tl_canvas.width = appendToWidth ;
 		tl_canvas.height = canvasHeight;
 		tl_canvas.origHeight = canvasHeight;
 		tl_canvas.origHeightReset = canvasHeight;
 		tl_canvas.lineReset();	
-		var ctw = parseInt(document.getElementById('timeline_canvas').width) ;
+		var ctw = parseInt($('#timeline_canvas').outerWidth()) ;
 		
 		$(".slimScrollDiv").remove();
+		console.log(ctw);
 		$('#canvas_slimscroll').slimScroll({
 			position: 'right',
 			height: canvasHeight + 'px',
@@ -511,38 +579,8 @@ $("#wl_load_dates_button").click(function(){
 		  flist_.single = true;
 		  flist_.timeline = false;
 		  positionmanager.floors[flist_.floorid] = flist_;		  
+		  floorAppend("floor_wrap_view_"+floorCanvases[f].floorid,true,floorCanvases[f].floorid);
 		}
-		var allfloors = {};
-		allfloors.timeline = false;
-		allfloors.single = false;
-		positionmanager.allfloors = allfloors;
-		var timeline = {};
-		timeline.timeline = true;
-		positionmanager.timeline = timeline;
-		var currentPosition = {};
-		currentPosition.top_perc = 50;
-		currentPosition.bot_perc = 50;
-		currentPosition.right_width = 2;
-		currentPosition.topleft_perc = 100;
-		currentPosition.topright_perc = 0;
-		currentPosition.botleft_perc = 100;
-		currentPosition.botright_perc = 0;
-		currentPosition.idtleft = positionmanager.allfloors;
-		currentPosition.idtright = null;
-		currentPosition.idbleft = positionmanager.timeline;
-		currentPosition.idbright = null;
-		positionmanager.currentPosition = currentPosition;
-		organizeViews (currentPosition.top_perc , 
-		               currentPosition.bot_perc ,
-					   currentPosition.right_width,
-					   currentPosition.topleft_perc , 
-					   currentPosition.topright_perc , 
-					   currentPosition.botleft_perc , 
-					   currentPosition.botright_perc , 
-					   currentPosition.idtleft , 
-					   currentPosition.idtright , 
-					   currentPosition.idbleft , 
-					   currentPosition.idbright );		
 	}
 
 	//var currentPosition.timeline = "id"
@@ -592,10 +630,10 @@ $("#wl_load_dates_button").click(function(){
 	  var availableHeight = browserHeight - headerHeight - buttonsRowHeight;
 	  document.getElementById("center_column_like").style.width = availableWidth;
 	  document.getElementById("center_column_like").style.height = availableHeight;
-	  document.getElementById("content_top_row").style.height = (top_perc==0)?"0px":parseInt(0.01 * top_perc * availableHeight)    + "px";
-	  document.getElementById("content_bottom_row").style.height = (bot_perc==0)?"0px":parseInt(0.01 * bot_perc * availableHeight)    + "px";
-	  document.getElementById("content_top_left_cell").style.width = (topleft_perc==0)?"0px":parseInt(0.01 * topleft_perc * availableWidth)    + "px";
-	  document.getElementById("content_top_right_cell").style.width = (topright_perc==0)?"0px":parseInt(0.01 * topright_perc * availableWidth)    + "px";
+	  document.getElementById("content_top_row").style.height = (top_perc==0)?"0px":parseInt(0.01 * top_perc * availableHeight)   + "px";
+	  document.getElementById("content_bottom_row").style.height = (bot_perc==0)?"0px":parseInt(0.01 * bot_perc * availableHeight)   + "px";
+	  document.getElementById("content_top_left_cell").style.width = (topleft_perc==0)?"0px":parseInt(0.01 * topleft_perc * availableWidth)   + "px";
+	  document.getElementById("content_top_right_cell").style.width = (topright_perc==0)?"0px":parseInt(0.01 * topright_perc * availableWidth)   + "px";
 	  document.getElementById("content_bottom_left_cell").style.width = (botleft_perc==0)?"0px":parseInt(0.01 * botleft_perc * availableWidth)  + "px";
 	  document.getElementById("content_bottom_right_cell").style.width = (botright_perc==0)?"0px":parseInt(0.01 * botright_perc * availableWidth) + "px";
 	  if (bot_perc == 0) {	    
@@ -736,7 +774,7 @@ $("#wl_load_dates_button").click(function(){
 	   }
 	   if (horisontal == "horisontal") {
 	     var proposedH = (available - floorCanvases.length * padding )/totalWH;
-		 for (var f= 0 ; f < fdist.flist.length ; f++) {
+		 for (f= 0 ; f < fdist.flist.length ; f++) {
 		    fdist.flist[f].perc =100*proposedH*fdist.flist[f].wh/(available  - floorCanvases.length * padding );
 		 }
 		 fdist.proposed = proposedH ;
@@ -745,8 +783,77 @@ $("#wl_load_dates_button").click(function(){
 	   }
 	   return fdist;
 	}
-	
-	
+function updatePageDimentions() {
+	   var browserHeight = window.innerHeight;
+	   var browserWidth = window.innerWidth;
+
+	   $("#wa_left_column").css("width",70+"px");
+	   $("#wa_left_column").css("height",browserHeight-70+"px");
+	   $("#bottom_buttons_td").css("height",70+"px");	
+	   $("#content_td").css("width",browserWidth-70+"px");
+       $("#content_td").css("height",browserHeight-70+"px");
+	   $("#bookings_right_div").css("width",300+"px");
+       $("#main_views_div").css("width",$("#content_td").width() - $("#bookings_right_div").outerWidth()+"px");
+	   $("#main_views_div").css("height",$("#content_td").height() + "px");
+       
+	   $("#floors_page").css("width",$("#main_views_div").width()+"px");
+	   $("#floors_page").css("height",$("#main_views_div").height()+"px");
+	   $("#settings_page").css("width",$("#main_views_div").width()+"px");
+	   $("#settings_page").css("height",$("#main_views_div").height()+"px");
+	   $("#timeline_page").css("width",$("#main_views_div").width()+"px");
+	   $("#timeline_page").css("height",$("#main_views_div").height()+"px");
+       	   
+	   $("#book_tabs_wrap").css("height",$("#main_views_div").height() - $("#bk_top_tabs").outerHeight()+"px");
+	   $(".floor_page").css("height",$("#floors_page").height() - $("#mv_top_tabs").outerHeight() +"px");
+	   $(".floor_page").css("width",$("#main_views_div").width()+"px");
+	   $(".timeline_page").css("height",$("#timeline_page").height() - $("#timeline_top_tabs").outerHeight() +"px");
+	   $(".timeline_page").css("width",$("#timeline_page").width()+"px");
+	   $("#timeline_horisontal_inner").css("height",$("#timeline_page").height() - $("#timeline_top_tabs").outerHeight()  +"px");
+	   $("#timeline_horisontal_inner").css("width",$("#timeline_page").width() +"px");
+	   $(".settings_page").css("height",$("#settings_page").height() - $("#settings_top_tabs").outerHeight() +"px");
+	   $(".settings_page").css("width",$("#settings_page").width()+"px");
+	   $(".book_list_").css("height",$("#book_tabs_wrap").height() - $("#bookings_list_page_head").outerHeight(true)-$("#list_time_range").outerHeight(true)+"px");
+	   var all=document.getElementsByName("book_list_scroll");
+      for(var x=0; x < all.length; x++) {
+		    $("#"+all[x].id).perfectScrollbar();
+            $("#"+all[x].id).perfectScrollbar('update');
+            $("#"+all[x].id).find(".ps-scrollbar-x-rail").css({"opacity":0});
+      }
+	  appendTimeline("timeline_horisontal_inner");
+}
+function toggleFullScreen() {
+  if ((document.fullScreenElement && document.fullScreenElement !== null) ||    
+   (!document.mozFullScreen && !document.webkitIsFullScreen)) {
+    if (document.documentElement.requestFullScreen) {  
+      document.documentElement.requestFullScreen();  
+    } else if (document.documentElement.mozRequestFullScreen) {  
+      document.documentElement.mozRequestFullScreen();  
+    } else if (document.documentElement.webkitRequestFullScreen) {  
+      document.documentElement.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);  
+    }  
+  } else {  
+    if (document.cancelFullScreen) {  
+      document.cancelFullScreen();  
+    } else if (document.mozCancelFullScreen) {  
+      document.mozCancelFullScreen();  
+    } else if (document.webkitCancelFullScreen) {  
+      document.webkitCancelFullScreen();  
+    }  
+  }  
+}
+
+function updateBookingListRange() {
+   var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun","Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+   var currentDate = $( "#datepicker_wl_bottom" ).datepicker( "getDate" );
+   var day = currentDate.getDate();
+   var mon = monthNames[currentDate.getMonth()];
+   var tomorrow = new Date();
+   tomorrow.setDate(currentDate.getDate()+1);
+   var nextDay = tomorrow.getDate();
+   var nextMon = monthNames[tomorrow.getMonth()];
+   $("#list_time_range").html(day+" "+mon+" - "+nextDay+" "+nextMon);
+}
+
 var waitForFinalEvent = (function () {
   var timers = {};
   return function (callback, ms, uniqueId) {

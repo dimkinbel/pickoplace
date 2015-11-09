@@ -96,7 +96,23 @@ public class ClientPlaceBooking extends HttpServlet {
 		bookingRequestsWrap.setClientid(username_email);
 		bookingRequestsWrap.setUser(genuser);
 		bookingRequestsWrap.setPlaceLocalTime(PlaceLocalTime);
-
+		String sessionPhone = (String) request.getSession().getAttribute("phone");
+		boolean usedUsersEntity = false;
+		Entity userEntity;
+		if(sessionPhone==null || sessionPhone.isEmpty()) {
+			usedUsersEntity = true;
+			Filter UserEmail = new  FilterPredicate("username",FilterOperator.EQUAL,genuser.getEmail());
+			Query q = new Query("Users").setFilter(UserEmail);
+			PreparedQuery pq = datastore.prepare(q);
+			userEntity = pq.asSingleEntity();
+			if (userEntity == null) {
+				// TBD: Cant find user Entity
+			} else {
+				sessionPhone = (String) userEntity.getProperty("phone");
+			}
+		}
+		bookingRequestsWrap.setPhone(sessionPhone);
+		System.out.println(sessionPhone);
 		// Get CanvasState by PID
 		Filter pidFilter = new  FilterPredicate("placeUniqID",FilterOperator.EQUAL,bookingRequestsWrap.getPid());
 		Query sq_ = new Query("CanvasState").setFilter(pidFilter);
@@ -119,6 +135,10 @@ public class ClientPlaceBooking extends HttpServlet {
   		bookingOrder.setUnindexedProperty("placeName", (String)canvasEntity.getProperty("placeName"));
   		bookingOrder.setUnindexedProperty("placeBranchName", (String)canvasEntity.getProperty("placeBranchName"));
   		bookingOrder.setUnindexedProperty("address", (String)canvasEntity.getProperty("address"));
+		bookingOrder.setUnindexedProperty("genuser", gson.toJson(genuser));
+		bookingOrder.setUnindexedProperty("UTCdateProper", UTCdateProper);
+		bookingOrder.setUnindexedProperty("userPhone", sessionPhone);
+
 		bookingOrder.setProperty("bid", bookingRequestsWrap.getBookID());
 		bookingOrder.setProperty("Date", PlaceLocalTime.toString());
 		bookingOrder.setProperty("UTCstartSeconds", secondsRelativeToClient);
@@ -254,7 +274,7 @@ public class ClientPlaceBooking extends HttpServlet {
 				}
 				// Update all open managers
 				ChannelMessageFactory channelFactory = new ChannelMessageFactory();
-				channelFactory.SendBookingUpdate(bookingRequestsWrap.getPid(),bookingRequestsWrap.getBookID());
+				channelFactory.SendBookingUpdate(bookingRequestsWrap.getPid(),bookingRequestsWrap);
 			} else {
 				datastore.delete(bookingOrder.getKey());
 			}

@@ -87,7 +87,7 @@ onSocketClose = function() {
 
 onSocketMessage = function(message) {
 	//alert("soccet message received");
-	console.log(message);
+	console.log(JSON.parse(message.data));
 };
 
 

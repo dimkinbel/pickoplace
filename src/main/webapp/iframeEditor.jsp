@@ -196,7 +196,7 @@ function updatePageView() {
 <body style="margin: 0px;" >
     <div id="frame_prev_wrap" style="display:none" >
       <div id="frame_prev_wrap_popup_content" >
-        <table id="iframe_loader" cellspacing="0" cellpadding="0" style="width: 100%; height: 100%; border-collapse: collapse;display:none"><tr><td><img  style="width: 100px;" src="js/ajaxSpinner.gif" /></td></tr></table>
+        <table id="iframe_loader" cellspacing="0" cellpadding="0" style="width: 100%; height: 100%; border-collapse: collapse;display:none"><tr><td><img  style="width: 100px;" src="img/gif/ajaxSpinner.gif" /></td></tr></table>
         <div id="frame-canvas" ></div>
         <img id="close_map_icon" src="img/icon-close35.png" onclick="closeIframe()"/>
       </div>
@@ -456,7 +456,7 @@ function updatePageView() {
 			    <div id="list_buttons">
 				  <div id="fe_back_" class="fe_list_buttons">&#8592; Back</div>
 				</div>
-			    <div id="list_loading"  class="sb_loading" style="display:none"> <img class="sb_ajax_gif" src="js/299.GIF" /></div>
+			    <div id="list_loading"  class="sb_loading" style="display:none"> <img class="sb_ajax_gif" src="img/gif/299.GIF" /></div>
 			    <div id="fe_list_append">
 
 				</div>
@@ -585,7 +585,7 @@ function updatePageView() {
                   <div id="fe_options_wrap">
                   <div id="fe_menu_div_">
 				     <div class="fe_menu_btn" id="fe_save">Save</div>
-				     <div class="fe_menu_btn" id="fe_save_ajax" style="display:none"><img class="sfdcvsad" src="js/saving.GIF" /></div>
+				     <div class="fe_menu_btn" id="fe_save_ajax" style="display:none"><img class="sfdcvsad" src="img/gif/saving.GIF" /></div>
 					 <div class="fe_menu_btn" id="fe_iflist">List saved</div>
 				   </div>
 				   <div class="fe_single_option_main effect2" id="feos_floors" >Select floors</div>

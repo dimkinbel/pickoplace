@@ -220,7 +220,7 @@ position: relative;
   <div id="ppwelcomeflow">Are you sure you want to unsubscribe from order-confirmation eMails sent you by PickoPlace ?<br><div id="mailinp">dimkinbel@gmail.com</div></div>
   <div id="unsubscribeButton">Unsubscribe</div>
   <div id="flow_ajax_spinner" style="width:200px;padding-top:100px;margin:auto;display:none">
-    <img  style="width: 100px;" src="js/ajaxSpinner.gif" />
+    <img  style="width: 100px;" src="img/gif/ajaxSpinner.gif" />
   </div>
  <div id="unsubscribeOK" style="display:none;"><div class="materialOK material-icons">done</div>You have been successfully unsubscribed.</div>
 </div>

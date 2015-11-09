@@ -1146,6 +1146,7 @@ outline: 0;
 }
 #book_timeline_wrap {
 border-top: 1px solid #7D7D7D;
+bottom: 1px;
 }
 .btimestep {
 position:absolute;

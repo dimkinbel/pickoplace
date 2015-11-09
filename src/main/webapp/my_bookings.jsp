@@ -209,10 +209,10 @@ function updatePageView() {
 		    <td class="left_content_td"></td>
 			<td id="content_td_ac">
 			  <div class="fp_head" >Next bookings</div>
-			  <div class="sb_loading" style="display:none" id="sb_ajax_gif_future"><img class="sb_ajax_gif" src="/js/299.GIF" /></div>
+			  <div class="sb_loading" style="display:none" id="sb_ajax_gif_future"><img class="sb_ajax_gif" src="img/gif/299.GIF" /></div>
               <div id="next_bookings_div"></div>
               <div class="fp_head" >Past bookings</div>
-              <div class="sb_loading" style="display:none" id="sb_ajax_gif_past"><img class="sb_ajax_gif" src="/js/299.GIF" /></div>
+              <div class="sb_loading" style="display:none" id="sb_ajax_gif_past"><img class="sb_ajax_gif" src="img/gif/299.GIF" /></div>
               <div id="past_bookings_div">
               </div>
 			</td>

@@ -210,11 +210,25 @@ function drawConfirmation() {
 	      });
 		}
 }
+function randomNum(length) {
+    var chars = '0123456789'.split('');
+
+    if (! length) {
+        length = Math.floor(Math.random() * chars.length);
+    }
+
+    var str = '';
+    for (var i = 0; i < length; i++) {
+        str += chars[Math.floor(Math.random() * chars.length)];
+    }
+
+    return str.replace(/^0/,"1");
+}
 function createBookingJSON() {
 	  bookingOrderJSONlist=[];
 	  bookingOrderJSON = {};
 	  bookingRequestWrap = {};
-	  var bookID =  "book_"+randomString(15);
+	  var bookID =  "book_"+randomNum(10);
 	  var testID = "temp_"+randomString(10);
 	  var d = new Date();
 	  var clientOffset = d.getTimezoneOffset();

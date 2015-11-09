@@ -1,7 +1,7 @@
 /**
  * 
  */
-function BShapeAll( from , to , bid , persons , type , namesList , places , num) {
+function BShapeAll( from , to , bid , persons , type , namesList , places , num , user) {
   "use strict";
   // This is a very simple and unsafe constructor. All we're doing is checking if the values exist.
   // "x || 0" just means "if there is a value for x, use that. Otherwise use 0."
@@ -15,6 +15,7 @@ function BShapeAll( from , to , bid , persons , type , namesList , places , num)
   this.namesList = namesList;
   this.places = places;
   this.num = num;
+  this.user = user;
 }
 
 function BookingListManager () {
@@ -35,21 +36,21 @@ function BookingListManager () {
    setInterval(function() { myState.monitore(); }, 10000);
 }
 BookingListManager.prototype.clear = function() {
-	   for (var b = 0 ; b < this.allBookings.length ; b++) {
-	      var bid = this.allBookings[b].bid;
-		  this.removeBookingDraw(bid);
-	   }
-	   this.allBookings = [];
-	   this.newBookings = [];
-	   
-	   this.currentBookingsHash = {};
-	   this.currentBookings = [];
-	   
-	   this.pastBookingsHash = {};
-	   this.pastBookings = [];
-	   
-	   this.nextBookingsHash = {};
-	   this.nextBookings = [];
+   for (var b = 0 ; b < this.allBookings.length ; b++) {
+      var bid = this.allBookings[b].bid;
+	  this.removeBookingDraw(bid);
+   }
+   this.allBookings = [];
+   this.newBookings = [];
+   
+   this.currentBookingsHash = {};
+   this.currentBookings = [];
+   
+   this.pastBookingsHash = {};
+   this.pastBookings = [];
+   
+   this.nextBookingsHash = {};
+   this.nextBookings = [];
 }
 BookingListManager.prototype.monitore = function() {   
    if(this.newBookings.length > 0 ) {
@@ -207,29 +208,88 @@ BookingListManager.prototype.removeBooking = function(bid) {
    } 
 }
 BookingListManager.prototype.DrawToCurrent = function(bid) {
-   var appendID = "append_current_wl_list";
+   var appendID = "book_list_current";
    var afterName = "wa_current_list";
    var bshape = this.currentBookingsHash[bid];
    var placeOffset = parseFloat(document.getElementById("server_placeUTC").value);
-   var date_ = calculateShowDate(bshape.from,placeOffset);
-   var period_ = calculateDuration(bshape.to - bshape.from);
-	  
-   var appendData = "";
-    appendData += '<div class="wl_list_booking wl_current_" id="wl_list_bid-'+bshape.bid+'" name="wa_current_list" onclick="DisplayBooking(\''+bshape.bid+'\')">';
-	appendData += '  <div class="hidden__" style="display:none">';
-	appendData += '		<input style="display:none" id="book_wa_from_input_'+bshape.bid+'" value="'+bshape.from+'" />';
-	appendData += '		<input style="display:none" id="book_wa_to_input_'+bshape.bid+'" value="'+bshape.to+'" />';
-	appendData += '  </div>';
-	appendData += '	 <table class="append_current_wl_list_tbl" cellspacing="0" cellpadding="0" style="width: 100%; height: 100%; border-collapse: collapse">';
-	appendData += '		<tr class="wl_list_book_show_current" id="show_data_wl-'+bshape.bid+'" title="Click to Expand">';
-	appendData += '			<td class="wl_list_section_head_tbl_col_bid wl_val_" id="wl_list_current_sh_bid-'+bshape.bid+'">'+bshape.num+'</td>';
-	appendData += '			<td class="wl_list_section_head_tbl_col_time wl_val_" id="wl_list_current_sh_time-'+bshape.bid+'">'+date_+'</td>';
-	appendData += '			<td class="wl_list_section_head_tbl_col_period wl_val_" id="wl_list_current_sh_period-'+bshape.bid+'">'+period_+'</td>	';
-	appendData += '			<td class="wl_list_section_head_tbl_col_pers wl_val_" id="wl_list_current_sh_persons-'+bshape.bid+'">'+bshape.persons+'</td>';
-	appendData += '		    <td class="wl_list_section_head_tbl_col_place wl_val_" id="wl_list_current_sh_places-'+bshape.bid+'">'+bshape.places+'</td>	';						   						    
-	appendData += '		</tr>';
-	appendData += '	 </table>';
-	appendData += '</div>';
+   var date_ = calculateShowDate(bshape.from,placeOffset,bshape.to);
+  var userName = "";
+   var imgsrc = "";
+   var persons = bshape.persons;
+   
+   if(bshape.user.facebook == true) {
+       userName = bshape.user.fbuser.name;
+	   imgsrc = "http://graph.facebook.com/" + bshape.user.fbuser.id + "/picture"
+   } else if (bshape.user.google == true) {
+        userName = bshape.user.gouser.name;
+		imgsrc = bshape.user.gouser.picture;
+   }
+    var appendData = "";
+	appendData += "<div class='single_book_list_wrap' id='wl_list_bid-"+bshape.bid+"'  name='wa_current_list'>";
+	appendData += "   <div class='shown_user_book_data' id='shown-"+bshape.bid+"' data-toggle='collapse' data-parent='#book_list_current' href='#hidden-"+bshape.bid+"' aria-expanded='false' aria-controls='hidden-"+bshape.bid+"'>";
+	appendData += "    <table cellspacing='0' cellpadding='0'  style='width:100%;'>";
+	appendData += "	  <tr >";
+	appendData += "	   <td class='bls_name_td'>";
+	appendData += "	     <div class='bls_name'>"+userName+"</div>";
+    appendData += "        </td>";
+	appendData += "		<td class='bls_tags' rowspan=2>";
+	appendData += "		  <div class='loggedbyfg'>";
+	appendData += "		     <img src='"+imgsrc+"'/>";
+	appendData += "		   </div>";
+	appendData += "		</td>";
+    appendData += "        	<td class='bls_tnumb' rowspan=2>";
+	appendData += "		   <div class='tnum'>"+bshape.num+"</div>";
+	appendData += "		</td>				";		   
+	appendData += "	  </tr>";
+	appendData += "	  <tr>";
+    appendData += "          <td class='bls_time_td' >";
+	appendData += "		  <div class='bls_time left' id='timeperiod-"+bshape.bid+"'>"+date_+"</div>";
+	appendData += "		  <div class='bls_persons  left'><div class='numbls left'>"+persons+"</div><div class='material-icons bls_person_m  left'>person</div></div>";
+	appendData += "		  <div class='bls_persons  left'><div class='numbls  left'>"+bshape.places+"</div><div class='material-icons bls_places_m  left'>store_mall_directory</div></div>";
+	appendData += "		</td>";
+	appendData += "	  </tr>";
+	appendData += "	</table>";
+	appendData += " </div>";
+     appendData += "  <div id='hidden-"+bshape.bid+"' class='hidden_user_book_data panel-collapse collapse ' role='tabpanel' aria-labelledby='headingOne'>";
+    appendData += "      <div class='hidden_inner_wrap'>";
+	appendData += "	  <div class='tbluserdatatr'>";
+
+	if(bshape.phone != undefined && bshape.phone != "") {
+		appendData += "		   <div class='phnwrap  '>";
+		appendData += "		    <div class='material-icons upicn left'>phone</div>";
+		appendData += "		    <div class='phoneuserwl left label label-success'>"+bshape.phone+"</div>";
+		appendData += "		  </div>";	 
+	}
+
+	appendData += "	  </div>";
+	appendData += "	  <div class='tbltbls'>";
+	appendData += "		<table class='table table-striped table-condensed'>";
+	for(var i = 0 ; i < bshape.namesList.length ; i++ ) {
+		appendData += "         <tr>";
+		appendData += "		       <td>"+bshape.namesList[i].name+"</td>";
+		appendData += "			   <td>"+bshape.namesList[i].floorname+"</td>";
+		appendData += "			   <td>"+bshape.namesList[i].persons+" persons</td>";
+		appendData += "		  </tr>";		
+	}
+
+	appendData += "		</table>";
+	appendData += "	  </div>";
+	appendData += "	  <div class='tblbtns'>";
+	appendData += "	     <div class='btn-group btn-group-justified  ' role='group' aria-label='...'>";
+	appendData += "			  <div class='btn-group btn-group-sm' role='group'>";
+	appendData += "				<button type='button' class='btn btn-default'>Left</button>";
+	appendData += "			  </div>";
+	appendData += "			  <div class='btn-group btn-group-sm' role='group'>";
+	appendData += "				<button type='button' class='btn btn-default'>Middle</button>";
+	appendData += "			  </div>";
+	appendData += "			  <div class='btn-group btn-group-sm' role='group'>";
+	appendData += "				<button type='button' class='btn btn-default'>Right</button>";
+	appendData += "			  </div>";
+	appendData += "			</div>		";					    
+	appendData += "	  </div>";
+	appendData += "	 </div>";
+	 appendData += "</div>";
+	appendData += "</div>";
    
    var drawn = document.getElementsByName(afterName);  
    if (drawn.length > 0) {
@@ -250,31 +310,88 @@ BookingListManager.prototype.DrawToCurrent = function(bid) {
    }
 }
 BookingListManager.prototype.DrawToNext = function(bid) {
-   var appendID = "append_next_wl_list";
+   var appendID = "book_list_next";
    var afterName = "wa_next_list";
    var bshape = this.nextBookingsHash[bid];
    var placeOffset = parseFloat(document.getElementById("server_placeUTC").value);
-   var date_ = calculateShowDate(bshape.from,placeOffset);
-   var period_ = calculateDuration(bshape.to - bshape.from);
-	  
-   var appendData = "";
-	appendData += '	<div class="wl_list_booking wl_next_" id="wl_list_bid-'+bshape.bid+'" name="wa_next_list" onclick="DisplayBooking(\''+bshape.bid+'\')">';
-	appendData += '  <div class="hidden__" style="display:none">';
-	appendData += '		<input style="display:none" name="wl_list_nwxt_lwft" id="book_wa_from_input_'+bshape.bid+'" value="'+bshape.from+'" />';
-	appendData += '		<input style="display:none" id="book_wa_to_input_'+bshape.bid+'" value="'+bshape.to+'" />';
-	appendData += '  </div>';	
-	appendData += '	  <table class="append_current_wl_list_tbl" cellspacing="0" cellpadding="0" style="width: 100%; height: 100%; border-collapse: collapse">';
-	appendData += '	  <tr class="wl_list_book_show_current" id="show_data_wl-'+bshape.bid+'" title="Click to Expand">';
-	appendData += '	   <td class="wl_list_section_head_tbl_col_next_bid" id="wl_list_next_sh_bid-'+bshape.bid+'">'+bshape.num+'</td>';
-	appendData += '	   <td class="wl_list_section_head_tbl_col_next_time" id="wl_list_next_sh_time-'+bshape.bid+'">'+date_+'</td>';
-	appendData += '	   <td class="wl_list_section_head_tbl_col_next_period" id="wl_list_next_sh_period-'+bshape.bid+'">'+period_+'</td>	';
-	appendData += '	   <td class="wl_list_section_head_tbl_col_next_pers" id="wl_list_next_sh_persons-'+bshape.bid+'">'+bshape.persons+'</td>';
-	appendData += '	   <td class="wl_list_section_head_tbl_col_next_place" id="wl_list_next_sh_places-'+bshape.bid+'">'+bshape.places+'</td>';
-	appendData += '	   <td class="wl_list_section_head_tbl_col_next_left" id="wl_list_next_sh_left-'+bshape.bid+'"></td>	';						    
-	appendData += '	  </tr>';
-	appendData += '	 </table>';
-	appendData += '	</div>';
-		
+   var date_ = calculateShowDate(bshape.from,placeOffset,bshape.to);
+   var userName = "";
+   var imgsrc = "";
+   var persons = bshape.persons;
+   
+   if(bshape.user.facebook == true) {
+       userName = bshape.user.fbuser.name;
+	   imgsrc = "http://graph.facebook.com/" + bshape.user.fbuser.id + "/picture"
+   } else if (bshape.user.google == true) {
+        userName = bshape.user.gouser.name;
+		imgsrc = bshape.user.gouser.picture;
+   }
+    var appendData = "";
+	appendData += "<div class='single_book_list_wrap' id='wl_list_bid-"+bshape.bid+"'  name='wa_next_list'>";
+	appendData += "   <div class='shown_user_book_data' id='shown-"+bshape.bid+"' data-toggle='collapse' data-parent='#book_list_next' href='#hidden-"+bshape.bid+"' aria-expanded='false' aria-controls='hidden-"+bshape.bid+"'>";
+	appendData += "    <table cellspacing='0' cellpadding='0'  style='width:100%;'>";
+	appendData += "	  <tr >";
+	appendData += "	   <td class='bls_name_td'>";
+	appendData += "	     <div class='bls_name'>"+userName+"</div>";
+    appendData += "        </td>";
+	appendData += "		<td class='bls_tags' rowspan=2>";
+	appendData += "		  <div class='loggedbyfg'>";
+	appendData += "		     <img src='"+imgsrc+"'/>";
+	appendData += "		   </div>";
+	appendData += "		</td>";
+    appendData += "        	<td class='bls_tnumb' rowspan=2>";
+	appendData += "		   <div class='tnum'>"+bshape.num+"</div>";
+	appendData += "		</td>				";		   
+	appendData += "	  </tr>";
+	appendData += "	  <tr>";
+    appendData += "          <td class='bls_time_td' >";
+	appendData += "		  <div class='bls_time left' id='timeperiod-"+bshape.bid+"'>"+date_+"</div>";
+	appendData += "		  <div class='bls_persons  left'><div class='numbls left'>"+persons+"</div><div class='material-icons bls_person_m  left'>person</div></div>";
+	appendData += "		  <div class='bls_persons  left'><div class='numbls  left'>"+bshape.places+"</div><div class='material-icons bls_places_m  left'>store_mall_directory</div></div>";
+	appendData += "		</td>";
+	appendData += "	  </tr>";
+	appendData += "	</table>";
+	appendData += " </div>";
+     appendData += "  <div id='hidden-"+bshape.bid+"' class='hidden_user_book_data panel-collapse collapse ' role='tabpanel' aria-labelledby='headingOne'>";
+    appendData += "      <div class='hidden_inner_wrap'>";
+	appendData += "	  <div class='tbluserdatatr'>";
+
+	if(bshape.phone != undefined && bshape.phone != "") {
+		appendData += "		   <div class='phnwrap  '>";
+		appendData += "		    <div class='material-icons upicn left'>phone</div>";
+		appendData += "		    <div class='phoneuserwl left label label-success'>"+bshape.phone+"</div>";
+		appendData += "		  </div>";	 
+	}
+
+	appendData += "	  </div>";
+	appendData += "	  <div class='tbltbls'>";
+	appendData += "		<table class='table table-striped table-condensed'>";
+	for(var i = 0 ; i < bshape.namesList.length ; i++ ) {
+		appendData += "         <tr>";
+		appendData += "		       <td>"+bshape.namesList[i].name+"</td>";
+		appendData += "			   <td>"+bshape.namesList[i].floorname+"</td>";
+		appendData += "			   <td>"+bshape.namesList[i].persons+" persons</td>";
+		appendData += "		  </tr>";		
+	}
+
+	appendData += "		</table>";
+	appendData += "	  </div>";
+	appendData += "	  <div class='tblbtns'>";
+	appendData += "	     <div class='btn-group btn-group-justified  ' role='group' aria-label='...'>";
+	appendData += "			  <div class='btn-group btn-group-sm' role='group'>";
+	appendData += "				<button type='button' class='btn btn-default'>Left</button>";
+	appendData += "			  </div>";
+	appendData += "			  <div class='btn-group btn-group-sm' role='group'>";
+	appendData += "				<button type='button' class='btn btn-default'>Middle</button>";
+	appendData += "			  </div>";
+	appendData += "			  <div class='btn-group btn-group-sm' role='group'>";
+	appendData += "				<button type='button' class='btn btn-default'>Right</button>";
+	appendData += "			  </div>";
+	appendData += "			</div>		";					    
+	appendData += "	  </div>";
+	appendData += "	 </div>";
+	 appendData += "</div>";
+	appendData += "</div>";
    
    var drawn = document.getElementsByName(afterName);  
    if (drawn.length > 0) {
@@ -296,38 +413,96 @@ BookingListManager.prototype.DrawToNext = function(bid) {
    }
 }
 BookingListManager.prototype.DrawToPast = function(bid) {
-   var appendID = "append_past_wl_list";
+   var appendID = "book_list_past";
    var afterName = "wa_past_list";
    var bshape = this.pastBookingsHash[bid];
    var placeOffset = parseFloat(document.getElementById("server_placeUTC").value);
-   var date_ = calculateShowDate(bshape.from,placeOffset);
-   var period_ = calculateDuration(bshape.to - bshape.from);
-	  
-   var appendData = "";
-   appendData += '<div class="wl_list_booking wl_past_" id="wl_list_bid-'+bshape.bid+'"  name="wa_past_list" onclick="DisplayBooking(\''+bshape.bid+'\')">';
-	appendData += '  <div class="hidden__" style="display:none">';
-	appendData += '		<input style="display:none" id="book_wa_from_input_'+bshape.bid+'" value="'+bshape.from+'" />';
-	appendData += '		<input style="display:none" id="book_wa_to_input_'+bshape.bid+'" value="'+bshape.to+'" />';
-	appendData += '  </div>';	
-   appendData += '  <table class="append_current_wl_list_tbl" cellspacing="0" cellpadding="0" style="width: 100%; height: 100%; border-collapse: collapse">';
-	appendData += '  <tr class="wl_list_book_show_current" id="show_data_wl-'+bshape.bid+'" title="Click to Expand">';
-	appendData += '   <td class="wl_list_section_head_tbl_col_past_bid" id="wl_list_past_sh_bid-'+bshape.bid+'">'+bshape.num+'</td>';
-	appendData += '   <td class="wl_list_section_head_tbl_col_past_time" id="wl_list_past_sh_time-'+bshape.bid+'">'+date_+'</td>';
-	appendData += '   <td class="wl_list_section_head_tbl_col_past_period" id="wl_list_past_sh_period-'+bshape.bid+'">'+period_+'</td>	';
-	appendData += '   <td class="wl_list_section_head_tbl_col_past_pers" id="wl_list_past_sh_persons-'+bshape.bid+'">'+bshape.persons+'</td>';
-	appendData += '   <td class="wl_list_section_head_tbl_col_past_place" id="wl_list_past_sh_places-'+bshape.bid+'">'+bshape.places+'</td>		';				    
-	appendData += '  </tr>';
-	appendData += ' </table>';
-   appendData += ' </div>   ';
+   var date_ = calculateShowDate(bshape.from,placeOffset,bshape.to);
+   var userName = "";
+   var imgsrc = "";
+   var persons = bshape.persons;
    
-   
+   if(bshape.user.facebook == true) {
+       userName = bshape.user.fbuser.name;
+	   imgsrc = "http://graph.facebook.com/" + bshape.user.fbuser.id + "/picture"
+   } else if (bshape.user.google == true) {
+        userName = bshape.user.gouser.name;
+		imgsrc = bshape.user.gouser.picture;
+   }
+    var appendData = "";
+	appendData += "<div class='single_book_list_wrap' id='wl_list_bid-"+bshape.bid+"'  name='wa_past_list'>";
+	appendData += "   <div class='shown_user_book_data' id='shown-"+bshape.bid+"' data-toggle='collapse' data-parent='#book_list_past' href='#hidden-"+bshape.bid+"' aria-expanded='false' aria-controls='hidden-"+bshape.bid+"'>";
+	appendData += "    <table cellspacing='0' cellpadding='0'  style='width:100%;'>";
+	appendData += "	  <tr >";
+	appendData += "	   <td class='bls_name_td'>";
+	appendData += "	     <div class='bls_name'>"+userName+"</div>";
+    appendData += "        </td>";
+	appendData += "		<td class='bls_tags' rowspan=2>";
+	appendData += "		  <div class='loggedbyfg'>";
+	appendData += "		     <img src='"+imgsrc+"'/>";
+	appendData += "		   </div>";
+	appendData += "		</td>";
+    appendData += "        	<td class='bls_tnumb' rowspan=2>";
+	appendData += "		   <div class='tnum'>"+bshape.num+"</div>";
+	appendData += "		</td>				";		   
+	appendData += "	  </tr>";
+	appendData += "	  <tr>";
+    appendData += "          <td class='bls_time_td' >";
+	appendData += "		  <div class='bls_time left' id='timeperiod-"+bshape.bid+"'>"+date_+"</div>";
+	appendData += "		  <div class='bls_persons  left'><div class='numbls left'>"+persons+"</div><div class='material-icons bls_person_m  left'>person</div></div>";
+	appendData += "		  <div class='bls_persons  left'><div class='numbls  left'>"+bshape.places+"</div><div class='material-icons bls_places_m  left'>store_mall_directory</div></div>";
+	appendData += "		</td>";
+	appendData += "	  </tr>";
+	appendData += "	</table>";
+	appendData += " </div>";
+     appendData += "  <div id='hidden-"+bshape.bid+"' class='hidden_user_book_data panel-collapse collapse ' role='tabpanel' aria-labelledby='headingOne'>";
+    appendData += "      <div class='hidden_inner_wrap'>";
+	appendData += "	  <div class='tbluserdatatr'>";
+
+	if(bshape.phone != undefined && bshape.phone != "") {
+		appendData += "		   <div class='phnwrap  '>";
+		appendData += "		    <div class='material-icons upicn left'>phone</div>";
+		appendData += "		    <div class='phoneuserwl left label label-success'>"+bshape.phone+"</div>";
+		appendData += "		  </div>";	 
+	}
+
+	appendData += "	  </div>";
+	appendData += "	  <div class='tbltbls'>";
+	appendData += "		<table class='table table-striped table-condensed'>";
+	for(var i = 0 ; i < bshape.namesList.length ; i++ ) {
+		appendData += "         <tr>";
+		appendData += "		       <td>"+bshape.namesList[i].name+"</td>";
+		appendData += "			   <td>"+bshape.namesList[i].floorname+"</td>";
+		appendData += "			   <td>"+bshape.namesList[i].persons+" persons</td>";
+		appendData += "		  </tr>";		
+	}
+
+	appendData += "		</table>";
+	appendData += "	  </div>";
+	appendData += "	  <div class='tblbtns'>";
+	appendData += "	     <div class='btn-group btn-group-justified  ' role='group' aria-label='...'>";
+	appendData += "			  <div class='btn-group btn-group-sm' role='group'>";
+	appendData += "				<button type='button' class='btn btn-default'>Left</button>";
+	appendData += "			  </div>";
+	appendData += "			  <div class='btn-group btn-group-sm' role='group'>";
+	appendData += "				<button type='button' class='btn btn-default'>Middle</button>";
+	appendData += "			  </div>";
+	appendData += "			  <div class='btn-group btn-group-sm' role='group'>";
+	appendData += "				<button type='button' class='btn btn-default'>Right</button>";
+	appendData += "			  </div>";
+	appendData += "			</div>		";					    
+	appendData += "	  </div>";
+	appendData += "	 </div>";
+	 appendData += "</div>";
+	appendData += "</div>";
+ 
    var drawn = document.getElementsByName(afterName);  
    if (drawn.length > 0) {
-     var idx = this.nextBookings.indexOf(bshape);
+     var idx = this.pastBookings.indexOf(bshape);
 	 var added = false;
      for(var d = idx-1 ; d >= 0; d--) {
-	    if(document.getElementById("wl_list_bid-"+this.nextBookings[d].bid) != null) {
-		   $("#wl_list_bid-"+this.nextBookings[d].bid).after(appendData);
+	    if(document.getElementById("wl_list_bid-"+this.pastBookings[d].bid) != null) {
+		   $("#wl_list_bid-"+this.pastBookings[d].bid).after(appendData);
 		   added = true;
 		   break
 		}
@@ -339,20 +514,22 @@ BookingListManager.prototype.DrawToPast = function(bid) {
       $("#"+appendID).prepend(appendData);
    }
 }
-function calculateShowDate(from,placeOffset) {
+function calculateShowDate(from,placeOffset,to) {
       d = new Date();
       clientOffset = d.getTimezoneOffset();
 	  var time = from;//UTC
 	  var offsetSec = placeOffset * 3600 + clientOffset * 60;
 	  var totalSec = (time + offsetSec)*1000;
-	  var Date_ = new Date(parseInt(totalSec));
-	  var day = Date_.getDate();
-	  var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun","Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-	  var mon = monthNames[Date_.getMonth()];
-	  var year = Date_.getFullYear();
-	  var hour_ = Date_.getHours(); if(hour_ < 10) {hour_ = "0"+hour_;}
-	  var min_ = Date_.getMinutes();if(min_ < 10) {min_ = "0"+min_;}
-	  var string = "<span class='date_color_'>"+day+mon+"</span> "+hour_+":"+min_;
+	  var Date_f = new Date(parseInt(totalSec));
+	  totalSec = (to + offsetSec)*1000;
+      var Date_t = new Date(parseInt(totalSec));
+ 
+	  var hour_f = Date_f.getHours(); if(hour_f < 10) {hour_f = "0"+hour_f;}
+	  var min_f = Date_f.getMinutes();if(min_f < 10) {min_f = "0"+min_f;}
+	  var hour_t = Date_t.getHours(); if(hour_t < 10) {hour_t = "0"+hour_t;}
+	  var min_t = Date_t.getMinutes();if(min_t < 10) {min_t = "0"+min_t;}
+	  var string =  hour_f+":"+min_f+" - "+hour_t+":"+min_t;
+	  
       return string;
 }
 function calculateDuration (seconds) {
@@ -446,85 +623,40 @@ function DisplayBooking(bid) {
 
 	  
 	  var appendData = "";  
-      appendData += '		    <div class="acc_single_booking_wl next_b" id="acc_single_booking'+bid+'">'; 
-	  appendData += '               <div id="close_booking_info_wl" >X</div>';
+      appendData += '		    <div class="acc_single_booking_ap next_b" id="acc_single_booking'+bid+'">'; 
+	  appendData += '               <div id="close_booking_info_ap" >X</div>';
 	  appendData += '           <div class="hidden__" style="display:none">';
 	  appendData += '				<input style="display:none" name="pl_offcet" id="pl_offcet_'+bid+'" value="'+bookingsManager.offset+'" />';
 	  appendData += '				<input style="display:none" name="book_time" id="book_time_'+bid+'" value="'+bshape.from+'" />';
 	  appendData += '           </div>';
 	  appendData += '			  <table class="sb_table" cellspacing="0" cellpadding="0" style="width: 100%;  height: 100%; border-collapse: collapse">';
+	  appendData += '		       <tr class="ap_tbl_head_row">';
+	  appendData += '                         <td><div class="confirm_head_ap">Review and Confirm</div></td>';
+	  appendData += '              </tr>';
 	  appendData += '		       <tr class="sb_tbl_head_row">';
-	  appendData += '				   <td class="sb_place_name">';
-     appendData += '				  <div class="booking_counter">'+bshape.num+'.</div>';
-	appendData += '				      <div class="sb_time">';
-	appendData += '					    <table class="sb_time_tbl" cellspacing="0" cellpadding="0" style="width: 100%;height: 100%; border-collapse: collapse">';
-	appendData += '						   <tr class="sb_time_label_tr"><td class="sb_time_label_td">BOOKING DATE</td></tr>';
-	appendData += '						   <tr class="sb_time_val_tr"><td class="sb_time_val_td"><div class="sb_time_val_div" name="sb_time_val_div" id="sb_time_val_'+bid+'"></div></td></tr> ';
+	  appendData += '				 <td class="ap_place_name">';
+	appendData += '					    <table  cellspacing="0" cellpadding="0" style="width: 100%; border-collapse: collapse">';
+	appendData += '						   <tr >';
+	appendData += '						     <td class="ap_time_label_td"  style="width:33%">BOOKING ID</td>';
+	appendData += '						     <td class="ap_time_label_td"  style="width:33%">BOOKING DATE</td>';	
+	appendData += '						     <td class="ap_time_label_td"  style="width:33%;border-right:none!important;">TIME LEFT</td></tr>';	
+	appendData += '						  <tr >';
+	appendData += '						    <td class="ap_time_val_td"><div class="ap_time_val_div" name="sb_time_val_div">'+bshape.num+'</div></td>';
+	appendData += '						    <td class="ap_time_val_td"><div class="ap_time_val_div" name="sb_time_val_div" id="sb_time_val_'+bid+'"></div></td> ';
+ 	appendData += '						    <td class="ap_time_val_td"><div class="ap_time_val_div" name="sb_time_val_div"  id="sb_left_'+bid+'"></div></td></tr> ';
 	appendData += '						</table>';
-	appendData += '					  </div>';
-	appendData += '					  <div class="sb_time" style="float:right!important">';
-	appendData += '					    <table class="sb_time_tbl" cellspacing="0" cellpadding="0" style="width: 100%;height: 100%; border-collapse: collapse">';
-	appendData += '						   <tr class="sb_time_label_tr"><td class="sb_time_label_td">TIME LEFT</td></tr>';
-	appendData += '						   <tr class="sb_time_val_tr"><td class="sb_time_val_td"><div class="sb_time_val_div" name="sb_time_val_div"  id="sb_left_'+bid+'"></div></td></tr> ';
-	appendData += '						</table>';
-	appendData += '					  </div>';
-	appendData += '				   </td>';
-	appendData += '				   <td rowspan="2" class="sb_buttons_td">';
-
-	appendData += '					 <div class="sb_change sb_button" id="wl_confirm-'+bid+'">Confirm arrival</div>';
-	appendData += '					 <div class="sb_printable sb_button" id="wl_print-'+bid+'">Highlight on place</div>';
-	appendData += '					 <div class="sb_drop_link" id="drop_PID">';
-	appendData += '						 <ul id="drop_'+bid+'" class="menu_drop_sb" name="menu_drop_sb">';
-	appendData += '						  <li><a href="#" class="menu_drop_sb_a">More actions &#9776;</a>';
-	appendData += '							  <ul class="booking-single-submenu">';
-	appendData += '								<li class="sb_drop_li"><a  onclick="something(this)"  class="sb_drop_a clientCancelBooking" id="sb_cancel_'+bid+'">Cancel booking</a></li>';
-	appendData += '								<li class="sb_drop_li"><a  onclick="something(this)"  class="sb_drop_a" id="sb_contact_'+bshape.pid+'">Contact client</a></li>';
-	appendData += '								<li class="sb_drop_li"><a onclick="something(this)" class="sb_drop_a" id="sb_notify_'+bid+'">Print</a></li>';
-	appendData += '							  </ul>';
-	appendData += '						  </li>';
-	appendData += '						  </ul>';
-	appendData += '					  </div>';
-
-	appendData += '				   </td>';
+	appendData += '				     </td>';
 	appendData += '				 </tr>';
-	appendData += '				 <tr class="sb_info_row">';
+	appendData += '				 <tr class="ap_info_row">';
 	appendData += '				    <td class="sb_info_row_td">';
-	appendData += '					  <table class="sb_allinfo_tbl" cellspacing="0" cellpadding="0" style="width: 100%;height: 100%; border-collapse: collapse">';
+	appendData += '					  <table class="ap_allinfo_tbl" cellspacing="0" cellpadding="0" style="border-collapse: collapse">';
 	appendData += '					    <tr >';
 	appendData += '						  <td class="sb_listing_properties_td_wl">';
-	appendData += '						     <div class="sb_prop sb_prop_num">No.</div>';
-	appendData += '						     <div class="sb_prop sb_prop_im">Place</div>';
-	appendData += '							 <div class="sb_prop sb_prop_name">Place name</div>';
-	appendData += '							 <div class="sb_prop sb_prop_floor">Floor</div>';
-	appendData += '							 <div class="sb_prop sb_prop_persons">Persons</div>';
-	appendData += '						  </td>';
-	appendData += '						  <td class="sb_other_data_td_wl" rowspan="2">';
-	appendData += '						     <table class="other_data_sb" cellspacing="0" cellpadding="0" style="width: 100%;height: 100%; border-collapse: collapse">';
-	appendData += '							   <tr >';
-	appendData += '							    <td class="other_data_tbl_head your_booking"><div class="your_booking_div">BOOKING DETAILS</div></td>';
-	appendData += '							   </tr>';
-	appendData += '							   <tr class="other_data_info_row">';
-	appendData += '							    <td class="other_data_info_td">';
-	appendData += '								   <table class="sb_od_t" cellspacing="0" cellpadding="0" style="width: 100%;height: 100%; border-collapse: collapse">';
-	appendData += '								     <tr >';
-	appendData += '									   <td class="sb_od_na">Persons</td><td class="sb_od_val">'+bshape.persons+'</td></tr>';
-	appendData += '									 <tr >';
-	appendData += '									   <td class="sb_od_na">Spots</td><td class="sb_od_val">'+bshape.places+'</td></tr> '; 
-	appendData += '									 <tr >';
-	appendData += '									   <td class="sb_od_na">Date</td><td class="sb_od_val" id="sb_od_date-'+bid+'"></td></tr> ';
-     appendData += '                                     <tr >';
-	appendData += '									   <td class="sb_od_na">Period</td><td class="sb_od_val" id="sb_duration-'+bid+'"></td></tr> 		';								   
-	appendData += '								   </table>';
-	appendData += '								</td>';
-	appendData += '							  </tr>';
-	appendData += '							  <tr >';
-	appendData += '							    <td class="other_data_tbl_head place_info_t"><div class="place_info_t_div">CLIENT INFO</div></td>';
-	appendData += '							   </tr>';
-	appendData += '							   <tr class="other_data_info_row">';
-	appendData += '							    <td class="other_data_info_td">';
-	appendData += '								</td>';
-	appendData += '							  </tr>';
-	appendData += '							 </table>';
+	appendData += '						     <div class="ap_prop ap_prop_num">No.</div>';
+	appendData += '						     <div class="ap_prop ap_prop_im">Place</div>';
+	appendData += '							 <div class="ap_prop ap_prop_name">Place name</div>';
+	appendData += '							 <div class="ap_prop ap_prop_floor">Floor</div>';
+	appendData += '							 <div class="ap_prop ap_prop_persons">Persons</div>';
 	appendData += '						  </td>';
 	appendData += '						</tr>';
 	appendData += '						<tr class="sb_listing_row">';
@@ -532,11 +664,11 @@ function DisplayBooking(bid) {
 if(bshape.namesList.length > 3) {
 	appendData += '						     <div class="top_inset_shaddow"></div>';
 } 
-	appendData += '						     <div class="sb_list_wrap_div">';		
+	appendData += '						     <div class="ap_list_wrap_div">';		
 var borders_class="bordings_lr";
 if(bshape.namesList.length > 3)	{
-	appendData += '							   <div class="sb_list_div" name="sb_list_div" id="sb_list_div-'+bid+'">';
-	appendData += '							    <div class="sb_list_shaddow" >';
+	appendData += '							   <div class="ap_list_div" name="sb_list_div" id="sb_list_div-'+bid+'">';
+	appendData += '							    <div class="ap_list_shaddow" >';
 	borders_class="bordings_lr";
 } else {
     appendData += '							   <div class="sb_list_div_no">';
@@ -550,8 +682,8 @@ for (var bs = 0 ; bs < bshape.namesList.length ; bs++) {
 	appendData += '								     <div class="sb_single_sid '+borders_class+'">';
 	appendData += '									   <table class="sb_single_sid_table" cellspacing="0" cellpadding="0" style="width: 100%;height:100%; border-collapse: collapse">';
 	appendData += '									     <tr>';
-	appendData += '										   <td class="sb_s_t_num">'+i+'</td>';
-	appendData += '										   <td class="sb_s_t_img_td"><div class="sbimgd">';
+	appendData += '										   <td class="ap_s_t_num">'+i+'</td>';
+	appendData += '										   <td class="ap_s_t_img_td"><div class="sbimgd">';
 if(sid2url[shape.sid] != undefined ) {
 	appendData += '										     <img class="sid_ovr_img" src="'+sid2url[shape.sid]+'"/></div>';
 } else {
@@ -563,13 +695,13 @@ if(sid2url[shape.sid] != undefined ) {
 	shapeCanvases.push(shape2ID);	
 }
 	appendData += '										   </td>';
-	appendData += '										   <td class="sb_s_t_name_td">';
+	appendData += '										   <td class="ap_s_t_name_td">';
 	appendData += '										      <span class="sb_sid_name">'+shape.name+'</span>';
 	appendData += '										   </td>';
-	appendData += '										   <td class="sb_s_t_f_td">';
+	appendData += '										   <td class="ap_s_t_f_td">';
 	appendData += '										      <span class="sb_sid_name">'+sid2floorName[shape.sid]+'</span>';
 	appendData += '										   </td>';
-	appendData += '										   <td class="sb_s_t_p_td">';
+	appendData += '										   <td class="ap_s_t_p_td">';
 	appendData += '										      <span class="sb_sid_name">'+shape.persons+'</span>';
 	appendData += '										   </td>';
 	appendData += '										 </tr>';
@@ -583,16 +715,40 @@ if(sid2url[shape.sid] != undefined ) {
 if(bshape.namesList.length > 3) {
 	appendData += '								 <div class="bottom_inset_shaddow"></div>';
 }
+	appendData += '							  </div>';
 	appendData += '							  </td>';
 	appendData += '							</tr>';
 	appendData += '						  </table>';
 	appendData += '						</td>';
 	appendData += '					 </tr>';
+
+	  appendData += '		       <tr class="login_bok_conf_tr">';
+	  appendData += '                   <td>';
+	  appendData += '                            <table cellspacing="0" cellpadding="0" style="width: 100%;height:100%; border-collapse: collapse">';
+	appendData += '							     <tr id="blcon_r" style="display:none">';
+	appendData += '								   <td class="loginsa">';
+	appendData += '								     <div class="dsdfs">Logged in as: </div><div id="login_info_resp_db" class="userNikname left_p">Dimon</div>';
+	appendData += '								   </td>';
+	appendData += '								   <td class="tdblo">';
+	appendData += '								     <div id="place_order_button_l" class="blue_b_button" >BOOK</div>';
+	appendData += '								   </td>';
+	appendData += '								 </tr>';
+	appendData += '								 <tr id="lpr_b" >';
+	appendData += '								   <td colspan="2">';
+	appendData += '								     <div id="logpbook">Please login to complete booking</div>';
+	appendData += '								   </td>';
+	appendData += '								 </tr>';
+	appendData += '							  </table>';
+	  
+	  
+	  appendData += '                   </td>';
+	  appendData += '              </tr>';
+	
 	appendData += '				  </table>';
 	appendData += '				</div>';
 	$("#browser_window_wrap").html("");
 	$("#browser_window_wrap").append(appendData);
-	$("#close_booking_info_wl").click(function(){
+	$("#close_booking_info_ap").click(function(){
      $("#browser_window_wrap").html("");
     });
 	  d = new Date();
