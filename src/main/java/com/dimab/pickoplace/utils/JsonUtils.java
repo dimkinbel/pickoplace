@@ -11,6 +11,10 @@ public final class JsonUtils {
     private JsonUtils() {
     }
 
+    public static String serializeFromJson(Object o) {
+        return GSON.toJson(o);
+    }
+
     public static <T> T deserializeFromJson(String objectAsJson, Class<T> clazz) {
         return GSON.fromJson(objectAsJson, clazz);
     }

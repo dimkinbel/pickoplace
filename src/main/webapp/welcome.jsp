@@ -20,6 +20,9 @@
 	<link rel="stylesheet" href="css/perfect-scrollbar.css" type="text/css" media="screen" />
 	<link rel="stylesheet" href="css/dropit.css" type="text/css" media="screen" />
 
+	<script type="text/javascript" src="/rest/i18n.js"></script> <!-- todo(egor): use hash + templating -->
+
+
 	<script type="text/javascript" src="js/jquery-1.11.1.min.js" ></script>
     <script type="text/javascript" src="js/jquery-migrate-1.2.1.js" ></script>
     <script type="text/javascript" src="js/jquery-ui-1.11.2.custom/jquery-ui.js"></script>
