@@ -42,6 +42,11 @@ public class I18nFilter implements Filter {
     private Language extractLanguageFromRequest(ServletRequest request) {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
 
+        Cookie[] cookies = httpServletRequest.getCookies();
+        if (cookies == null) {
+            return Language.DEFAULT_LANGUAGE;
+        }
+
         for (Cookie cookie : httpServletRequest.getCookies()) {
             if (LANGUAGE_COOKIE_NAME.equals(cookie.getName())) {
                 String languageAsString = cookie.getValue();

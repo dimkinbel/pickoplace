@@ -7,7 +7,7 @@
 <!DOCTYPE html>
 <html >
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<link rel="stylesheet" href="js/jquery-ui-1.11.2.custom/jquery-ui.css" type="text/css" media="screen" />
 	<link rel="stylesheet" href="css/browserWrap.css" type="text/css" media="screen" />
 	<link rel="stylesheet" href="css/login.css" type="text/css" media="screen" />
