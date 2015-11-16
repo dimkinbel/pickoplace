@@ -28,5 +28,5 @@ I18n.get('someKey');
 **script `/rest/i18n.js` must present on page!**
 
 ```
-i18n.get('someKey');
+i18n('someKey');
 ```
