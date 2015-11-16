@@ -13,7 +13,7 @@ see [src/main/resources/com/pickoplace/localization.json](src/main/resources/com
 
 ### JSP
 ```
-${requestScope.messages['someKey']}
+${requestScope.i18n['someKey']}
 ```
 
 ### Java

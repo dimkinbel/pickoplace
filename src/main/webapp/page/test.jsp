@@ -6,6 +6,6 @@
     <title>Title</title>
 </head>
 <body>
-    ${requestScope.messages['someKey']}
+    ${requestScope.i18n['someKey']}
 </body>
 </html>

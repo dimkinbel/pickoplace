@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 public class I18nFilter implements Filter {
-    private final static String MESSAGE_ATTRIBUTE_NAME = "messages";
+    private final static String MESSAGE_ATTRIBUTE_NAME = "i18n";
     private final static String LANGUAGE_COOKIE_NAME = "pickoplace.language";
 
     @Override
