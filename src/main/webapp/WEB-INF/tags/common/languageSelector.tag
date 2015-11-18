@@ -10,9 +10,9 @@
         <span class="caret"></span>
     </button>
     <ul class="dropdown-menu" aria-labelledby="languageSelector">
-        <li><a href="#" class="js_languageVariant" data-language="ENGLISH"><span class="flag flag-icon-background flag-icon-en">ENGLISH</span></a></li>
-        <li><a href="#" class="js_languageVariant" data-language="RUSSIAN"><span class="flag flag-icon-background flag-icon-ru">RUSSIAN</span></a></li>
-        <li><a href="#" class="js_languageVariant" data-language="HEBREW"><span class="flag flag-icon-background flag-icon-il">HEBREW</span></a></li>
+        <li><a href="#" class="js_languageVariant" data-language="ENGLISH"><span class="flag-icon flag-icon-us"></span>English</a></li>
+        <li><a href="#" class="js_languageVariant" data-language="RUSSIAN"><span class="flag-icon flag-icon-ru"></span>Русский</a></li>
+        <li><a href="#" class="js_languageVariant" data-language="HEBREW"><span class="flag-icon flag-icon-il">עברית</span></a></li>
     </ul>
 </div>
 <script type="text/javascript" src="/js/components/languageSelector.js"></script>

@@ -55,7 +55,7 @@
 
     var container = $('.js_languageSelector');
     container.find('.js_currentLanguage').text('')
-        .addClass('flag flag-icon-background flag-icon-' + languageToIsoCode(currentLanguage));
+        .addClass('flag-icon flag-icon-' + languageToIsoCode(currentLanguage));
 
     container.on('click', '.js_languageVariant', function(e) {
         var selectedLanguage = $(e.currentTarget).data('language');
