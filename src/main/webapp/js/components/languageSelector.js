@@ -1,4 +1,6 @@
 (function() {
+    'use strict';
+
     var LANGUAGE_COOKIE_NAME = 'pickoplace.language';
     var DEFAULT_LANGUAGE = 'ENGLISH';
 
