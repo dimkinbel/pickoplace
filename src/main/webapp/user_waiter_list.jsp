@@ -5,6 +5,9 @@
 <html >
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<script type="text/javascript">
+		var pagetype = 'waiter_list';
+	</script>
 	<script type="text/javascript" src="js/jquery-1.11.1.min.js" ></script>
     <script type="text/javascript" src="js/jquery-migrate-1.2.1.js" ></script>
     <script type="text/javascript" src="js/loginlogout.js" ></script>
@@ -24,15 +27,7 @@
 	<link rel="stylesheet" href="js/jquery-ui-1.11.2.custom/jquery-ui.css" type="text/css" media="screen" />
 <script type="text/javascript">
 
-function goToAccountMenu() {
-	setSessionData(function(result) {
-		   if(result) {
-	          document.getElementById("master_account").submit();
-		   } else {
-			   updatePageView();
-		   }
-     });
-}
+
 
 function updateWaiterList(){
 	$.ajax({
@@ -57,49 +52,7 @@ function updateWaiterList(){
 	    type : "post"
 	}); 
 }
-//LOGIN SUCCESS UPDATE
-function updatePageView() {
-	  if(fconnected==true) {
-		  //Connected To Facebook
-		  $("#page_login_prompt").hide();
-		  $("#login_prop_d").hide();		  
-		  $("#account_drop").show();
-		  
-		  $("#login_info_resp_d").empty();
-		  $("#login_info_resp_d").html(fudata.first_name);
-		  $("#login_info_resp").show();
-		  
-		  $("#fb_logout_div").show();
-		  $("#go_logout_div").hide();
-		  setSessionData(function(result) {
-			   if(result) {
-				   updateWaiterList();
-			   }
-		  });
-	  } else if (gconnected==true) {
-		  //Connected To Google
-		  $("#page_login_prompt").hide();
-		  $("#login_prop_d").hide();		  
-		  $("#account_drop").show();
-		  
-		  $("#login_info_resp_d").empty();
-		  $("#login_info_resp_d").html(gudata.name.givenName);
-		  $("#login_info_resp").show();
-		  
-		  $("#fb_logout_div").hide();
-		  $("#go_logout_div").show();
-		  setSessionData(function(result) {
-			   if(result) {
-				   updateWaiterList();
-			  }
-		  });
-	  } else {
-		  //Not connected
-		  console.log("update_no_connected");
-		  location.href = "/welcome.jsp";
-		  
-	  }
-}
+
 </script>
 <title>PP waiter List</title>
 </head>
@@ -129,7 +82,7 @@ function updatePageView() {
 												   <div id="acc_arrow"></div>
 												   <div id="gotoaccountmenu" class="topAccOptList" onclick="goToAccountMenu()">Go to Account</div>
 												   <div id="gotobookings" class="topAccOptList">My bookings</div>
-												   <div id="dotoadminzone" class="topAccOptList">AdminZone</div>
+												   <div id="gotoadminzone" class="topAccOptList">AdminZone</div>
 												   <div id="create_new_place_btn"  class="topAccOptList" onclick="goToCreatePlace()">Create New Place</div>
 												   <div id="fb_logout_div" class="topAccOptList" onClick="facebookSignOut()">Log out</div>
 												   <div id="go_logout_div" class="topAccOptList" onClick="googleSignOut()">Log out</div>

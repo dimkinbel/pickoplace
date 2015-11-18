@@ -88,6 +88,7 @@ onSocketClose = function() {
 onSocketMessage = function(message) {
 	//alert("soccet message received");
 	console.log(JSON.parse(message.data));
+	updateNotification('notification_accordion_new_booking',JSON.parse(message.data));
 };
 
 

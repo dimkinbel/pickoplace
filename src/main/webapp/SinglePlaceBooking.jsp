@@ -12,6 +12,9 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Booking</title>
+	  <script type="text/javascript">
+		  var pagetype = 'place_booking';
+	  </script>
 	<script type="text/javascript" src="js/jquery-1.11.1.min.js" ></script>
     <script type="text/javascript" src="js/jquery-migrate-1.2.1.js" ></script>
 	<script type="text/javascript" src="js/jquery-ui-1.11.2.custom/jquery-ui.js"></script>
@@ -59,6 +62,7 @@
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAaX5Ow6oo_axUKMquFxnPpT6Kd-L7D40k&libraries=places&&sensor=FALSE">
     </script>
     <script type="text/javascript" src="js/maps_google.js"></script>
+	<script type="text/javascript" src="js/updateCanvasData.js"></script>
 	<script type="text/javascript">
 	
 		var canvasMouseOut = false;
@@ -82,42 +86,9 @@
 	       document.onmousedown = new Function ("return false");
 		   document.onmouseup = new Function ("return true");
 	   }
-       function goToCreatePlace() {
-    		location.href = "/create_new_place.jsp";
-    	}
-    	function goToAccountMenu() {
-    	   setSessionData(function(result) {
-    		   if(result) {
-    				  document.getElementById("master_account").submit();
-    			} else {
-    				updatePageView();
-    			}
-    		});
-    	}
-       function alertCS() {
-    	   var state = JSON.parse(JSON.stringify(canvas_,[
-    	                                                "width",
-    	                              				  "height",
-    	                              				  "origWidth",
-    	                              				  "origHeight",
-    	                              				  "bg_color",
-    	                              				  "line_color",
-    	                              				  "backgroundType", /* color, tiling, fill, repeat, asimage , axis*/
-    	                              				  "backgroundActualId", /* ID of the background img */
-    	                              				  "backgroundImageID",
-    	                              				  "tilew", /* user background image height */
-    	                              				  "tileh"
-    	                              				  ]));
-    	   var canvasStateJSON = JSON.parse(document.getElementById("server_cnavasState").value);
-    	   alert(JSON.stringify(canvasStateJSON, "", 4));
-       }
+
        var canvast=[];
        var canvasStateJSON;
-	   var floorCanvases = [];
-	   var floorNames = {};
-       var floorid2canvas = {};
-       var maincanvas;
-       var mainOverviewID;
 	   var bookingVars = {};
 	   var tcanvas_ = {};
 	   var currentSliderValue;
@@ -126,53 +97,9 @@
        var days_ = 1;
        $(document).ready(function() {
     	   "use strict";
-    	  // canvas_ = new CanvasState(document.getElementById('canvas1'));
-    	  // gcanvas = new CanvasState(document.getElementById('group_shapes_canvas'));
-
     	 // Update canvases background
-    	 var allfloors =  document.getElementsByName("server_canvasState");  	 
-    	 for(var x=0; x < allfloors.length; x++) { 
-    		 var canvasfloor = allfloors[x].id;
-    		 var floorID = canvasfloor.replace(/^server_canvasState_/, ""); 
 
-    		 canvas_ = new CanvasState(document.getElementById("canvas_"+floorID));	
-    	 
-    		 canvas_.main = true;
-    		 floorCanvases.push(canvas_);
-    		 var floorname = document.getElementById("server_floor_name_"+floorID).value;
-    		 floorNames[floorname] = canvas_;
-    		 canvas_.floor_name = floorname;
-    		 floorid2canvas[floorID] = canvas_;
-    		 
-    	     var canvasStateJSON = JSON.parse(document.getElementById(canvasfloor).value);
-	    	 if (canvasStateJSON.state.backgroundType != "color") {
-	    		 updateBackgroundImageByServer(canvasfloor);
-	    	 }
-	    	 if (canvasStateJSON.mainfloor) {
-	    	   $("#floor__selector").prepend( $('<option value="'+floorname+'">'+floorname+'</option>'));
-			   $("#floor__selector [value='"+floorname+"']").attr("selected", "selected");
-			   maincanvas = canvas_;
-			   mainOverviewID = "server_overview_"+ floorID;
-	    	 } else {
-	    	   $("#floor__selector").append( $('<option value="'+floorname+'">'+floorname+'</option>')); 	    		 
-	    	 }
-    	 }
-    	// Update all shapes images
-    	 var all=document.getElementsByName("shape_images_from_server");
-    	 totalImages = all.length+1;
-    	 for(var x=0; x < all.length; x++) { 
-    		 var serverImageID = all[x].id;
-    	   //  updateShapeImagesByServerData(serverImageID);   	     
-    	 }
-    	 // Update all canvases
-    	 for(var x=0; x < allfloors.length; x++) { 
-    		 var canvasfloor = allfloors[x].id;
-    		 var floorID = canvasfloor.replace(/^server_canvasState_/, ""); 
-    		 var canvasStateJSON = JSON.parse(document.getElementById(canvasfloor).value);
-    	     updateCanvasShapes(floorid2canvas[floorID],canvasStateJSON);
-    	 }
-    	 // Floor selector update
-    	canvas_ = maincanvas;
+		updateCanvasData();
      	requestBookingAvailability();
  		tcanvas_= new  TCanvasState(document.getElementById("tcanvas"));
  		
@@ -206,73 +133,7 @@
 <script type="text/javascript">
 //LOGIN SUCCESS UPDATE
 var phonerequired = true;
-function updatePageView() {
-	  if(fconnected==true) {
-		  //Connected To Facebook
-		  $("#page_login_prompt").hide();
-		  $("#login_prop").hide();		  
-		  $("#account_drop").show();
-		  
-		  $("#login_info_resp_d").empty();
-		  $("#login_info_resp_d").html(fudata.first_name);
-		  $("#login_info_resp").show();
-		  
-		  $("#fb_logout_div").show();
-		  $("#go_logout_div").hide();
 
-		  $("#login_info_resp_db").empty();
-		  $("#login_info_resp_db").html(fudata.first_name);
-		  $("#blcon_r").show();
-		  $("#lpr_b").hide();
-		  $('#fg_profile_img').attr('src',"http://graph.facebook.com/" + fudata.id + "/picture");
-		  $("#fg_profile_image_wrap").show();
-
-	  } else if (gconnected==true) {
-		  //Connected To Google
-		  $("#page_login_prompt").hide();
-		  $("#login_prop").hide();		  
-		  $("#account_drop").show();
-		  
-		  $("#login_info_resp_d").empty();
-		  $("#login_info_resp_d").html(gudata.name.givenName);
-		  $("#login_info_resp").show();
-		  
-		  $("#fb_logout_div").hide();
-		  $("#go_logout_div").show();
-
-		  $("#login_info_resp_db").empty();
-		  $("#login_info_resp_db").html(gudata.name.givenName);
-		  $("#blcon_r").show();
-		  $("#lpr_b").hide();
-
-		  $('#fg_profile_img').attr('src',gudata.image.url);
-		  $("#fg_profile_image_wrap").show();
-	  } else {
-		  //Not connected
-		  
-		  $("#login_prop").show();
-		  $("#login_info_resp").hide();
-		  $("#account_drop").hide();
-
-		  $("#login_info_resp_d").empty();
-		  
-		  $("#fb_logout_div").hide();
-		  $("#go_logout_div").hide();
-		  
-		  $("#login_info_resp_db").empty();
-		  $("#blcon_r").hide();
-		  $("#lpr_b").show();
-		  $("#fg_profile_image_wrap").hide();
-	  }
-}
-
-
-$(document).ready(function () { 
-    $("#login_prop_d").click(function(){
-    	$("#page_login_prompt").show();
-    });
-
-});
 $(document).on("click",".stopclick", function (event) {
     if(event.target.id == "page_login_prompt") {
     	if(gconnected==false && fconnected==false && phoneflow==true) {
@@ -443,7 +304,7 @@ function SIapplyBooking() {
 												   <div id="acc_arrow"></div>
 												   <div id="gotoaccountmenu" class="topAccOptList" onclick="goToAccountMenu()">Go to Account</div>
 												   <div id="gotobookings" class="topAccOptList">My bookings</div>
-												   <div id="dotoadminzone" class="topAccOptList">AdminZone</div>
+												   <div id="gotoadminzone" class="topAccOptList">AdminZone</div>
 												   <div id="create_new_place_btn"  class="topAccOptList" onclick="goToCreatePlace()">Create New Place</div>
 												   <div id="fb_logout_div" class="topAccOptList" onClick="facebookSignOut()">Log out</div>
 												   <div id="go_logout_div" class="topAccOptList" onClick="googleSignOut()">Log out</div>
@@ -582,7 +443,7 @@ function SIapplyBooking() {
 		  <div id="prev_used_images" style="display:none">
 		    <!-- Here uploaded images will be added -->
 		  </div>
-		  <img id="temp_image_for_canvas_creation" style="display:none"></img>
+		  <img id="temp_image_for_canvas_creation" style="display:none">
 		  <canvas  width="200" height="200" id="translated_user_images_canvas" style="display:none"></canvas>
 		  <div id="bg_default_img_mirror" style="display:none">
 		    <canvas id="default_img_canvas"></canvas>
@@ -595,12 +456,6 @@ function SIapplyBooking() {
 		 <canvas id = "text_width_calculation_canvas"  width="10" height="10"  style="display:none"></canvas>
 	 </div>
 	<div class="outer_width100" >
-					  <div id="layers_wrapper" style="display:none">
-						<div class="place_layers choosed_layer" name="place_layers_tab" id="pl-1-tab"><span id="pl-1" class="layer_name" style="display:">Floor 1</span><input type="text"  style="display:none" id="pl-1-i" class="change_name_layer_input" value="Floor 1"/></div>
-						<div class="place_layers"  name="place_layers_tab"  id="pl-2-tab"><span id="pl-2" class="layer_name" style="display:">Floor 2</span><input type="text"  style="display:none" id="pl-2-i" class="change_name_layer_input" value="Floor 2"/></div>
-						<div class="add_layer_button" id="add_layer_button" >+</div>
-					  </div>
-
 				   <div class="creatingTourText" style="display:none">
 	        	      <span class="steps"></span> Booking : <span class="placeNamespan">       	          
 	        	        '<%=placeName %>' ,<%=placeBranchName %>'
@@ -628,7 +483,7 @@ function SIapplyBooking() {
 						</div>
 					</div>
 					<img id="mirror" style="display:none"/>
-					<div class="chosed_canvas chosed_img" ><canvas id="show_canvas" width="150" height="150" ></div>
+					<div class="chosed_canvas chosed_img" ><canvas id="show_canvas" width="150" height="150" ></canvas></div>
 				</div>
 		 </div>
     </div>
@@ -674,7 +529,7 @@ function SIapplyBooking() {
 									<td class="fe_top_v"  ><div class="book_request_text_fe" > Book time </div></td>
 																 
 									<td class="book_btn_td" rowspan="2" id="buttons_book_col">
-									 	<div id="place_order_button" class="blue_e_button marginhor2" onclick="applyBookingPre()" style="display:''">BOOK</div>
+									 	<div id="place_order_button" class="blue_e_button marginhor2" onclick="applyBookingPre()" style="display:initial">BOOK</div>
 							            <div id="place_order_button_invalid" class="blue_e_button_invalid marginhor2" style="display:none"></div>
 							            <img id="frame_book_ajax_gif" src="img/gif/ajax-loader-round.gif" style="display:none"/>
 									</td>
@@ -702,7 +557,7 @@ function SIapplyBooking() {
 							</div>
 						  </td>
 						  </tr>
-							  <tr id="feb_slider_row">
+							  <tr >
 							    <td id="feb_slider_column" >
 								  <table cellspacing="0" cellpadding="0" style="width: 100%; height: 100%; border-collapse: collapse">
 
@@ -715,7 +570,7 @@ function SIapplyBooking() {
 										 
 									   </td>
 									 </tr>
-									<tr id="feb_slider_row">
+									<tr  >
 									   <td>
 									     <div id="slider_wrap_fe" style="height:10px;" >
 							                <div id="booking_time_slider_for_canvas_fe"  ></div>

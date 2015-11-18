@@ -11,6 +11,9 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Place Configuration</title>
+	  <script type="text/javascript">
+		  var pagetype = 'place_config';
+	  </script>
 	<script type="text/javascript" src="js/jquery-1.11.1.min.js" ></script>
     <script type="text/javascript" src="js/jquery-migrate-1.2.1.js" ></script>
 	<script type="text/javascript" src="js/jquery-ui-1.11.2.custom/jquery-ui.js"></script>
@@ -49,6 +52,9 @@
 	<link rel="stylesheet" href="css/CSS_checkbox_full/custom-checkbox.css" type="text/css" media="screen" />
     <script type="text/javascript" src="js/maps_google.js"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <script type="text/javascript" src="js/updateCanvasData.js"></script>
+
 	<script type="text/javascript">
        if(typeof document.onselectstart!="undefined") {
 	       document.onselectstart = new Function ("return false");
@@ -57,13 +63,7 @@
 		   document.onmouseup = new Function ("return true");
 	   }
        
-       function goToAccountMenu() {
-    		setSessionData(function(result) {
-    			   if(result) {
-    		          document.getElementById("master_account").submit();
-    			   }
-    	     });
-    	}
+
        function SIsaveState() {
     	   setSessionData(function(result) {
 			   if(result) {
@@ -80,71 +80,24 @@
          }
        var mainOverviewID;       
 	   var gcanvas ;
-	   var floorCanvases = [];
-	   var floorNames = {};
-       var floorid2canvas = {};
-       var maincanvas;
+
        var proceed_to_edit = 0;
        var proceed_to_iframe = 0;
 		
        var geocoder;		
        $(document).ready(function() {
     	   "use strict";
-  		 geocoder = new google.maps.Geocoder();
-         var options = {
+  		  geocoder = new google.maps.Geocoder();
+		  var options = {
   		  types: ['geocode']
   		 };
         var place_search = document.getElementById('config_address');
         var autocomplete = new google.maps.places.Autocomplete(place_search, options);
-    	  // canvas_ = new CanvasState(document.getElementById('canvas1'));
-    	 // Update canvases background
-    	 var allfloors =  document.getElementsByName("server_canvasState");  	 
-    	 for(var x=0; x < allfloors.length; x++) { 
-    		 var canvasfloor = allfloors[x].id;
-    		 var floorID = canvasfloor.replace(/^server_canvasState_/, ""); 
-    		 canvas_ = new CanvasState(document.getElementById("canvas_"+floorID));		 
-    		 canvas_.main = true;
-    		 floorCanvases.push(canvas_);
-    		 var floorname = document.getElementById("server_floor_name_"+floorID).value;
-    		 floorNames[floorname] = canvas_;
-    		 canvas_.floor_name = floorname;
-    		 floorid2canvas[floorID] = canvas_;
-    		 
-    	     var canvasStateJSON = JSON.parse(document.getElementById(canvasfloor).value);
-	    	 if (canvasStateJSON.state.backgroundType != "color") {
-	    		 updateBackgroundImageByServer(canvasfloor);
-	    	 }
-	    	 if (canvasStateJSON.mainfloor) {
-	    	   $("#floor__selector").prepend( $('<option value="'+floorname+'">'+floorname+'</option>'));
-			   $("#floor__selector [value='"+floorname+"']").attr("selected", "selected");
-			   maincanvas = canvas_;
-	    	 } else {
-	    	   $("#floor__selector").append( $('<option value="'+floorname+'">'+floorname+'</option>')); 	    		 
-	    	 }
-    	 }
-    	// Update all shapes images
-    	 var all=document.getElementsByName("shape_images_from_server");
-    	 totalImages = all.length+1;
-    	 for(var x=0; x < all.length; x++) { 
-    		 var serverImageID = all[x].id;
-    	     updateShapeImagesByServerData(serverImageID);   	     
-    	 }
-    	 // Update all canvases
-    	 for(var x=0; x < allfloors.length; x++) { 
-    		 var canvasfloor = allfloors[x].id;
-    		 var floorID = canvasfloor.replace(/^server_canvasState_/, ""); 
-    		 var canvasStateJSON = JSON.parse(document.getElementById(canvasfloor).value);
-    	     updateCanvasShapes(floorid2canvas[floorID],canvasStateJSON);
-    	 }
-    	 // Floor selector update
-    	 canvas_ = maincanvas;
 
+		 updateCanvasData();
 		 // Update Place General Info
-		 console.log("photos");
 		 updatePhotosAndLogo();
-		 console.log("working");
 		 updateWorkingHours();
-		 console.log("admin");
 		 updateAdminSection();
 		 		 
        });
@@ -169,9 +122,7 @@
        function closeMap(){
     	   document.getElementById("map_wrapper").style.display="none";
        }
-       $(document).ready(function () { 
-	      //
-       });
+
        function saveState() {
     		 var address = document.getElementById('config_address').value;
     	     geocoder.geocode( { 'address': address}, function(results, status) {
@@ -198,27 +149,7 @@
     	         }
     	       }); 
        }
-       function openMap() {
-    	   document.getElementById("map_wrapper").style.display="";
-    	   var lat = document.getElementById("server_Lat").value;
-   		   var lng = document.getElementById("server_Lng").value;  
-   		   initialize(lat,lng);
-    	   $(function(){							
-				var $win = $("#map_wrapper"); // or $box parent container
-				var $box = $("#map_popup_content");
-				 $win.on("click.Bst", function(event){		
-					if ( $box.has(event.target).length == 0 //checks if descendants of $box was clicked
-	                           &&
-	                    !$box.is(event.target) //checks if the $box itself was clicked
-	                 ){
-						document.getElementById("map_wrapper").style.display="none"; 
-					} else {}
-				});
-	       });
-       }
-       function closeMap(){
-    	   document.getElementById("map_wrapper").style.display="none";
-       }
+
        function editPlaceAndSave(placeID_form) {
     	    
     		document.getElementById("config_save_prompt").style.display="";
@@ -251,41 +182,7 @@
        }
 	</script>
 <script type="text/javascript">	
-	//LOGIN SUCCESS UPDATE
-function updatePageView() {
-	  if(fconnected==true) {
-		  //Connected To Facebook
-		  $("#page_login_prompt").hide();
-		  $("#login_prop_d").hide();		  
-		  $("#account_drop").show();
-		  
-		  $("#login_info_resp_d").empty();
-		  $("#login_info_resp_d").html(fudata.first_name);
-		  $("#login_info_resp").show();
-		  
-		  $("#fb_logout_div").show();
-		  $("#go_logout_div").hide();
 
-	  } else if (gconnected==true) {
-		  //Connected To Google
-		  $("#page_login_prompt").hide();
-		  $("#login_prop_d").hide();		  
-		  $("#account_drop").show();
-		  
-		  $("#login_info_resp_d").empty();
-		  $("#login_info_resp_d").html(gudata.name.givenName);
-		  $("#login_info_resp").show();
-		  
-		  $("#fb_logout_div").hide();
-		  $("#go_logout_div").show();
-
-	  } else {
-		  //Not connected
-		  console.log("update_no_connected");
-		  location.href = "/welcome.jsp";
-		  
-	  }
-}
 </script>
   </head>
 
@@ -298,7 +195,7 @@ function updatePageView() {
    </div>
    <div id="config_save_prompt" class="save_prompt" style="display:none;">
      <div class="config_save_prompt_inner" >
-        <table class="config_save_prompt_tbl" cellspacing="0" cellpadding="0" style="width:100%;height: 100%;min-;border-collapse:collapse">
+        <table class="config_save_prompt_tbl" cellspacing="0" cellpadding="0" style="width:100%;height: 100%; border-collapse:collapse">
           <tr><td colspan=3 class="confirm_message">Save configuration ?</td></tr>
           <tr>
             <td class="confirm_message_btn_td"><div class="confirm_message_btn confirm_message_yes" onclick="saveBeforeEdit()">Save</div></td>
@@ -310,7 +207,7 @@ function updatePageView() {
    </div>
      <div id="config_save_prompt_iframe" class="save_prompt" style="display:none;">
      <div class="config_save_prompt_inner" >
-        <table class="config_save_prompt_tbl" cellspacing="0" cellpadding="0" style="width:100%;height: 100%;min-;border-collapse:collapse">
+        <table class="config_save_prompt_tbl" cellspacing="0" cellpadding="0" style="width:100%;height: 100%; border-collapse:collapse">
           <tr><td colspan=3 class="confirm_message">Save configuration ?</td></tr>
           <tr>
             <td class="confirm_message_btn_td"><div class="confirm_message_btn confirm_message_yes" onclick="saveBeforeIFrame()">Save</div></td>
@@ -320,7 +217,7 @@ function updatePageView() {
         </table>
      </div>
    </div>
-  <table id="body_table"  cellspacing="0" cellpadding="0" style="width:100%;min-;border-collapse:collapse">
+  <table id="body_table"  cellspacing="0" cellpadding="0" style="width:100%; border-collapse:collapse">
    <tr id="header_tr"><td id="header_td">
     <div id="header">
        <div id="logo_"><img src="img/pplogo.png" id="pplogoo"/></div>
@@ -343,7 +240,7 @@ function updatePageView() {
 												   <div id="acc_arrow"></div>
 												   <div id="gotoaccountmenu" class="topAccOptList" onclick="goToAccountMenu()">Go to Account</div>
 												   <div id="gotobookings" class="topAccOptList">My bookings</div>
-												   <div id="dotoadminzone" class="topAccOptList">AdminZone</div>
+												   <div id="gotoadminzone" class="topAccOptList">AdminZone</div>
 												   <div id="create_new_place_btn"  class="topAccOptList" onclick="goToCreatePlace()">Create New Place</div>
 												   <div id="fb_logout_div" class="topAccOptList" onClick="facebookSignOut()">Log out</div>
 												   <div id="go_logout_div" class="topAccOptList" onClick="googleSignOut()">Log out</div>
@@ -460,7 +357,7 @@ function updatePageView() {
 		  <div id="prev_used_images" style="display:none">
 		    <!-- Here uploaded images will be added -->
 		  </div>
-		  <img id="temp_image_for_canvas_creation" style="display:none"></img>
+		  <img id="temp_image_for_canvas_creation" style="display:none">
 		  <canvas  width="200" height="200" id="translated_user_images_canvas" style="display:none"></canvas>
 		 <div id="bg_default_img_mirror" style="display:none">
 		    <canvas id="default_img_canvas"></canvas>
@@ -495,7 +392,7 @@ function updatePageView() {
 						</div>
 					</div>
 					<img id="mirror" style="display:none"/>
-					<div class="chosed_canvas chosed_img" ><canvas id="show_canvas" width="150" height="150" ></div>
+					<div class="chosed_canvas chosed_img" ><canvas id="show_canvas" width="150" height="150" ></canvas></div>
 				</div>
 			  </div>       	  
 	 </div>
@@ -536,7 +433,7 @@ function updatePageView() {
 				    	                          <input name="placeIDvalue" id="placeIDvalue" value="<%=placeID%>">
 			</form>
 			<form id="<%=placeID%>_iframeform"  action="editIFrame" method="post" style="display:none">
-				    	                          <input name="placeIDvalue" id="placeIDvalue" value="<%=placeID%>">
+				    	                          <input name="placeIDvalue"   value="<%=placeID%>">
 				    	                          <input name="iFIDvalue" id="iFIDvalue" value="">
 			</form>
             <table id="middle_column_table"  cellspacing="0" cellpadding="0" style="width: 100%; height: 100%; border-collapse: collapse">
@@ -608,7 +505,7 @@ function updatePageView() {
 								  </div>
 								  <div id="hidden_img_uploads" style="display:none"></div>
 								  <img id="uploaded_image_temp" style="display:none"/>
-				                  <input type="file"  id="hidden_image_upload" style="display:none"></input>
+				                  <input type="file"  id="hidden_image_upload" style="display:none">
 							   </td></tr>
 							 </table>
 						  </td>
@@ -774,7 +671,7 @@ List<AdminUser> adminList = responseJSON.getPlaceEditList();
              <td  class="peat_cb width12p"><input name="peat_cb" type="checkbox" id="peat_cb_ep_<%=user.getMail()%>" class = "peat_checkbox" <%=ep %> /></td>
              <td  class="peat_cb width12p"><input name="peat_cb" type="checkbox" id="peat_cb_mo_<%=user.getMail()%>" class = "peat_checkbox" <%=mo %> /></td>
              <td  class="peat_cb width12p"><input name="peat_cb" type="checkbox" id="peat_cb_ba_<%=user.getMail()%>" class = "peat_checkbox" <%=ba %> /></td>
-             <td  class="peat_cb width12p"><div id="peat_delete_'+mail+'" class="peat_delete" onclick="peat_delete(\'<%=user.getMail()%>\')">Delete</div></td>
+             <td  class="peat_cb width12p"><div id="peat_delete_'+mail+'" class="peat_delete" onclick="peat_delete('<%=user.getMail()%>')">Delete</div></td>
            </tr>
        </table>
 	
@@ -803,9 +700,9 @@ List<AdminUser> adminList = responseJSON.getPlaceEditList();
 							<td style="width:50%;vertical-align: top;">
 						      <div class="params_innner_table_header_div">Booking approval policy</div>
 							  <table cellspacing="0" cellpadding="0" style="border-collapse:collapse;width:100%;">
-							    <tr><td class="bp_radio_td"><input type="radio" class="book_policy" name="book_policy" id="bp_auto" checked/><label for="bp_auto"><span class="outer"></span><span class="inner"></span></td>
+							    <tr><td class="bp_radio_td"><input type="radio" class="book_policy" name="book_policy" id="bp_auto" checked/><label for="bp_auto"><span class="outer"></span><span class="inner"></span></label></td>
 								    <td id="bp_auto_text" class="bp_t_selected">Automatic approval</td>
-							         <td class="bp_radio_td"><input type="radio" class="book_policy" name="book_policy" id="bp_admin" /><label for="bp_admin"><span class="outer"></span><span class="inner"></span></td>
+							         <td class="bp_radio_td"><input type="radio" class="book_policy" name="book_policy" id="bp_admin" /><label for="bp_admin"><span class="outer"></span><span class="inner"></span></label></td>
 								    <td id="bp_admin_text">Admin approval <span class="small_bp"></span></td></tr>
 								<tr><td colspan=4>
 								  <div id="bp_auto_wrap" >

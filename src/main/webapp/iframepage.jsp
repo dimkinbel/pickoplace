@@ -36,45 +36,50 @@
   <head >
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>IFrame</title>
-	<script type="text/javascript" src="js/jquery-1.11.1.min.js" ></script>
-    <script type="text/javascript" src="js/jquery-migrate-1.2.1.js" ></script>
-	<script type="text/javascript" src="js/jquery-ui-1.11.2.custom/jquery-ui.js"></script>
-	<script type="text/javascript" src="js/jquery-ui-1.11.4.custom/jquery-ui.js"></script>
-	<script type="text/javascript" src="js/jquery-ui.drag.js"></script>
-	 <script type="text/javascript" src="js/loginlogout.js" ></script>
-	<script type="text/javascript" src="ion.rangeSlider-2.0.2/js/ion.rangeSlider.js"></script>
-	<script type="text/javascript" src="js/bootstrap-slider.js" ></script>
-	<script type="text/javascript" src="js/colpick.js" ></script>    
-	
-	<script type="text/javascript" src="js/perfect-scrollbar.js"></script>
-    <script type="text/javascript" src="js/jquery.contextmenu.js"></script>
-	<script type="text/javascript" src="js/sitefunctions.js"></script>
-	<script type="text/javascript" src="js/dropit.js" ></script>
-	<script type="text/javascript" src="js/jquery.slimscroll.min.js" ></script>
-	<script type="text/javascript" src="js/moment.min.js"></script>
-	    
-	<script type="text/javascript" src="js/shapes_fe.js"></script>
-	<script type="text/javascript" src="js/shapes_timeline_fe.js"></script>
-	<script type="text/javascript" src="js/printlog_fe.js"></script>
-	
-	<script type="text/javascript" src="js/updateData_if.js"></script>
-	<script type="text/javascript" src="js/interactiveUpdate_if.js" ></script>
-	<script type="text/javascript" src="js/wl_menu_if.js" ></script>
-	<script type="text/javascript" src="js/bookingOptions_if.js" ></script>
-	
-    <link rel="stylesheet" href="css/colpick.css" type="text/css"/>
-	<link rel="stylesheet" href="css/slider.css" type="text/css"/>
-	<link rel="stylesheet" href="css/style_if.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="css/book_approval.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="css/login.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="js/jquery-ui-1.11.2.custom/jquery-ui.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="js/jquery-ui-1.11.4.custom/jquery-ui.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="ion.rangeSlider-2.0.2/css/ion.rangeSlider.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="ion.rangeSlider-2.0.2/css/ion.rangeSlider.skinModern.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="css/perfect-scrollbar.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="css/CSS_checkbox_full/custom-checkbox.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="css/dropit.css" type="text/css" media="screen" />
-	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	  <script type="text/javascript">
+		  var pagetype = 'iframepage';
+	  </script>
+		<script type="text/javascript" src="js/jquery-1.11.1.min.js" ></script>
+		<script type="text/javascript" src="js/jquery-migrate-1.2.1.js" ></script>
+		<script type="text/javascript" src="js/jquery-ui-1.11.2.custom/jquery-ui.js"></script>
+		<script type="text/javascript" src="js/jquery-ui-1.11.4.custom/jquery-ui.js"></script>
+		<script type="text/javascript" src="js/jquery-ui.drag.js"></script>
+		 <script type="text/javascript" src="js/loginlogout.js" ></script>
+		<script type="text/javascript" src="ion.rangeSlider-2.0.2/js/ion.rangeSlider.js"></script>
+		<script type="text/javascript" src="js/bootstrap-slider.js" ></script>
+		<script type="text/javascript" src="js/colpick.js" ></script>
+
+		<script type="text/javascript" src="js/perfect-scrollbar.js"></script>
+		<script type="text/javascript" src="js/jquery.contextmenu.js"></script>
+		<script type="text/javascript" src="js/sitefunctions.js"></script>
+		<script type="text/javascript" src="js/dropit.js" ></script>
+		<script type="text/javascript" src="js/jquery.slimscroll.min.js" ></script>
+		<script type="text/javascript" src="js/moment.min.js"></script>
+
+		<script type="text/javascript" src="js/shapes_fe.js"></script>
+		<script type="text/javascript" src="js/shapes_timeline_fe.js"></script>
+		<script type="text/javascript" src="js/printlog_fe.js"></script>
+
+		<script type="text/javascript" src="js/updateData_if.js"></script>
+		<script type="text/javascript" src="js/interactiveUpdate_if.js" ></script>
+		<script type="text/javascript" src="js/wl_menu_if.js" ></script>
+		<script type="text/javascript" src="js/bookingOptions_if.js" ></script>
+
+		<link rel="stylesheet" href="css/colpick.css" type="text/css"/>
+		<link rel="stylesheet" href="css/slider.css" type="text/css"/>
+		<link rel="stylesheet" href="css/style_if.css" type="text/css" media="screen" />
+		<link rel="stylesheet" href="css/book_approval.css" type="text/css" media="screen" />
+		<link rel="stylesheet" href="css/login.css" type="text/css" media="screen" />
+		<link rel="stylesheet" href="js/jquery-ui-1.11.2.custom/jquery-ui.css" type="text/css" media="screen" />
+		<link rel="stylesheet" href="js/jquery-ui-1.11.4.custom/jquery-ui.css" type="text/css" media="screen" />
+		<link rel="stylesheet" href="ion.rangeSlider-2.0.2/css/ion.rangeSlider.css" type="text/css" media="screen" />
+		<link rel="stylesheet" href="ion.rangeSlider-2.0.2/css/ion.rangeSlider.skinModern.css" type="text/css" media="screen" />
+		<link rel="stylesheet" href="css/perfect-scrollbar.css" type="text/css" media="screen" />
+		<link rel="stylesheet" href="css/CSS_checkbox_full/custom-checkbox.css" type="text/css" media="screen" />
+		<link rel="stylesheet" href="css/dropit.css" type="text/css" media="screen" />
+		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+	    <script type="text/javascript" src="js/updateCanvasData.js"></script>
 <script type="text/javascript">
 
 var canvasMouseOut = false;
@@ -97,14 +102,9 @@ var StateFromServer = {};
 StateFromServer.floors = [];
 var bookingsbysid = {};
 var timelinediv={};
-var mainOverviewID;       
 var gcanvas ;
 var floorSelectedIDDim;
-var floorCanvases = [];
-var floorNames = {};
 var initalIntervalUpdates = 10;
-var floorid2canvas = {};
-var maincanvas;
 var proceed_to_edit = 0;
 var bookingsManager = {};
 var positionmanager = {};
@@ -113,49 +113,8 @@ var tcanvas_ = {};
 var currentSliderValue;
 var placeUTCOffsetGlobal;
 var phonerequired = true;
-$(document).ready(function() {  
-   	  // canvas_ = new CanvasState(document.getElementById('canvas1'));
-    	 // Update canvases background
-    	 var allfloors =  document.getElementsByName("server_canvasState");  	 
-    	 for(var x=0; x < allfloors.length; x++) { 
-    		 var canvasfloor = allfloors[x].id;
-    		 var floorID = canvasfloor.replace(/^server_canvasState_/, ""); 
-    		 canvas_ = new CanvasState(document.getElementById("canvas_"+floorID));		 
-    		 canvas_.main = true;
-    		 floorCanvases.push(canvas_);
-    		 var floorname = document.getElementById("server_floor_name_"+floorID).value;
-    		 floorNames[floorname] = canvas_;
-    		 canvas_.floor_name = floorname;
-    		 floorid2canvas[floorID] = canvas_;
-    		 
-    	     var canvasStateJSON = JSON.parse(document.getElementById(canvasfloor).value);
-	    	 if (canvasStateJSON.state.backgroundType != "color") {
-	    		 updateBackgroundImageByServer(canvasfloor);
-	    	 }
-	    	 if (canvasStateJSON.mainfloor) {
-	    	   $("#floor__selector").prepend( $('<option value="'+floorname+'">'+floorname+'</option>'));
-			   $("#floor__selector [value='"+floorname+"']").attr("selected", "selected");
-			   maincanvas = canvas_;
-	    	 } else {
-	    	   $("#floor__selector").append( $('<option value="'+floorname+'">'+floorname+'</option>')); 	    		 
-	    	 }
-    	 }
-    	// Update all shapes images
-    	 var all=document.getElementsByName("shape_images_from_server");
-    	 totalImages = all.length+1;
-    	 for(var x=0; x < all.length; x++) { 
-    		 var serverImageID = all[x].id;
-    	   //  updateShapeImagesByServerData(serverImageID);   	     
-    	 }
-    	 // Update all canvases
-    	 for(var x=0; x < allfloors.length; x++) { 
-    		 var canvasfloor = allfloors[x].id;
-    		 var floorID = canvasfloor.replace(/^server_canvasState_/, ""); 
-    		 var canvasStateJSON = JSON.parse(document.getElementById(canvasfloor).value);
-    	     updateCanvasShapes(floorid2canvas[floorID],canvasStateJSON);
-    	 }
-    	 // Floor selector update
-    	 canvas_ = maincanvas;	
+$(document).ready(function() {
+	     updateCanvasData();
 		 ApplyInitialPositionFE();
 		 ApplySelectors();
 		 
@@ -169,45 +128,7 @@ $(document).ready(function() {
 
 </script>
 <script type="text/javascript">
-//LOGIN SUCCESS UPDATE
-function updatePageView() {
-	  if(fconnected==true) {
-		  //Connected To Facebook
-		  $("#page_login_prompt").hide();		  
-		  $("#login_info_resp_db").empty();
-		  $("#login_info_resp_db").html(fudata.first_name);
-		  $("#blcon_r").show();
-		  $("#lpr_b").hide();
-		  
-		  $("#fb_logout_div").show();
-		  $("#go_logout_div").hide();
-		  
-	  } else if (gconnected==true) {
-		  //Connected To Google
-		  $("#page_login_prompt").hide();		  
-		  $("#login_info_resp_db").empty();
-		  $("#login_info_resp_db").html(gudata.name.givenName);
-		  $("#blcon_r").show();
-		  $("#lpr_b").hide();
-		  
-		  $("#fb_logout_div").hide();
-		  $("#go_logout_div").show();
-		  
-	  } else {
-		 
-		  //Not connected  
-		  $("#login_info_resp_db").empty();
-		  $("#blcon_r").hide();
-		  $("#lpr_b").show();
-		  
-	  }
-}
-$(document).ready(function () { 
-  $("#login_prop_d").click(function(){
-  	$("#page_login_prompt").show();
-  });
 
-});
 $(document).on("click",".stopclick", function (event) {
     if(event.target.id == "page_login_prompt") {
     	if(gconnected==false && fconnected==false && phoneflow==true) {
@@ -356,7 +277,7 @@ function SIapplyBooking() {
 		  <div id="prev_used_images" style="display:none">
 		    <!-- Here uploaded images will be added -->
 		  </div>
-		  <img id="temp_image_for_canvas_creation" style="display:none"></img>
+		  <img id="temp_image_for_canvas_creation" style="display:none">
 		  <canvas  width="200" height="200" id="translated_user_images_canvas" style="display:none"></canvas>
 		 <div id="bg_default_img_mirror" style="display:none">
 		    <canvas id="default_img_canvas"></canvas>
@@ -393,7 +314,7 @@ function SIapplyBooking() {
 						</div>
 					</div>
 					<img id="mirror" style="display:none"/>
-					<div class="chosed_canvas chosed_img" ><canvas id="show_canvas" width="150" height="150" ></div>
+					<div class="chosed_canvas chosed_img" ><canvas id="show_canvas" width="150" height="150" ></canvas></div>
 				</div>
 			  </div>       	  
 	 </div>	
@@ -524,7 +445,7 @@ function SIapplyBooking() {
 									<td class="fe_top_v"  ><div class="book_request_text_fe" > Book time </div></td>
 									
 									<td class="book_btn_td" rowspan="2" id="buttons_book_col">
-									 	<div id="place_order_button" class="blue_e_button marginhor2" onclick="applyBookingPre()" style="display:''">BOOK</div>
+									 	<div id="place_order_button" class="blue_e_button marginhor2" onclick="applyBookingPre()" style="display:initial">BOOK</div>
 							            <div id="place_order_button_invalid" class="blue_e_button_invalid marginhor2" style="display:none"></div>
 							            <img id="frame_book_ajax_gif" src="img/gif/ajax-loader-round.gif" style="display:none"/>
 									</td>
@@ -552,7 +473,7 @@ function SIapplyBooking() {
 							</div>
 						  </td>
 						  </tr>
-							  <tr id="feb_slider_row">
+							  <tr  >
 							    <td id="feb_slider_column" >
 								  <table cellspacing="0" cellpadding="0" style="width: 100%; height: 100%; border-collapse: collapse">
 
@@ -565,7 +486,7 @@ function SIapplyBooking() {
 										 
 									   </td>
 									 </tr>
-									<tr id="feb_slider_row">
+									<tr  >
 									   <td>
 									     <div id="slider_wrap_fe" style="height:10px;" >
 							                <div id="booking_time_slider_for_canvas_fe"  ></div>

@@ -665,3 +665,144 @@ var helper = (function() {
 		  updatePageView();
 	  }
   }
+
+function updatePageView() {
+	if(fconnected==true) {
+		//Connected To Facebook
+		$("#bstartNext").show(); // create_new_place
+		$("#openLoginPromptIn").hide();// create_new_place
+		$("#page_login_prompt").hide();
+		if(pagetype!=undefined &&
+				(pagetype=='editplace' ||
+				 pagetype=='iframeeditor'||
+				 pagetype=='my_bookings' ||
+				 pagetype=='place_config' ||
+				 pagetype=='user_account' ||
+				 pagetype=='waiter_list')) {
+			$("#login_prop_d").hide();
+		} else {
+			$("#login_prop").hide();
+		}
+		$("#account_drop").show();
+
+		$("#login_info_resp_d").empty();
+		$("#login_info_resp_d").html(fudata.first_name);
+		$("#login_info_resp").show();
+		if(pagetype!=undefined &&
+				(pagetype=='iframepage' ||
+				pagetype=='place_booking')) {
+			$("#login_info_resp_db").empty();
+			$("#login_info_resp_db").html(fudata.first_name);
+			$("#blcon_r").show();
+			$("#lpr_b").hide();
+		}
+		$("#fb_logout_div").show();
+		$("#go_logout_div").hide();
+		$('#fg_profile_img').attr('src',"http://graph.facebook.com/" + fudata.id + "/picture");
+		$("#fg_profile_image_wrap").show();
+		if(pagetype!=undefined && pagetype=='waiter_admin') {
+			var pid = $("#server_placeID").val();
+			requestChannelToken(fudata.id+"___"+fudata.email+"_PPID_"+pid+"_PPID_"+randomString(5));
+		}
+		if(pagetype!=undefined && pagetype=='my_bookings') {
+			setSessionData(function(result) {
+				if(result) {
+					loadFuture(10);
+					loadPast(10);
+				}
+			});
+		} else if (pagetype!=undefined && pagetype == 'waiter_list') {
+			setSessionData(function(result) {
+				if(result) {
+					updateWaiterList();
+				}
+			});
+		}
+	} else if (gconnected==true) {
+		//Connected To Google
+		$("#bstartNext").show();// create_new_place
+		$("#openLoginPromptIn").hide();// create_new_place
+		$("#page_login_prompt").hide();
+		if(pagetype!=undefined &&
+				(pagetype=='editplace' ||
+				pagetype=='iframeeditor'||
+				pagetype=='my_bookings' ||
+				pagetype=='place_config' ||
+				pagetype=='user_account' ||
+				pagetype=='waiter_list')) {
+			$("#login_prop_d").hide();
+		} else {
+			$("#login_prop").hide();
+		}
+		$("#account_drop").show();
+
+		$("#login_info_resp_d").empty();
+		$("#login_info_resp_d").html(gudata.name.givenName);
+		$("#login_info_resp").show();
+		if(pagetype!=undefined &&
+				(pagetype=='iframepage' ||
+				pagetype=='place_booking')) {
+			$("#login_info_resp_db").empty();
+			$("#login_info_resp_db").html(gudata.name.givenName);
+			$("#blcon_r").show();
+			$("#lpr_b").hide();
+		}
+
+		$("#fb_logout_div").hide();
+		$("#go_logout_div").show();
+		$('#fg_profile_img').attr('src',gudata.image.url);
+		$("#fg_profile_image_wrap").show();
+		if(pagetype!=undefined && pagetype=='waiter_admin') {
+			var pid = $("#server_placeID").val();
+			requestChannelToken(gudata.id+"___"+gudata.name.givenName+"_PPID_"+pid+"_PPID_"+randomString(5));
+		}
+		if(pagetype!=undefined && pagetype=='my_bookings') {
+			setSessionData(function(result) {
+				if(result) {
+					loadFuture(10);
+					loadPast(10);
+				}
+			});
+		} else if (pagetype!=undefined && pagetype == 'waiter_list') {
+			setSessionData(function(result) {
+				if(result) {
+					updateWaiterList();
+				}
+			});
+		}
+	} else {
+		//Not connected
+		if(pagetype!=undefined &&
+				(pagetype=='editplace' ||
+				pagetype=='iframeeditor'||
+				pagetype=='my_bookings' ||
+				pagetype=='place_config' ||
+				pagetype=='user_account' ||
+				pagetype=='waiter_list')) {
+			console.log("update_no_connected");
+			location.href = "/welcome.jsp";
+		} else {
+			$("#bstartNext").hide();// create_new_place
+			$("#openLoginPromptIn").show();// create_new_place
+
+			$("#login_prop").show();
+			$("#login_info_resp").hide();
+			$("#account_drop").hide();
+			$("#fg_profile_image_wrap").hide();
+			if(pagetype!=undefined &&
+					(pagetype=='iframepage'||
+					pagetype=='place_config')) {
+				$("#login_info_resp_db").empty();
+				$("#blcon_r").hide();
+				$("#lpr_b").show();
+			}
+			$("#login_info_resp_d").empty();
+
+			$("#fb_logout_div").hide();
+			$("#go_logout_div").hide();
+			if(pagetype!=undefined && pagetype=='waiter_admin' && channel__!=undefined && channel__!=null) {
+				channel__.close();
+			}
+		}
+	}
+}

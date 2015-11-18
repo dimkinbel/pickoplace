@@ -8,6 +8,9 @@
 <html >
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<script type="text/javascript">
+		var pagetype = 'welcome';
+	</script>
 	<link rel="stylesheet" href="js/jquery-ui-1.11.2.custom/jquery-ui.css" type="text/css" media="screen" />
 	<link rel="stylesheet" href="css/browserWrap.css" type="text/css" media="screen" />
 	<link rel="stylesheet" href="css/login.css" type="text/css" media="screen" />
@@ -50,18 +53,6 @@
 <script type="text/javascript">
 var geocoder;
 
-function goToDraw(){
-	
-	location.href = "/drawing.jsp";
-}
-
-function goToAccountMenu() {
-   setSessionData(function(result) {
-	   if(result) {
-			  document.getElementById("master_account").submit();
-		}
-	});
-}
 var uploadLastcursor = "";
 var from_={};
 var personsSlider = {};
@@ -85,63 +76,11 @@ $(document).ready(function () {
    personsSlider = new upDownSpinner('w_per_inp','wper_up','wper_don',personsList,personsSList,2,true);
 });
 $(document).ready(function() {
-	requestLastPlaces(3);
+	requestLastPlaces(6);
 });
 
-
-//LOGIN SUCCESS UPDATE
-function updatePageView() {
-	  if(fconnected==true) {
-		  //Connected To Facebook
-		  $("#page_login_prompt").hide();
-		  $("#login_prop").hide();		  
-		  $("#account_drop").show();
-		  
-		  $("#login_info_resp_d").empty();
-		  $("#login_info_resp_d").html(fudata.first_name);
-		  $("#login_info_resp").show();
-		  
-		  $("#fb_logout_div").show();
-		  $("#go_logout_div").hide();
-		  
-		  $('#fg_profile_img').attr('src',"http://graph.facebook.com/" + fudata.id + "/picture");
-		  $("#fg_profile_image_wrap").show();
-		  
-	  } else if (gconnected==true) {
-		  //Connected To Google
-		  $("#page_login_prompt").hide();
-		  $("#login_prop").hide();		  
-		  $("#account_drop").show();
-		  
-		  $("#login_info_resp_d").empty();
-		  $("#login_info_resp_d").html(gudata.name.givenName);
-		  $("#login_info_resp").show();
-		  
-		  $("#fb_logout_div").hide();
-		  $("#go_logout_div").show();
-		  
-		  $('#fg_profile_img').attr('src',gudata.image.url);
-		  $("#fg_profile_image_wrap").show();
-		  
-	  } else {
-		  //Not connected
-		  
-		  $("#login_prop").show();
-		  $("#login_info_resp").hide();
-		  $("#account_drop").hide();
-
-		  $("#login_info_resp_d").empty();
-		  
-		  $("#fb_logout_div").hide();
-		  $("#go_logout_div").hide();
-		  $("#fg_profile_image_wrap").hide();
-	  }
-}
 $(document).ready(function () { 
-    $("#login_prop_d").click(function(){
-    	
-    	$("#page_login_prompt").show();
-    });
+
     $('#advanced_material_drop').dropit({action: 'click'});
 });
 $(document).on("click",".stopclick", function (event) {
@@ -308,7 +247,7 @@ $(document).on("click",".stopclick", function (event) {
 												   <div id="acc_arrow"></div>
 												   <div id="gotoaccountmenu" class="topAccOptList" onclick="goToAccountMenu()">Go to Account</div>
 												   <div id="gotobookings" class="topAccOptList">My bookings</div>
-												   <div id="dotoadminzone" class="topAccOptList">AdminZone</div>
+												   <div id="gotoadminzone" class="topAccOptList">AdminZone</div>
 												   <div id="create_new_place_btn"  class="topAccOptList" onclick="goToCreatePlace()">Create New Place</div>
 												   <div id="fb_logout_div" class="topAccOptList" onClick="facebookSignOut()">Log out</div>
 												   <div id="go_logout_div" class="topAccOptList" onClick="googleSignOut()">Log out</div>

@@ -4,8 +4,8 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <script type="text/javascript" src="js/jquery-1.11.1.min.js" ></script>
-  <script type="text/javascript" src="js/loginlogout.js" ></script>
+  <script type="text/javascript" src="../js/jquery-1.11.1.min.js" ></script>
+  <script type="text/javascript" src="../js/loginlogout.js" ></script>
   <link href='https://fonts.googleapis.com/css?family=Roboto|Muli' rel='stylesheet' type='text/css'>
   <script type="text/javascript">
  var getUrlParameter = function getUrlParameter(sParam) {
@@ -22,12 +22,7 @@
 	        }
 	    }
 	}; 
-	$(document).ready(function() {
-		
-	});
-	
-	   
-	
+
 	function continueToServlet() {
 		var requestType = getUrlParameter("type");
 		var servleturl = getUrlParameter("servlet");
@@ -163,14 +158,14 @@ width: 245px;
 <div id="flowpagewrap" style="width:100%;height:100%">
   <div id="ppwelcomeflow">PickoPlace authorization request</div>
   <div id="flow_ajax_spinner" style="width:200px;padding-top:100px;margin:auto">
-    <img  style="width: 100px;" src="img/gif/ajaxSpinner.gif" />
+    <img  style="width: 100px;" src="../img/gif/ajaxSpinner.gif" />
   </div>
   <div id="loginbuttonsflow" style="margin:auto;display:none;">
   		<table id="sign_in_table_" cellspacing="0" cellpadding="0" style="border-collapse: collapse">
 		  <tr>
 			<td>
 			  <div id="google-connect" class="cbtn" onClick="googleSignIn()">
-				<div id="gpsi_img_d"><img id="gpsi_img" src="img/gplus30.png"/></div>
+				<div id="gpsi_img_d"><img id="gpsi_img" src="../img/gplus30.png"/></div>
 				<div id="gpsi_text">Sign In with Google</div>
 			  </div>   
 			</td>

@@ -302,7 +302,7 @@
 
 	<servlet>
 		<servlet-name>frommailaction</servlet-name>
-		<jsp-file>/frommailroute.jsp</jsp-file>
+		<jsp-file>/flow_pages/frommailroute.jsp</jsp-file>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>frommailaction</servlet-name>

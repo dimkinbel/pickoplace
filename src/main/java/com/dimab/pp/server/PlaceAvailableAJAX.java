@@ -62,6 +62,9 @@ public class PlaceAvailableAJAX extends HttpServlet {
 	    orderedResponse.setClientOffset(clientOffset);
 	    orderedResponse.setPlaceOffset(placeOffset);
 	    orderedResponse.setPid(bookingRequest.getPid());
+
+		List<SingleTimeRangeLong> openRanges = new ArrayList<SingleTimeRangeLong>();
+
 	    // Return place open
 	    Filter placeIdFilter = new  FilterPredicate("placeUniqID",FilterOperator.EQUAL,bookingRequest.getPid());
 		Query q = new Query("CanvasState").setFilter(placeIdFilter);
@@ -74,42 +77,19 @@ public class PlaceAvailableAJAX extends HttpServlet {
   		   
 		   String weekdays = (String) CanvasStateEntity.getProperty("workinghours");		
 		   WorkingWeek weekdaysObject  = gson.fromJson(weekdays, WorkingWeek.class);
-		   WeekDayOpenClose today , tomorrow;
-		   if(weekday < 6) {
-			   today = weekdaysObject.getWeekDayOpenClose(weekday);
-			   tomorrow = weekdaysObject.getWeekDayOpenClose(weekday+1);
-		   } else {
-			   today = weekdaysObject.getWeekDayOpenClose(weekday);
-			   tomorrow = weekdaysObject.getWeekDayOpenClose(0);
-		   }
-		   SingleTimeRangeLong todayOpenRange = new SingleTimeRangeLong();
-		   if (today.isOpen()) {
-			   todayOpenRange.setFrom(new Integer(today.getFrom()).longValue());
-			   todayOpenRange.setTo(new Integer(today.getTo()).longValue());
-		   } else {
-			   todayOpenRange.setFrom(new Integer(0).longValue());
-			   todayOpenRange.setTo(new Integer(0).longValue());
-		   }
-		   SingleTimeRangeLong tomorrowOpenRange = new SingleTimeRangeLong();
-		   if (tomorrow.isOpen()) {
-			   tomorrowOpenRange.setFrom(new Integer(tomorrow.getFrom() + 86400).longValue());
-			   tomorrowOpenRange.setTo(new Integer(tomorrow.getTo() + 86400).longValue());  
-		   } else {
-			   tomorrowOpenRange.setFrom(new Integer(86400).longValue());
-			   tomorrowOpenRange.setTo(new Integer(86400).longValue()); 
-		   }
-		   // Check for dates the place is close (set by Administrator)
-		   if (closeDates.contains(UTCdateProper)) {
-			   todayOpenRange.setFrom(new Integer(0).longValue());
-			   todayOpenRange.setTo(new Integer(0).longValue());
-		   } 
-           if (closeDates.contains(UTCdateProper+86400)) {
-			   tomorrowOpenRange.setFrom(new Integer(86400).longValue());
-			   tomorrowOpenRange.setTo(new Integer(86400).longValue()); 
-		   }
-		   orderedResponse.getPlaceOpen().add(todayOpenRange);
-		   orderedResponse.getPlaceOpen().add(tomorrowOpenRange);
-  		}
+			List<SingleTimeRangeLong> tempRanges = weekdaysObject.getRangesList(weekday,2);
+
+			// Check for dates the place is close (set by Administrator)
+			if (closeDates.contains(UTCdateProper)) {
+				tempRanges = weekdaysObject.deleteRangeFromList(tempRanges,0,86400);
+			}
+			if (closeDates.contains(UTCdateProper+86400)) {
+				tempRanges = weekdaysObject.deleteRangeFromList(tempRanges,86400,2*86400);
+			}
+
+			openRanges = tempRanges;
+			orderedResponse.setPlaceOpen(openRanges);
+		}
 		System.out.println(new Gson().toJson(orderedResponse));
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
