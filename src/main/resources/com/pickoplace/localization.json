@@ -1,6 +1,7 @@
 {
   "someKey": {
     "english": "some text",
-    "hebrew": "טקסט כלשהו"
+    "hebrew": "טקסט כלשהו",
+    "russian": "по русски"
   }
 }

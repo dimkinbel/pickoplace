@@ -229,7 +229,7 @@ $(document).on("click",".stopclick", function (event) {
 								  </div>
 								</td>
 							 </tr>
-					   	</table>			
+					   	</table>
 				</div>
 				</div>
 			</td>

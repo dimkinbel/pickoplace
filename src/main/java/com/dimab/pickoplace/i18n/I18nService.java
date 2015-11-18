@@ -20,7 +20,7 @@ public class I18nService {
     }.getType();
 
     private final Map<String, Message> messages;
-    private final Map<Language, Map<String, String>> messagesByLanguage;
+    private final Map<Language, I18nMap> messagesByLanguage;
 
     public final static I18nService INSTANCE = new I18nService(); // todo(egor): use IoC
 
@@ -37,10 +37,12 @@ public class I18nService {
         messages = JsonUtils.deserializeFromJson(localizationAsString, LOCALIZATION_TYPE);
 
         messagesByLanguage = new HashMap<>();
-        messagesByLanguage.put(Language.ENGLISH, new HashMap<String, String>());
-        messagesByLanguage.put(Language.HEBREW, new HashMap<String, String>());
+        messagesByLanguage.put(Language.ENGLISH, new I18nMap());
+        messagesByLanguage.put(Language.HEBREW, new I18nMap());
+        messagesByLanguage.put(Language.RUSSIAN, new I18nMap());
         for (Map.Entry<String, Message> mapEntry : messages.entrySet()) {
             messagesByLanguage.get(Language.ENGLISH).put(mapEntry.getKey(), mapEntry.getValue().english);
+            messagesByLanguage.get(Language.RUSSIAN).put(mapEntry.getKey(), mapEntry.getValue().russian);
             messagesByLanguage.get(Language.HEBREW).put(mapEntry.getKey(), mapEntry.getValue().hebrew);
         }
     }
@@ -51,6 +53,9 @@ public class I18nService {
         switch (language) {
             case ENGLISH:
                 return message.english;
+
+            case RUSSIAN:
+                return message.russian;
 
             case HEBREW:
                 return message.hebrew;
@@ -71,5 +76,16 @@ public class I18nService {
     private final static class Message {
         private String english;
         private String hebrew;
+        private String russian;
+    }
+
+    private final static class I18nMap extends HashMap<String, String> {
+        public String get(Object key) {
+            if(!this.containsKey(key)) {
+                throw new RuntimeException("can't find localozation message by key `" + key + "`");
+            }
+
+            return super.get(key);
+        }
     }
 }
