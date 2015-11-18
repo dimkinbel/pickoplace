@@ -1,4 +1,4 @@
-<%@tag description="Overall Page template" pageEncoding="UTF-8"%>
+<%@tag description="Simple page template" pageEncoding="UTF-8"%>
 <%@attribute name="pageTitle" required="true" type="java.lang.String" %>
 <%@attribute name="headerBlock" fragment="true" %>
 <%@attribute name="bodyBlock" fragment="true" %>
