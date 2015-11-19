@@ -136,6 +136,7 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>versions-maven-plugin</artifactId>
                 <version>2.2</version>
+<!--
                 <executions>
                     <execution>
                         <phase>compile</phase>
@@ -145,6 +146,7 @@
                         </goals>
                     </execution>
                 </executions>
+-->
             </plugin>
 
             <plugin>
@@ -176,7 +178,7 @@
                             <goal>gulp</goal>
                         </goals>
                         <configuration>
-                            <arguments>build-with-lint --type production</arguments>
+                            <arguments>default</arguments>
                         </configuration>
                     </execution>
                 </executions>

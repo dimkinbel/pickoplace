@@ -12,12 +12,19 @@
             return null;
         }
 
+        var b = 'asdas';
+
+        if (true) {
+            console.log();
+        }
+
+
         var cookiesArray = cookiesString.split(/;\s/g);
 
         for (var i = 0; i < cookiesArray.length; ++i) {
             var currentCookie = cookiesArray[i].split('=');
 
-            if (currentCookie.length == 2) {
+            if (currentCookie.length === 2) {
                 cookiesMap[decodeURIComponent(currentCookie[0])] = decodeURIComponent(currentCookie[1]);
             }
         }
@@ -27,7 +34,7 @@
         }
 
         var
-            result = cookiesMap[name], cookieExists = (typeof result != 'undefined');
+            result = cookiesMap[name], cookieExists = (typeof result !== 'undefined');
 
         if (!cookieExists) {
             return null;

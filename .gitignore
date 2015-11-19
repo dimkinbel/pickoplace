@@ -5,4 +5,4 @@ target
 .project
 node_modules
 node
-src/main/webapp/js/modules/**/*.js
+src/main/webapp/js/modules/dist/
