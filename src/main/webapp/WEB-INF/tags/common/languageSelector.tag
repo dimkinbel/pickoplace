@@ -1,5 +1,6 @@
 <%@tag description="Language selector" pageEncoding="UTF-8"%>
-<div class="dropdown js_languageSelector">
+<div class="dropdown js_languageSelector"
+     data-bb-view="ui/components/LanguageSelectorView">
     <button class="btn btn-default dropdown-toggle js_currentLanguage"
             type="button"
             id="languageSelector"
@@ -15,4 +16,3 @@
         <li><a href="#" class="js_languageVariant" data-language="HEBREW"><span class="flag-icon flag-icon-il">עברית</span></a></li>
     </ul>
 </div>
-<script type="text/javascript" src="/js/components/languageSelector.js"></script>

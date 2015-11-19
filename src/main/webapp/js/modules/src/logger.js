@@ -1,6 +1,9 @@
 /*global define*/
+/*eslint no-console: 0*/
 define([], () => {
     return {
-        log: console.log /*eslint no-console: 0*/
+        log(message) {
+            console.log(message);
+        }
     };
 });

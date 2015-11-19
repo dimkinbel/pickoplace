@@ -8,7 +8,7 @@ define([
 
         const $node = node || $('body');
 
-        $node.find('[data-bb-view]').each(() => {
+        $node.find('[data-bb-view]').each(function iterate() {
             let domNode = $(this);
             const amdBbViewModuleName = domNode.data('bbView');
             const amdBbViewModuleData = domNode.data('bbViewData');
