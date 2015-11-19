@@ -2,6 +2,7 @@ package com.dimab.pp.account;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -68,8 +69,6 @@ public class WaUpdateBookingsByDate extends HttpServlet {
 		Gson gson = new Gson();
 		OrderedResponse orderedResponse = new OrderedResponse();
 		GetShapesOrders orderedResponseFactory = new GetShapesOrders();
-		SingleTimeRangeLong todayOpenRange = new SingleTimeRangeLong();
-		SingleTimeRangeLong tomorrowOpenRange = new SingleTimeRangeLong();	 
   		GetBookingShapesDataFactory bookingFactory = new GetBookingShapesDataFactory();
 		
 		PlaceCheckAvailableJSON bookingRequest = gson.fromJson(jsonString, PlaceCheckAvailableJSON.class);
@@ -83,8 +82,8 @@ public class WaUpdateBookingsByDate extends HttpServlet {
 	    Long UTCdate =  date + clientOffset*3600 - (long)placeOffset*3600; // date is UTC seconds relative to client browser Calendar
 	    Integer UTCdateProper = date.intValue() + clientOffset*3600;
 
-	    
-   
+
+		List<SingleTimeRangeLong> openRanges = new ArrayList<SingleTimeRangeLong>();
 		
 		Filter usernameFilter = new  FilterPredicate("username",FilterOperator.EQUAL,username_email);
 		Filter placeIdFilter  = new  FilterPredicate("placeUniqID",FilterOperator.EQUAL,placeIDvalue);
@@ -92,48 +91,28 @@ public class WaUpdateBookingsByDate extends HttpServlet {
 		Query q = new Query("CanvasState").setFilter(composeFilter);
 		PreparedQuery pq = datastore.prepare(q);		
   		Entity userCanvasState = pq.asSingleEntity();
-  		
+
   		if (userCanvasState != null) {
 
    		   String closeDatesString = (String) userCanvasState.getProperty("closeDates");
    		   Type closeDateType = new TypeToken<List<Integer>>(){}.getType();
    		   List<Integer> closeDates  = gson.fromJson(closeDatesString, closeDateType);
    		   
- 		   String weekdays = (String) userCanvasState.getProperty("workinghours");		
- 		   WorkingWeek weekdaysObject  = gson.fromJson(weekdays, WorkingWeek.class);
- 		   WeekDayOpenClose today , tomorrow;
- 		   if(weekday < 6) {
- 			   today = weekdaysObject.getWeekDayOpenClose(weekday);
- 			   tomorrow = weekdaysObject.getWeekDayOpenClose(weekday+1);
- 		   } else {
- 			   today = weekdaysObject.getWeekDayOpenClose(weekday);
- 			   tomorrow = weekdaysObject.getWeekDayOpenClose(0);
- 		   }
+ 		   String weekdays = (String) userCanvasState.getProperty("workinghours");
+			WorkingWeek weekdaysObject  = gson.fromJson(weekdays, WorkingWeek.class);
 
- 		   if (today.isOpen()) {
- 			   todayOpenRange.setFrom(new Integer(today.getFrom()).longValue());
- 			   todayOpenRange.setTo(new Integer(today.getTo()).longValue());
- 		   } else {
- 			   todayOpenRange.setFrom(new Integer(0).longValue());
- 			   todayOpenRange.setTo(new Integer(0).longValue());
- 		   }
 
- 		   if (tomorrow.isOpen()) {
- 			   tomorrowOpenRange.setFrom(new Integer(tomorrow.getFrom() + 86400).longValue());
- 			   tomorrowOpenRange.setTo(new Integer(tomorrow.getTo() + 86400).longValue());  
- 		   } else {
- 			   tomorrowOpenRange.setFrom(new Integer(86400).longValue());
- 			   tomorrowOpenRange.setTo(new Integer(86400).longValue()); 
- 		   }
- 		   // Check for dates the place is close (set by Administrator)
- 		   if (closeDates.contains(UTCdateProper)) {
- 			   todayOpenRange.setFrom(new Integer(0).longValue());
- 			   todayOpenRange.setTo(new Integer(0).longValue());
- 		   } 
-            if (closeDates.contains(UTCdateProper+86400)) {
- 			   tomorrowOpenRange.setFrom(new Integer(86400).longValue());
- 			   tomorrowOpenRange.setTo(new Integer(86400).longValue()); 
- 		   }
+			List<SingleTimeRangeLong> tempRanges = weekdaysObject.getRangesList(weekday,2);
+
+			// Check for dates the place is close (set by Administrator)
+			if (closeDates.contains(UTCdateProper)) {
+				tempRanges = weekdaysObject.deleteRangeFromList(tempRanges,0,86400);
+			}
+			if (closeDates.contains(UTCdateProper+86400)) {
+				tempRanges = weekdaysObject.deleteRangeFromList(tempRanges,86400,2*86400);
+			}
+
+			openRanges = tempRanges;
   		}
 	    orderedResponseFactory.getOrderedResponse(orderedResponse,bookingRequest.getPid(), UTCdate, period,true);
 	    orderedResponse.setDate1970(UTCdateProper.longValue());
@@ -141,13 +120,12 @@ public class WaUpdateBookingsByDate extends HttpServlet {
 	    orderedResponse.setClientOffset(clientOffset);
 	    orderedResponse.setPlaceOffset(placeOffset);
 	    orderedResponse.setPid(bookingRequest.getPid());
-	    orderedResponse.getPlaceOpen().add(todayOpenRange);
-		orderedResponse.getPlaceOpen().add(tomorrowOpenRange);
+		orderedResponse.setPlaceOpen(openRanges);
 
 
 	    // Bookings datastore
 	    
-	    List<BookingRequestWrap> bookings_ = bookingFactory.getDatastoreBookings(datastore, placeIDvalue, UTCdateProper, UTCdateProper+2*24*3600);
+	    List<BookingRequestWrap> bookings_ = bookingFactory.getDatastoreBookingsInludeStartBefore(datastore, placeIDvalue, UTCdateProper, UTCdateProper+2*24*3600);
 
 	    map.put("orderedResponse", orderedResponse);
 	    map.put("bookings", bookings_);

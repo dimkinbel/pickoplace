@@ -11,6 +11,9 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>IFrame editor</title>
+	  <script type="text/javascript">
+		  var pagetype = 'iframeeditor';
+	  </script>
 	<script type="text/javascript" src="js/jquery-1.11.1.min.js" ></script>
     <script type="text/javascript" src="js/jquery-migrate-1.2.1.js" ></script>
 	<script type="text/javascript" src="js/jquery-ui-1.11.2.custom/jquery-ui.js"></script>
@@ -52,6 +55,10 @@
 	<link rel="stylesheet" href="css/CSS_checkbox_full/custom-checkbox.css" type="text/css" media="screen" />
 	<link rel="stylesheet" href="css/dropit.css" type="text/css" media="screen" />
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+
+	 <script type="text/javascript" src="js/updateCanvasData.js"></script>
+
 <script type="text/javascript">
 var canvasMouseOut = false;
 var canvasMouseDown = false;
@@ -67,29 +74,16 @@ window.addEventListener('mousemove', function(e) {
      canvas_.mouseMoveEvent(e);
    }
 });
-	function goToAccountMenu() {
-		setSessionData(function(result) {
-			   if(result) {
-		          document.getElementById("master_account").submit();
-			   } else {
-				   updatePageView();
-			   }
-	     });
-	}
+
 var tl_canvas = {};
 var InitialBookings = {};
 var StateFromServer = {};
 StateFromServer.floors = [];
 var bookingsbysid = {};
 var timelinediv={};
-var mainOverviewID;       
 var gcanvas ;
 var floorSelectedIDDim;
-var floorCanvases = [];
-var floorNames = {};
 var initalIntervalUpdates = 10;
-var floorid2canvas = {};
-var maincanvas;
 var proceed_to_edit = 0;
 var bookingsManager = {};
 var positionmanager = {};
@@ -98,51 +92,10 @@ var tcanvas_ = {};
 var currentSliderValue;
 var placeUTCOffsetGlobal;
 $(document).ready(function() {
-   applyTableHeight();
-   	  // canvas_ = new CanvasState(document.getElementById('canvas1'));
-    	 // Update canvases background
-    	 var allfloors =  document.getElementsByName("server_canvasState");  	 
-    	 for(var x=0; x < allfloors.length; x++) { 
-    		 var canvasfloor = allfloors[x].id;
-    		 var floorID = canvasfloor.replace(/^server_canvasState_/, ""); 
-    		 canvas_ = new CanvasState(document.getElementById("canvas_"+floorID));		 
-    		 canvas_.main = true;
-    		 floorCanvases.push(canvas_);
-    		 var floorname = document.getElementById("server_floor_name_"+floorID).value;
-    		 floorNames[floorname] = canvas_;
-    		 canvas_.floor_name = floorname;
-    		 floorid2canvas[floorID] = canvas_;
-    		 
-    	     var canvasStateJSON = JSON.parse(document.getElementById(canvasfloor).value);
-	    	 if (canvasStateJSON.state.backgroundType != "color") {
-	    		 updateBackgroundImageByServer(canvasfloor);
-	    	 }
-	    	 if (canvasStateJSON.mainfloor) {
-	    	   $("#floor__selector").prepend( $('<option value="'+floorname+'">'+floorname+'</option>'));
-			   $("#floor__selector [value='"+floorname+"']").attr("selected", "selected");
-			   maincanvas = canvas_;
-	    	 } else {
-	    	   $("#floor__selector").append( $('<option value="'+floorname+'">'+floorname+'</option>')); 	    		 
-	    	 }
-    	 }
-    	// Update all shapes images
-    	 var all=document.getElementsByName("shape_images_from_server");
-    	 totalImages = all.length+1;
-    	 for(var x=0; x < all.length; x++) { 
-    		 var serverImageID = all[x].id;
-    	    // updateShapeImagesByServerData(serverImageID);   	     
-    	 }
-    	 // Update all canvases
-    	 for(var x=0; x < allfloors.length; x++) { 
-    		 var canvasfloor = allfloors[x].id;
-    		 var floorID = canvasfloor.replace(/^server_canvasState_/, ""); 
-    		 var canvasStateJSON = JSON.parse(document.getElementById(canvasfloor).value);
-    	     updateCanvasShapes(floorid2canvas[floorID],canvasStateJSON);
-    	 }
-    	 // Floor selector update
-    	 canvas_ = maincanvas;
-        
-		
+         applyTableHeight();
+
+	     updateCanvasData();
+
 		 ApplyInitialPositionFE()
 		 ApplySelectors();
 		
@@ -154,43 +107,6 @@ $(document).ready(function() {
 
 });
 
-</script>
-<script type="text/javascript">	
-	//LOGIN SUCCESS UPDATE
-function updatePageView() {
-	  if(fconnected==true) {
-		  //Connected To Facebook
-		  $("#page_login_prompt").hide();
-		  $("#login_prop").hide();		  
-		  $("#account_drop").show();
-		  
-		  $("#login_info_resp_d").empty();
-		  $("#login_info_resp_d").html(fudata.first_name);
-		  $("#login_info_resp").show();
-		  
-		  $("#fb_logout_div").show();
-		  $("#go_logout_div").hide();
-
-	  } else if (gconnected==true) {
-		  //Connected To Google
-		  $("#page_login_prompt").hide();
-		  $("#login_prop").hide();		  
-		  $("#account_drop").show();
-		  
-		  $("#login_info_resp_d").empty();
-		  $("#login_info_resp_d").html(gudata.name.givenName);
-		  $("#login_info_resp").show();
-		  
-		  $("#fb_logout_div").hide();
-		  $("#go_logout_div").show();
-
-	  } else {
-		  //Not connected
-		  console.log("update_no_connected");
-		  location.href = "/welcome.jsp";
-		  
-	  }
-}
 </script>
 </head>
 <body style="margin: 0px;" >
@@ -240,7 +156,7 @@ function updatePageView() {
 												   <div id="acc_arrow"></div>
 												   <div id="gotoaccountmenu" class="topAccOptList" onclick="goToAccountMenu()">Go to Account</div>
 												   <div id="gotobookings" class="topAccOptList">My bookings</div>
-												   <div id="dotoadminzone" class="topAccOptList">AdminZone</div>
+												   <div id="gotoadminzone" class="topAccOptList">AdminZone</div>
 												   <div id="create_new_place_btn"  class="topAccOptList" onclick="goToCreatePlace()">Create New Place</div>
 												   <div id="fb_logout_div" class="topAccOptList" onClick="facebookSignOut()">Log out</div>
 												   <div id="go_logout_div" class="topAccOptList" onClick="googleSignOut()">Log out</div>
@@ -366,7 +282,7 @@ function updatePageView() {
 		  <div id="prev_used_images" style="display:none">
 		    <!-- Here uploaded images will be added -->
 		  </div>
-		  <img id="temp_image_for_canvas_creation" style="display:none"></img>
+		  <img id="temp_image_for_canvas_creation" style="display:none">
 		  <canvas  width="200" height="200" id="translated_user_images_canvas" style="display:none"></canvas>
 		 <div id="bg_default_img_mirror" style="display:none">
 		    <canvas id="default_img_canvas"></canvas>
@@ -406,7 +322,7 @@ function updatePageView() {
 						</div>
 					</div>
 					<img id="mirror" style="display:none"/>
-					<div class="chosed_canvas chosed_img" ><canvas id="show_canvas" width="150" height="150" ></div>
+					<div class="chosed_canvas chosed_img" ><canvas id="show_canvas" width="150" height="150" ></canvas></div>
 				</div>
 			  </div>       	  
 	 </div>	
@@ -490,7 +406,7 @@ function updatePageView() {
 									<td class="fe_top_v"  ><div class="book_request_text_fe" > Book time </div></td>
 									
 									<td class="book_btn_td" rowspan="2" id="buttons_book_col">
-									 	<div id="place_order_button" class="blue_e_button marginhor2" onclick="displayBookingRequest()" style="display:''">BOOK</div>
+									 	<div id="place_order_button" class="blue_e_button marginhor2" onclick="displayBookingRequest()" style="display:initial">BOOK</div>
 							            <div id="place_order_button_invalid" class="blue_e_button_invalid marginhor2" style="display:none"></div>
 									</td>
 							  </tr>
@@ -517,7 +433,7 @@ function updatePageView() {
 							</div>
 						  </td>
 						  </tr>
-							  <tr id="feb_slider_row">
+							  <tr  >
 							    <td id="feb_slider_column" >
 								  <table cellspacing="0" cellpadding="0" style="width: 100%; height: 100%; border-collapse: collapse">
 
@@ -530,7 +446,7 @@ function updatePageView() {
 										 
 									   </td>
 									 </tr>
-									<tr id="feb_slider_row">
+									<tr  >
 									   <td>
 									     <div id="slider_wrap_fe" style="height:10px;" >
 							                <div id="booking_time_slider_for_canvas_fe"  ></div>

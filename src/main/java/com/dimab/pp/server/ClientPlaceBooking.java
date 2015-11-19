@@ -2,11 +2,7 @@ package com.dimab.pp.server;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -73,16 +69,23 @@ public class ClientPlaceBooking extends HttpServlet {
 		} else {
 			username_email = genuser.getEmail();
 		}
-		
-		
+		Gson gson = new Gson();
+		BookingRequestWrap bookingRequestsWrap = gson.fromJson(jsonString,BookingRequestWrap.class);
+		// Check available by place open or time passed (1min)
+		Date current = new Date();
+		Long utcTimeSeconds = current.getTime()/1000;
+		Long time = current.getTime()/1000 +  (long)(bookingRequestsWrap.getPlaceOffcet())*3600L;
+		Date placeDateCurent = new Date(time*1000L);
+		System.out.println("Current time at place (offset="+ bookingRequestsWrap.getPlaceOffcet()*3600 +"): " + placeDateCurent + " (" +time+")");
+		boolean bookAvailable = true;
 
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 		TransactionOptions options = TransactionOptions.Builder.withXG(true);
 		Transaction txn = datastore.beginTransaction(options);
 		
 		map.put("added", true);
-		Gson gson = new Gson();
-		BookingRequestWrap bookingRequestsWrap = gson.fromJson(jsonString,BookingRequestWrap.class);
+
+
 		map.put("bid", bookingRequestsWrap.getBookID());
 
 		List<BookingRequest> bookingRequests = bookingRequestsWrap.getBookingList();
@@ -91,8 +94,17 @@ public class ClientPlaceBooking extends HttpServlet {
 		Long UTCdateProper = bookingRequestsWrap.getDateSeconds() - bookingRequestsWrap.getClientOffset()*60;
 
 		Long secondsRelativeToClient = fromSeconds - bookingRequestsWrap.getClientOffset()*60 - (long)(bookingRequestsWrap.getPlaceOffcet()*3600);	
+		Long endBookingAsSeenAtUTC = secondsRelativeToClient + bookingRequestsWrap.getPeriod().longValue();
 		Date PlaceLocalTime = new Date((secondsRelativeToClient + (long)(bookingRequestsWrap.getPlaceOffcet()*3600))*1000);
-		
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(PlaceLocalTime);
+		Calendar endCalendar = calendar;
+		endCalendar.add(Calendar.SECOND, bookingRequestsWrap.getPeriod());
+		calendar.get(Calendar.DAY_OF_MONTH);
+		Boolean endOnNextDay = false;
+		if(calendar.get(Calendar.DAY_OF_MONTH) != endCalendar.get(Calendar.DAY_OF_MONTH)) {
+			endOnNextDay = true;
+		}
 		bookingRequestsWrap.setClientid(username_email);
 		bookingRequestsWrap.setUser(genuser);
 		bookingRequestsWrap.setPlaceLocalTime(PlaceLocalTime);
@@ -139,9 +151,11 @@ public class ClientPlaceBooking extends HttpServlet {
 		bookingOrder.setUnindexedProperty("UTCdateProper", UTCdateProper);
 		bookingOrder.setUnindexedProperty("userPhone", sessionPhone);
 
+		bookingOrder.setProperty("DateWhenOrderMade_atUTC", current);
+		bookingOrder.setProperty("DateWhenOrderMadeSeconds_atUTC", current.getTime());
 		bookingOrder.setProperty("bid", bookingRequestsWrap.getBookID());
 		bookingOrder.setProperty("Date", PlaceLocalTime.toString());
-		bookingOrder.setProperty("UTCstartSeconds", secondsRelativeToClient);
+		bookingOrder.setProperty("UTCstartSeconds", secondsRelativeToClient);// Seconds as seen at UTC
 		bookingOrder.setProperty("pid", bookingRequestsWrap.getPid());
 		bookingOrder.setProperty("periodSeconds", bookingRequestsWrap.getPeriod());
 		bookingOrder.setProperty("weekday", bookingRequestsWrap.getWeekday());
@@ -149,13 +163,7 @@ public class ClientPlaceBooking extends HttpServlet {
 		datastore.put(bookingOrder);
 		datastore.put(canvasEntity);
 		
-		// Check available by place open or time passed (1min)
-		Date current = new Date();
-		Long utcTimeSeconds = current.getTime()/1000;
-		Long time = current.getTime()/1000 +  (long)(bookingRequestsWrap.getPlaceOffcet())*3600L;
-		Date placeDateCurent = new Date(time*1000L);
-		System.out.println("Current time at place (offset="+ bookingRequestsWrap.getPlaceOffcet()*3600 +"): " + placeDateCurent + " (" +time+")");
-		boolean bookAvailable = true;
+
 		
 		// Check time passed for booking
 		if(utcTimeSeconds + 60 > secondsRelativeToClient) {
@@ -168,49 +176,25 @@ public class ClientPlaceBooking extends HttpServlet {
    		   Type closeDateType = new TypeToken<List<Integer>>(){}.getType();
    		   List<Integer> closeDates  = gson.fromJson(closeDatesString, closeDateType);
    		   
- 		   String weekdays = (String) canvasEntity.getProperty("workinghours");		
- 		   WorkingWeek weekdaysObject  = gson.fromJson(weekdays, WorkingWeek.class);
- 		   WeekDayOpenClose today , tomorrow;
- 		   if(bookingRequestsWrap.getWeekday() < 6) {
- 			   today = weekdaysObject.getWeekDayOpenClose(bookingRequestsWrap.getWeekday());
- 			   tomorrow = weekdaysObject.getWeekDayOpenClose(bookingRequestsWrap.getWeekday()+1);
- 		   } else {
- 			   today = weekdaysObject.getWeekDayOpenClose(bookingRequestsWrap.getWeekday());
- 			   tomorrow = weekdaysObject.getWeekDayOpenClose(0);
- 		   }
- 		   SingleTimeRangeLong todayOpenRange = new SingleTimeRangeLong();
- 		   if (today.isOpen()) {
- 			   todayOpenRange.setFrom(new Integer(today.getFrom()).longValue());
- 			   todayOpenRange.setTo(new Integer(today.getTo()).longValue());
- 		   } else {
- 			   todayOpenRange.setFrom(new Integer(0).longValue());
- 			   todayOpenRange.setTo(new Integer(0).longValue());
- 		   }
- 		   SingleTimeRangeLong tomorrowOpenRange = new SingleTimeRangeLong();
- 		   if (tomorrow.isOpen()) {
- 			   tomorrowOpenRange.setFrom(new Integer(tomorrow.getFrom() + 86400).longValue());
- 			   tomorrowOpenRange.setTo(new Integer(tomorrow.getTo() + 86400).longValue());  
- 		   } else {
- 			   tomorrowOpenRange.setFrom(new Integer(86400).longValue());
- 			   tomorrowOpenRange.setTo(new Integer(86400).longValue()); 
- 		   }
- 		   // Check for dates the place is close (set by Administrator)
- 		   if (closeDates.contains(UTCdateProper)) {
- 			   todayOpenRange.setFrom(new Integer(0).longValue());
- 			   todayOpenRange.setTo(new Integer(0).longValue());
- 		   } 
-            if (closeDates.contains(UTCdateProper+86400)) {
- 			   tomorrowOpenRange.setFrom(new Integer(86400).longValue());
- 			   tomorrowOpenRange.setTo(new Integer(86400).longValue()); 
- 		   }
+ 		    String weekdays = (String) canvasEntity.getProperty("workinghours");
+			WorkingWeek weekdaysObject  = gson.fromJson(weekdays, WorkingWeek.class);
+			List<SingleTimeRangeLong> tempRanges = weekdaysObject.getRangesList(bookingRequestsWrap.getWeekday(),2);
+
+			// Check for dates the place is close (set by Administrator)
+			if (closeDates.contains(UTCdateProper)) {
+				tempRanges = weekdaysObject.deleteRangeFromList(tempRanges,0,86400);
+			}
+			if (closeDates.contains(UTCdateProper+86400)) {
+				tempRanges = weekdaysObject.deleteRangeFromList(tempRanges,86400,2*86400);
+			}
             // Check ranges
-            Long bookFrom = bookingRequestsWrap.getTime().longValue();
-            Long bookTo = bookingRequestsWrap.getTime().longValue() + bookingRequestsWrap.getPeriod().longValue();
-            if((todayOpenRange.getFrom()    <= bookFrom && bookTo <= todayOpenRange.getTo() ) ||
-               (tomorrowOpenRange.getFrom() <= bookFrom && bookTo <= tomorrowOpenRange.getTo())	) {
+            Integer bookFrom = bookingRequestsWrap.getTime();
+			Integer bookTo = bookingRequestsWrap.getTime()  + bookingRequestsWrap.getPeriod() ;
+            if(weekdaysObject.isInRangeList(tempRanges,bookFrom,bookTo)) {
             	  
             } else {
-            	System.out.println("Booking on place not working :" + todayOpenRange.getFrom() + "|" + tomorrowOpenRange.getFrom() +"<=" + bookFrom+"-"+bookTo+"<="+todayOpenRange.getTo()+"|"+tomorrowOpenRange.getTo());
+            	System.out.println("Place closed! Open ranges :" +gson.toJson(tempRanges));
+				System.out.println("            Booking range :" +bookFrom + "-"+bookTo);
             	bookAvailable = false;
             }
    		}

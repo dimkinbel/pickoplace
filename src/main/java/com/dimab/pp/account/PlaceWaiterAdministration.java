@@ -103,9 +103,8 @@ public class PlaceWaiterAdministration extends HttpServlet {
 	    int  clientOffset = bookingRequest.getClientOffset();
 	    Long UTCdate =  date + clientOffset*3600 - (long)placeOffset*3600; // date is UTC seconds relative to client browser Calendar
 	    Integer UTCdateProper = date.intValue() + clientOffset*3600;
-	    
-		SingleTimeRangeLong todayOpenRange = new SingleTimeRangeLong();
-		SingleTimeRangeLong tomorrowOpenRange = new SingleTimeRangeLong();	    
+
+		List<SingleTimeRangeLong> openRanges = new ArrayList<SingleTimeRangeLong>();
 		
 		Filter usernameFilter = new  FilterPredicate("username",FilterOperator.EQUAL,username_email);
 		Filter placeIdFilter  = new  FilterPredicate("placeUniqID",FilterOperator.EQUAL,placeIDvalue);
@@ -123,40 +122,20 @@ public class PlaceWaiterAdministration extends HttpServlet {
    		   
  		   String weekdays = (String) userCanvasState.getProperty("workinghours");		
  		   WorkingWeek weekdaysObject  = gson.fromJson(weekdays, WorkingWeek.class);
- 		   WeekDayOpenClose today , tomorrow;
- 		   if(weekday < 6) {
- 			   today = weekdaysObject.getWeekDayOpenClose(weekday);
- 			   tomorrow = weekdaysObject.getWeekDayOpenClose(weekday+1);
- 		   } else {
- 			   today = weekdaysObject.getWeekDayOpenClose(weekday);
- 			   tomorrow = weekdaysObject.getWeekDayOpenClose(0);
- 		   }
 
- 		   if (today.isOpen()) {
- 			   todayOpenRange.setFrom(new Integer(today.getFrom()).longValue());
- 			   todayOpenRange.setTo(new Integer(today.getTo()).longValue());
- 		   } else {
- 			   todayOpenRange.setFrom(new Integer(0).longValue());
- 			   todayOpenRange.setTo(new Integer(0).longValue());
- 		   }
 
- 		   if (tomorrow.isOpen()) {
- 			   tomorrowOpenRange.setFrom(new Integer(tomorrow.getFrom() + 86400).longValue());
- 			   tomorrowOpenRange.setTo(new Integer(tomorrow.getTo() + 86400).longValue());  
- 		   } else {
- 			   tomorrowOpenRange.setFrom(new Integer(86400).longValue());
- 			   tomorrowOpenRange.setTo(new Integer(86400).longValue()); 
- 		   }
+		   List<SingleTimeRangeLong> tempRanges = weekdaysObject.getRangesList(weekday,2);
+
  		   // Check for dates the place is close (set by Administrator)
  		   if (closeDates.contains(UTCdateProper)) {
- 			   todayOpenRange.setFrom(new Integer(0).longValue());
- 			   todayOpenRange.setTo(new Integer(0).longValue());
- 		   } 
-            if (closeDates.contains(UTCdateProper+86400)) {
- 			   tomorrowOpenRange.setFrom(new Integer(86400).longValue());
- 			   tomorrowOpenRange.setTo(new Integer(86400).longValue()); 
+			    tempRanges = weekdaysObject.deleteRangeFromList(tempRanges,0,86400);
  		   }
-            
+            if (closeDates.contains(UTCdateProper+86400)) {
+			    tempRanges = weekdaysObject.deleteRangeFromList(tempRanges,86400,2*86400);
+ 		   }
+
+			openRanges = tempRanges;
+
             if(true) {
 
 	  		    List<String> shapesIDs = new ArrayList<String>();
@@ -204,15 +183,14 @@ public class PlaceWaiterAdministration extends HttpServlet {
 	    orderedResponse.setClientOffset(clientOffset);
 	    orderedResponse.setPlaceOffset(placeOffset);
 	    orderedResponse.setPid(bookingRequest.getPid());
-	    orderedResponse.getPlaceOpen().add(todayOpenRange);
-		orderedResponse.getPlaceOpen().add(tomorrowOpenRange);
+	    orderedResponse.setPlaceOpen(openRanges);
 
 	    waiterResponse.setPlaceJSON(CanvasStateEdit);
 	    waiterResponse.setOrderedResponse(orderedResponse);
 	
 	    // Bookings datastore
 	    
-	    List<BookingRequestWrap> bookings_ = bookingFactory.getDatastoreBookings(datastore, placeIDvalue, UTCdateProper, UTCdateProper+2*24*3600);
+	    List<BookingRequestWrap> bookings_ = bookingFactory.getDatastoreBookingsInludeStartBefore(datastore, placeIDvalue, UTCdate.intValue(), UTCdate.intValue()+2*24*3600);
 	    request.setAttribute("waiterResponse", waiterResponse);
 	    request.setAttribute("waiterBookings", gson.toJson(bookings_));
 	    request.setAttribute("imgid2link50", gson.toJson(JSONimageID2url));

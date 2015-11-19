@@ -10,6 +10,9 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Draw Tool</title>
+	  <script type="text/javascript">
+		  var pagetype = 'drawing';
+	  </script>
 	<script type="text/javascript" src="js/jquery-1.11.1.min.js" ></script>
     <script type="text/javascript" src="js/jquery-migrate-1.2.1.js" ></script>
 	<script type="text/javascript" src="js/jquery-ui-1.11.2.custom/jquery-ui.js"></script>
@@ -65,15 +68,7 @@
 	     canvas_.mouseMoveEvent(e);
 	   }
 	});
-	function goToAccountMenu() {
-		setSessionData(function(result) {
-			   if(result) {
-		          document.getElementById("master_account").submit();
-			   } else {
-				   updatePageView();
-			   }
-	     });
-	}
+
 	function SIcreateSaveObjectPre() {
 		$("#drawingSaveButton").hide(); 
 		$("#savingPH").show();
@@ -136,63 +131,6 @@
 	
     	 }
 
-	</script>
-	<script type="text/javascript">	
-	//LOGIN SUCCESS UPDATE
-function updatePageView() {
-	  if(fconnected==true) {
-		  //Connected To Facebook
-		  
-		  $("#page_login_prompt").hide();
-		  $("#login_prop").hide();		  
-		  $("#account_drop").show();
-		  
-		  $("#login_info_resp_d").empty();
-		  $("#login_info_resp_d").html(fudata.first_name);
-		  $("#login_info_resp").show();
-		  
-		  $("#fb_logout_div").show();
-		  $("#go_logout_div").hide();
-		  
-	  } else if (gconnected==true) {
-		  //Connected To Google
-
-		  $("#page_login_prompt").hide();
-		  $("#login_prop").hide();		  
-		  $("#account_drop").show();
-		  
-		  $("#login_info_resp_d").empty();
-		  $("#login_info_resp_d").html(gudata.name.givenName);
-		  $("#login_info_resp").show();
-		  
-		  $("#fb_logout_div").hide();
-		  $("#go_logout_div").show();
-		  
-	  } else {
-		  //Not connected
-	  
-		  $("#login_prop").show();
-		  $("#login_info_resp").hide();
-		  $("#account_drop").hide();
-
-		  $("#login_info_resp_d").empty();
-		  
-		  $("#fb_logout_div").hide();
-		  $("#go_logout_div").hide();
-		  
-	  }
-}
-$(document).ready(function () { 
-  $("#login_prop_d").click(function(){
-  	$("#page_login_prompt").show();
-  });
-});
-$(document).on("click",".stopclick", function (event) {
-	    if(event.target.id == "page_login_prompt") {
-		  $("#page_login_prompt").hide();
-		}
-});
-///
 	</script>
   </head>
   	
@@ -267,7 +205,7 @@ $(document).on("click",".stopclick", function (event) {
 												   <div id="acc_arrow"></div>
 												   <div id="gotoaccountmenu" class="topAccOptList" onclick="goToAccountMenu()">Go to Account</div>
 												   <div id="gotobookings" class="topAccOptList">My bookings</div>
-												   <div id="dotoadminzone" class="topAccOptList">AdminZone</div>
+												   <div id="gotoadminzone" class="topAccOptList">AdminZone</div>
 												   <div id="create_new_place_btn"  class="topAccOptList" onclick="goToCreatePlace()">Create New Place</div>
 												   <div id="fb_logout_div" class="topAccOptList" onClick="facebookSignOut()">Log out</div>
 												   <div id="go_logout_div" class="topAccOptList" onClick="googleSignOut()">Log out</div>
@@ -395,7 +333,7 @@ $(document).on("click",".stopclick", function (event) {
 							  <div class="fill_type_text">Color</div>
 						   </div>
 						    <div id="fill_type_bgimage" class="fill_type_selectors">
-						      <div class="material-icons material_selector_out" id="material_bgimage_out" ">check_box_outline_blank</div>
+						      <div class="material-icons material_selector_out" id="material_bgimage_out" >check_box_outline_blank</div>
 							  <div class="material-icons material_selector_v" id="material_bgimage_v" style="display:none">check_box</div>
 							  <div class="fill_type_text">Background Image</div>
 						   </div>
@@ -513,9 +451,9 @@ $(document).on("click",".stopclick", function (event) {
 						     <div id="for_upload_bg_user_button" class="margin_top_35">
 								 <div id="upload_bguser_image_button" onclick="fileUpload('userBgImageUpload_input')"><span class="material-icons file_upload_mat">file_upload</span>Upload Image</div>
 							  </div>
-							  <div style="display:hidden">
+							  <div style="display:none">
 								 <input type="file" id="userBgImageUpload_input" style='display:none;position:absolute;top:-1000px'>
-								 <img id="temp_image_for_canvas_creation_bg" style="display:none"></img>
+								 <img id="temp_image_for_canvas_creation_bg" style="display:none">
 								 <input id="json_saved_imgPicker_user_bg" style="display:none" type="text" />
 								 <canvas  width="1200" height="1200" id="translated_user_images_canvas_bg" style="display:none"></canvas>
 							  </div>
@@ -1059,12 +997,12 @@ $(document).on("click",".stopclick", function (event) {
 					  <div id="for_upload_user_button" class="margin_top_35">
 					     <div id="upload_user_image_button" onclick="fileUpload('userImageUpload_input')"><span class="material-icons file_upload_mat">file_upload</span>Upload Image</div>
 					  </div>
-					  <div style="display:hidden">
+					  <div style="display:none">
 					  	 <input type="file" id="userImageUpload_input" style='display:none;position:absolute;top:-1000px'>
 						 <div id="user_uploaded_images" style="display:none">
 						   <!-- Here uploaded images will be added -->
 						 </div>
-						 <img id="temp_image_for_canvas_creation" style="display:none"></img>
+						 <img id="temp_image_for_canvas_creation" style="display:none">
 						 <input id="json_saved_imgPicker_user" style="display:none" type="text" />
 						 <canvas  width="200" height="200" id="translated_user_images_canvas" style="display:none"></canvas>
 					  </div>
@@ -1144,12 +1082,12 @@ $(document).on("click",".stopclick", function (event) {
 				<table id="multiple_selection_options_table" cellspacing="0" cellpadding="0" style="border-collapse:collapse">
 				   <tr >
 					 <td id="mst_par" ><div class="mst_par">Multiple selection options:</div></td>
-					 <td class="msotd" onclick="allShapesLeft();"            ><img src="img/transparent.png" id="left_all_mso" class="multiple_sel_img"      ></img></td>
-					 <td class="msotd" onclick="allShapesRight()"            ><img src="img/transparent.png" id="right_all_mso" class="multiple_sel_img"     ></img></td>
-					 <td class="msotd" onclick="allShapesBottom()"           ><img src="img/transparent.png" id="bottom_all_mso" class="multiple_sel_img"    ></img></td>
-					 <td class="msotd" onclick="allShapesTop()"              ><img src="img/transparent.png" id="top_all_mso" class="multiple_sel_img"       ></img></td>
-					 <td class="msotd" onclick="allShapesSpreadHorisontal()" ><img src="img/transparent.png" id="hor_all_mso" class="multiple_sel_img" ></img></td>
-					 <td class="msotd" onclick="allShapesSpreadVertical()"   ><img src="img/transparent.png" id="ver_all_mso" class="multiple_sel_img" ></img></td>
+					 <td class="msotd" onclick="allShapesLeft();"            ><img src="img/transparent.png" id="left_all_mso" class="multiple_sel_img"></td>
+					 <td class="msotd" onclick="allShapesRight()"            ><img src="img/transparent.png" id="right_all_mso" class="multiple_sel_img"></td>
+					 <td class="msotd" onclick="allShapesBottom()"           ><img src="img/transparent.png" id="bottom_all_mso" class="multiple_sel_img"></td>
+					 <td class="msotd" onclick="allShapesTop()"              ><img src="img/transparent.png" id="top_all_mso" class="multiple_sel_img"></td>
+					 <td class="msotd" onclick="allShapesSpreadHorisontal()" ><img src="img/transparent.png" id="hor_all_mso" class="multiple_sel_img"></td>
+					 <td class="msotd" onclick="allShapesSpreadVertical()"   ><img src="img/transparent.png" id="ver_all_mso" class="multiple_sel_img"></td>
 				   </tr>
 				</table>
 			  </div>
@@ -1174,36 +1112,36 @@ $(document).on("click",".stopclick", function (event) {
 			  <div id="menu2" style="display:none;">
 	               <table id="menu_table" cellspacing="0" cellpadding="0">
 				      <tr >
-					  <td class="menu_img_td"><img class="menu_img" id="menu_img_copy" src="img/transparent.png"></img></td>
+					  <td class="menu_img_td"><img class="menu_img" id="menu_img_copy" src="img/transparent.png"> </td>
 					  <td>
 					    <div id="copy_menu" class="menu_option" >Copy</div>
 					  </td></tr>
 				      <tr >
-					  <td class="menu_img_td"><img class="menu_img"  id="menu_img_paste"  src="img/transparent.png"></img></td><td>
+					  <td class="menu_img_td"><img class="menu_img"  id="menu_img_paste"  src="img/transparent.png"> </td><td>
 					    <div id="paste_menu" class="menu_option">Paste</div>
 					  </td></tr>
 				      <tr >
-					  <td class="menu_img_td"><img class="menu_img"  id="menu_img_delete"  src="img/transparent.png"></img></td><td>
+					  <td class="menu_img_td"><img class="menu_img"  id="menu_img_delete"  src="img/transparent.png"> </td><td>
 					    <div id="delete_menu" class="menu_option">Delete</div>
 					  </td></tr>
 				      <tr class ="only_singe">
-					  <td class="menu_img_td "><img class="menu_img"  id="menu_img_forward"  src="img/transparent.png" ></img></td><td>
+					  <td class="menu_img_td "><img class="menu_img"  id="menu_img_forward"  src="img/transparent.png" > </td><td>
 					    <div id="bringForward_menu" class="menu_option ">Bring Forward</div>
 					  </td></tr>
 				      <tr class ="only_singe">
-					  <td class="menu_img_td "><img class="menu_img"  id="menu_img_backward"  src="img/transparent.png"></img></td><td>
+					  <td class="menu_img_td "><img class="menu_img"  id="menu_img_backward"  src="img/transparent.png"> </td><td>
 					    <div id="bringBack_menu" class="menu_option">Bring Backward</div>
 					  </td></tr>
 				      <tr class ="only_singe">
-					  <td class="menu_img_td "><img class="menu_img" id="menu_img_top"  src="img/transparent.png"></img></td><td>
+					  <td class="menu_img_td "><img class="menu_img" id="menu_img_top"  src="img/transparent.png"> </td><td>
 					    <div id="bringToTop_menu" class="menu_option ">Bring to Top</div>
 					  </td></tr>
 				      <tr class ="only_singe">
-					  <td class="menu_img_td "><img class="menu_img"  id="menu_img_back"  src="img/transparent.png"></img></td><td>
+					  <td class="menu_img_td "><img class="menu_img"  id="menu_img_back"  src="img/transparent.png"> </td><td>
 					    <div id="bringToBottom_menu" class="menu_option ">Bring to Back</div>
 					  </td></tr>
 					  <tr class ="only_multi">
-					  <td class="menu_img_td "><img class="menu_img"  id="menu_img_group"  src="img/transparent.png"></img></td><td>
+					  <td class="menu_img_td "><img class="menu_img"  id="menu_img_group"  src="img/transparent.png"> </td><td>
 					    <div id="Group_menu" class="menu_option ">Group</div>
 					  </td></tr>
 				   </table>
@@ -1408,7 +1346,7 @@ $(document).on("click",".stopclick", function (event) {
 				  <div class="booking_var_ custom_spinner_position">
 				     <div class="my_p_spinner">
 					    <div id="min_p_minus" class="my_p_spinner_btn my_p_spinner_btn_left material-icons">remove</div>
-                        <input type="number" id="min_p_value" class="my_p_spinner_input" value="1" readonly></input>
+                        <input type="number" id="min_p_value" class="my_p_spinner_input" value="1" readonly/>
 						<div id="min_p_plus" class="my_p_spinner_btn my_p_spinner_btn_right material-icons">add</div>
 					 </div>
 				  </div>
@@ -1418,7 +1356,7 @@ $(document).on("click",".stopclick", function (event) {
 				  <div class="booking_var_ custom_spinner_position">
 				     <div class="my_p_spinner">
 					    <div id="max_p_minus" class="my_p_spinner_btn my_p_spinner_btn_left material-icons">remove</div>
-                        <input type="number" id="max_p_value"  class="my_p_spinner_input" value="1" readonly></input>
+                        <input type="number" id="max_p_value"  class="my_p_spinner_input" value="1" readonly/>
 						<div id="max_p_plus" class="my_p_spinner_btn my_p_spinner_btn_right material-icons">add</div>
 					 </div>
 				  </div>
@@ -1434,8 +1372,8 @@ $(document).on("click",".stopclick", function (event) {
 	    <canvas id = "group_shapes_canvas"  width="400" height="400"  style="display:none"></canvas>
 		<canvas id = "text_width_calculation_canvas"  width="10" height="10"  style="display:none"></canvas>
 		  <img id="mirror" style="display:none"/>
-	    <div class="chosed_canvas chosed_img" id="move_show_canvas"><canvas id="show_canvas" width="120" height="120" ></div>
-		<div class="chosed_canvas chosed_img" id="move_text_canvas"><canvas id="show_text_canvas" width="250" height="70" ></div>
+	    <div class="chosed_canvas chosed_img" id="move_show_canvas"><canvas id="show_canvas" width="120" height="120" ></canvas></div>
+		<div class="chosed_canvas chosed_img" id="move_text_canvas"><canvas id="show_text_canvas" width="250" height="70" ></canvas></div>
 		<div id="history_div_scrollable" ><div id="history_images_wrapper"></div></div>
 				  <div id="canvas_shapes_images" style="display:none;">
 				   
@@ -1444,7 +1382,7 @@ $(document).on("click",".stopclick", function (event) {
 		<div id="bg_default_img_mirror" style="display:none">
 		    <img  crossOrigin="Anonymous"  id="default_bg_image_mirror"/>
 		</div>	
-		<img id="chosed_background_orig" style="display:none"/>							   
+
 		<div id="chosed_background_orig_wrap" style="display:none">
 			<img id="chosed_background_orig" />
 		</div>

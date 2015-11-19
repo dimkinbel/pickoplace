@@ -139,4 +139,67 @@ public class GetBookingShapesDataFactory {
 	        }
 		    return bookings;
 	  }
+
+
+	public List<BookingRequestWrap> getDatastoreBookingsInludeStartBefore(DatastoreService datastore , String pid , Integer from , Integer to) {
+		List<BookingRequestWrap> bookings = new ArrayList<BookingRequestWrap>();
+		Integer maxBookingLength = 12*3600;//TBD (Use Place max booking period available)
+		Gson gson = new Gson();
+		Filter greaterF = new FilterPredicate("UTCstartSeconds", FilterOperator.GREATER_THAN_OR_EQUAL,from-maxBookingLength);
+		Filter lessF =   new FilterPredicate("UTCstartSeconds", FilterOperator.LESS_THAN_OR_EQUAL,to);
+
+
+		Filter pidF = new FilterPredicate("pid", FilterOperator.EQUAL,pid);
+		Filter pid_and_range_filter  = CompositeFilterOperator.and(pidF,greaterF, lessF);
+
+
+		Query q = new Query("BookingOrders").setFilter(pid_and_range_filter).addSort("UTCstartSeconds", SortDirection.ASCENDING);
+		PreparedQuery pq = datastore.prepare(q);
+		for (Entity BookingEntity : pq.asIterable()) {
+			Integer startAt = (int)(long)BookingEntity.getProperty("UTCstartSeconds");
+			Integer period = (int)(long)BookingEntity.getProperty("periodSeconds");
+
+			if(startAt < from && startAt + period <= from ) {
+				continue;
+			}
+			String pid_ = (String)BookingEntity.getProperty("pid");
+			String bid = (String)BookingEntity.getProperty("bid");
+			String client = (String)BookingEntity.getProperty("clientid");
+
+			Integer weekday = (int)(long)BookingEntity.getProperty("weekday");
+			Integer num  = (int)(long)BookingEntity.getProperty("num");
+			String textRequest = "";
+			String userPhone = "";
+			if(BookingEntity.getProperty("textRequest") != null) {
+				textRequest = (String)BookingEntity.getProperty("textRequest");
+			}
+			if(BookingEntity.getProperty("userPhone") != null) {
+				userPhone = (String)BookingEntity.getProperty("userPhone");
+			}
+
+			String bookingListJSON = ((Text) BookingEntity.getProperty("bookingList")).getValue();
+			Type bookingListType = new TypeToken<List<BookingRequest>>(){}.getType();
+			List<BookingRequest> bookingShapesList = gson.fromJson(bookingListJSON, bookingListType);
+
+			BookingRequestWrap booking = new BookingRequestWrap();
+			booking.setBookID(bid);
+			booking.setNum(num);
+			booking.setTime(startAt);
+			booking.setPid(pid_);
+			booking.setPeriod(period);
+			booking.setWeekday(weekday);
+			booking.setTextRequest(textRequest);
+			booking.setClientid(client);
+			booking.setPhone(userPhone);
+			booking.setBookingList(bookingShapesList);
+			if(BookingEntity.getProperty("genuser")!=null) {
+				Type genuserType = new TypeToken<GenericUser>(){}.getType();
+				GenericUser genuser = gson.fromJson((String)BookingEntity.getProperty("genuser"), genuserType);
+				booking.setUser(genuser);
+			}
+
+			bookings.add(booking);
+		}
+		return bookings;
+	}
 }

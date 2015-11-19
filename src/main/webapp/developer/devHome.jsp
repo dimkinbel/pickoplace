@@ -38,18 +38,7 @@
 <script type="text/javascript">
 var geocoder;
 
-function goToDraw(){
-	
-	location.href = "/drawing.jsp";
-}
 
-function goToAccountMenu() {
-   setSessionData(function(result) {
-	   if(result) {
-			  document.getElementById("master_account").submit();
-		}
-	});
-}
 var uploadLastcursor = "";
 $(document).ready(function() {
 	$("#adm_upload_images_btn").click(function(){
@@ -105,16 +94,10 @@ function updatePageView() {
 	  }
 }
 $(document).ready(function () { 
-    $("#login_prop_d").click(function(){
-    	$("#page_login_prompt").show();
-    });
+
     $('#advanced_material_drop').dropit({action: 'click'});
 });
-$(document).on("click",".stopclick", function (event) {
-	    if(event.target.id == "page_login_prompt") {
-		  $("#page_login_prompt").hide();
-		}
-});
+
  ///
 </script>
 <title>PP-Developer</title>
@@ -167,7 +150,7 @@ $(document).on("click",".stopclick", function (event) {
 									   <div id="acc_arrow"></div>
 									   <div id="gotoaccountmenu" class="topAccOptList" onclick="goToAccountMenu()">Go to Account</div>
 									   <div id="gotobookings" class="topAccOptList">My bookings</div>
-									   <div id="dotoadminzone" class="topAccOptList">AdminZone</div>
+									   <div id="gotoadminzone" class="topAccOptList">AdminZone</div>
 									   <div id="create_new_place_btn"  class="topAccOptList" onclick="goToCreatePlace()">Create New Place</div>
 									   <div id="fb_logout_div" class="topAccOptList" onClick="facebookSignOut()">Log out</div>
 									   <div id="go_logout_div" class="topAccOptList" onClick="googleSignOut()">Log out</div>
