@@ -2,10 +2,9 @@
 <%@taglib prefix="layout" tagdir="/WEB-INF/tags/layout" %>
 <%@taglib prefix="common" tagdir="/WEB-INF/tags/common" %>
 
-<layout:html pageTitle="some page title">
+<layout:baseHtml>
     <jsp:attribute name="headerBlock">
-        <common:baseStyles/>
-        <common:baseScripts/>
+        <div>some-header-div</div>
     </jsp:attribute>
 
     <jsp:attribute name="bodyBlock">
@@ -13,4 +12,4 @@
 
         <common:languageSelector/>
     </jsp:attribute>
-</layout:html>
+</layout:baseHtml>

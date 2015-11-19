@@ -1,4 +1,9 @@
 {
+  "defaultPageTitle": {
+    "english": "Pickoplace - english",
+    "hebrew": "Pickoplace - hebrew",
+    "russian": "Pickoplace - russian"
+  },
   "someKey": {
     "english": "some text",
     "hebrew": "טקסט כלשהו",

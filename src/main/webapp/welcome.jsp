@@ -1,9 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"
-    import="com.google.appengine.api.users.*"
-    import = "com.dimab.pp.dto.UserPlace"
-    import = "com.dimab.pp.dto.WelcomePageData"
-    import = "java.util.*"%>
+<%@page contentType="text/html" pageEncoding="UTF-8" %>
+<%@taglib prefix="common" tagdir="/WEB-INF/tags/common" %>
 <!DOCTYPE html>
 <html >
 <head>
@@ -11,6 +7,8 @@
 	<script type="text/javascript">
 		var pagetype = 'welcome';
 	</script>
+    <common:baseStyles/>
+    <common:baseScripts/>
 	<link rel="stylesheet" href="js/jquery-ui-1.11.2.custom/jquery-ui.css" type="text/css" media="screen" />
 	<link rel="stylesheet" href="css/browserWrap.css" type="text/css" media="screen" />
 	<link rel="stylesheet" href="css/login.css" type="text/css" media="screen" />
@@ -119,7 +117,7 @@ $(document).on("click",".stopclick", function (event) {
 </head>
 
 <body style="margin: 0px;" class="main_body">
-
+    <common:languageSelector/>
    <div id="page_login_prompt" class="login_prompt stopclick" style="display:none;">
 	  <div id="login_prompt_wrap" class="stopclick">
 		<table id="sign_in_table_" cellspacing="0" cellpadding="0" style="width: 100%; border-collapse: collapse">

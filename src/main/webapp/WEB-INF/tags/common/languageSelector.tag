@@ -1,5 +1,5 @@
 <%@tag description="Language selector" pageEncoding="UTF-8"%>
-<div class="dropdown js_languageSelector"
+<div class="dropdown"
      data-bb-view="ui/components/LanguageSelectorView">
     <button class="btn btn-default dropdown-toggle js_currentLanguage"
             type="button"
