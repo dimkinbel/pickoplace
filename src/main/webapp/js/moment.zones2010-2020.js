@@ -8,6 +8,7 @@
 	"use strict";
 
 	/*global define*/
+/*
 	if (typeof define === 'function' && define.amd) {
 		define(['moment.min'], factory);                 // AMD
 	} else if (typeof exports === 'object') {
@@ -15,6 +16,8 @@
 	} else {
 		factory(root.moment);                        // Browser
 	}
+*/
+	factory(root.moment)
 }(this, function (moment) {
 	"use strict";
 

@@ -4,6 +4,7 @@ https://github.com/Bluefieldscom/intl-tel-input.git
 */
 // wrap in UMD - see https://github.com/umdjs/umd/blob/master/jqueryPluginCommonjs.js
 (function(factory) {
+/*
     if (typeof define === "function" && define.amd) {
         define([ "jquery" ], function($) {
             factory($, window, document);
@@ -13,6 +14,8 @@ https://github.com/Bluefieldscom/intl-tel-input.git
     } else {
         factory(jQuery, window, document);
     }
+*/
+    factory(jQuery, window, document);
 })(function($, window, document, undefined) {
     "use strict";
     // these vars persist through all instances of the plugin

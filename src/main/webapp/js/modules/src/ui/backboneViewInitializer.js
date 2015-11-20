@@ -30,7 +30,7 @@ define([
         });
     };
 
-    initialize();
+    $(document).ready(() => initialize());
 
     return initialize;
 });
