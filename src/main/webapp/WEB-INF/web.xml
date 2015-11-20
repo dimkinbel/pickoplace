@@ -13,11 +13,6 @@
             <param-name>javax.ws.rs.Application</param-name>
             <param-value>com.dimab.pickoplace.PickoplaceApplication</param-value>
         </init-param>
-        
-        <init-param>
-            <param-name>jersey.config.servlet.filter.forwardOn404</param-name>
-            <param-value>true</param-value>
-        </init-param>
     </filter>
 
     <filter-mapping>

@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URL;
 
+
+// todo(egor): remove?
 public class TEST extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
