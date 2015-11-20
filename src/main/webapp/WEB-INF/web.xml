@@ -5,6 +5,26 @@
          version="2.5"
          xmlns="http://java.sun.com/xml/ns/javaee">
 
+    <filter>
+        <filter-name>JersyFilter</filter-name>
+        <filter-class>org.glassfish.jersey.servlet.ServletContainer</filter-class>
+
+        <init-param>
+            <param-name>javax.ws.rs.Application</param-name>
+            <param-value>com.dimab.pickoplace.PickoplaceApplication</param-value>
+        </init-param>
+        
+        <init-param>
+            <param-name>jersey.config.servlet.filter.forwardOn404</param-name>
+            <param-value>true</param-value>
+        </init-param>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>JersyFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
   <!-- Servlets -->
 	<servlet>
 		<servlet-name>channelConnected</servlet-name>

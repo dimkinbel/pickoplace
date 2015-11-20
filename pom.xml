@@ -18,6 +18,7 @@
         <nodeVersion>v4.2.2</nodeVersion>
         <npmVersion>2.14.11</npmVersion>
         <frontendMavenPluginVersion>0.0.26</frontendMavenPluginVersion>
+        <jersey.version>2.22.1</jersey.version>
     </properties>
 
     <scm>
@@ -29,6 +30,18 @@
     <prerequisites>
         <maven>3.3.3</maven>
     </prerequisites>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.glassfish.jersey</groupId>
+                <artifactId>jersey-bom</artifactId>
+                <version>${jersey.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <dependency>
@@ -48,6 +61,16 @@
             <version>3.0.1</version>
             <scope>provided</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.glassfish.jersey.containers</groupId>
+            <artifactId>jersey-container-servlet-core</artifactId>
+        </dependency>
+
+        <!--jersey-media-json-jackson-->
+        <!--jersey-media-multipart-->
+        <!--jersey-bean-validation-->
+        <!--jersey-mvc-->
 
         <dependency>
             <groupId>jstl</groupId>
