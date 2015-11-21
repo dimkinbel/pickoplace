@@ -3,3 +3,6 @@
 target
 *.iml
 .project
+node_modules
+node
+src/main/webapp/js/modules/dist/

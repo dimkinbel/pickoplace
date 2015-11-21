@@ -109,10 +109,10 @@ public class GoToAccont extends HttpServlet {
 		  	    Type CanvasListcollectionType = new TypeToken<List<PPSubmitObject>>(){}.getType();
 				List<PPSubmitObject> floors = gson.fromJson(shapesJSON, CanvasListcollectionType);
 				int shapesCount = 0;
-				for (PPSubmitObject floor : floors) {				
+				for (PPSubmitObject floor : floors) {
 					shapesCount += floor.getShapes().size();
 				}
-				userPlace.setShapesCount(shapesCount);	
+				userPlace.setShapesCount(shapesCount);
 				userPlace.setFloors(floors.size());
 				accountObjectToJSP.getPlaces().add(userPlace);
 				

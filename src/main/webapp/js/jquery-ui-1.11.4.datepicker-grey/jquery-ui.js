@@ -4,6 +4,7 @@
 * Copyright jQuery Foundation and other contributors; Licensed MIT */
 
 (function( factory ) {
+/*
 	if ( typeof define === "function" && define.amd ) {
 
 		// AMD. Register as an anonymous module.
@@ -13,6 +14,8 @@
 		// Browser globals
 		factory( jQuery );
 	}
+*/
+	factory( jQuery );
 }(function( $ ) {
 /*!
  * jQuery UI Core 1.11.4

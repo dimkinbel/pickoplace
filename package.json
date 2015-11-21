@@ -1,0 +1,30 @@
+{
+  "name": "pickoplace",
+  "version": "1.0.0",
+  "description": "pickoplace",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dimkinbel/pickoplace.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dimkinbel/pickoplace/issues"
+  },
+  "homepage": "https://github.com/dimkinbel/pickoplace#readme",
+  "dependencies": {
+    "eslint": "^1.9.0"
+  },
+  "devDependencies": {
+    "babel-eslint": "^4.1.5",
+    "babel-preset-es2015": "^6.1.18",
+    "del": "^2.1.0",
+    "gulp": "^3.9.0",
+    "gulp-babel": "^6.1.0",
+    "gulp-eslint": "^1.1.0",
+    "gulp-load-plugins": "^1.1.0"
+  }
+}

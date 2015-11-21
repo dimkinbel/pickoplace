@@ -5,6 +5,21 @@
          version="2.5"
          xmlns="http://java.sun.com/xml/ns/javaee">
 
+    <filter>
+        <filter-name>JersyFilter</filter-name>
+        <filter-class>org.glassfish.jersey.servlet.ServletContainer</filter-class>
+
+        <init-param>
+            <param-name>javax.ws.rs.Application</param-name>
+            <param-value>com.dimab.pickoplace.PickoplaceApplication</param-value>
+        </init-param>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>JersyFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
   <!-- Servlets -->
 	<servlet>
 		<servlet-name>channelConnected</servlet-name>
@@ -41,7 +56,8 @@
        <servlet-name>globalSearch</servlet-name>
        <url-pattern>/globalSearch</url-pattern>
     </servlet-mapping>
-      
+
+    <!-- todo(egor): remove? -->
     <servlet>
        <servlet-name>smstest</servlet-name>
        <servlet-class>com.dimab.smsmail.SendSMStestServlet</servlet-class>
@@ -49,8 +65,9 @@
     <servlet-mapping>
        <servlet-name>smstest</servlet-name>
        <url-pattern>/admin/smstest</url-pattern>
-    </servlet-mapping>   
-    
+    </servlet-mapping>
+
+    <!-- todo(egor): remove? -->
     <servlet>
        <servlet-name>plivioresponse</servlet-name>
        <servlet-class>com.dimab.smsmail.PlivioSMSResponse</servlet-class>
@@ -114,7 +131,8 @@
        <servlet-name>disconnectUser</servlet-name>
        <url-pattern>/disconnectUser</url-pattern>
     </servlet-mapping>
-  	<servlet>
+
+    <servlet>
        <servlet-name>connectUser</servlet-name>
        <servlet-class>com.dimab.pp.login.ConnectUser</servlet-class>
     </servlet>
@@ -622,6 +640,30 @@
   <filter-name>appstats</filter-name>
   <url-pattern>/*</url-pattern>
 </filter-mapping>
+
+
+    <!--i18n-->
+    <filter>
+        <filter-name>i18nFilter</filter-name>
+        <filter-class>com.dimab.pickoplace.i18n.I18nFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>i18nFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <servlet>
+        <servlet-name>I18nServlet</servlet-name>
+        <servlet-class>com.dimab.pickoplace.i18n.I18nServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>I18nServlet</servlet-name>
+        <url-pattern>/rest/i18n.js</url-pattern>
+    </servlet-mapping>
+
+
   <!-- Default page to serve -->
 	<welcome-file-list>
 		<welcome-file>welcome.jsp</welcome-file>

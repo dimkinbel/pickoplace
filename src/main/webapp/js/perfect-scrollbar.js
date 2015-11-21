@@ -3,7 +3,7 @@
  */
 (function (factory) {
   'use strict';
-
+/*
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.
     define(['jquery.contextmenu'], factory);
@@ -14,6 +14,8 @@
     // Browser globals
     factory(jQuery);
   }
+*/
+  factory(jQuery)
 }(function ($) {
   'use strict';
 

@@ -15,6 +15,10 @@
         <gcloud.plugin.version>2.0.9.83.v20151021</gcloud.plugin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.showDeprecation>true</maven.compiler.showDeprecation>
+        <nodeVersion>v4.2.2</nodeVersion>
+        <npmVersion>2.14.11</npmVersion>
+        <frontendMavenPluginVersion>0.0.26</frontendMavenPluginVersion>
+        <jersey.version>2.22.1</jersey.version>
     </properties>
 
     <scm>
@@ -26,6 +30,18 @@
     <prerequisites>
         <maven>3.3.3</maven>
     </prerequisites>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.glassfish.jersey</groupId>
+                <artifactId>jersey-bom</artifactId>
+                <version>${jersey.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <dependency>
@@ -45,6 +61,53 @@
             <version>3.0.1</version>
             <scope>provided</scope>
         </dependency>
+
+        <!-- jersey -->
+        <dependency>
+            <groupId>org.glassfish.jersey.containers</groupId>
+            <artifactId>jersey-container-servlet-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.glassfish.jersey.ext</groupId>
+            <artifactId>jersey-mvc</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.glassfish.jersey.ext</groupId>
+            <artifactId>jersey-mvc-jsp</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-json-jackson</artifactId>
+        </dependency>
+
+
+        <!--jersey-media-multipart-->
+        <!--jersey-bean-validation-->
+
+        <!-- logging -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.13</version>
+        </dependency>
+
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.1.3</version>
+        </dependency>
+
+
+        <!--dao-->
+        <dependency>
+            <groupId>com.googlecode.objectify</groupId>
+            <artifactId>objectify</artifactId>
+            <version>5.1.9</version>
+        </dependency>
+
 
         <dependency>
             <groupId>jstl</groupId>
@@ -133,6 +196,7 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>versions-maven-plugin</artifactId>
                 <version>2.2</version>
+<!--
                 <executions>
                     <execution>
                         <phase>compile</phase>
@@ -140,6 +204,42 @@
                             <goal>display-dependency-updates</goal>
                             <goal>display-plugin-updates</goal>
                         </goals>
+                    </execution>
+                </executions>
+-->
+            </plugin>
+
+            <plugin>
+                <groupId>com.github.eirslett</groupId>
+                <artifactId>frontend-maven-plugin</artifactId>
+                <version>${frontendMavenPluginVersion}</version>
+                <executions>
+                    <execution>
+                        <id>install node and npm</id>
+                        <goals>
+                            <goal>install-node-and-npm</goal>
+                        </goals>
+                        <configuration>
+                            <nodeVersion>${nodeVersion}</nodeVersion>
+                            <npmVersion>${npmVersion}</npmVersion>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>npm install</id>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                    </execution>
+
+                    <execution>
+                        <id>gulp build</id>
+                        <goals>
+                            <goal>gulp</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>default</arguments>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

@@ -1,29 +1,21 @@
 package com.dimab.pp.server;
 
-import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import com.dimab.pp.dto.AJAXFacebookResponse;
+import com.dimab.pp.functions.RandomStringGenerator;
+import com.google.appengine.api.datastore.*;
+import com.google.appengine.api.datastore.Query.Filter;
+import com.google.appengine.api.datastore.Query.FilterOperator;
+import com.google.appengine.api.datastore.Query.FilterPredicate;
+import com.google.gson.Gson;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.dimab.pp.dto.AJAXFacebookResponse;
-import com.dimab.pp.dto.PlaceCheckAvailableJSON;
-import com.dimab.pp.functions.RandomStringGenerator;
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.Transaction;
-import com.google.appengine.api.datastore.TransactionOptions;
-import com.google.appengine.api.datastore.Query.Filter;
-import com.google.appengine.api.datastore.Query.FilterOperator;
-import com.google.appengine.api.datastore.Query.FilterPredicate;
-import com.google.gson.Gson;
+import java.io.IOException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class UserLoginLogoutFacebook extends HttpServlet {
@@ -40,7 +32,7 @@ public class UserLoginLogoutFacebook extends HttpServlet {
 		Transaction txn = datastore.beginTransaction(options);
 		Map <String , Object> map = new HashMap<String , Object>();
 		map.put("logout", false);
-		String jsonString = request.getParameter("fb_login");		
+		String jsonString = request.getParameter("fb_login");
 		Gson gson = new Gson();
 		AJAXFacebookResponse fb_response = gson.fromJson(jsonString, AJAXFacebookResponse.class);
 		System.out.println(jsonString);
