@@ -479,7 +479,6 @@ function InitialCanvasTimeline(cid) {
 						var persons = booklist[t].persons;
 						var bshape = new BShape(tl_canvas, from , to , bid , persons , "booked",name,sid);
 
-						console.log(bshape);
 						bookings.push(bshape);
 					}
 				}
@@ -531,7 +530,6 @@ function InitialBookingList(data) {
 		Bookings = JSON.parse(document.getElementById("server_bookings").value);
 	}
 	for (var b =0 ; b < Bookings.length ; b++ ) {
-		console.log(Bookings[b]);
 		var from = Bookings[b].time;
 		var to = Bookings[b].time + Bookings[b].period;
 		var bid = Bookings[b].bookID;

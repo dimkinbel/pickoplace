@@ -79,8 +79,7 @@ $(document).ready(function() {
 	requestLastPlaces(6);
 });
 
-$(document).ready(function () { 
-
+$(document).ready(function () {
     $('#advanced_material_drop').dropit({action: 'click'});
 });
 $(document).on("click",".stopclick", function (event) {
@@ -96,7 +95,6 @@ $(document).on("click",".stopclick", function (event) {
 	    	}
 	    	phoneflow=false;
 	    	$("#sign_in_table_").show();
-			//result.userData.first_name for FB
 			$("#user_name_at_phone").html("");
 			$("#send_sms_ajax").hide(); 
 			$("#send_sms_complete").hide();

@@ -54,15 +54,9 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
     <script type="text/javascript" src="js/updateCanvasData.js"></script>
-
+    <script type="text/javascript" src="js/documentEventListeners.js"></script>
 	<script type="text/javascript">
-       if(typeof document.onselectstart!="undefined") {
-	       document.onselectstart = new Function ("return false");
-	   } else {
-	       document.onmousedown = new Function ("return false");
-		   document.onmouseup = new Function ("return true");
-	   }
-       
+
 
        function SIsaveState() {
     	   setSessionData(function(result) {

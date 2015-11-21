@@ -4,7 +4,7 @@
 		 import = "com.dimab.pp.dto.*"
 		 import = "com.google.gson.Gson"
 		 import = "java.util.*"
-		  %>
+%>
 <!DOCTYPE html >
 
 <html>
@@ -54,6 +54,7 @@
 	<script type="text/javascript" src="js/perfect-scrollbar.js"></script>
 	<script type="text/javascript" src="js/jquery.contextmenu.js"></script>
 	<script type="text/javascript" src="js/sitefunctions.js"></script>
+	<script type="text/javascript" src="js/myUtils/netConnection.js"></script>
 
 	<script type="text/javascript" src="js/shapes_wa.js"></script>
 	<script type="text/javascript" src="js/shapes_timeline_wa_bookings.js"></script>
@@ -63,34 +64,19 @@
 	<script type="text/javascript" src="js/dropit.js" ></script>
 	<script type="text/javascript" src="js/jquery.slimscroll.min.js" ></script>
 	<script type="text/javascript" src="js/bookingListManagement_wa.js" ></script>
+	<script type="text/javascript" src="js/waiterViewService.js" ></script>
+	<script type="text/javascript" src="js/waiterController.js" ></script>
+
 
 	<script type="text/javascript" src="js/interactiveUpdate_wa.js" ></script>
 	<script src='/_ah/channel/jsapi'></script>
 	<script language="javascript" src='js/chatChannel.js'></script>
 
 	<script type="text/javascript" src="js/updateCanvasData.js"></script>
+	<script type="text/javascript" src="js/WindowCanvasEvents.js"></script>
+	<script type="text/javascript" src="js/documentEventListeners.js"></script>
 
 	<script type="text/javascript">
-		var canvasMouseOut = false;
-		var canvasMouseDown = false;
-		window.addEventListener('mouseup', function(e) {
-			if(canvasMouseOut==true) {
-				canvas_.mouseUpEvent();
-				canvasMouseOut = false;
-			}
-		});
-		window.addEventListener('mousemove', function(e) {
-			if(canvasMouseOut==true) {
-				canvas_.mouseMoveEvent(e);
-			}
-		});
-		if(typeof document.onselectstart!="undefined") {
-			document.onselectstart = new Function ("return false");
-		} else {
-			document.onmousedown = new Function ("return false");
-			document.onmouseup = new Function ("return true");
-		}
-
 
 		var tl_canvas = {};
 		var InitialBookings = {};
@@ -142,6 +128,8 @@
 </div>
 <div id="canvas_timeline_popover" style="position:absolute"  data-toggle="popover"></div>
 <div id="canvas_floors_popover" style="position:absolute"  data-toggle="popover"></div>
+<div id="canvas_timeline_admin_popover" style="position:absolute"  data-toggle="popover"></div>
+<div id="canvas_timeline_menu_popover" style="position:absolute"  data-toggle="popover"></div>
 
 <div class="modal fade" id="booking_info_modal">
 	<div class="modal-dialog">
@@ -181,6 +169,44 @@
 			</div>
 			<div class="modal-footer" id="cancelation_info_modal_buttonons">
 
+			</div>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<div class="modal fade" id="contact_email_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="exampleModalLabel">New message:</h4>
+				<div id="modal_email_name" >Belousov Dmitry</div>
+			</div>
+			<div class="modal-body">
+				<form>
+					<div class="form-group">
+						<label for="contact_email_modal_text" class="control-label">Message:</label>
+						<textarea class="form-control" id="contact_email_modal_text" placeholder="message"></textarea>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer" id="send_message_modal_buttonons">
+				<!--<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" >Send message</button>-->
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<div class="modal fade "  id="alert_modal">
+	<div class="modal-dialog  modal-sm">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="alert_modal_title">Modal title</h4>
+			</div>
+			<div class="modal-body" id="alert_modal_body">
+				<p>One fine body&hellip;</p>
 			</div>
 		</div><!-- /.modal-content -->
 	</div><!-- /.modal-dialog -->
@@ -549,7 +575,7 @@
 								}
 							%>
 						</div>
-                    </div>
+					</div>
 					<div id="timeline_page"  style="display:none"  class="data_pages_">
 						<div id="timeline_top_tabs" class="top_main_tabs">
 							<div class="timeline_top_tab mv_top_selected" id="timeline_horisontal_tab">Horisontal</div>

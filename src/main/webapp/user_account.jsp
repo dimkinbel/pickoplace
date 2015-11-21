@@ -1,6 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"
-    import="com.google.appengine.api.users.*"
     import="com.dimab.pp.dto.UserAccountData"
     import="com.dimab.pp.dto.UserPlace"
     import = "java.util.*"%>

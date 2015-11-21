@@ -233,6 +233,14 @@ function BShape(state, from , to , bid , persons , type , name , sid) {
         this.color=state.type_book_color;
         this.colorto=state.type_book_color;
     }
+    if (type=="adminSelected") {
+        this.color="#009688";
+        this.colorto="#009688";
+    }
+    if (type=="adminReserved") {
+        this.color="red";
+        this.colorto="red";
+    }
     if (type=="closed") {
         this.color="grey";
         this.colorto="grey";
@@ -251,6 +259,9 @@ function BShape(state, from , to , bid , persons , type , name , sid) {
     this.name = name;
     this.sid = sid;
     this.bsid = "TB_"+randomString(12);
+    if(type=="adminReserved") {
+        this.bid = "ar_"+randomString(12);
+    }
 }
 
 // Draws this shape to a given context
@@ -283,7 +294,25 @@ BShape.prototype.draw = function(ctx, optionalColor) {
             1,
             1,
             4);
-    } else {
+    } else if(this.type == "adminSelected") {
+        //(ctx,x,y,w,h,strokeColor,fillColor,alpha,salpha,sw,R) {
+        dbRoundRectT  (ctx,this.x,this.y+1.5 ,this.w,this.h-2.5,
+            grd,
+            grd,
+            0.5,
+            1,
+            2,
+            0);
+    } else if(this.type == "adminReserved") {
+        //(ctx,x,y,w,h,strokeColor,fillColor,alpha,salpha,sw,R) {
+        dbRoundRectT  (ctx,this.x,this.y+1.5 ,this.w,this.h-2.5,
+            grd,
+            grd,
+            0.3,
+            0,
+            0,
+            0);
+    } else  {
         dbDrawRectT  (ctx,this.x,this.y,this.w,this.h,
             "white",
             grd,
@@ -408,6 +437,17 @@ function BCanvasState(canvas,pfrom,pto,offset) {
     this.tooltipStart = 0;
     this.tooltipText = ""
     this.lineHoverIdx = -1;
+
+    this.mousedown_ = false;
+    this.mousedownOnEmpty_ = false;
+    this.mouseup_ = true;
+    this.mousedown_x = 0;
+    this.mousedown_y = 0;
+    this.mouseup_x = 0;
+    this.mouseup_y = 0;
+
+    this.adminSelection = null;
+    this.adminSelectionStarted = false;
     // **** Then events! ****
 
     // This is an example of a closure!
@@ -429,6 +469,17 @@ function BCanvasState(canvas,pfrom,pto,offset) {
         my = mouse.y;
         var mox = mouse.orgx;
         var moy = mouse.orgy;
+        myState.adminSelection = null;
+
+        if(e.which == 3 || e.which == 2) //1: left, 2: middle, 3: right
+        {
+            return;
+        }
+        myState.mousedown_ = true;
+        myState.mousedown_x = mx;
+        myState.mousedown_y = my;
+        myState.mouseup_ = false;
+
         shapes = myState.shapes;
         l = shapes.length;
         for (i = l-1; i >= 0; i -= 1) {
@@ -500,7 +551,9 @@ function BCanvasState(canvas,pfrom,pto,offset) {
             }
 
         }
-
+        if(myState.mousedown_x > myState.shapeLineHeight) {
+            myState.mousedownOnEmpty_ = true;
+        }
         // havent returned means we have failed to select anything.
         // If there was an object selected, we deselect it
         myState.sameInList = null;
@@ -540,7 +593,31 @@ function BCanvasState(canvas,pfrom,pto,offset) {
         if (mx >= myState.shapeLineHeight) {
             timelinediv.updateCurrent(mx - myState.shapeLineHeight);
         }
+        if(myState.mousedownOnEmpty_ == true) {
+            if(myState.adminSelectionStarted == false) {
+                myState.adminSelectionStarted = true;
+                var started = myState.getLeftTopTimingArea(myState.step,myState.mousedown_x,myState.mousedown_y );
 
+                myState.adminSelection   = new BShape(myState, parseInt( started.fromSec) ,
+                    parseInt( started.fromSec + myState.step * 60), "" , 0 ,
+                    "adminSelected");
+                myState.adminSelection.line = started.line;
+                myState.adminSelection.beganAt =  started.fromSec;
+            } else {
+                var onmove = myState.getLeftTopTimingArea(myState.step,mx,my);
+                if(onmove.fromSec  != myState.adminSelection.beganAt) {
+                    if(onmove.fromSec  > myState.adminSelection.beganAt) {
+                        myState.adminSelection.from = myState.adminSelection.beganAt ;
+                        myState.adminSelection.to = onmove.fromSec  + myState.step * 60
+                    } else {
+                        myState.adminSelection.from = onmove.fromSec ;
+                        myState.adminSelection.to = myState.adminSelection.beganAt;
+                    }
+                }
+            }
+            myState.calculateAdminSelectionXY();
+            myState.valid = false;
+        }
 
         //document.getElementById('mouse_pos').value = "X = "+mx+" Y="+my + "OX="+orgx+" OY="+orgy;
         var shapes = myState.shapes;
@@ -552,6 +629,7 @@ function BCanvasState(canvas,pfrom,pto,offset) {
                 this.style.cursor='pointer';
                 myState.bidMouseOver = shapes[i].bid;
                 contains = true;
+                break;
 
             }
         }
@@ -587,15 +665,39 @@ function BCanvasState(canvas,pfrom,pto,offset) {
         }
     }, true);
     canvas.addEventListener('mouseup', function(e) {
+        myState.mousedownOnEmpty_ = false;
+        myState.mousedown_ = false;
+        myState.mouseup_ = true;
+        myState.adminSelectionStarted = false ;
+
         myState.dragging = false;
         myState.resizeDragging = false;
         myState.expectResize = -1;
         var mouse = myState.getMouse(e);
 
-        if (myState.selection !== null) {
-            showPopover(mouse.orgx,mouse.orgy,myState.selection)
-            // printLog('logs_window','CURRENT SHAPE'+ JSON.stringify(myState.selection,["x","w","h","color","type","options","tsid"]),'black');
 
+        if (myState.selection !== null) {
+            if(e.which != 3 && e.which != 2) //1: left, 2: middle, 3: right
+            {
+                if(myState.selection.type == "booked") {
+                    showPopover(mouse.orgx,mouse.orgy,myState.selection,'booking_selection')
+                } else {
+                    showPopover(mouse.orgx,mouse.orgy,myState.selection,'admin_reserved')
+                }
+            }
+        }
+        if (myState.adminSelection !== null) {
+            if(e.which != 3 && e.which != 2) //1: left, 2: middle, 3: right
+            {
+                showPopover(mouse.orgx,mouse.orgy,myState.adminSelection,'admin_selection')
+            }
+        }
+        if(myState.adminSelection === null && myState.selection === null && myState.lineHoverIdx != -1) {
+            if(e.which != 3 && e.which != 2) //1: left, 2: middle, 3: right
+            {
+                var sidSelected = myState.shapeViews[myState.SIDsorted[myState.lineHoverIdx]];
+                showPopover(mouse.orgx,mouse.orgy,sidSelected,'line_popover')
+            }
         }
     }, true);
 
@@ -934,6 +1036,65 @@ BCanvasState.prototype.getCurrentSidLine = function(mouse) {
     }
     return -1;
 }
+
+BCanvasState.prototype.getLeftTopTimingArea = function(minMinutes,x,y) {
+    var returnObject = {};
+
+    var xy = new xypoint();
+    for (p = 0 ; p < this.SIDsorted.length ; p++) {
+        var lineTop  = parseInt(p*this.shapeLineHeight );
+        var lineBottom = parseInt(p*this.shapeLineHeight + this.shapeLineHeight );
+        if(lineTop <= y && y <= lineBottom ) {
+            xy.y = lineTop;
+            returnObject.line = p;
+            break;
+        }
+    }
+    if(x <= this.shapeLineHeight) {
+        xy.x = this.shapeLineHeight;
+        returnObject.fromSec  = this.drawPeriodfrom ;
+    } else if (x >= this.width){
+        xy.x = this.width;
+        returnObject.fromSec  = this.drawPeriodto ;
+    } else {
+        for(var m = this.shapeLineHeight ;
+            m < this.width - this.oneSecondInPixels * minMinutes * 60 ;
+            m += this.oneSecondInPixels * minMinutes * 60) {
+            var leftRange = m;
+            var rightRange = m + this.oneSecondInPixels * minMinutes * 60;
+            if(leftRange <= x && x < rightRange) {
+                xy.x = leftRange;
+                returnObject.fromSec =   Math.round((leftRange - this.shapeLineHeight)/this.oneSecondInPixels*1000)/1000 + this.drawPeriodfrom - this.offset * 3600;
+                break
+            }
+        }
+    }
+
+    returnObject.xy = xy;
+    return returnObject;
+}
+BCanvasState.prototype.calculateAdminSelectionXY = function() {
+    if(this.adminSelection != null) {
+        //var pixelsOffset = this.offset * 3600 * this.oneSecondInPixels;
+        var canvasPeriod = this.drawPeriodto - this.drawPeriodfrom ; // total seconds in canvas
+        var pixelsOffset = this.offset * 3600 * this.oneSecondInPixels;
+
+        var bfrom = this.adminSelection.from; // In seconds from the start of the timeline day
+        var bto = this.adminSelection.to;
+
+        var startB = bfrom - this.drawPeriodfrom;
+        var endB = bto - this.drawPeriodfrom;
+
+        var startX = startB * this.oneSecondInPixels  + this.shapeLineHeight;
+        var endX = endB * this.oneSecondInPixels  + this.shapeLineHeight;
+        if(startX + pixelsOffset <= this.shapeLineHeight) { startX  = this.shapeLineHeight - pixelsOffset}
+        if(endX + pixelsOffset >= this.width) { endX  = this.width - pixelsOffset}
+        this.adminSelection.x = startX  + pixelsOffset;
+        this.adminSelection.w = endX - startX;
+        this.adminSelection.y = this.adminSelection.line * this.shapeLineHeight;
+        this.adminSelection.h = this.shapeLineHeight;
+    }
+}
 BCanvasState.prototype.organizeShapes = function() {
     this.sort();
     var shapeLineHeight = (this.origHeight - 0) / this.SIDsorted.length  ;
@@ -992,7 +1153,7 @@ BCanvasState.prototype.organizeShapes = function() {
         this.closeShapes[c].w = endX - startX;
         this.closeShapes[c].h = this.height;
     }
-
+    this.calculateAdminSelectionXY();
 }
 BCanvasState.prototype.addPShape = function(pshape) {
     var sid = pshape.sid;
@@ -1007,7 +1168,7 @@ BCanvasState.prototype.addPShape = function(pshape) {
 BCanvasState.prototype.setPshapeBookings = function(sid,bshapeList) {
     // Remove existing BShapes related to given Pshape(sid)
     for (var i = 0 ; i < this.pshapes[sid].bookings.length ; i++ ) {
-        var bshape = pshape.bookings[i];
+        var bshape = this.pshapes[sid].bookings[i];
         this.shapes.remove(bshape);
     }
     this.pshapes[sid].bookings = bshapeList;
@@ -1021,10 +1182,9 @@ BCanvasState.prototype.addShape = function(bshape) {
     "use strict";
     if(bshape.type == "drag") {
         this.shapes.push(bshape);
-    } else {
+    } else  {
         this.shapes.unshift(bshape);
     }
-
     this.valid = false;
 };
 BCanvasState.prototype.setList = function(list) {
@@ -1165,6 +1325,11 @@ BCanvasState.prototype.draw = function() {
         var currentY = 0;
 
         for (p = 0 ; p < this.SIDsorted.length ; p++) {
+            var canShape  = this.shapeViews[this.SIDsorted[p]];
+            if(canShape.booking_options.bookable==false) {
+                //dbDrawRectT(ctx,x,y,w,h,strokeColor,fillColor,alpha,salpha,sw)
+                dbDrawRectT(ctx,this.shapeLineHeight,currentY ,this.width-this.shapeLineHeight,this.shapeLineHeight ,"#705C96","#705C96",0.5,1,0)
+            }
             //dbLine(ctx,this.shapeLineHeight,currentY,this.width,currentY,0.2,1,'black');
             //dbDrawRectT(ctx,0,currentY,this.shapeLineHeight,this.shapeLineHeight,"grey","white",1,0.3,1)
             currentY = currentY +  this.shapeLineHeight;
@@ -1197,12 +1362,27 @@ BCanvasState.prototype.draw = function() {
                 currentY = currentY +  this.shapeLineHeight;
             }
         }
+        // Draw admin selection
+        if(this.adminSelection != null) {
+            this.adminSelection.draw(ctx);
+        }
+        // Draw admin reserved
+        for (i = 0; i < l; i += 1) {
+            var bfrom = shapes[i].from;
+            var bto = shapes[i].to;
+            if ( (bfrom + secOffset >= this.drawPeriodfrom && bfrom + secOffset <= this.drawPeriodto ||
+                bto + secOffset >= this.drawPeriodfrom   && bto + secOffset <= this.drawPeriodto ) &&
+                shapes[i].type=="adminReserved" ) {
+                shapes[i].draw(ctx);
+            }
+        }
         //printLog('logs_window','Shapes'+ l,'blue');
         for (i = 0; i < l; i += 1) {
             var bfrom = shapes[i].from;
             var bto = shapes[i].to;
-            if ( bfrom + secOffset >= this.drawPeriodfrom && bfrom + secOffset <= this.drawPeriodto ||
-                bto + secOffset >= this.drawPeriodfrom   && bto + secOffset <= this.drawPeriodto    ) {
+            if ( ( bfrom + secOffset >= this.drawPeriodfrom && bfrom + secOffset <= this.drawPeriodto ||
+                bto + secOffset >= this.drawPeriodfrom   && bto + secOffset <= this.drawPeriodto  &&
+                shapes[i].type!=="adminReserved" ) ) {
                 shapes[i].draw(ctx);
             }
         }
@@ -1215,10 +1395,22 @@ BCanvasState.prototype.draw = function() {
             for(var l = 0 ; l < this.listSelected.length ; l++) {
                 mySel = this.listSelected[l];
 
+                var grd;
+                var lineColor;
+                var lineWidth = 1;
+                if(mySel.type == "booked") {
+                    grd=ctx.createLinearGradient(mySel.x,mySel.y,mySel.x,mySel.y + mySel.h);
+                    grd.addColorStop(0,"#99ffc0");
+                    grd.addColorStop(1,"#25e66c");
+                    lineColor = "#36943A";
+                } else {
+                    grd=ctx.createLinearGradient(mySel.x,mySel.y,mySel.x,mySel.y + mySel.h);
+                    grd.addColorStop(0,"#FF6767");
+                    grd.addColorStop(1,"#FF6767");
 
-                var grd=ctx.createLinearGradient(mySel.x,mySel.y,mySel.x,mySel.y + mySel.h);
-                grd.addColorStop(0,"#99ffc0");
-                grd.addColorStop(1,"#25e66c");
+                    lineColor = "#733E3E";
+                    lineWidth = 1;
+                }
                 var addToHeight=0;
                 if(mySel.sid==this.SIDsorted[0]) {
                     addToHeight = 1;
@@ -1226,11 +1418,11 @@ BCanvasState.prototype.draw = function() {
                     addToHeight = 2;
                 }
                 dbRoundRectT  (ctx,parseInt(mySel.x+1),parseInt(mySel.y+addToHeight),parseInt(mySel.w-1),parseInt(mySel.h-addToHeight),
-                    "#36943A",
+                    lineColor,
                     grd,
                     1,
                     1,
-                    1,
+                    lineWidth,
                     0);
 
             }
@@ -1240,10 +1432,22 @@ BCanvasState.prototype.draw = function() {
                 if ( this.shapes[s].bid == this.bidMouseOver) {
                     mySel = this.shapes[s];
                     var color = "";
+                    var radius = 4;
+                    var lineWidth = 1;
                     if(this.listSelected.length > 0 && this.listSelected[0].bid == this.bidMouseOver) {
-                        color = "#36943A";
+                        if(mySel.type == "booked") {
+                            color = "#257E42";
+                        } else {
+
+                        }
                     } else {
-                        color = "black";
+                        if(mySel.type == "booked") {
+                            color = "#3F51B5";
+                        } else if (mySel.type == "adminReserved"){
+                            color = "#733E3E";
+                            radius = 0;
+                            lineWidth = 2;
+                        }
                     }
                     if(mySel.sid==this.SIDsorted[0]) {
                         addToHeight = 1;
@@ -1255,11 +1459,14 @@ BCanvasState.prototype.draw = function() {
                         "white",
                         0,
                         1,
-                        1,
-                        4);
+                        lineWidth,
+                        radius);
                 }
             }
         }
+
+        ctx.globalAlpha = 1;
+
         // hover border : #673AB7
         ctx.strokeStyle = "white";
         //ctx.strokeRect(0,0,this.width,this.height);
@@ -1268,11 +1475,14 @@ BCanvasState.prototype.draw = function() {
         var tline = 0;
         var ind = 0;
 
-        ctx.globalAlpha = 1;
 
         // ** Add stuff you want drawn on top all the time here **
         // ** Draw place shapes on timeline
         for (p = 0 ; p < this.SIDsorted.length ; p++) {
+            if(this.lineHoverIdx != -1 && p == this.lineHoverIdx) {
+                dbLine(ctx,this.shapeLineHeight-2,p * this.shapeLineHeight,this.shapeLineHeight-2,(p +1)* this.shapeLineHeight,3,1,"#2196F3")
+                // dbDrawRectT(ctx,0,p * this.shapeLineHeight,this.shapeLineHeight-1,this.shapeLineHeight,"#5cb85c","grey",0,1,2);
+            }
             this.drawSshape(p,this.shapeViews[this.SIDsorted[p]]);
         }
         this.valid = true;
@@ -1370,6 +1580,10 @@ BCanvasState.prototype.getMouse = function(e) {
     mx = parseInt((e.pageX - offsetX)/this.zoom);
     my = parseInt((e.pageY - offsetY)/this.zoom);
 
+    if(mx < 0) { mx = 0 };
+    if(mx > this.origWidth) { mx = this.origWidth };
+    if(my < 0) { my = 0 };
+    if(my > this.origHeight) { my = this.origHeight };
     // We return a simple javascript object (a hash) with x and y defined
     return {x: mx, y: my , orgx: e.pageX , orgy: e.pageY};
 };
@@ -1441,6 +1655,18 @@ function dbDrawRectT(ctx,x,y,w,h,strokeColor,fillColor,alpha,salpha,sw) {
     ctx.globalAlpha = 1;
     ctx.lineWidth = 1;
 }
+function xypoint(x,y) {
+    if(x == undefined) {
+        this.x=0;
+    } else {
+        this.x=x;
+    }
+    if(y == undefined) {
+        this.y=0;
+    } else {
+        this.y=y;
+    }
+}
 function dbLine(ctx,x1,y1,x2,y2,width,alpha,color) {
     ctx.save();
     ctx.globalAlpha = alpha;
@@ -1452,7 +1678,6 @@ function dbLine(ctx,x1,y1,x2,y2,width,alpha,color) {
     ctx.stroke();
     ctx.restore();
 }
-
 
 function c_zoomSmall() {
     tl_canvas.lineSmaller();
@@ -1478,3 +1703,4 @@ function c_zoomLeft() {
 function c_zoomRight() {
     tl_canvas.zoomRight(3600);
 }
+

@@ -80,22 +80,9 @@
 		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
 	    <script type="text/javascript" src="js/updateCanvasData.js"></script>
+	    <script type="text/javascript" src="js/WindowCanvasEvents.js"></script>
 <script type="text/javascript">
 
-var canvasMouseOut = false;
-var canvasMouseDown = false;
-
-window.addEventListener('mouseup', function(e) {
-   if(canvasMouseOut==true) {
-     canvas_.mouseUpEvent();
-	 canvasMouseOut = false;
-   }
-});
-window.addEventListener('mousemove', function(e) {
-  if(canvasMouseOut==true) {
-     canvas_.mouseMoveEvent(e);
-   }
-});
 var tl_canvas = {};
 var InitialBookings = {};
 var StateFromServer = {};

@@ -63,29 +63,9 @@
     </script>
     <script type="text/javascript" src="js/maps_google.js"></script>
 	<script type="text/javascript" src="js/updateCanvasData.js"></script>
+    <script type="text/javascript" src="js/WindowCanvasEvents.js"></script>
+    <script type="text/javascript" src="js/documentEventListeners.js"></script>
 	<script type="text/javascript">
-	
-		var canvasMouseOut = false;
-		var canvasMouseDown = false;
-	
-		window.addEventListener('mouseup', function(e) {
-		   if(canvasMouseOut==true) {
-		     canvas_.mouseUpEvent();
-			 canvasMouseOut = false;
-		   }
-		});
-		window.addEventListener('mousemove', function(e) {
-		  if(canvasMouseOut==true) {
-		     canvas_.mouseMoveEvent(e);
-		   }
-		});
-		
-       if(typeof document.onselectstart!="undefined") {
-	       document.onselectstart = new Function ("return false");
-	   } else {
-	       document.onmousedown = new Function ("return false");
-		   document.onmouseup = new Function ("return true");
-	   }
 
        var canvast=[];
        var canvasStateJSON;

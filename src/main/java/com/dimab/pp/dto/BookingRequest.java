@@ -13,10 +13,17 @@ public class BookingRequest {
   double placeOffcet;
   String clientid;
   String loggedby;
- 
-  
+  String type = "";
 
-public String getClientid() {
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public String getClientid() {
 	return clientid;
 }
 public void setClientid(String clientid) {

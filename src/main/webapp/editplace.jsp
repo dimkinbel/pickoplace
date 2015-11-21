@@ -36,47 +36,30 @@
 	<script type="text/javascript" src="js/wl_menu_draw.js"></script>	
     <script type="text/javascript" src="js/updateData.js"></script>
 	
-    <link rel="stylesheet" href="css/browserWrap.css" type="text/css" media="screen" />
-    <link rel="stylesheet" href="css/login.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="css/dropit.css" type="text/css" media="screen" />
-    <link rel="stylesheet" href="css/colpick.css" type="text/css"/>
-	<link rel="stylesheet" href="css/slider.css" type="text/css"/>
-	<link rel="stylesheet" href="css/style.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="css/draw.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="css/style2.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="js/jquery-ui-1.11.2.custom/jquery-ui.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="js/jquery-ui-1.11.4.custom/jquery-ui.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="ion.rangeSlider-2.0.2/css/ion.rangeSlider.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="ion.rangeSlider-2.0.2/css/ion.rangeSlider.skinNice.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="css/perfect-scrollbar.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="css/CSS_checkbox_full/custom-checkbox.css" type="text/css" media="screen" />
-	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <script type="text/javascript" src="js/updateCanvasData.js"></script>
-	<script type="text/javascript">
+     <link rel="stylesheet" href="css/browserWrap.css" type="text/css" media="screen" />
+     <link rel="stylesheet" href="css/login.css" type="text/css" media="screen" />
+	 <link rel="stylesheet" href="css/dropit.css" type="text/css" media="screen" />
+     <link rel="stylesheet" href="css/colpick.css" type="text/css"/>
+	 <link rel="stylesheet" href="css/slider.css" type="text/css"/>
+	 <link rel="stylesheet" href="css/style.css" type="text/css" media="screen" />
+	 <link rel="stylesheet" href="css/draw.css" type="text/css" media="screen" />
+	 <link rel="stylesheet" href="css/style2.css" type="text/css" media="screen" />
+	 <link rel="stylesheet" href="js/jquery-ui-1.11.2.custom/jquery-ui.css" type="text/css" media="screen" />
+	 <link rel="stylesheet" href="js/jquery-ui-1.11.4.custom/jquery-ui.css" type="text/css" media="screen" />
+	 <link rel="stylesheet" href="ion.rangeSlider-2.0.2/css/ion.rangeSlider.css" type="text/css" media="screen" />
+	 <link rel="stylesheet" href="ion.rangeSlider-2.0.2/css/ion.rangeSlider.skinNice.css" type="text/css" media="screen" />
+	 <link rel="stylesheet" href="css/perfect-scrollbar.css" type="text/css" media="screen" />
+	 <link rel="stylesheet" href="css/CSS_checkbox_full/custom-checkbox.css" type="text/css" media="screen" />
+	 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+	  <script type="text/javascript" src="js/updateCanvasData.js"></script>
+	  <script type="text/javascript" src="js/WindowCanvasEvents.js"></script>
+	  <script type="text/javascript" src="js/documentEventListeners.js"></script>
+	  <script type="text/javascript">
 	var defaultHint = "";
 	var defaultHintColor = "black";
 	var tempHintUsed = false;
 	var globalShowHint = true;
-	var canvasMouseOut = false;
-	var canvasMouseDown = false;
-
-	window.addEventListener('mouseup', function(e) {
-	   if(canvasMouseOut==true) {
-	     canvas_.mouseUpEvent();
-		 canvasMouseOut = false;
-	   }
-	});
-	window.addEventListener('mousemove', function(e) {
-	  if(canvasMouseOut==true) {
-	     canvas_.mouseMoveEvent(e);
-	   }
-	});
-       if(typeof document.onselectstart!="undefined") {
-	       document.onselectstart = new Function ("return false");
-	   } else {
-	       document.onmousedown = new Function ("return false");
-		   document.onmouseup = new Function ("return true");
-	   }
 
 	function SIcreateSaveObjectPre() {
 		setSessionData(function(result) {
@@ -127,11 +110,11 @@
 		   updateCanvasData();
        });
        function update_place_cancel() {
-    	   document.getElementById("updateExistingWarning").style.display="none";
+    	   $("#updateExistingWarning").hide();
        }
        function update_place_yes() {      
            SIcreateSaveObjectPre();
-    	   document.getElementById("updateExistingWarning").style.display="none";
+		   $("#updateExistingWarning").hide();
        }
        function PlaceConfiguration(placeID) {
     	   var formid = placeID + "_config_form";

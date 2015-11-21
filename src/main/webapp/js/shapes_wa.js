@@ -1086,6 +1086,10 @@ CanvasState.prototype.getMouse = function(e) {
     mx = parseInt((e.pageX - offsetX)/this.zoom);
     my = parseInt((e.pageY - offsetY)/this.zoom);
 
+    if(mx < 0) { mx = 0 };
+    if(mx > this.origWidth) { mx = this.origWidth };
+    if(my < 0) { my = 0 };
+    if(my > this.origHeight) { my = this.origHeight };
     // We return a simple javascript object (a hash) with x and y defined
     return {x: mx, y: my , orgx: e.pageX , orgy: e.pageY};
 };

@@ -314,29 +314,7 @@ if(bok.shapesList.length > 3) {
 
 
 }
-function cancelBooking(this_) {
-	   setSessionData(function(result) {
-		   if(result) {
-			    var id = this_.id;
-			    var bid = this_.id.replace(/^sb_cancel_/, "");
-			    $.ajax({
-				    url : "/clientCancelBooking",
-				    data: {bid:bid},//
-				    success : function(data){
-				    	console.log(data);
-				    	if(data.status == "removed") {
-				    	   window.location.reload(true);
-				    	} else if (data.status == "nouser") {
-				    	   window.location.href("/");
-				    	}
-				    },
-				    dataType : "JSON",
-				    type : "post"
-				});
-		   } else {
-			   updatePageView();
-		   }});
-}
+
 $(document).ready(function() {
 setInterval(function(){
     var allof =document.getElementsByName("pl_offcet");

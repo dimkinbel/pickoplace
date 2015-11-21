@@ -49,25 +49,16 @@
 	<link rel="stylesheet" href="css/perfect-scrollbar.css" type="text/css" media="screen" />
 	<link rel="stylesheet" href="css/CSS_checkbox_full/custom-checkbox.css" type="text/css" media="screen" />
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+	 <script type="text/javascript" src="js/WindowCanvasEvents.js"></script>
+	 <script type="text/javascript" src="js/documentEventListeners.js"></script>
+
 	<script type="text/javascript">
 	var defaultHint = "";
 	var defaultHintColor = "black";
 	var tempHintUsed = false;
 	var globalShowHint = true;
-	var canvasMouseOut = false;
-	var canvasMouseDown = false;
 
-	window.addEventListener('mouseup', function(e) {
-	   if(canvasMouseOut==true) {
-	     canvas_.mouseUpEvent();
-		 canvasMouseOut = false;
-	   }
-	});
-	window.addEventListener('mousemove', function(e) {
-	  if(canvasMouseOut==true) {
-	     canvas_.mouseMoveEvent(e);
-	   }
-	});
 
 	function SIcreateSaveObjectPre() {
 		$("#drawingSaveButton").hide(); 
@@ -94,13 +85,7 @@
 	 	   var formid = placeID + "_config_form";
 	 	   document.getElementById(formid).submit();
 	}
-	
-       if(typeof document.onselectstart!="undefined") {
-	       document.onselectstart = new Function ("return false");
-	   } else {
-	       document.onmousedown = new Function ("return false");
-		   document.onmouseup = new Function ("return true");
-	   }
+
 	   var gcanvas ;
 	   var floorCanvases = [];
 	   var floorNames = {};
