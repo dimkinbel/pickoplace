@@ -56,7 +56,8 @@
        <servlet-name>globalSearch</servlet-name>
        <url-pattern>/globalSearch</url-pattern>
     </servlet-mapping>
-      
+
+    <!-- todo(egor): remove? -->
     <servlet>
        <servlet-name>smstest</servlet-name>
        <servlet-class>com.dimab.smsmail.SendSMStestServlet</servlet-class>
@@ -64,8 +65,9 @@
     <servlet-mapping>
        <servlet-name>smstest</servlet-name>
        <url-pattern>/admin/smstest</url-pattern>
-    </servlet-mapping>   
-    
+    </servlet-mapping>
+
+    <!-- todo(egor): remove? -->
     <servlet>
        <servlet-name>plivioresponse</servlet-name>
        <servlet-class>com.dimab.smsmail.PlivioSMSResponse</servlet-class>
@@ -129,7 +131,8 @@
        <servlet-name>disconnectUser</servlet-name>
        <url-pattern>/disconnectUser</url-pattern>
     </servlet-mapping>
-  	<servlet>
+
+    <servlet>
        <servlet-name>connectUser</servlet-name>
        <servlet-class>com.dimab.pp.login.ConnectUser</servlet-class>
     </servlet>
