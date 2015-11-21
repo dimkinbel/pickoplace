@@ -34,7 +34,7 @@ public class I18nService {
             throw new RuntimeException(e);
         }
 
-        messages = JsonUtils.deserializeFromJson(localizationAsString, LOCALIZATION_TYPE);
+        messages = JsonUtils.deserialize(localizationAsString, LOCALIZATION_TYPE);
 
         messagesByLanguage = new HashMap<>();
         messagesByLanguage.put(Language.ENGLISH, new I18nMap());

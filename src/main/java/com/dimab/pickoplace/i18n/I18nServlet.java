@@ -26,7 +26,7 @@ public class I18nServlet extends HttpServlet {
         Language language = I18nContext.getCurrentLanguage();
 
         Map<String,String> messages = I18nService.INSTANCE.getMessages(language);
-        String messagesAsString = JsonUtils.serializeFromJson(messages);
+        String messagesAsString = JsonUtils.serialize(messages);
 
         writer.write("window.pickoplace = window.pickoplace || {};\n");
         writer.write("window.pickoplace.i18n = " + messagesAsString + ";\n");

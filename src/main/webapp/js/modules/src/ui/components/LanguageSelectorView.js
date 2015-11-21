@@ -2,15 +2,9 @@
 define([
     'assert',
     'backbone',
-    'cookieUtils',
     'backbone.marionette'
-], (assert, backbone, cookieUtils) => {
+], (assert, backbone) => {
     const LANGUAGE_COOKIE_NAME = 'pickoplace.language';
-    const DEFAULT_LANGUAGE = 'ENGLISH';
-
-    function getCurrentLanguage() {
-        return cookieUtils.getCookieByName(LANGUAGE_COOKIE_NAME);
-    }
 
     function languageToIsoCode(language) {
         switch (language) {
@@ -41,11 +35,11 @@ define([
         initialize(options) {
             assert.object(options);
             assert.object(options.el);
-            assert.object(options.data);
+            assert.string(options.data);
 
             this.bindUIElements();
 
-            const currentLanguage = getCurrentLanguage() || DEFAULT_LANGUAGE;
+            const currentLanguage = options.data;
 
             this.ui.currentLangugage
                 .text('')
