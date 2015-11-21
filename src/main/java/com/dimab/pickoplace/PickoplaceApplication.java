@@ -12,6 +12,8 @@ public class PickoplaceApplication extends ResourceConfig {
 
         property(ServletProperties.FILTER_FORWARD_ON_404, true);
 
+        // register(LoggingFilter.class); // for dev purposes
+
         register(org.glassfish.jersey.server.mvc.MvcFeature.class);
     }
 }

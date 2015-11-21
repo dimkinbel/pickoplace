@@ -8,7 +8,7 @@
     </jsp:attribute>
 
     <jsp:attribute name="bodyBlock">
-        ${requestScope.i18n['someKey']}
+        ${i18n['someKey']}
 
         <common:languageSelector/>
     </jsp:attribute>
