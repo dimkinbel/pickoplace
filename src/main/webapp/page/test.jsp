@@ -10,6 +10,8 @@
     <jsp:attribute name="bodyBlock">
         ${i18n['someKey']}
 
+        ${model.userInfo.userName}
+
         <common:languageSelector/>
     </jsp:attribute>
 </layout:baseHtml>

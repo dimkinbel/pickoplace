@@ -5,6 +5,10 @@
          version="2.5"
          xmlns="http://java.sun.com/xml/ns/javaee">
 
+    <listener>
+        <listener-class>com.dimab.pickoplace.ioc.IocServletContextListener</listener-class>
+    </listener>
+
     <filter>
         <filter-name>JersyFilter</filter-name>
         <filter-class>org.glassfish.jersey.servlet.ServletContainer</filter-class>
@@ -651,6 +655,8 @@
     <filter-mapping>
         <filter-name>i18nFilter</filter-name>
         <url-pattern>/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
     </filter-mapping>
 
     <servlet>
