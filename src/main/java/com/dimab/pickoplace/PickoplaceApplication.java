@@ -9,6 +9,7 @@ public class PickoplaceApplication extends ResourceConfig {
     public PickoplaceApplication() {
         packages("com.dimab.pickoplace.controller");
         packages("com.dimab.pickoplace.rest");
+        packages("com.dimab.pickoplace.jersey");
 
         property(ServletProperties.FILTER_FORWARD_ON_404, true);
 

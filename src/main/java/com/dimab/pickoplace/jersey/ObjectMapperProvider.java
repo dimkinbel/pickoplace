@@ -1,29 +1,16 @@
 package com.dimab.pickoplace.jersey;
 
-// todo(egor): implement
-public class ObjectMapperProvider {
-/*
-        implements ContextResolver<ObjectMapper> {
+import com.dimab.pickoplace.utils.JsonUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-    final ObjectMapper defaultObjectMapper;
+import javax.ws.rs.ext.ContextResolver;
+import javax.ws.rs.ext.Provider;
 
-    public MyObjectMapperProvider() {
-        defaultObjectMapper = createDefaultMapper();
-    }
+@Provider
+public class ObjectMapperProvider implements ContextResolver<ObjectMapper> {
 
     @Override
     public ObjectMapper getContext(Class<?> type) {
-        return defaultObjectMapper;
+        return JsonUtils.OBJECT_MAPPER;
     }
-}
-
-    private static ObjectMapper createDefaultMapper() {
-        final ObjectMapper result = new ObjectMapper();
-//        result.configure(Feature.INDENT_OUTPUT, true);
-
-        return result;
-    }
-
-    // ...
-*/
 }
