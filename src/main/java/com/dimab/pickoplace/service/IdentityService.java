@@ -20,6 +20,7 @@ public class IdentityService {
     @Inject
     IdentityService(WebSessionStorage webSessionStorage) {
         this.webSessionStorage = webSessionStorage;
+        IdentityHelper.identityService = this;
     }
 
     @Nullable

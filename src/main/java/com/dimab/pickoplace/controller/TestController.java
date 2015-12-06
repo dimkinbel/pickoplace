@@ -13,7 +13,7 @@ import javax.ws.rs.core.MediaType;
 @Singleton
 @Produces(MediaType.TEXT_HTML)
 @Path("/page/")
-public class TestController {
+public class TestController implements Controller {
 
     private final static Logger LOG = LoggerFactory.getLogger(TestController.class);
 

@@ -1,6 +1,16 @@
 package com.dimab.pickoplace.guice;
 
-/* todo(egor): deep review - rest instances must be created bu guice
+import com.dimab.pickoplace.controller.Controller;
+import com.dimab.pickoplace.rest.RestService;
+import org.glassfish.hk2.api.DynamicConfiguration;
+import org.glassfish.hk2.api.DynamicConfigurationService;
+import org.glassfish.hk2.api.Factory;
+import org.glassfish.hk2.api.ServiceLocator;
+import org.glassfish.hk2.utilities.binding.BindingBuilderFactory;
+import org.glassfish.jersey.server.spi.ComponentProvider;
+
+import java.util.Set;
+
 @javax.ws.rs.ext.Provider
 public class GuiceComponentProvider implements ComponentProvider {
 
@@ -14,17 +24,11 @@ public class GuiceComponentProvider implements ComponentProvider {
     @Override
     public boolean bind(Class<?> component, Set<Class<?>> providerContracts) {
         if (RestService.class.isAssignableFrom(component)) {
-            new GuiceFactory(component);
-
-
-            DynamicConfigurationService dynamicConfigService =
-                    locator.getService(DynamicConfigurationService.class);
-
-            DynamicConfiguration dynamicConfiguration =
-                    dynamicConfigService.createDynamicConfiguration();
+            DynamicConfigurationService dynamicConfigService = locator.getService(DynamicConfigurationService.class);
+            DynamicConfiguration dynamicConfiguration = dynamicConfigService.createDynamicConfiguration();
 
             BindingBuilderFactory
-                    .addBinding(BindingBuilderFactory.newFactoryBinder(PerSessionFactory.class)
+                    .addBinding(BindingBuilderFactory.newFactoryBinder(new GuiceFactory(component))
                             .to(component), dynamicConfiguration);
 
             dynamicConfiguration.commit();
@@ -35,10 +39,14 @@ public class GuiceComponentProvider implements ComponentProvider {
 
     @Override
     public void done() {
-
+        // no-op
     }
 
-    private final static class GuiceFactory implements Factory<RestService> {
+    private boolean isGuiceProvidedComponent(Class componentClass) {
+        return RestService.class.isAssignableFrom(componentClass) || Controller.class.isAssignableFrom(componentClass);
+    }
+
+    private final static class GuiceFactory implements Factory {
 
         private final Class componentClass;
 
@@ -47,14 +55,13 @@ public class GuiceComponentProvider implements ComponentProvider {
         }
 
         @Override
-        public RestService provide() {
-            return null;
+        public Object provide() {
+            return GuiceUtils.getInstance(componentClass);
         }
 
         @Override
-        public void dispose(RestService instance) {
+        public void dispose(Object instance) {
             // no-op
         }
     }
 }
-*/

@@ -1,6 +1,7 @@
 package com.dimab.pickoplace.security;
 
 import com.dimab.pickoplace.rest.RedirectInformation;
+import com.dimab.pickoplace.rest.RestService;
 import com.dimab.pickoplace.security.annotations.LoggedIn;
 import com.dimab.pickoplace.service.IdentityService;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -16,7 +17,7 @@ import javax.ws.rs.core.MediaType;
 @Singleton
 @Produces(MediaType.APPLICATION_JSON)
 @Path("/rest/identity/")
-public class IdentityRestService {
+public class IdentityRestService implements RestService {
 
     private final IdentityService identityService;
 
