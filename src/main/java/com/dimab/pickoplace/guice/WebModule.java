@@ -1,10 +1,13 @@
 package com.dimab.pickoplace.guice;
 
+import com.dimab.pickoplace.websession.SimpleWebSessionStorage;
+import com.dimab.pickoplace.websession.WebSessionStorage;
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Module;
 import com.google.inject.servlet.ServletModule;
 import org.glassfish.jersey.servlet.ServletContainer;
 
+import javax.inject.Singleton;
 import java.util.Map;
 
 final class WebModule extends ServletModule {
@@ -15,6 +18,9 @@ final class WebModule extends ServletModule {
     }
 
     public void configureServlets() {
+        bind(WebSessionStorage.class).to(SimpleWebSessionStorage.class).in(Singleton.class);
+        bind(ServletContainer.class).in(Singleton.class);
+
         Map<String, String> jerseyParameters = ImmutableMap.<String, String>builder()
                 .put("javax.ws.rs.Application", "com.dimab.pickoplace.PickoplaceApplication")
                 .build();

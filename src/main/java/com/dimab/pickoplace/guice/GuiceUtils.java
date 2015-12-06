@@ -1,6 +1,8 @@
 package com.dimab.pickoplace.guice;
 
+import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.google.inject.Module;
 
 public class GuiceUtils {
 
@@ -12,7 +14,7 @@ public class GuiceUtils {
     private GuiceUtils() {
     }
 
-    static Injector getInjector() {
+    public static Injector getInjector() {
         Injector injector = globalInjector;
 
         if (injector == null) {
@@ -28,5 +30,13 @@ public class GuiceUtils {
 
     public static <T> T getInstance(Class aClass) {
         return (T) getInjector().getInstance(aClass);
+    }
+
+    public static Injector initializeGlobalInjector(Module integrationModule) {
+        Injector injector = Guice.createInjector(integrationModule);
+
+        globalInjector = injector;
+
+        return injector;
     }
 }
