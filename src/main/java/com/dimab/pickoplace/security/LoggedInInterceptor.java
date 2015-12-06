@@ -1,20 +1,17 @@
 package com.dimab.pickoplace.security;
 
-import com.dimab.pickoplace.guice.RequireStaticInjection;
-import com.dimab.pickoplace.service.IdentityService;
+import com.dimab.pickoplace.service.IdentityHelper;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 
-import javax.inject.Inject;
-
-@RequireStaticInjection
 public class LoggedInInterceptor implements MethodInterceptor {
-
-    @Inject
-    private static IdentityService identityService;
 
     @Override
     public Object invoke(MethodInvocation invocation) throws Throwable {
+        if (IdentityHelper.getIdentityService().isLoggedIn()) {
+            throw new AuthorizationException("can't perform operation");
+        }
+
         return invocation.proceed();
     }
 }

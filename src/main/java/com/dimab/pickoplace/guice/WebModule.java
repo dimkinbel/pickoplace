@@ -2,6 +2,7 @@ package com.dimab.pickoplace.guice;
 
 import com.dimab.pickoplace.i18n.I18nFilter;
 import com.dimab.pickoplace.i18n.I18nServlet;
+import com.dimab.pickoplace.security.HasRoleInterceptor;
 import com.dimab.pickoplace.security.LoggedInInterceptor;
 import com.dimab.pickoplace.security.annotations.HasRole;
 import com.dimab.pickoplace.security.annotations.LoggedIn;
@@ -16,9 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Singleton;
-import java.lang.reflect.Modifier;
 import java.util.Map;
-import java.util.Set;
 
 import static com.google.inject.matcher.Matchers.any;
 
@@ -60,29 +59,6 @@ final class WebModule extends ServletModule {
 
         bindInterceptor(any(),
                 Matchers.annotatedWith(HasRole.class),
-                new LoggedInInterceptor());
-
-        injectStatic();
-    }
-
-    private void injectStatic() {
-        Set<Class<?>> requireStaticInjectionClasses =
-                ReflectionUtils.PARENT_NAMESPACE_REFLECTIONS.getTypesAnnotatedWith(RequireStaticInjection.class);
-
-        int i = 0;
-        for (Class requireStaticInjectionClass : requireStaticInjectionClasses) {
-            i = ++i;
-            if (requireStaticInjectionClass == null) {
-                LOG.warn("skip null");
-                continue;
-            }
-
-            if (!Modifier.isAbstract(requireStaticInjectionClass.getModifiers())) {
-                binder().requestStaticInjection(requireStaticInjectionClass);
-                LOG.info("requireStaticInjectForClass = `{}`", requireStaticInjectionClass);
-            } else {
-                LOG.warn("class = `{}` is abstract, so skip @Inject on it", requireStaticInjectionClass);
-            }
-        }
+                new HasRoleInterceptor());
     }
 }

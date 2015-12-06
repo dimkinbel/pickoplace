@@ -15,7 +15,8 @@ public class PickoplaceApplication extends ResourceConfig {
     @Inject
     public PickoplaceApplication(ServiceLocator serviceLocator) {
         packages("com.dimab.pickoplace.controller");
-        packages("com.dimab.pickoplace.rest");
+        packages("com.dimab.pickoplace");
+        packages("com.dimab.pickoplace.security");
         packages("com.dimab.pickoplace.jersey"); // integrations
 
         property(ServletProperties.FILTER_FORWARD_ON_404, true);

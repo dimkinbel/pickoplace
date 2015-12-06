@@ -1,6 +1,7 @@
 package com.dimab.pickoplace.service;
 
 import com.dimab.pickoplace.json.JsonValueDescription;
+import com.dimab.pickoplace.security.annotations.LoggedIn;
 import com.dimab.pickoplace.websession.WebSessionStorage;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -32,6 +33,7 @@ public class IdentityService {
         throw new RuntimeException("not implemented");
     }
 
+    @LoggedIn
     public void logout() {
         // todo(egor): implement
 

@@ -1,5 +1,7 @@
-package com.dimab.pickoplace.rest;
+package com.dimab.pickoplace.security;
 
+import com.dimab.pickoplace.rest.RedirectInformation;
+import com.dimab.pickoplace.security.annotations.LoggedIn;
 import com.dimab.pickoplace.service.IdentityService;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -33,11 +35,14 @@ public class IdentityRestService {
         throw new RuntimeException("not implemented");
     }
 
-    @POST
+    @LoggedIn
+    // @POST
+    @GET
     @Path("/logout/")
-    public void logout(@Context HttpServletRequest httpServletRequest) {
+    public String logout(@Context HttpServletRequest httpServletRequest) {
         // todo(egor): implement
         identityService.logout();
+        return "!";
     }
 
     @GET
