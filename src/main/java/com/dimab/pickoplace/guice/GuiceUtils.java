@@ -28,7 +28,7 @@ public class GuiceUtils {
         globalInjector = injector;
     }
 
-    public static <T> T getInstance(Class aClass) {
+    public static <T> T getInstance(Class<T> aClass) {
         return (T) getInjector().getInstance(aClass);
     }
 

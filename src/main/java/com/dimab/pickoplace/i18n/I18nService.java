@@ -7,6 +7,7 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Preconditions;
 import com.google.common.io.CharStreams;
 
+import javax.inject.Singleton;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -14,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
+@Singleton
 public class I18nService {
 
     public static final TypeReference LOCALIZATION_TYPE = new TypeReference<Map<String, Message>>() {
@@ -21,8 +23,6 @@ public class I18nService {
 
     private final Map<String, Message> messages;
     private final Map<Language, I18nMap> messagesByLanguage;
-
-    public final static I18nService INSTANCE = new I18nService(); // todo(egor): use IoC
 
     public I18nService() {
         InputStream localizationResource = I18nService.class.getResourceAsStream("/com/pickoplace/localization.json");
