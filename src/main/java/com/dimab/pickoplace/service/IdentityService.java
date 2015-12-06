@@ -29,9 +29,7 @@ public class IdentityService {
     }
 
     public boolean isLoggedIn() {
-        // todo(egor): implement
-
-        throw new RuntimeException("not implemented");
+        return getUserInfo() != null;
     }
 
     @LoggedIn

@@ -30,3 +30,11 @@ I18n.get('someKey');
 ```
 i18n('someKey');
 ```
+
+
+## Configuration
+See default confing in `reference.conf`
+
+```
+-Dconfig.file=/Users/xuma/src/pickoplace-project/pickoplace-dev.conf
+```

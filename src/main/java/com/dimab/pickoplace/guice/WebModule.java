@@ -6,12 +6,16 @@ import com.dimab.pickoplace.security.HasRoleInterceptor;
 import com.dimab.pickoplace.security.LoggedInInterceptor;
 import com.dimab.pickoplace.security.annotations.HasRole;
 import com.dimab.pickoplace.security.annotations.LoggedIn;
+import com.dimab.pickoplace.utils.MDCFilter;
+import com.dimab.pickoplace.utils.StaticResourceFilter;
 import com.dimab.pickoplace.websession.SimpleWebSessionStorage;
 import com.dimab.pickoplace.websession.WebSessionStorage;
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Module;
 import com.google.inject.matcher.Matchers;
 import com.google.inject.servlet.ServletModule;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
 import org.glassfish.jersey.servlet.ServletContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +41,9 @@ final class WebModule extends ServletModule {
         // i18n
         filter("/*").through(I18nFilter.class);
 
+        //
+        filter("/*").through(MDCFilter.class);
+
         // jersey
         Map<String, String> jerseyParameters = ImmutableMap.<String, String>builder()
                 .put("javax.ws.rs.Application", "com.dimab.pickoplace.PickoplaceApplication")
@@ -46,13 +53,9 @@ final class WebModule extends ServletModule {
 
         serve("/rest/i18n.js").with(I18nServlet.class);
 
-        /*
-        // todo(egor): `ResourcesFilter` for dev purposes
-        if (Stage.getCurrentStage() == Stage.DEVELOPMENT) {
+        configureResourceFilter();
 
-        }
-        */
-
+        // interceptors
         bindInterceptor(any(),
                 Matchers.annotatedWith(LoggedIn.class),
                 new LoggedInInterceptor());
@@ -60,5 +63,19 @@ final class WebModule extends ServletModule {
         bindInterceptor(any(),
                 Matchers.annotatedWith(HasRole.class),
                 new HasRoleInterceptor());
+    }
+
+    private void configureResourceFilter() {
+        Config config = ConfigFactory.load();
+        Config devConfig = config.getConfig("dev");
+
+        if (!devConfig.getBoolean("enabled")) {
+            LOG.info("skip configuration of resource filter for production env");
+            return;
+        }
+
+        String staticResourcePath = devConfig.getString("staticResourcePath");
+
+        filter("/*").through(new StaticResourceFilter(staticResourcePath));
     }
 }
