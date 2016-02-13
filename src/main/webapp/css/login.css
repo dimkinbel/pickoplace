@@ -2,7 +2,7 @@
 cursor:pointer;
 border:1px solid grey;
 width:245px;
-height:42px;
+height:44px;
 border-radius: 2px;
 }
 .cbtn:hover {
@@ -60,12 +60,12 @@ border:1px solid black;
   top: 12px;
 }
 #fpsi_img_d {
-  position: relative;
-  float: left;
-  left: 17px;
-  top: 4px;
-  font-size: 31px;
-  font-family: sans-serif;
+    position: relative;
+    float: left;
+    left: 17px;
+    top: 0px;
+    font-size: 31px;
+    font-family: sans-serif;
 }
 
 .iti-flag {background-image: url("../js/intl-tel-input-master/build/img/flags.png");}
@@ -170,6 +170,7 @@ border:1px solid black;
 	width: 125px;
     float: left;
     height: 30px;
+    box-sizing: content-box;
     border: 1px solid #CCCCCC;
     border-top-left-radius: 3px;
     border-bottom-left-radius: 3px;

@@ -1,10 +1,10 @@
 package com.dimab.smsmail;
 
+import com.dimab.pickoplace.utils.JsonUtils;
 import com.google.appengine.api.datastore.*;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
-import com.google.gson.Gson;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -35,7 +35,7 @@ public class SMSVerificationCodeServlet extends HttpServlet {
 			map.put("status", "NOTLOGGED");
 			response.setContentType("application/json");
 			response.setCharacterEncoding("UTF-8");
-			response.getWriter().write(new Gson().toJson(map));
+			response.getWriter().write(JsonUtils.serialize(map));
 			return;
 		} else {
 			Filter UserExists = new  FilterPredicate("username",FilterOperator.EQUAL,sessionEmail);
@@ -46,14 +46,14 @@ public class SMSVerificationCodeServlet extends HttpServlet {
 		    	map.put("status", "NOTLOGGED");
 				response.setContentType("application/json");
 				response.setCharacterEncoding("UTF-8");
-				response.getWriter().write(new Gson().toJson(map));
+				response.getWriter().write(JsonUtils.serialize(map));
 				return;	    	
 		    } else {
 		    	if(result.getProperty("validationCode") == null ) {
 		    		map.put("status", "NOCODE");
 					response.setContentType("application/json");
 					response.setCharacterEncoding("UTF-8");
-					response.getWriter().write(new Gson().toJson(map));
+					response.getWriter().write(JsonUtils.serialize(map));
 					return;	
 		    	} else {
 		    		String datastoreCode = (String) result.getProperty("validationCode");
@@ -61,7 +61,7 @@ public class SMSVerificationCodeServlet extends HttpServlet {
 		    			map.put("status", "NOCODE");
 						response.setContentType("application/json");
 						response.setCharacterEncoding("UTF-8");
-						response.getWriter().write(new Gson().toJson(map));
+						response.getWriter().write(JsonUtils.serialize(map));
 						return;	
 		    		} else {
 		    			if(datastoreCode.equals(vaerifiactionCode)) {
@@ -73,13 +73,13 @@ public class SMSVerificationCodeServlet extends HttpServlet {
 		    		    	
 							response.setContentType("application/json");
 							response.setCharacterEncoding("UTF-8");
-							response.getWriter().write(new Gson().toJson(map));
+							response.getWriter().write(JsonUtils.serialize(map));
 							return;
 		    			} else {
 		    				map.put("status", "WRONG");
 							response.setContentType("application/json");
 							response.setCharacterEncoding("UTF-8");
-							response.getWriter().write(new Gson().toJson(map));
+							response.getWriter().write(JsonUtils.serialize(map));
 							return;
 		    			}
 		    		}

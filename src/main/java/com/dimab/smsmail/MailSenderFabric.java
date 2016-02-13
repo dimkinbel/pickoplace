@@ -26,37 +26,51 @@ import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 
 public class MailSenderFabric {
-   
-	public void SendConfirmationEmail(String from , String to , BookingRequestWrap bookingRequestsWrap,PlaceInfo placeInfo) {
-		
-		Properties props = new Properties();
-        Session session = Session.getDefaultInstance(props, null);
-        MailGenerator mailGenerator = new MailGenerator();
-		try {
-	            Message msg = new MimeMessage(session);
-	            msg.setFrom(new InternetAddress(from, "PickoPlace"));
-	            msg.addRecipient(Message.RecipientType.TO,
-	                             new InternetAddress(to, "You"));
-	            
-	            msg.setSubject("Order Confirmation");
-	            //msg.setText(msgBody);
-	            String message = mailGenerator.GetConfirmationMail(bookingRequestsWrap, placeInfo);
-	            System.out.println(message);
-	            msg.setContent(message, "text/html; charset=utf-8");	           
-	            msg.setSentDate(new Date());
- 	            
-	            Transport.send(msg);
 
-	        } catch (AddressException e) {
-	            // ...
-	        } catch (MessagingException e) {
-	            // ...
-	        } catch (UnsupportedEncodingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		  
+
+	public void SendEmail(String type,String from , String to , BookingRequestWrap bookingRequestsWrap,PlaceInfo placeInfo) {
+		String message = "";
+		MailGenerator mailGenerator = new MailGenerator();
+		switch(type){
+			case "userConfirmation":
+				message = mailGenerator.GetConfirmationMail(bookingRequestsWrap, placeInfo);
+				break;
+			case "waiterCancelUserBooking":
+				message = mailGenerator.GetCancellationEmail(bookingRequestsWrap,placeInfo);
+				break;
+			case "AaBBAa": break;
+			case "AaBBBB": break;
+			case "BBAaAa": break;
+			case "BBAaBB": break;
+			case "BBBBAa": break;
+			case "BBBBBB": break;
+		}
+
+		Properties props = new Properties();
+		Session session = Session.getDefaultInstance(props, null);
+		try {
+			Message msg = new MimeMessage(session);
+			msg.setFrom(new InternetAddress(from, "PickoPlace"));
+			msg.addRecipient(Message.RecipientType.TO,
+					new InternetAddress(to, "You"));
+
+			msg.setSubject("Order Confirmation");
+			System.out.println(message);
+			msg.setContent(message, "text/html; charset=utf-8");
+			msg.setSentDate(new Date());
+
+			Transport.send(msg);
+
+		} catch (AddressException e) {
+			// ...
+		} catch (MessagingException e) {
+			// ...
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
+
 	public boolean isSubscribed(DatastoreService datastore,GenericUser genuser) {
 		Filter UserEmail = new  FilterPredicate("username",FilterOperator.EQUAL,genuser.getEmail());
 		Filter UserSubscribed = new  FilterPredicate("emailsend",FilterOperator.EQUAL,false);

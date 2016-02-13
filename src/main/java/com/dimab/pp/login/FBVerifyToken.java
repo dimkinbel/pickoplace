@@ -6,15 +6,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 
-
-
+import com.dimab.pickoplace.utils.JsonUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
-
-import com.google.gson.Gson;
+ 
 
 
 public class FBVerifyToken {
@@ -47,8 +45,7 @@ public class FBVerifyToken {
 	}
 	
 	public FBmeResponseJSON getData() {
-		FBmeResponseJSON fbjson = new FBmeResponseJSON();
-		Gson gson = new Gson();
+		FBmeResponseJSON fbjson = new FBmeResponseJSON(); 
 		StringBuilder builder = new StringBuilder();
 	    String line = "";
 	    
@@ -61,8 +58,8 @@ public class FBVerifyToken {
 			    }
 				String responseString = builder.toString();
 				System.out.println("ssss:"+responseString);
-				fbjson = gson.fromJson(responseString, FBmeResponseJSON.class);
-				System.out.println(new Gson().toJson(fbjson));
+				fbjson = JsonUtils.deserialize(responseString, FBmeResponseJSON.class);
+				System.out.println(JsonUtils.serialize(fbjson));
 				return fbjson;
 			} catch (IllegalStateException | IOException e) {
 				// TODO Auto-generated catch block

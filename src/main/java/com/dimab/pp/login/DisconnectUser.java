@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import javax.servlet.http.HttpSession;
 
+import com.dimab.pickoplace.utils.JsonUtils;
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
 
 import com.google.api.client.http.HttpTransport;
@@ -24,8 +25,7 @@ import com.google.appengine.api.datastore.Transaction;
 import com.google.appengine.api.datastore.TransactionOptions;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
-import com.google.appengine.api.datastore.Query.FilterPredicate;
-import com.google.gson.Gson;
+import com.google.appengine.api.datastore.Query.FilterPredicate; 
 
 //import org.apache.log4j.BasicConfigurator;
 
@@ -47,12 +47,7 @@ public class DisconnectUser extends HttpServlet {
 	   * Default JSON factory to use to deserialize JSON.
 	   */
 	  private static final JacksonFactory JSON_FACTORY = new JacksonFactory();
-
-	  /*
-	   * Gson object to serialize JSON responses to requests to this servlet.
-	   */
-	  private static final Gson GSON = new Gson();
-
+ 
 	  /*
 	   * Creates a client secrets object from the client_secrets.json file.
 	   */
@@ -143,7 +138,7 @@ public class DisconnectUser extends HttpServlet {
    	    
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
-		response.getWriter().write(new Gson().toJson(map));
+		response.getWriter().write(JsonUtils.serialize(map));
 	      
     }
 }

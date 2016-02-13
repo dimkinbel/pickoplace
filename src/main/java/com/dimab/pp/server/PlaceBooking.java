@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.dimab.pickoplace.utils.JsonUtils;
 import com.dimab.pp.database.GetPlaceInfoFactory;
 import com.dimab.pp.database.GetShapesOrders;
 import com.dimab.pp.dto.AJAXImagesJSON;
@@ -22,24 +23,20 @@ import com.dimab.pp.dto.JsonImageID_2_GCSurl;
 import com.dimab.pp.dto.JsonSID_2_imgID;
 import com.dimab.pp.dto.OrderedResponse;
 import com.dimab.pp.dto.PPSubmitObject;
-import com.dimab.pp.dto.PlaceInfo;
-import com.dimab.pp.dto.SingleTimeRange;
-import com.dimab.pp.dto.WeekDays;
+import com.dimab.pp.dto.PlaceInfo; 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.Text;
-import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
+import com.google.appengine.api.datastore.Text; 
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.images.ImagesService;
 import com.google.appengine.api.images.ImagesServiceFactory;
 import com.google.appengine.api.images.ServingUrlOptions;
-import com.google.appengine.tools.cloudstorage.GcsFilename;
-import com.google.gson.Gson;
+import com.google.appengine.tools.cloudstorage.GcsFilename; 
 import com.google.gson.reflect.TypeToken;
 
 
@@ -80,11 +77,9 @@ public class PlaceBooking extends HttpServlet {
   				UTCoffcet = (double) userCanvasState.getProperty("UTCoffcet");
   				
   			}
-  			System.out.println(UTCoffcet);
-  			
-  			Gson gson = new Gson();
+  			System.out.println(UTCoffcet); 
   			Type CanvasListcollectionType = new TypeToken<List<PPSubmitObject>>(){}.getType();
-			List<PPSubmitObject> floors = gson.fromJson(shapesJSON, CanvasListcollectionType);
+			List<PPSubmitObject> floors = JsonUtils.deserialize(shapesJSON, CanvasListcollectionType);
 			// Restore shapes booking options
 			for (PPSubmitObject floor : floors) {
 				for (CanvasShape shape : floor.getShapes()) {
@@ -162,7 +157,7 @@ public class PlaceBooking extends HttpServlet {
 
 			}
 			Type collectionType = new TypeToken<List<JsonSID_2_imgID>>(){}.getType();
-			List<JsonSID_2_imgID> sid2imgID = gson.fromJson(sid2ImageIDJSON, collectionType);
+			List<JsonSID_2_imgID> sid2imgID = JsonUtils.deserialize(sid2ImageIDJSON, collectionType);
 			if(sid2imgID.isEmpty()) {
 				System.out.println("sid2imgID = null");
 				sid2imgID = null;

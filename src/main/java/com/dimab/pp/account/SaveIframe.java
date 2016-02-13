@@ -10,7 +10,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.dimab.pp.dto.AJAXImagesJSON;
+
+import com.dimab.pickoplace.utils.JsonUtils;
 import com.dimab.pp.dto.IFsave;
 import com.dimab.pp.login.CheckTokenValid;
 import com.dimab.pp.login.GenericUser;
@@ -24,7 +25,7 @@ import com.google.appengine.api.datastore.TransactionOptions;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
-import com.google.gson.Gson;
+ 
 
 public class SaveIframe extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -60,9 +61,8 @@ public class SaveIframe extends HttpServlet {
 		
 		String placeIDvalue = request.getParameter("pid");
 		String ifid = request.getParameter("ifid");
-		String ifsaveString = request.getParameter("ifsave");
-		Gson gson = new Gson();
-		IFsave SaveObject = gson.fromJson(ifsaveString, IFsave.class);
+		String ifsaveString = request.getParameter("ifsave"); 
+		IFsave SaveObject = JsonUtils.deserialize(ifsaveString, IFsave.class);
 		
 		Filter ifidfilter = new  FilterPredicate("ifid",FilterOperator.EQUAL,ifid);
  	    Query piq = new Query("IFrames").setFilter(ifidfilter);
@@ -74,14 +74,14 @@ public class SaveIframe extends HttpServlet {
   			ifidEntity.setProperty("pid", placeIDvalue);
   			ifidEntity.setProperty("savedby", username_email);
   			ifidEntity.setProperty("date", date);
-  			ifidEntity.setUnindexedProperty("ifjson", gson.toJson(SaveObject));
+  			ifidEntity.setUnindexedProperty("ifjson", JsonUtils.serialize(SaveObject));
   			map.put("newifid", true);
   		} else {
   			ifidEntity.setProperty("ifid", ifid);
   			ifidEntity.setProperty("pid", placeIDvalue);
   			ifidEntity.setProperty("savedby", username_email);
   			ifidEntity.setProperty("date", date);
-  			ifidEntity.setUnindexedProperty("ifjson", gson.toJson(SaveObject));
+  			ifidEntity.setUnindexedProperty("ifjson", JsonUtils.serialize(SaveObject));
   			map.put("newifid", false);
   		}
   		datastore.put(ifidEntity);
@@ -90,7 +90,7 @@ public class SaveIframe extends HttpServlet {
 		map.put("ifid", ifid);
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
-		response.getWriter().write(new Gson().toJson(map));
+		response.getWriter().write(JsonUtils.serialize(map));
 	}
 
 }

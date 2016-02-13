@@ -11,25 +11,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 
-
-
-
-
-
-
-import javax.servlet.http.HttpSession;
-
+import com.dimab.pickoplace.utils.JsonUtils;
 import com.dimab.pp.dto.PPSubmitObject;
 import com.dimab.pp.dto.UserAccountData;
 import com.dimab.pp.dto.UserPlace;
-import com.dimab.pp.login.CheckTokenValid;
-import com.dimab.pp.login.GOOGmeResponseJSON;
-import com.dimab.pp.login.GenericUser;
-import com.dimab.pp.login.GoogVerifyToken;
+import com.dimab.pp.login.CheckTokenValid; 
+import com.dimab.pp.login.GenericUser; 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.Entity; 
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Text;
@@ -39,8 +29,7 @@ import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.images.ImagesService;
 import com.google.appengine.api.images.ImagesServiceFactory;
 import com.google.appengine.api.images.ServingUrlOptions;
-import com.google.appengine.tools.cloudstorage.GcsFilename;
-import com.google.gson.Gson;
+import com.google.appengine.tools.cloudstorage.GcsFilename; 
 import com.google.gson.reflect.TypeToken;
 
 
@@ -104,10 +93,9 @@ public class GoToAccont extends HttpServlet {
 		  	    userPlace.setBranch(placeBranchName);
 		  	    userPlace.setPlaceID(placeID);
 		  	    // Get shapesJSON to count Shapes
-		  	    String shapesJSON =  ((Text) userCanvasState.getProperty("shapesJSON")).getValue();
-		  	    Gson gson = new Gson();
+		  	    String shapesJSON =  ((Text) userCanvasState.getProperty("shapesJSON")).getValue(); 
 		  	    Type CanvasListcollectionType = new TypeToken<List<PPSubmitObject>>(){}.getType();
-				List<PPSubmitObject> floors = gson.fromJson(shapesJSON, CanvasListcollectionType);
+				List<PPSubmitObject> floors = JsonUtils.deserialize(shapesJSON, CanvasListcollectionType);
 				int shapesCount = 0;
 				for (PPSubmitObject floor : floors) {
 					shapesCount += floor.getShapes().size();

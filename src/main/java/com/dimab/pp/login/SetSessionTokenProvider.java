@@ -1,5 +1,7 @@
 package com.dimab.pp.login;
 
+import com.dimab.pickoplace.utils.JsonUtils;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -7,9 +9,7 @@ import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import com.google.gson.Gson;
+import javax.servlet.http.HttpServletResponse; 
 
 public class SetSessionTokenProvider extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -29,7 +29,7 @@ public class SetSessionTokenProvider extends HttpServlet {
 		System.out.println(provider+":"+accessToken);
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
-		response.getWriter().write(new Gson().toJson(map));
+		response.getWriter().write(JsonUtils.serialize(map));
 	     
 	}
 

@@ -11,8 +11,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.dimab.pickoplace.utils.JsonUtils;
 import com.dimab.pp.dto.GCSdrawImage;
-import com.google.gson.Gson;
 
 public class uploadDrawImages extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -42,7 +42,7 @@ public class uploadDrawImages extends HttpServlet {
 		map.put("imageList", imageList);
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
-		response.getWriter().write(new Gson().toJson(map));	
+		response.getWriter().write(JsonUtils.serialize(map));
 	}
 
 }

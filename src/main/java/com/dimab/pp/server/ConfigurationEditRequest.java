@@ -2,8 +2,7 @@ package com.dimab.pp.server;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.ArrayList; 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -15,16 +14,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.dimab.pickoplace.utils.JsonUtils;
 import com.dimab.pp.dto.AJAXImagesJSON;
 import com.dimab.pp.dto.AdminUser;
 import com.dimab.pp.dto.CanvasShape;
 import com.dimab.pp.dto.JsonImageID_2_GCSurl;
 import com.dimab.pp.dto.JsonSID_2_imgID;
 import com.dimab.pp.dto.JsonimgID_2_data;
-import com.dimab.pp.dto.PPSubmitObject;
-import com.dimab.pp.dto.SingleTimeRange;
-import com.dimab.pp.dto.WeekDayOpenClose;
-import com.dimab.pp.dto.WeekDays;
+import com.dimab.pp.dto.PPSubmitObject; 
 import com.dimab.pp.dto.WorkingWeek;
 import com.dimab.pp.login.CheckTokenValid;
 import com.dimab.pp.login.GenericUser;
@@ -35,8 +32,7 @@ import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Text;
 import com.google.appengine.api.datastore.Transaction;
-import com.google.appengine.api.datastore.TransactionOptions;
-import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
+import com.google.appengine.api.datastore.TransactionOptions; 
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
@@ -47,8 +43,7 @@ import com.google.appengine.tools.cloudstorage.GcsFileMetadata;
 import com.google.appengine.tools.cloudstorage.GcsFilename;
 import com.google.appengine.tools.cloudstorage.GcsService;
 import com.google.appengine.tools.cloudstorage.GcsServiceFactory;
-import com.google.appengine.tools.cloudstorage.RetryParams;
-import com.google.gson.Gson;
+import com.google.appengine.tools.cloudstorage.RetryParams; 
 import com.google.gson.reflect.TypeToken;
 
 
@@ -94,13 +89,12 @@ public class ConfigurationEditRequest extends HttpServlet {
   		Entity userCanvasState = pq.asSingleEntity();
   		AJAXImagesJSON CanvasStateEdit = new AJAXImagesJSON();
   		
-  		if (userCanvasState != null) {
-  			Gson gson = new Gson();
+  		if (userCanvasState != null) { 
 			List<AdminUser> placeEditList = new ArrayList<AdminUser>();
 			if(userCanvasState.getProperty("placeEditList")!=null) {
 				String placeEditListJSON = (String)userCanvasState.getProperty("placeEditList");
 				Type collectionType = new TypeToken<List<AdminUser>>(){}.getType();
-				placeEditList = gson.fromJson(placeEditListJSON, collectionType);
+				placeEditList = JsonUtils.deserialize(placeEditListJSON, collectionType);
 				if(placeEditList.size() > 0) {
 					Boolean fullAccessApproved = false;
 					for(AdminUser user_ : placeEditList) {
@@ -119,7 +113,7 @@ public class ConfigurationEditRequest extends HttpServlet {
 				                adminAccess.setMove_only(true);
 				                adminAccess.setBook_admin(true);
 				                placeEditList.add(adminAccess);
-				                userCanvasState.setUnindexedProperty("placeEditList",gson.toJson(placeEditList));
+				                userCanvasState.setUnindexedProperty("placeEditList",JsonUtils.serialize(placeEditList));
 				                datastore.put(userCanvasState);
 						} else {
 							System.out.println("No full_name access in list");
@@ -142,7 +136,7 @@ public class ConfigurationEditRequest extends HttpServlet {
 		                adminAccess.setMove_only(true);
 		                adminAccess.setBook_admin(true);
 		                placeEditList.add(adminAccess);
-		                userCanvasState.setUnindexedProperty("placeEditList",gson.toJson(placeEditList));
+		                userCanvasState.setUnindexedProperty("placeEditList",JsonUtils.serialize(placeEditList));
 		                datastore.put(userCanvasState);
 					}
 				}
@@ -159,7 +153,7 @@ public class ConfigurationEditRequest extends HttpServlet {
 	                adminAccess.setMove_only(true);
 	                adminAccess.setBook_admin(true);
 	                placeEditList.add(adminAccess);
-	                userCanvasState.setUnindexedProperty("placeEditList",gson.toJson(placeEditList));
+	                userCanvasState.setUnindexedProperty("placeEditList",JsonUtils.serialize(placeEditList));
 	                datastore.put(userCanvasState);
 				}
 			}
@@ -180,7 +174,7 @@ public class ConfigurationEditRequest extends HttpServlet {
   			}
   			
   			Type CanvasListcollectionType = new TypeToken<List<PPSubmitObject>>(){}.getType();
-			List<PPSubmitObject> floors = gson.fromJson(shapesJSON, CanvasListcollectionType);
+			List<PPSubmitObject> floors = JsonUtils.deserialize(shapesJSON, CanvasListcollectionType);
 			// Restore shapes booking options
 			for (PPSubmitObject floor : floors) {
 				for (CanvasShape shape : floor.getShapes()) {
@@ -228,7 +222,7 @@ public class ConfigurationEditRequest extends HttpServlet {
 				}
 			}
 			Type collectionType = new TypeToken<List<JsonSID_2_imgID>>(){}.getType();
-			List<JsonSID_2_imgID> sid2imgID = gson.fromJson(sid2ImageIDJSON, collectionType);
+			List<JsonSID_2_imgID> sid2imgID = JsonUtils.deserialize(sid2ImageIDJSON, collectionType);
 			if(sid2imgID.isEmpty()) {
 				System.out.println("sid2imgID = null");
 				sid2imgID = null;
@@ -327,20 +321,20 @@ public class ConfigurationEditRequest extends HttpServlet {
 			if (userCanvasState.getProperty("automaticApprovalList") != null) {
 				String automaticApprovalListJSON = (String)userCanvasState.getProperty("automaticApprovalList");
 				collectionType = new TypeToken<List<String>>(){}.getType();
-				automaticApprovalList = gson.fromJson(automaticApprovalListJSON, collectionType);				
+				automaticApprovalList = JsonUtils.deserialize(automaticApprovalListJSON, collectionType);				
 			}
 			List<String> adminApprovalList = new ArrayList<String>();
 			if(userCanvasState.getProperty("adminApprovalList")!=null) {
 				String adminApprovalListJSON = (String)userCanvasState.getProperty("adminApprovalList");
 				collectionType = new TypeToken<List<String>>(){}.getType();
-				adminApprovalList = gson.fromJson(adminApprovalListJSON, collectionType);
+				adminApprovalList = JsonUtils.deserialize(adminApprovalListJSON, collectionType);
 			}
 
 			List<Integer> closeDates =  new ArrayList<Integer>();
 			if (userCanvasState.getProperty("closeDates")!=null) {
 				String closeDatesJSON = (String)userCanvasState.getProperty("closeDates");
 				collectionType = new TypeToken<List<Integer>>(){}.getType();
-				closeDates = gson.fromJson(closeDatesJSON, collectionType);
+				closeDates = JsonUtils.deserialize(closeDatesJSON, collectionType);
 			}
 			Collections.sort(closeDates);
 			WorkingWeek workinghours =  new WorkingWeek();
@@ -348,7 +342,7 @@ public class ConfigurationEditRequest extends HttpServlet {
 				String workinghoursJSON = (String)userCanvasState.getProperty("workinghours");
 				System.out.println(workinghoursJSON);
 				collectionType = new TypeToken<WorkingWeek>(){}.getType();
-				workinghours = gson.fromJson(workinghoursJSON, collectionType);				
+				workinghours = JsonUtils.deserialize(workinghoursJSON, collectionType);				
 			}
 			
 			CanvasStateEdit.setAddress(address);
@@ -381,7 +375,7 @@ public class ConfigurationEditRequest extends HttpServlet {
 	  	    CanvasStateEdit.setLogosrc(logoUrl);
 	  	    
 	  	    collectionType = new TypeToken<List<String>>(){}.getType();
-	  	    List<String> photosList = gson.fromJson((String)userCanvasState.getProperty("photos"),collectionType);
+	  	    List<String> photosList = JsonUtils.deserialize((String)userCanvasState.getProperty("photos"),collectionType);
 	  	    if(photosList!= null) {
 		  	    for (String imgID : photosList) {
 		  	    	String bucket = "pp_images"; 

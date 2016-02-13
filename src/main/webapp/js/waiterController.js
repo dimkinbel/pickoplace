@@ -141,7 +141,7 @@ $(document).ready(function() {
 		})
 
 		$(document).on('click', 'body', function(e){
-			if(timelinePopoverOpened && !timelinePopoverOpening) {
+			if(floorPopoverOpened && !floorPopoverOpening) {
 				$('.floor_popover_template').each(function () {
 					//the 'is' for buttons that trigger popups
 					//the 'has' for icons within a button that triggers a popup

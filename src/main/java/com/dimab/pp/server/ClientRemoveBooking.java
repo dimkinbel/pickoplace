@@ -11,11 +11,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.dimab.pickoplace.utils.JsonUtils;
 import com.dimab.pp.database.FreePlaceFactory;
 import com.dimab.pp.dto.BookingListForJSON;
-import com.dimab.pp.dto.BookingRequest;
-import com.dimab.pp.dto.BookingSingleShapeList;
-import com.dimab.pp.dto.SingleTimeRangeLong;
+import com.dimab.pp.dto.BookingRequest; 
 import com.dimab.pp.login.CheckTokenValid;
 import com.dimab.pp.login.GenericUser;
 import com.google.appengine.api.datastore.DatastoreService;
@@ -29,8 +28,7 @@ import com.google.appengine.api.datastore.TransactionOptions;
 import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
-import com.google.appengine.api.datastore.Query.FilterPredicate;
-import com.google.gson.Gson;
+import com.google.appengine.api.datastore.Query.FilterPredicate; 
 import com.google.gson.reflect.TypeToken;
 
 public class ClientRemoveBooking extends HttpServlet {
@@ -38,8 +36,7 @@ public class ClientRemoveBooking extends HttpServlet {
 
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String bid = request.getParameter("bid");
-		Gson gson = new Gson();
+		String bid = request.getParameter("bid"); 
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 		TransactionOptions options = TransactionOptions.Builder.withXG(true);
 		Transaction txn = datastore.beginTransaction(options);
@@ -72,7 +69,7 @@ public class ClientRemoveBooking extends HttpServlet {
 	  		    String pid = (String)bidEntity.getProperty("pid");
 	  		    String bookingListJSON =   ((Text) bidEntity.getProperty("bookingList")).getValue();
 	  		    Type bookinglistType = new TypeToken<List<BookingRequest>>(){}.getType();
-	  		    List<BookingRequest> bookingRequests =   gson.fromJson(bookingListJSON, bookinglistType);
+	  		    List<BookingRequest> bookingRequests =   JsonUtils.deserialize(bookingListJSON, bookinglistType);
 	  		    
 	  		    for(BookingRequest bookRequest : bookingRequests) {
 	  		    	String bsid = bookRequest.getSid();
@@ -86,9 +83,9 @@ public class ClientRemoveBooking extends HttpServlet {
 			  			String sid = (String) shapeList.getProperty("sid");
 		                System.out.println("Removing booking from shape:"+sid);
 			  			String allOrdersJSON =   ((Text) shapeList.getProperty("bookingListJSON")).getValue();
-			  			BookingListForJSON ordersList = gson.fromJson(allOrdersJSON, BookingListForJSON.class);
+			  			BookingListForJSON ordersList = JsonUtils.deserialize(allOrdersJSON, BookingListForJSON.class);
 			  			ordersList.remove(bid);
-			  			Text ordersListJSON = new Text(gson.toJson(ordersList));
+			  			Text ordersListJSON = new Text(JsonUtils.serialize(ordersList));
 			  			shapeList.setUnindexedProperty("bookingListJSON", ordersListJSON);
 			  			datastore.put(shapeList);
 			  		}
@@ -102,7 +99,7 @@ public class ClientRemoveBooking extends HttpServlet {
 		txn.commit();
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
-		response.getWriter().write(new Gson().toJson(map));
+		response.getWriter().write(JsonUtils.serialize(map));
 	}
 
 }

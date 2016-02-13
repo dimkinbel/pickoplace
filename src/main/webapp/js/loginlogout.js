@@ -486,7 +486,7 @@ var helper = (function() {
 	  FB.login(function(response) {
 	        // Person is now logged out
 		  statusChangeCallback(response);
-	    }, {scope: 'public_profile,email'});
+	    }, {scope: 'public_profile,email,user_about_me'});
   }
   function checkLoginState() {
 	  console.log("FACEBOOK: checkLoginState()" );
@@ -691,10 +691,12 @@ function updatePageView() {
 		if(pagetype!=undefined &&
 				(pagetype=='iframepage' ||
 				pagetype=='place_booking')) {
+			$("#book_sign_ask").hide();
 			$("#login_info_resp_db").empty();
 			$("#login_info_resp_db").html(fudata.first_name);
-			$("#blcon_r").show();
+			$("#blcon_r,#book_logged_in_as").show();
 			$("#lpr_b").hide();
+			$("#make_booking").show();
 		}
 		$("#fb_logout_div").show();
 		$("#go_logout_div").hide();
@@ -742,10 +744,12 @@ function updatePageView() {
 		if(pagetype!=undefined &&
 				(pagetype=='iframepage' ||
 				pagetype=='place_booking')) {
+			$("#book_sign_ask").hide();
 			$("#login_info_resp_db").empty();
 			$("#login_info_resp_db").html(gudata.name.givenName);
-			$("#blcon_r").show();
+			$("#blcon_r,#book_logged_in_as").show();
 			$("#lpr_b").hide();
+			$("#make_booking").show();
 		}
 
 		$("#fb_logout_div").hide();
@@ -791,7 +795,9 @@ function updatePageView() {
 			$("#fg_profile_image_wrap").hide();
 			if(pagetype!=undefined &&
 					(pagetype=='iframepage'||
-					pagetype=='place_config')) {
+					pagetype=='place_booking')) {
+				$("#make_booking,#book_logged_in_as").hide();
+				$("#book_sign_ask").show();
 				$("#login_info_resp_db").empty();
 				$("#blcon_r").hide();
 				$("#lpr_b").show();

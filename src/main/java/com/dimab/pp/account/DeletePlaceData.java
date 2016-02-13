@@ -13,19 +13,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.dimab.pickoplace.utils.JsonUtils;
 import com.dimab.pp.dto.AdminUser;
 import com.dimab.pp.dto.UserPlace;
 import com.dimab.pp.login.CheckTokenValid;
 import com.dimab.pp.login.GenericUser;
 import com.dimab.pp.search.SearchFabric;
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.Transaction;
-import com.google.appengine.api.datastore.TransactionOptions;
+import com.google.appengine.api.datastore.*;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
@@ -36,7 +30,6 @@ import com.google.appengine.tools.cloudstorage.ListItem;
 import com.google.appengine.tools.cloudstorage.ListOptions;
 import com.google.appengine.tools.cloudstorage.ListResult;
 import com.google.appengine.tools.cloudstorage.RetryParams;
-import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 public class DeletePlaceData extends HttpServlet {
@@ -53,7 +46,7 @@ public class DeletePlaceData extends HttpServlet {
 		Transaction txn = datastore.beginTransaction(options);
 		Map <String , String> map = new HashMap<String , String>();
 		map.put("removed", "incomplete");
-		Gson gson = new Gson();
+		
 		Date date = new Date();
 		
 		String username_email = new String();
@@ -90,7 +83,7 @@ public class DeletePlaceData extends HttpServlet {
  
 	  		
 	  		Type placeEditType = new TypeToken<List<AdminUser>>(){}.getType();
-	  		List<AdminUser> placeEditList  = gson.fromJson(placeEditList_str, placeEditType);
+	  		List<AdminUser> placeEditList  = JsonUtils.deserialize(placeEditList_str, placeEditType);
 	  		boolean RemovalAllowedbyUser = false;
 	  		if(!username_email.equals(canvasAdmin)) {
 	  			System.out.println("Requested user '"+username_email+"' is different from ADMIN user '"+canvasAdmin+"'");
@@ -119,31 +112,31 @@ public class DeletePlaceData extends HttpServlet {
 	  					List<String> mo_list = new ArrayList<String>();
 	  					List<String> ba_list = new ArrayList<String>();
 	  					if(result.getProperty("PID_full_access")!=null) {
-	  						fa_list = gson.fromJson((String)result.getProperty("PID_full_access"),collectionType);
+	  						fa_list = JsonUtils.deserialize(((Text)result.getProperty("PID_full_access")).getValue(),collectionType);
 	  						if(fa_list.contains(placeID)) {
 		  						fa_list.remove(placeID);
-		  						result.setUnindexedProperty("PID_full_access",gson.toJson(fa_list));
+		  						result.setUnindexedProperty("PID_full_access",new Text(JsonUtils.serialize(fa_list)));
 		  					}
 	  					} 
 	  					if(result.getProperty("PID_edit_place")!=null) {
-	  						ep_list = gson.fromJson((String)result.getProperty("PID_edit_place"),collectionType);
+	  						ep_list = JsonUtils.deserialize(((Text)result.getProperty("PID_edit_place")).getValue(),collectionType);
 	  						if(ep_list.contains(placeID)) {
 		  						ep_list.remove(placeID);
-		  						result.setUnindexedProperty("PID_edit_place",gson.toJson(ep_list));
+		  						result.setUnindexedProperty("PID_edit_place",new Text(JsonUtils.serialize(ep_list)));
 		  					}
 	  					}
 	  					if(result.getProperty("PID_move_only")!=null) {
-	  						mo_list = gson.fromJson((String)result.getProperty("PID_move_only"),collectionType);
+	  						mo_list = JsonUtils.deserialize(((Text)result.getProperty("PID_move_only")).getValue(),collectionType);
 	  						if(mo_list.contains(placeID)) {
 		  						mo_list.remove(placeID);
-		  						result.setUnindexedProperty("PID_move_only",gson.toJson(mo_list));
+		  						result.setUnindexedProperty("PID_move_only",new Text(JsonUtils.serialize(mo_list)));
 		  					}
 	  					}
 	  					if(result.getProperty("PID_book_admin")!=null) {
-	  						ba_list = gson.fromJson((String)result.getProperty("PID_book_admin"),collectionType);
+	  						ba_list = JsonUtils.deserialize(((Text)result.getProperty("PID_book_admin")).getValue(),collectionType);
 	  						if(ba_list.contains(placeID)) {
 		  						ba_list.remove(placeID);
-		  						result.setUnindexedProperty("PID_book_admin",gson.toJson(ba_list));
+		  						result.setUnindexedProperty("PID_book_admin",new Text(JsonUtils.serialize(ba_list)));
 		  					}
 	  					}
  
@@ -246,7 +239,7 @@ public class DeletePlaceData extends HttpServlet {
 		txn.commit();
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
-		response.getWriter().write(new Gson().toJson(map));
+		response.getWriter().write(JsonUtils.serialize(map));
 	}
 
 }

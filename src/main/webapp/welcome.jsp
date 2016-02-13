@@ -19,7 +19,6 @@
         <link rel="stylesheet" href="css/perfect-scrollbar.css" type="text/css" media="screen" />
         <link rel="stylesheet" href="css/dropit.css" type="text/css" media="screen" />
 
-
         <script type="text/javascript" src="js/jquery-migrate-1.2.1.js" ></script>
         <script type="text/javascript" src="js/jquery-ui-1.11.2.custom/jquery-ui.js"></script>
         <script type="text/javascript" src="js/jquery-ui-1.11.4.Autocomplete/jquery-ui.js"></script>
@@ -173,7 +172,7 @@
         </div>
 
         <div id="header_td_div" class="main_page_header">
-            <div id="header">
+            <div id="header" >
                 <div id="logo_"><img src="img/pplogo.png" id="pplogoo"/></div>
                 <div id="search_header" >
                     <div class="left search_header_text">
@@ -259,7 +258,7 @@
                     </table>
                 </div>
 
-                <div style="float: right; margin-right: 100px;">
+                <div class="languageSelectorTag">
                     <common:languageSelector/>
                 </div>
             </div>
@@ -287,8 +286,8 @@
                             <table id="wiz_table" cellspacing="0" cellpadding="0" style=" border-collapse: collapse">
                                 <tr >
                                     <td id="address_tr_wiz">
-                                        <div id="wiz_header_" >Free place wizard</div>
-                                        <div style="position:relative"><input type="text" id="wiz_address_input" class="wiz_address" placeholder="Address" /><i class="material-icons mat_room">room</i></div>
+                                        <div id="wiz_header_" >${i18n['freePlaceWizard']}</div>
+                                        <div style="position:relative;display: inline-block;"><input type="text" id="wiz_address_input" class="wiz_address" placeholder="Address" /><i class="material-icons mat_room">room</i></div>
                                     </td>
                                     <td rowspan="2" id="time_persons_wiz_td">
                                         <div id="time_persons_wiz_div">
@@ -375,6 +374,3 @@
         </div>
     </jsp:attribute>
 </layout:baseHtml>
-
-</body>
-</html>

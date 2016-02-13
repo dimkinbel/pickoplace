@@ -10,8 +10,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.dimab.pickoplace.utils.JsonUtils;
 import com.dimab.pp.dto.PlaceNameAddressSearch;
-import com.google.gson.Gson;
 
 
 public class SearchByNameAutocomplete extends HttpServlet {
@@ -33,7 +33,7 @@ public class SearchByNameAutocomplete extends HttpServlet {
         }
         response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
-		response.getWriter().write(new Gson().toJson(map));
+		response.getWriter().write(JsonUtils.serialize(map));
 	}
 
 }

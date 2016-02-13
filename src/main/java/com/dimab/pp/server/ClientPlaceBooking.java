@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.dimab.pickoplace.utils.JsonUtils;
 import com.dimab.pp.channel.ChannelMessageFactory;
 import com.dimab.pp.database.FreePlaceFactory;
 import com.dimab.pp.database.GetPlaceInfoFactory;
@@ -33,8 +34,7 @@ import com.google.appengine.api.datastore.Transaction;
 import com.google.appengine.api.datastore.TransactionOptions;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
-import com.google.appengine.api.datastore.Query.FilterPredicate;
-import com.google.gson.Gson;
+import com.google.appengine.api.datastore.Query.FilterPredicate; 
 import com.google.gson.reflect.TypeToken;
 
 
@@ -64,13 +64,13 @@ public class ClientPlaceBooking extends HttpServlet {
 			map.put("added", false);
 			response.setContentType("application/json");
 			response.setCharacterEncoding("UTF-8");
-			response.getWriter().write(new Gson().toJson(map));
+			response.getWriter().write(JsonUtils.serialize(map));
 			return;
 		} else {
 			username_email = genuser.getEmail();
 		}
-		Gson gson = new Gson();
-		BookingRequestWrap bookingRequestsWrap = gson.fromJson(jsonString,BookingRequestWrap.class);
+		
+		BookingRequestWrap bookingRequestsWrap = JsonUtils.deserialize(jsonString,BookingRequestWrap.class);
 		// Check available by place open or time passed (1min)
 		Date current = new Date();
 		Long utcTimeSeconds = current.getTime()/1000;
@@ -140,14 +140,14 @@ public class ClientPlaceBooking extends HttpServlet {
   			bookingsMade = 1;
   			canvasEntity.setUnindexedProperty("bookingsCount", bookingsMade);  			
   		}
-  		Text bookingListGSON = new Text(gson.toJson(bookingRequests));
+  		Text bookingListGSON = new Text(JsonUtils.serialize(bookingRequests));
   		Entity bookingOrder = new Entity("BookingOrders",canvasKey);
   		bookingOrder.setUnindexedProperty("bookingList", bookingListGSON);
   		bookingOrder.setProperty("clientid", username_email);
   		bookingOrder.setUnindexedProperty("placeName", (String)canvasEntity.getProperty("placeName"));
   		bookingOrder.setUnindexedProperty("placeBranchName", (String)canvasEntity.getProperty("placeBranchName"));
   		bookingOrder.setUnindexedProperty("address", (String)canvasEntity.getProperty("address"));
-		bookingOrder.setUnindexedProperty("genuser", gson.toJson(genuser));
+		bookingOrder.setUnindexedProperty("genuser", JsonUtils.serialize(genuser));
 		bookingOrder.setUnindexedProperty("UTCdateProper", UTCdateProper);
 		bookingOrder.setUnindexedProperty("userPhone", sessionPhone);
 
@@ -174,10 +174,10 @@ public class ClientPlaceBooking extends HttpServlet {
   		if (canvasEntity != null && bookAvailable) {
    		   String closeDatesString = (String) canvasEntity.getProperty("closeDates");
    		   Type closeDateType = new TypeToken<List<Integer>>(){}.getType();
-   		   List<Integer> closeDates  = gson.fromJson(closeDatesString, closeDateType);
+   		   List<Integer> closeDates  = JsonUtils.deserialize(closeDatesString, closeDateType);
    		   
  		    String weekdays = (String) canvasEntity.getProperty("workinghours");
-			WorkingWeek weekdaysObject  = gson.fromJson(weekdays, WorkingWeek.class);
+			WorkingWeek weekdaysObject  = JsonUtils.deserialize(weekdays, WorkingWeek.class);
 			List<SingleTimeRangeLong> tempRanges = weekdaysObject.getRangesList(bookingRequestsWrap.getWeekday(),2);
 
 			// Check for dates the place is close (set by Administrator)
@@ -193,7 +193,7 @@ public class ClientPlaceBooking extends HttpServlet {
             if(weekdaysObject.isInRangeList(tempRanges,bookFrom,bookTo)) {
             	  
             } else {
-            	System.out.println("Place closed! Open ranges :" +gson.toJson(tempRanges));
+            	System.out.println("Place closed! Open ranges :" +JsonUtils.serialize(tempRanges));
 				System.out.println("            Booking range :" +bookFrom + "-"+bookTo);
             	bookAvailable = false;
             }
@@ -228,18 +228,18 @@ public class ClientPlaceBooking extends HttpServlet {
 			  			shapeOrders.setProperty("sid", bookingRequest.getSid());	
 			  			shapeOrders.setProperty("pid", bookingRequest.getPid());
 			  			ordersList.add(OrderBid, 0);
-			  			Text ordersListJSON = new Text(gson.toJson(ordersList));
+			  			Text ordersListJSON = new Text(JsonUtils.serialize(ordersList));
 			  			shapeOrders.setUnindexedProperty("bookingListJSON", ordersListJSON);
 			  			shapeEntities.add(shapeOrders);
 			  			//datastore.put(shapeOrders);
 			  			System.out.println("New Orders Entity");
 			  		} else {
 			  			String allOrdersJSON =   ((Text) shapeOrders.getProperty("bookingListJSON")).getValue();
-			  			ordersList = gson.fromJson(allOrdersJSON, BookingListForJSON.class);
+			  			ordersList = JsonUtils.deserialize(allOrdersJSON, BookingListForJSON.class);
 			  			boolean added = ordersList.add(OrderBid, 0);
 			  			if (added) {
 			  				// OK
-			  				Text ordersListJSON = new Text(gson.toJson(ordersList));
+			  				Text ordersListJSON = new Text(JsonUtils.serialize(ordersList));
 			  				shapeOrders.setUnindexedProperty("bookingListJSON", ordersListJSON);
 			  				//datastore.put(shapeOrders);
 			  				shapeEntities.add(shapeOrders);
@@ -276,13 +276,13 @@ public class ClientPlaceBooking extends HttpServlet {
   			if(mailFabric.isSubscribed(datastore, genuser)) {
   				String userKeyString = mailFabric.getUserKey(datastore, genuser);
   				bookingRequestsWrap.setUserEntityKeyString(userKeyString);
-  				mailFabric.SendConfirmationEmail("pickoplace@appspot.gserviceaccount.com", genuser.getEmail(), bookingRequestsWrap, placeInfo);
+  				mailFabric.SendEmail("userConfirmation","pickoplace@appspot.gserviceaccount.com", genuser.getEmail(), bookingRequestsWrap, placeInfo);
   			}
   		}
   		txn.commit();
   		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
-		response.getWriter().write(new Gson().toJson(map));
+		response.getWriter().write(JsonUtils.serialize(map));
 	}
 
 }

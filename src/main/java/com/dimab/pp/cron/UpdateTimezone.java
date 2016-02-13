@@ -1,10 +1,10 @@
 package com.dimab.pp.cron;
 
+import com.dimab.pickoplace.utils.JsonUtils;
 import com.dimab.pp.dto.GoogleTimezoneResponse;
 import com.dimab.pp.dto.TimeZonePair;
 import com.google.appengine.api.datastore.*;
-import com.google.appengine.api.urlfetch.*;
-import com.google.gson.Gson;
+import com.google.appengine.api.urlfetch.*; 
 import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
@@ -40,9 +40,8 @@ public class UpdateTimezone extends HttpServlet {
         System.out.println("UpdateTimezone.doGet");
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         TransactionOptions options = TransactionOptions.Builder.withXG(true);
-        Transaction txn = datastore.beginTransaction(options);
-        Gson gson = new Gson();
-
+        Transaction txn = datastore.beginTransaction(options); 
+        
         Query.Filter timezonesParamsFilter = new Query.FilterPredicate("parameter_", Query.FilterOperator.EQUAL, "timezones");
         Query qs = new Query("SystemParams").setFilter(timezonesParamsFilter);
         PreparedQuery pqs = datastore.prepare(qs);
@@ -52,7 +51,7 @@ public class UpdateTimezone extends HttpServlet {
             System.out.println(timezonesJSON);
             List<TimeZonePair> timezonePairs = new ArrayList<>();
             Type collectionType = new TypeToken<List<TimeZonePair>>() {}.getType();
-            timezonePairs = gson.fromJson(timezonesJSON, collectionType);
+            timezonePairs =JsonUtils.deserialize(timezonesJSON, collectionType);
 
             List<TimeZonePair> newTimezonePairs = new ArrayList<>();
 
@@ -111,8 +110,8 @@ public class UpdateTimezone extends HttpServlet {
                     String responseString;
                     try {
                         responseString = new String(resp_.getContent(),"UTF-8");
-                        timezoneResponse = gson.fromJson(responseString, GoogleTimezoneResponse.class);
-                        System.out.println(new Gson().toJson(timezoneResponse));
+                        timezoneResponse = JsonUtils.deserialize(responseString, GoogleTimezoneResponse.class);
+                        System.out.println(JsonUtils.serialize(timezoneResponse));
                     } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();
                     }
@@ -133,7 +132,7 @@ public class UpdateTimezone extends HttpServlet {
                         collectionType = new TypeToken<List<String>>(){}.getType();
                         List<String> pidlist = new ArrayList<String>();
                         if(result.getProperty("PIDlist")!=null) {
-                            pidlist = gson.fromJson((String)result.getProperty("PIDlist"),collectionType);
+                            pidlist =JsonUtils.deserialize((String)result.getProperty("PIDlist"),collectionType);
 
                             for(String pid : pidlist) {
                                 Query.Filter userPlaceEntityFilterByID = new Query.FilterPredicate("placeUniqID", Query.FilterOperator.EQUAL,pid);
@@ -170,7 +169,7 @@ public class UpdateTimezone extends HttpServlet {
             }
 
             if(timzonechanged) {
-                String timezonesString = gson.toJson(newTimezonePairs);
+                String timezonesString = JsonUtils.serialize(newTimezonePairs);
                 Text timezonesText = new Text(timezonesString);
                 timezonesEntity.setUnindexedProperty("value_", timezonesText);
                 datastore.put(timezonesEntity);

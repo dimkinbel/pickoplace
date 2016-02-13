@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.dimab.pickoplace.utils.JsonUtils;
 import com.dimab.pp.database.GetAJAXimageJSONfromCSfactory;
 import com.dimab.pp.database.GetBookingShapesDataFactory;
 import com.dimab.pp.dto.AJAXImagesJSON;
@@ -30,11 +31,6 @@ import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
-import com.google.appengine.api.images.ImagesService;
-import com.google.appengine.api.images.ImagesServiceFactory;
-import com.google.appengine.api.images.ServingUrlOptions;
-import com.google.appengine.tools.cloudstorage.GcsFilename;
-import com.google.gson.Gson;
 
 
 public class EditIFrame extends HttpServlet {
@@ -68,7 +64,7 @@ public class EditIFrame extends HttpServlet {
 			username_email = genuser.getEmail();
 		}
 		
-		Gson gson = new Gson();
+
   		GetAJAXimageJSONfromCSfactory csFactory = new GetAJAXimageJSONfromCSfactory();
   		List<JsonImageID_2_GCSurl> JSONimageID2url = new ArrayList<JsonImageID_2_GCSurl>();
   		AJAXImagesJSON CanvasStateEdit = new AJAXImagesJSON();
@@ -95,7 +91,7 @@ public class EditIFrame extends HttpServlet {
 			String uid = (String)ifidEntity.getProperty("savedby");
   			Date date_ = (Date)ifidEntity.getProperty("date");
   			String iframe_ = (String)ifidEntity.getProperty("ifjson");
-			IFsave SaveObject = gson.fromJson(iframe_, IFsave.class);
+			IFsave SaveObject = JsonUtils.deserialize(iframe_, IFsave.class);
 	        SimpleDateFormat dateFormat = new SimpleDateFormat("wwMMMy HH:mm");
 	        System.out.println("date: " + dateFormat.format( date_ ) );
 	        

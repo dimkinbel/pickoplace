@@ -1,10 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"
     import = "com.dimab.pp.dto.*"
-    import = "com.google.gson.Gson"
-    import = "com.google.gson.reflect.TypeToken"
     import = "java.util.*"
     import = "java.lang.reflect.Type"%>
+<%@ page import="com.dimab.pickoplace.utils.JsonUtils" %>
 
 <!DOCTYPE html>
   
@@ -181,7 +180,7 @@
 			<div id="header_drawing">
 				<div id="header">
 					<div id="logo_"><img src="img/pplogo.png" id="pplogoo"/></div>
-				       <div id="header_info_wrap" style="width:100%">
+				       <div id="header_info_wrap" >
 						 <div id="header_info">
 						   <table style="border-collapse: collapse;" cellspacing="0" cellpadding="0"  >
 							   <tr><td>
@@ -234,7 +233,7 @@
 <div id="hiden_values_from_edit" style="display:none">
    <%
    AJAXImagesJSON responseJSON = (AJAXImagesJSON)request.getAttribute("canvasEditPlace");
-   Gson gson = new Gson();
+
    List<PPSubmitObject> canvasStateList = responseJSON.getFloors();
    List<JsonSID_2_imgID> sid2imgID = responseJSON.getJSONSIDlinks();
    
@@ -266,13 +265,13 @@
     		   backgroundURL = floor.getBackground();
     	   }  	   
     %>
-      <input type="text" id="server_canvasState_<%=floorid %>" name="server_canvasState" value='<%=gson.toJson(floor) %>'/>
+      <input type="text" id="server_canvasState_<%=floorid %>" name="server_canvasState" value='<%=JsonUtils.serialize(floor) %>'/>
       <img    id="server_background_<%=floorid %>" crossorigin="anonymous" name="server_background" src="<%=backgroundURL%>"/>
       <input type="text" id="server_floor_name_<%=floorid %>" value="<%=floor.getFloor_name() %>"/>
       <canvas id="canvas_tmp_<%=floorid %>"></canvas>
     <% }%>
       <% if (sid2imgID!=null && !sid2imgID.isEmpty()) {%>
-      <input type="text" id="server_sid2imgID" value='<%=gson.toJson(sid2imgID)%>'/>
+      <input type="text" id="server_sid2imgID" value='<%=JsonUtils.serialize(sid2imgID)%>'/>
       <%} %>
       <input type="text" id="server_placeName" value='<%=placeName%>'/>
       <input type="text" id="server_placeBranchName" value='<%=placeBranchName%>'/>

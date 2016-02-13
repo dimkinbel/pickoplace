@@ -2,7 +2,7 @@ package com.dimab.pp.login;
 
 public class FBmeResponseJSON {
 	String id;
-	String email;
+	String email = "";
 	String first_name;
 	String gender;
 	String last_name;

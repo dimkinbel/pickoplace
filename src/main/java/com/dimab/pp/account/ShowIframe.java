@@ -1,10 +1,8 @@
 package com.dimab.pp.account;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.text.SimpleDateFormat; 
+import java.util.Date; 
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -12,6 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.dimab.pickoplace.utils.JsonUtils;
 import com.dimab.pp.database.GetAJAXimageJSONfromCSfactory;
 import com.dimab.pp.dto.AJAXImagesJSON;
 import com.dimab.pp.dto.IFresponse;
@@ -25,7 +24,7 @@ import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
-import com.google.gson.Gson;
+
 
 public class ShowIframe extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -60,15 +59,13 @@ public class ShowIframe extends HttpServlet {
 		    Query piq = new Query("IFrames").setFilter(ifpidfilter);
 		    PreparedQuery sbpiq = datastore.prepare(piq);
 		  	Entity ifidEntity = sbpiq.asSingleEntity();
-		  	
-	
-		  	Gson gson = new Gson();
+		  	 
 		  	if (ifidEntity != null) {
 	  	  		String ifid_ = (String)ifidEntity.getProperty("ifid");
 				String uid = (String)ifidEntity.getProperty("savedby");
 	  			Date date_ = (Date)ifidEntity.getProperty("date");
 	  			String iframe_ = (String)ifidEntity.getProperty("ifjson");
-				IFsave SaveObject = gson.fromJson(iframe_, IFsave.class);
+				IFsave SaveObject = JsonUtils.deserialize(iframe_, IFsave.class);
 		        SimpleDateFormat dateFormat = new SimpleDateFormat("wwMMMy HH:mm");
 		        
 		        ifresp.setDate(dateFormat.format( date_ ));

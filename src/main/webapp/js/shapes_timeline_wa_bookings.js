@@ -896,7 +896,7 @@ BCanvasState.prototype.selectedDown = function() {
 }
 BCanvasState.prototype.lineSmaller  = function() {
     var shapeLineHeight = (this.origHeight*0.9 - 0) / this.SIDsorted.length  ;
-    if (shapeLineHeight >= 100 || shapeLineHeight <= 40 ) {
+    if ( shapeLineHeight <= 40 ) {
 
     }  else {
         this.origHeight *= 0.9;
@@ -909,7 +909,7 @@ BCanvasState.prototype.lineSmaller  = function() {
 }
 BCanvasState.prototype.lineBigger  = function() {
     var shapeLineHeight = (this.origHeight*1.1 - 0) / this.SIDsorted.length  ;
-    if (shapeLineHeight >= 100 || shapeLineHeight <= 40 ) {
+    if (shapeLineHeight >= 100  ) {
 
     }  else {
         this.origHeight *= 1.1;

@@ -11,20 +11,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.dimab.pickoplace.utils.JsonUtils;
 import com.dimab.pp.functions.RandomStringGenerator;
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.Transaction;
-import com.google.appengine.api.datastore.TransactionOptions;
+import com.google.appengine.api.datastore.*;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
-import com.google.gson.Gson;
+
 
 
 public class UserLoginLogout extends HttpServlet {
@@ -46,8 +41,7 @@ public class UserLoginLogout extends HttpServlet {
         HttpSession session = req.getSession();
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 		TransactionOptions options = TransactionOptions.Builder.withXG(true);
-		Transaction txn = datastore.beginTransaction(options);
-		Gson gson = new Gson();
+		Transaction txn = datastore.beginTransaction(options); 
         String returnurl = (String) session.getAttribute("urlreturn");
         
         System.out.println(returnurl);
@@ -76,10 +70,10 @@ public class UserLoginLogout extends HttpServlet {
     			userEntity.setUnindexedProperty("lastDate",  date.toString());
     			
                 List<String> pids = new ArrayList<String>();
-    			userEntity.setUnindexedProperty("PID_full_access", gson.toJson(pids));
-    			userEntity.setUnindexedProperty("PID_edit_place", gson.toJson(pids));
-    			userEntity.setUnindexedProperty("PID_move_only", gson.toJson(pids));
-    			userEntity.setUnindexedProperty("PID_book_admin", gson.toJson(pids));
+    			userEntity.setUnindexedProperty("PID_full_access", new Text(JsonUtils.serialize(pids)));
+    			userEntity.setUnindexedProperty("PID_edit_place", new Text(JsonUtils.serialize(pids)));
+    			userEntity.setUnindexedProperty("PID_move_only", new Text(JsonUtils.serialize(pids)));
+    			userEntity.setUnindexedProperty("PID_book_admin", new Text(JsonUtils.serialize(pids)));
     			datastore.put(userEntity);
     		} else {
     			// User Not first login

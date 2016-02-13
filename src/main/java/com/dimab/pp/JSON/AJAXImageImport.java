@@ -1,5 +1,6 @@
 package com.dimab.pp.JSON;
 
+import com.dimab.pickoplace.utils.JsonUtils;
 import com.dimab.pp.dto.AJAXImagesJSON;
 import com.dimab.pp.dto.AdminUser;
 import com.dimab.pp.dto.CanvasShape;
@@ -32,7 +33,8 @@ import com.google.appengine.tools.cloudstorage.GcsOutputChannel;
 import com.google.appengine.tools.cloudstorage.GcsService;
 import com.google.appengine.tools.cloudstorage.GcsServiceFactory;
 import com.google.appengine.tools.cloudstorage.RetryParams;
-import com.google.gson.Gson;
+
+
 import com.google.gson.reflect.TypeToken;
 
 
@@ -105,8 +107,9 @@ public class AJAXImageImport extends HttpServlet {
 			username_email = genuser.getEmail();
 		}
 		String jsonString = request.getParameter("jsonObject");
-		Gson gson = new Gson();
-		AJAXImagesJSON SaveObject = gson.fromJson(jsonString, AJAXImagesJSON.class);
+		
+		
+		AJAXImagesJSON SaveObject = JsonUtils.deserialize(jsonString, AJAXImagesJSON.class);
         String stage = SaveObject.getStage();
 		String userRandom = "";
 		GeoPt center = new GeoPt(Float.valueOf(SaveObject.getLat()), Float.valueOf(SaveObject.getLng()));
@@ -124,32 +127,32 @@ public class AJAXImageImport extends HttpServlet {
 		List<String> mo_list = new ArrayList<String>();
 		List<String> ba_list = new ArrayList<String>();
 		if(result.getProperty("PID_full_access")!=null) {
-			fa_list = gson.fromJson((String)result.getProperty("PID_full_access"),collectionType);
+			fa_list = JsonUtils.deserialize(((Text)result.getProperty("PID_full_access")).getValue(),collectionType);
 		} 
 		if(result.getProperty("PID_edit_place")!=null) {
-			ep_list = gson.fromJson((String)result.getProperty("PID_edit_place"),collectionType);
+			ep_list = JsonUtils.deserialize(((Text)result.getProperty("PID_edit_place")).getValue(),collectionType);
 		}
 		if(result.getProperty("PID_move_only")!=null) {
-			mo_list = gson.fromJson((String)result.getProperty("PID_move_only"),collectionType);
+			mo_list = JsonUtils.deserialize(((Text)result.getProperty("PID_move_only")).getValue(),collectionType);
 		}
 		if(result.getProperty("PID_book_admin")!=null) {
-			ba_list = gson.fromJson((String)result.getProperty("PID_book_admin"),collectionType);
+			ba_list = JsonUtils.deserialize(((Text)result.getProperty("PID_book_admin")).getValue(),collectionType);
 		}
 		if(!fa_list.contains(placeID)) {
 			fa_list.add(placeID);
-			result.setUnindexedProperty("PID_full_access",gson.toJson(fa_list));
+			result.setUnindexedProperty("PID_full_access", new Text(JsonUtils.serialize(fa_list)));
 		}
 		if(!ep_list.contains(placeID)) {
 			ep_list.add(placeID);
-			result.setUnindexedProperty("PID_edit_place",gson.toJson(ep_list));
+			result.setUnindexedProperty("PID_edit_place",new Text(JsonUtils.serialize(ep_list)));
 		}
 		if(!mo_list.contains(placeID)) {
 			mo_list.add(placeID);
-			result.setUnindexedProperty("PID_move_only",gson.toJson(mo_list));
+			result.setUnindexedProperty("PID_move_only",new Text(JsonUtils.serialize(mo_list)));
 		}
 		if(!ba_list.contains(placeID)) {
 			ba_list.add(placeID);
-			result.setUnindexedProperty("PID_book_admin",gson.toJson(ba_list));
+			result.setUnindexedProperty("PID_book_admin",new Text(JsonUtils.serialize(ba_list)));
 		}
 		datastore.put(result);
 		
@@ -195,7 +198,7 @@ public class AJAXImageImport extends HttpServlet {
 				map.put("status", "No-ImageVersion-Exists");
 				response.setContentType("application/json");
 				response.setCharacterEncoding("UTF-8");
-				response.getWriter().write(new Gson().toJson(map));
+				response.getWriter().write(JsonUtils.serialize(map));
 				return;
 			}
 			try {
@@ -206,7 +209,7 @@ public class AJAXImageImport extends HttpServlet {
 				map.put("status", "No-CanvasState-Exists");
 				response.setContentType("application/json");
 				response.setCharacterEncoding("UTF-8");
-				response.getWriter().write(new Gson().toJson(map));
+				response.getWriter().write(JsonUtils.serialize(map));
 				return;
 			}
 
@@ -355,9 +358,9 @@ public class AJAXImageImport extends HttpServlet {
             }
             
 	  	
-	  		   gson = new Gson();
-	  		   String canvasStateJSON = gson.toJson(CanvasObjectList);
-	  		   String sid2ImageIDJSON = gson.toJson(sid2ImageID);
+	  		  
+	  		   String canvasStateJSON = JsonUtils.serialize(CanvasObjectList);
+	  		   String sid2ImageIDJSON = JsonUtils.serialize(sid2ImageID);
 	  		   Text TcanvasStateJSON = new Text(canvasStateJSON);
 	  		   Text Tsid2ImageIDJSON = new Text(sid2ImageIDJSON);
 	  		   System.out.println("Canvas JSON:" + canvasStateJSON);
@@ -382,11 +385,11 @@ public class AJAXImageImport extends HttpServlet {
 	            canvasState.setUnindexedProperty("placeURL",SaveObject.getPlaceURL());
 	            canvasState.setUnindexedProperty("placeDescription",SaveObject.getPlaceDescription());
 	            canvasState.setUnindexedProperty("automatic_approval",SaveObject.isAutomatic_approval());
-	            canvasState.setUnindexedProperty("automaticApprovalList",gson.toJson(SaveObject.getAutomaticApprovalList()));
-	            canvasState.setUnindexedProperty("adminApprovalList",gson.toJson(SaveObject.getAdminApprovalList()));
-	            canvasState.setUnindexedProperty("placeEditList",gson.toJson(adminList));
-	            canvasState.setUnindexedProperty("closeDates",gson.toJson(SaveObject.getCloseDates()));
-	            canvasState.setUnindexedProperty("workinghours",gson.toJson(SaveObject.getWorkinghours()));
+	            canvasState.setUnindexedProperty("automaticApprovalList",JsonUtils.serialize(SaveObject.getAutomaticApprovalList()));
+	            canvasState.setUnindexedProperty("adminApprovalList",JsonUtils.serialize(SaveObject.getAdminApprovalList()));
+	            canvasState.setUnindexedProperty("placeEditList",JsonUtils.serialize(adminList));
+	            canvasState.setUnindexedProperty("closeDates",JsonUtils.serialize(SaveObject.getCloseDates()));
+	            canvasState.setUnindexedProperty("workinghours",JsonUtils.serialize(SaveObject.getWorkinghours()));
 	            canvasState.setUnindexedProperty("UTCoffcet",SaveObject.getUTCoffset());
 	            canvasState.setUnindexedProperty("bookingsCount",0);
 	            canvasState.setProperty("TotalRating",(double)0);
@@ -427,11 +430,11 @@ public class AJAXImageImport extends HttpServlet {
   	          canvasState.setUnindexedProperty("placeURL",SaveObject.getPlaceURL());
   	          canvasState.setUnindexedProperty("placeDescription",SaveObject.getPlaceDescription());
   	          canvasState.setUnindexedProperty("automatic_approval",SaveObject.isAutomatic_approval());
-  	          canvasState.setUnindexedProperty("automaticApprovalList",gson.toJson(SaveObject.getAutomaticApprovalList()));
-  	          canvasState.setUnindexedProperty("adminApprovalList",gson.toJson(SaveObject.getAdminApprovalList()));
-  	          canvasState.setUnindexedProperty("placeEditList",gson.toJson(SaveObject.getPlaceEditList()));
-  	          canvasState.setUnindexedProperty("closeDates",gson.toJson(SaveObject.getCloseDates()));
-  	          canvasState.setUnindexedProperty("workinghours",gson.toJson(SaveObject.getWorkinghours()));
+  	          canvasState.setUnindexedProperty("automaticApprovalList",JsonUtils.serialize(SaveObject.getAutomaticApprovalList()));
+  	          canvasState.setUnindexedProperty("adminApprovalList",JsonUtils.serialize(SaveObject.getAdminApprovalList()));
+  	          canvasState.setUnindexedProperty("placeEditList",JsonUtils.serialize(SaveObject.getPlaceEditList()));
+  	          canvasState.setUnindexedProperty("closeDates",JsonUtils.serialize(SaveObject.getCloseDates()));
+  	          canvasState.setUnindexedProperty("workinghours",JsonUtils.serialize(SaveObject.getWorkinghours()));
   	          canvasState.setUnindexedProperty("UTCoffcet",SaveObject.getUTCoffset());
   	          
   	          
@@ -445,45 +448,45 @@ public class AJAXImageImport extends HttpServlet {
   	      		    	if(auser.isFull_access()) {
 	  	      		    	List<String> fa_list__ = new ArrayList<String>();
 		  	      		    if(result__.getProperty("PID_full_access")!=null) {
-			  	      			fa_list__ = gson.fromJson((String)result__.getProperty("PID_full_access"),collectionType);
+			  	      			fa_list__ = JsonUtils.deserialize(((Text)result__.getProperty("PID_full_access")).getValue(),collectionType);
 			  	      			
 			  	      		} 
 			  	      		if(!fa_list__.contains(placeID)) {
 			  	      			fa_list__.add(placeID);
-			  	      			result__.setUnindexedProperty("PID_full_access",gson.toJson(fa_list__));
+			  	      			result__.setUnindexedProperty("PID_full_access", new Text(JsonUtils.serialize(fa_list__)));
 			  	      		}
   	      		    	}
   	      		    	if(auser.isEdit_place()) {
 	  	      		    	List<String> ep_list__ = new ArrayList<String>();
 		  	      		    if(result__.getProperty("PID_edit_place")!=null) {
-			  	      			ep_list__ = gson.fromJson((String)result__.getProperty("PID_edit_place"),collectionType);
+			  	      			ep_list__ = JsonUtils.deserialize(((Text)result__.getProperty("PID_edit_place")).getValue(),collectionType);
 			  	      			
 			  	      		} 
 			  	      		if(!ep_list__.contains(placeID)) {
 			  	      			ep_list__.add(placeID);
-			  	      			result__.setUnindexedProperty("PID_edit_place",gson.toJson(ep_list__));
+			  	      			result__.setUnindexedProperty("PID_edit_place", new Text(JsonUtils.serialize(ep_list__)));
 			  	      		}
   	      		    	}	
   	      		    	if(auser.isMove_only()) {
 	  	      		    	List<String> mo_list__ = new ArrayList<String>();
 		  	      		    if(result__.getProperty("PID_move_only")!=null) {
-			  	      			mo_list__ = gson.fromJson((String)result__.getProperty("PID_move_only"),collectionType);
+			  	      			mo_list__ = JsonUtils.deserialize(((Text)result__.getProperty("PID_move_only")).getValue(),collectionType);
 			  	      			
 			  	      		} 
 			  	      		if(!mo_list__.contains(placeID)) {
 			  	      			mo_list__.add(placeID);
-			  	      			result__.setUnindexedProperty("PID_move_only",gson.toJson(mo_list__));
+			  	      			result__.setUnindexedProperty("PID_move_only", new Text(JsonUtils.serialize(mo_list__)));
 			  	      		}
   	      		    	}	
   	      		    	if(auser.isBook_admin()) {
 	  	      		    	List<String> ba_list__ = new ArrayList<String>();
 		  	      		    if(result__.getProperty("PID_book_admin")!=null) {
-			  	      			ba_list__ = gson.fromJson((String)result__.getProperty("PID_book_admin"),collectionType);
+			  	      			ba_list__ = JsonUtils.deserialize(((Text)result__.getProperty("PID_book_admin")).getValue(),collectionType);
 			  	      			
 			  	      		} 
 			  	      		if(!ba_list__.contains(placeID)) {
 			  	      			ba_list__.add(placeID);
-			  	      			result__.setUnindexedProperty("PID_book_admin",gson.toJson(ba_list__));
+			  	      			result__.setUnindexedProperty("PID_book_admin", new Text(JsonUtils.serialize(ba_list__)));
 			  	      		}
   	      		    	}
 		  	      		datastore.put(result__);  	      		    	
@@ -527,7 +530,7 @@ public class AJAXImageImport extends HttpServlet {
   	          if(stage.equals("Configuration")) {
   	  	          if(canvasState.getProperty("photos") != null) {
   	  	        	collectionType = new TypeToken<List<String>>(){}.getType();
-  	  	        	prevPhotosList = gson.fromJson((String)canvasState.getProperty("photos"),collectionType);     	  
+  	  	        	prevPhotosList = JsonUtils.deserialize((String)canvasState.getProperty("photos"),collectionType);     	  
   	  	          }
   	  	          
   	  	          
@@ -561,7 +564,7 @@ public class AJAXImageImport extends HttpServlet {
 	  	        		  gcsService.delete(new GcsFilename("pp_images", fileName));
 	  	        	  }
 	  	          }
-	  	        canvasState.setUnindexedProperty("photos",gson.toJson(photosList));
+	  	        canvasState.setUnindexedProperty("photos",JsonUtils.serialize(photosList));
   	          }
 
   	           SearchFabric searchIndexFabrix = new SearchFabric();
@@ -603,7 +606,7 @@ public class AJAXImageImport extends HttpServlet {
              txn.commit();
  			 response.setContentType("application/json");
  			 response.setCharacterEncoding("UTF-8");
- 			 response.getWriter().write(new Gson().toJson(map));
+ 			 response.getWriter().write(JsonUtils.serialize(map));
  			 return;
 
 		} else {
@@ -611,7 +614,7 @@ public class AJAXImageImport extends HttpServlet {
 			map.put("status", "No-User-Entity-Exists");
 			response.setContentType("application/json");
 			response.setCharacterEncoding("UTF-8");
-			response.getWriter().write(new Gson().toJson(map));
+			response.getWriter().write(JsonUtils.serialize(map));
 			
 			return;
 		}

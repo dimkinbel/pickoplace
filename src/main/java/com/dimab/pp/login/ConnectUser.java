@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.dimab.pickoplace.utils.JsonUtils;
 import com.dimab.pp.functions.RandomStringGenerator;
 import com.google.api.client.auth.oauth2.TokenResponseException;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeTokenRequest;
@@ -17,17 +18,10 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.Transaction;
-import com.google.appengine.api.datastore.TransactionOptions;
+import com.google.appengine.api.datastore.*;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
-import com.google.gson.Gson;
 
 //import org.apache.log4j.BasicConfigurator;
 
@@ -61,10 +55,7 @@ public class ConnectUser extends HttpServlet {
 	   */
 	  private static final JacksonFactory JSON_FACTORY = new JacksonFactory();
 
-	  /*
-	   * Gson object to serialize JSON responses to requests to this servlet.
-	   */
-	  private static final Gson GSON = new Gson();
+
 
 	  /*
 	   * Creates a client secrets object from the client_secrets.json file.
@@ -119,7 +110,7 @@ public class ConnectUser extends HttpServlet {
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
  		TransactionOptions options = TransactionOptions.Builder.withXG(true);
  		Transaction txn = datastore.beginTransaction(options);
- 		Gson gson = new Gson();
+ 		 
 
 		HttpServletRequest req_ = (HttpServletRequest) request;
 		HttpSession session = req_.getSession();
@@ -163,10 +154,10 @@ public class ConnectUser extends HttpServlet {
 			    	userEntity.setUnindexedProperty("lastDate",  date.toString());
 			    	
 			        List<String> pids = new ArrayList<String>();
-			    	userEntity.setUnindexedProperty("PID_full_access", gson.toJson(pids));
-			    	userEntity.setUnindexedProperty("PID_edit_place", gson.toJson(pids));
-			    	userEntity.setUnindexedProperty("PID_move_only", gson.toJson(pids));
-			    	userEntity.setUnindexedProperty("PID_book_admin", gson.toJson(pids));
+			    	userEntity.setUnindexedProperty("PID_full_access",new Text( JsonUtils.serialize(pids)));
+			    	userEntity.setUnindexedProperty("PID_edit_place",new Text( JsonUtils.serialize(pids)));
+			    	userEntity.setUnindexedProperty("PID_move_only",new Text( JsonUtils.serialize(pids)));
+			    	userEntity.setUnindexedProperty("PID_book_admin",new Text( JsonUtils.serialize(pids)));
 			    	userEntity.setUnindexedProperty("phone", "");
 			    	map.put("phone",false);
 			    	datastore.put(userEntity);
@@ -303,7 +294,7 @@ public class ConnectUser extends HttpServlet {
 	   
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
-		response.getWriter().write(new Gson().toJson(map));
+		response.getWriter().write(JsonUtils.serialize(map));
 	      
 
 /*      ByteArrayOutputStream resultStream = new ByteArrayOutputStream();

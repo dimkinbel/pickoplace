@@ -7,14 +7,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.dimab.pickoplace.utils.JsonUtils;
 import com.dimab.pp.dto.AJAXImagesJSON;
 import com.dimab.pp.dto.AdminUser;
 import com.dimab.pp.dto.CanvasShape;
 import com.dimab.pp.dto.JsonImageID_2_GCSurl;
 import com.dimab.pp.dto.JsonSID_2_imgID;
-import com.dimab.pp.dto.PPSubmitObject;
-import com.dimab.pp.dto.SingleTimeRange;
-import com.dimab.pp.dto.WeekDays;
+import com.dimab.pp.dto.PPSubmitObject; 
 import com.dimab.pp.dto.WorkingWeek;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
@@ -27,8 +26,7 @@ import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.images.ImagesService;
 import com.google.appengine.api.images.ImagesServiceFactory;
 import com.google.appengine.api.images.ServingUrlOptions;
-import com.google.appengine.tools.cloudstorage.GcsFilename;
-import com.google.gson.Gson;
+import com.google.appengine.tools.cloudstorage.GcsFilename; 
 import com.google.gson.reflect.TypeToken;
 
 public class GetAJAXimageJSONfromCSfactory {
@@ -47,9 +45,9 @@ public class GetAJAXimageJSONfromCSfactory {
 			UTCoffcet = (double) csEntity.getProperty("UTCoffcet");
 			
 		}
-		Gson gson = new Gson();
+	  
 		Type CanvasListcollectionType = new TypeToken<List<PPSubmitObject>>(){}.getType();
-		List<PPSubmitObject> floors = gson.fromJson(shapesJSON, CanvasListcollectionType);
+		List<PPSubmitObject> floors = JsonUtils.deserialize(shapesJSON, CanvasListcollectionType);
 		// Restore shapes booking options
 		for (PPSubmitObject floor : floors) {
 			for (CanvasShape shape : floor.getShapes()) {
@@ -119,7 +117,7 @@ public class GetAJAXimageJSONfromCSfactory {
 			floor.setAllImageSrc(servingUrl);
 		}
 		Type collectionType = new TypeToken<List<JsonSID_2_imgID>>(){}.getType();
-		List<JsonSID_2_imgID> sid2imgID = gson.fromJson(sid2ImageIDJSON, collectionType);
+		List<JsonSID_2_imgID> sid2imgID = JsonUtils.deserialize(sid2ImageIDJSON, collectionType);
 		if(sid2imgID.isEmpty()) {
 			System.out.println("sid2imgID = null");
 			sid2imgID = null;
@@ -218,25 +216,25 @@ public class GetAJAXimageJSONfromCSfactory {
 		if (csEntity.getProperty("automaticApprovalList") != null) {
 			String automaticApprovalListJSON = (String)csEntity.getProperty("automaticApprovalList");
 			collectionType = new TypeToken<List<String>>(){}.getType();
-			automaticApprovalList = gson.fromJson(automaticApprovalListJSON, collectionType);				
+			automaticApprovalList = JsonUtils.deserialize(automaticApprovalListJSON, collectionType);				
 		}
 		List<String> adminApprovalList = new ArrayList<String>();
 		if(csEntity.getProperty("adminApprovalList")!=null) {
 			String adminApprovalListJSON = (String)csEntity.getProperty("adminApprovalList");
 			collectionType = new TypeToken<List<String>>(){}.getType();
-			adminApprovalList = gson.fromJson(adminApprovalListJSON, collectionType);
+			adminApprovalList = JsonUtils.deserialize(adminApprovalListJSON, collectionType);
 		}
 		List<AdminUser> placeEditList = new ArrayList<AdminUser>();
 		if(csEntity.getProperty("placeEditList")!=null) {
 			String placeEditListJSON = (String)csEntity.getProperty("placeEditList");
 			collectionType = new TypeToken<List<AdminUser>>(){}.getType();
-			placeEditList = gson.fromJson(placeEditListJSON, collectionType);
+			placeEditList = JsonUtils.deserialize(placeEditListJSON, collectionType);
 		}
 		List<Integer> closeDates =  new ArrayList<Integer>();
 		if (csEntity.getProperty("closeDates")!=null) {
 			String closeDatesJSON = (String)csEntity.getProperty("closeDates");
 			collectionType = new TypeToken<List<Integer>>(){}.getType();
-			closeDates = gson.fromJson(closeDatesJSON, collectionType);
+			closeDates = JsonUtils.deserialize(closeDatesJSON, collectionType);
 		}
 		Collections.sort(closeDates);
 		WorkingWeek workinghours =  new WorkingWeek();
@@ -244,7 +242,7 @@ public class GetAJAXimageJSONfromCSfactory {
 			String workinghoursJSON = (String)csEntity.getProperty("workinghours");
 			System.out.println(workinghoursJSON);
 			collectionType = new TypeToken<WorkingWeek>(){}.getType();
-			workinghours = gson.fromJson(workinghoursJSON, collectionType);				
+			workinghours = JsonUtils.deserialize(workinghoursJSON, collectionType);				
 		}
 		
 		CanvasStateEdit.setAddress(address);

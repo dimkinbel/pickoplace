@@ -567,7 +567,17 @@
     <servlet-name>DeleteAllIndexes</servlet-name>
     <url-pattern>/admin/deletesearchindexes</url-pattern>
  </servlet-mapping>
- 
+
+    <servlet>
+        <servlet-name>HeaderTest</servlet-name>
+        <servlet-class>com.dimab.pp.tests.HeaderTest</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>HeaderTest</servlet-name>
+        <url-pattern>/admin/HeaderTest</url-pattern>
+    </servlet-mapping>
+
  <servlet>
     <servlet-name>uploadDrawImages</servlet-name>
      <servlet-class>com.dimab.pp.developer.uploadDrawImages</servlet-class>

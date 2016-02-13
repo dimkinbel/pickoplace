@@ -1,8 +1,7 @@
 package com.dimab.pp.search;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
+import java.lang.reflect.Type; 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -13,16 +12,15 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.dimab.pickoplace.utils.JsonUtils;
 import com.dimab.pp.database.FreePlaceFactory;
 import com.dimab.pp.database.GetPlaceInfoFactory;
 import com.dimab.pp.dto.FreePlaceInfo;
 import com.dimab.pp.dto.FreePlaceOption;
 import com.dimab.pp.dto.PlaceInfo;
 import com.dimab.pp.dto.SearchPidsAndCursor;
-import com.dimab.pp.dto.SearchRequestWizJSON;
-import com.dimab.pp.dto.SingleTimeRangeLong;
-import com.dimab.pp.dto.WeekDayOpenClose;
-import com.dimab.pp.dto.WelcomePageData;
+import com.dimab.pp.dto.SearchRequestWizJSON; 
+import com.dimab.pp.dto.WeekDayOpenClose; 
 import com.dimab.pp.dto.WizResultData;
 import com.dimab.pp.dto.WorkingWeek;
 import com.google.appengine.api.datastore.DatastoreService;
@@ -31,15 +29,12 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.QueryResultList;
-import com.google.appengine.api.datastore.Query.CompositeFilter;
-import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
+import com.google.appengine.api.datastore.QueryResultList; 
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.datastore.Query.SortDirection;
-import com.google.appengine.api.datastore.Cursor;
-import com.google.gson.Gson;
+import com.google.appengine.api.datastore.Cursor; 
 import com.google.gson.reflect.TypeToken;
  
 public class SearchWizardServlet extends HttpServlet {
@@ -73,7 +68,7 @@ public class SearchWizardServlet extends HttpServlet {
 			map.put("status", "requestError");
 			response.setContentType("application/json");
 			response.setCharacterEncoding("UTF-8");
-			response.getWriter().write(new Gson().toJson(map));
+			response.getWriter().write(JsonUtils.serialize(map));
 			return;
 		}
 		System.out.println(name+" "+lats+" "+lngs+" "+rads);
@@ -99,8 +94,7 @@ public class SearchWizardServlet extends HttpServlet {
 		serachObjectWiz.setPersons(persons); 
 		serachObjectWiz.setPeriodSeconds(period);
 		serachObjectWiz.setRating(rating);
-
-		Gson gson = new Gson();
+ 
 		SearchPidsAndCursor searchResult = new SearchPidsAndCursor();
 		SearchPidsAndCursor reducedResult = new SearchPidsAndCursor();
 		boolean initial = false;
@@ -112,7 +106,7 @@ public class SearchWizardServlet extends HttpServlet {
 			
 		} else {
 			Type collectionType = new TypeToken<SearchPidsAndCursor>(){}.getType();
-			searchResult = gson.fromJson(cursor_,collectionType);  
+			searchResult = JsonUtils.deserialize(cursor_,collectionType);  
 		}
 		reducedResult.setCursor(searchResult.getCursor());
 		System.out.println(searchResult.getPids());
@@ -170,7 +164,7 @@ public class SearchWizardServlet extends HttpServlet {
 			if(reducedResult.getPids().size()==0) {
 				wizResultData.setCursor("last");
 			} else {
-				wizResultData.setCursor(gson.toJson(reducedResult));
+				wizResultData.setCursor(JsonUtils.serialize(reducedResult));
 			}
 			
 			map.put("status", "OK");
@@ -186,7 +180,7 @@ public class SearchWizardServlet extends HttpServlet {
 		
  		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
-		response.getWriter().write(new Gson().toJson(map));
+		response.getWriter().write(JsonUtils.serialize(map));
 	}
 	public Boolean isPlaceOpenCurrently(Entity CanvasStateEntity,SearchRequestWizJSON serachObjectWiz) {
 		double UTCoffcet = 0;
@@ -210,12 +204,11 @@ public class SearchWizardServlet extends HttpServlet {
 	}
 	public Boolean isPlaceOpen(Entity CanvasStateEntity,SearchRequestWizJSON serachObjectWiz) {
 		   
-		   
-		   Gson gson = new Gson(); 
+		    
 		   Integer weekday = serachObjectWiz.getWeekDay();
    		   String closeDatesString = (String) CanvasStateEntity.getProperty("closeDates");
    		   Type closeDateType = new TypeToken<List<Integer>>(){}.getType();
-   		   List<Integer> closeDates  = gson.fromJson(closeDatesString, closeDateType);
+   		   List<Integer> closeDates  = JsonUtils.deserialize(closeDatesString, closeDateType);
    		  // Check for dates the place is close (set by Administrator)
  		   if (closeDates.contains(serachObjectWiz.getDateUTC())) {
  			   return false;
@@ -225,7 +218,7 @@ public class SearchWizardServlet extends HttpServlet {
  	 		   }
  		   }
  		   String weekdays = (String) CanvasStateEntity.getProperty("workinghours");		
- 		   WorkingWeek weekdaysObject  = gson.fromJson(weekdays, WorkingWeek.class);
+ 		   WorkingWeek weekdaysObject  = JsonUtils.deserialize(weekdays, WorkingWeek.class);
  		   WeekDayOpenClose today , tomorrow;
  		   if(weekday < 6) {
  			   today = weekdaysObject.getWeekDayOpenClose(weekday);

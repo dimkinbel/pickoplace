@@ -8,10 +8,54 @@
 
 
 setInterval(function(){
-    document.getElementById("local_live_time_div").innerHTML = calcTime(new Date(),placeUTCOffsetGlobal);
+    $("#local_live_time_div").html(calcTime(new Date(),placeUTCOffsetGlobal));
 }, 1000);
 
 
+function requestBookingAvailability() {
+	var TimeOfTheDatePicker_1970 = +$("#datepicker_ub").datepicker( "getDate" ).getTime()/1000; // The time is relative to client browser
+	var dayOfweek = +$("#datepicker_ub").datepicker( "getDate" ).getDay();
+	var d = new Date();
+	var clientOffset = -1*d.getTimezoneOffset()/60;
+	var placeOffset = document.getElementById("server_placeUTC").value;
+	var placeID = document.getElementById("server_placeID").value;
+	var requestJSON = {};
+
+	requestJSON.date1970 = TimeOfTheDatePicker_1970  ;// - d.getTimezoneOffset()*60 ;
+	requestJSON.weekday = dayOfweek;
+	requestJSON.period = 2*24*60*60;
+	requestJSON.clientOffset = clientOffset;
+	requestJSON.placeOffset = placeOffset;
+	requestJSON.pid = placeID;
+	var jsonData = {bookrequest:JSON.stringify(requestJSON)};
+	isOrigin(function(result) {
+		if(result) {
+			$.ajax({
+				url : "/checkPidAvailable",
+				data: jsonData,
+				beforeSend: function () {  },
+				success : function(data){
+					// alert(data);
+					document.getElementById("server_shapes_prebooked").value=JSON.stringify(data);
+					shapesPrebookedJSON = JSON.parse(document.getElementById("server_shapes_prebooked").value);
+					bookingsManager = new BookingsManager(shapesPrebookedJSON);
+					initialTCanvas();
+					updateCloseShapes();
+
+
+				},
+				dataType : "JSON",
+				type : "post"
+			});
+		} else {
+			shapesPrebookedJSON =  generateTestValues() ;
+			bookingsManager = new BookingsManager(shapesPrebookedJSON);
+			updateSelectOptions("dropdown_start_floors","dropdown",'datepicker_ub',minPeriodSeconds);
+			initialTCanvas();
+			updateCloseShapes();
+		}
+	});
+}
 
 
 function calcTime(date,offset) {
@@ -51,12 +95,12 @@ function drawConfirmation() {
 		  }
 	  }
     var shapeCanvases = [];
-		
+
 	  if (1) {
 
-		  
-		  var appendData = "";  
-	      appendData += '		    <div class="acc_single_booking_ap next_b" id="acc_single_booking'+bookingRequestWrap.bookID+'">'; 
+
+		  var appendData = "";
+	      appendData += '		    <div class="acc_single_booking_ap next_b" id="acc_single_booking'+bookingRequestWrap.bookID+'">';
 		  appendData += '               <div id="close_booking_info_ap" >X</div>';
 		  appendData += '           <div class="hidden__" style="display:none">';
 		  appendData += '				<input style="display:none" name="pl_offcet" id="pl_offcet_'+bookingRequestWrap.bookID+'" value="'+bookingRequestWrap.placeOffcet+'" />';
@@ -71,8 +115,8 @@ function drawConfirmation() {
 		appendData += '					    <table  cellspacing="0" cellpadding="0" style="width: 100%; border-collapse: collapse">';
 		appendData += '						   <tr >';
 		appendData += '						     <td class="ap_time_label_td"  style="width:33%">BOOKING ID</td>';
-		appendData += '						     <td class="ap_time_label_td"  style="width:33%">BOOKING DATE</td>';	
-		appendData += '						     <td class="ap_time_label_td"  style="width:33%;border-right:none!important;">TIME LEFT</td></tr>';	
+		appendData += '						     <td class="ap_time_label_td"  style="width:33%">BOOKING DATE</td>';
+		appendData += '						     <td class="ap_time_label_td"  style="width:33%;border-right:none!important;">TIME LEFT</td></tr>';
 		appendData += '						  <tr >';
 		appendData += '						    <td class="ap_time_val_td"><div class="ap_time_val_div" name="sb_time_val_div">'+bookingRequestWrap.bookID+'</div></td>';
 		appendData += '						    <td class="ap_time_val_td"><div class="ap_time_val_div" name="sb_time_val_div" id="sb_time_val_"></div></td> ';
@@ -93,16 +137,16 @@ function drawConfirmation() {
 		appendData += '						  </td>';
 		appendData += '						</tr>';
 		appendData += '						<tr class="sb_listing_row">';
-		
+
 	if(num_of_bookings > 3) {
 		appendData += '						  <td class="sb_listing_td_wl">';
 		appendData += '						     <div class="top_inset_shaddow"></div>';
-		appendData += '						     <div class="ap_list_wrap_div">';	
+		appendData += '						     <div class="ap_list_wrap_div">';
 	} else {
-		appendData += '						  <td class="sb_listing_td_wl_none">';		
-		appendData += '						     <div class="ap_list_wrap_div_none">';	
+		appendData += '						  <td class="sb_listing_td_wl_none">';
+		appendData += '						     <div class="ap_list_wrap_div_none">';
 	}
-			
+
 	var borders_class="bordings_lr";
 	if(num_of_bookings > 3)	{
 		appendData += '							   <div class="ap_list_div" name="sb_list_div" id="sb_list_div-'+bookingRequestWrap.bookID+'">';
@@ -115,7 +159,7 @@ function drawConfirmation() {
 		appendData += '							     <div class="as_padding_10_none '+borders_class+'"></div>';
 		borders_class="";
 	}
-		
+
 	for (var bs = 0 ; bs < num_of_bookings ; bs++) {
 	    var sid = bookingRequestWrap.bookingList[bs].sid;
 	    var shape = tmpShapes[sid];
@@ -127,14 +171,14 @@ function drawConfirmation() {
 		appendData += '										   <td class="ap_s_t_img_td"><div class="sbimgd">';
 		if(shape.type=="image") {
 		     var src=document.getElementById(shape.options.imgID).src;
-		     appendData += '										     <img class="sid_ovr_img" src="'+src+'=s50"/></div>';										  
+		     appendData += '										     <img class="sid_ovr_img" src="'+src+'=s50"/></div>';
 		} else {
 	        appendData += '										     <canvas  width="50" height="50" class="sid_ovr_canvas" id="sb_canvas-'+shape.sid+'"></canvas></div>';
 		    var shape2ID = {};
-		
+
 		     shape2ID.id = 'sb_canvas-'+shape.sid;
 		     shape2ID.shape = shape;
-		     shapeCanvases.push(shape2ID);	
+		     shapeCanvases.push(shape2ID);
 	    }
 		appendData += '										   </td>';
 		appendData += '										   <td class="ap_s_t_name_td">';
@@ -149,7 +193,7 @@ function drawConfirmation() {
 		appendData += '										 </tr>';
 		appendData += '									   </table>';
 		appendData += '									 </div>';
-	}	
+	}
 	if(num_of_bookings > 3) {
 		appendData += '									 <div class="as_padding_10  '+borders_class+'"></div>';
 	} else {
@@ -185,7 +229,7 @@ function drawConfirmation() {
 		appendData += '								 </tr>';
 		appendData += '							  </table>';
 		appendData += '              </div>';
-		appendData += '				</div>';		
+		appendData += '				</div>';
 
 		$("#book_confirm_wrap").html("");
 		$("#book_confirm_wrap").append(appendData);
@@ -196,14 +240,14 @@ function drawConfirmation() {
 		$("#logpbook").click(function(){
 			  	$("#page_login_prompt").show();
 		});
-		  
+
 		  d = new Date();
 	      clientOffset = d.getTimezoneOffset();
 		  var dateID ='sb_time_val_';
 		  var time = bookTime;//UTC
 		  var offsetSec = bookingRequestWrap.placeOffcet * 3600 + clientOffset * 60;
 		  var totalSec = (time + offsetSec)*1000;
-		  
+
 		  var Date_ = new Date(bookTime*1000);
 		  var day = Date_.getDate();
 		  var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun","Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -212,7 +256,7 @@ function drawConfirmation() {
 		  var hour_ = Date_.getHours(); if(hour_ < 10) {hour_ = "0"+hour_;}
 		  var min_ = Date_.getMinutes();if(min_ < 10) {min_ = "0"+min_;}
 		  $("#sb_time_val_").html(day+mon+" "+hour_+":"+min_);
-		
+
 
 		}
 		// Update all shape canvases;
@@ -264,35 +308,34 @@ function createBookingJSON() {
 	  var d = new Date();
 	  var clientOffset = d.getTimezoneOffset();
 	  var placeUTCoffset = document.getElementById("server_placeUTC").value;
-	  var SecondsOfSliderPicker = place_slider_from*15*60;
-	  var SecondsOfSliderPickerTo = place_slider_to*15*60;
+
+	  var TimePeriod = bookingOrder.period;
+	  var TimeOfTheDatePicker_1970 = +$("#datepicker_ub").datepicker( "getDate" ).getTime()/1000;
 	  
-	  var TimePeriod = (SecondsOfSliderPickerTo - SecondsOfSliderPicker);
-	  var TimeOfTheDatePicker_1970 = +$("#datepicker_fe").datepicker( "getDate" ).getTime()/1000;
-	  
-	  var dayOfweek = +$("#datepicker_fe").datepicker( "getDate" ).getDay();
+	  var dayOfweek = +$("#datepicker_ub").datepicker( "getDate" ).getDay();
 		
 	  
 	  // Get selected shapes
-	  for(var f=0;f < floorCanvases.length;f++) {
-		     for(var s= 0 ; s < floorCanvases[f].listSelected.length;s++) {
-		    	  var shape = floorCanvases[f].listSelected[s];
+	  for(var f=0;f < bookingOrder.listOfSids.length;f++) {
+		    	  var shape = bookingOrder.listOfSids[f];
 		    	  var sid = shape.sid;		    	  
 		    	  var PID = document.getElementById("server_placeID").value;
-		    	  var persons = shape.booking_options.minPersons;
+		    	  var persons = shape.persons;
 		    	  
 				  bookingOrderJSON = {"pid":PID,
 			              "sid":sid,
+					      "floorid":shape.floorid,
+		                  "floor_name":shape.floor_name,
+					      "name":shape.name,
 			              "bookID":bookID,
 			              "testID":testID,
 			              "dateSeconds":TimeOfTheDatePicker_1970,
-			              "time":SecondsOfSliderPicker,
+			              "time":bookingOrder.start,
 			              "period":TimePeriod,
 			              "persons":persons,
 			              "clientOffset":clientOffset,
 			              "placeOffcet":placeUTCoffset};
 				  bookingOrderJSONlist.push(bookingOrderJSON);
-		     }
 	  }
 	  
 	  // Generate booking request object
@@ -314,6 +357,7 @@ function createBookingJSON() {
 	   }
 	  }
 	  bookingRequestWrap.bookingList = bookingOrderJSONlist;
+	  bookingRequestWrap.textRquest = $("#user_input_hz").val();
 	  bookingRequestWrap.weekday = dayOfweek;
 }
 
@@ -376,24 +420,24 @@ function applyBooking() {
 		  $.ajax({
 		      url : "/clientBookingRequest",
 		      data: bookingjson,//
-		      beforeSend: function () { 
-			       $("#book_confirm_wrap").html("");
-			       $("#book_confirm_wrap").hide();
-		    	   $("#place_order_button").hide();
-		    	   $("#frame_book_ajax_gif").show(); 
+		      beforeSend: function () {
 		      },
 		      success : function(data){
-		    	  
-		    	   $("#place_order_button").show();
-		    	   $("#frame_book_ajax_gif").hide(); 
+
+				  $("#loading_text_w").hide();
+				  bookingOrder = null;
+				  emptyOrder();
 		    	   
 			    	  if(data.added==true) {
-			    		  console.log(data.bid);
-			    		  popupMessage("Your booking accepted!","pop_green");	
-			    		  requestBookingAvailability();
-			    		  emptyBookingObject();
+			    		  $("#bookingAcceptedModal_header").removeClass("book_modal_fail").addClass("book_modal_success");
+						  $("#bookingAcceptedModal_body").removeClass("book_modal_fail").addClass("book_modal_success");
+						  $("#bookingAcceptedModal_body").html("הזמנתך התקבלה בהצלחה");
+						  $("#bookingAcceptedModal").modal("show");
 			    	  } else {
-			    		  popupMessage("Booking not accepted - Please try another time.","pop_red");
+						  $("#bookingAcceptedModal_header").removeClass("book_modal_success").addClass("book_modal_fail");
+						  $("#bookingAcceptedModal_body").removeClass("book_modal_success").addClass("book_modal_fail");
+						  $("#bookingAcceptedModal_body").html(data.reason);
+						  $("#bookingAcceptedModal").modal("show");
 			    	  }
 			    	  
 		      },

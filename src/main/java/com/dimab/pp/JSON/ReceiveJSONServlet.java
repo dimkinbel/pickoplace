@@ -7,13 +7,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
-
-
-import com.dimab.pp.dto.CanvasShape;
-import com.dimab.pp.dto.CanvasState;
+import com.dimab.pickoplace.utils.JsonUtils;
 import com.dimab.pp.dto.PPSubmitObject;
-import com.google.gson.Gson;
 
 
 public class ReceiveJSONServlet extends HttpServlet {
@@ -26,10 +21,9 @@ public class ReceiveJSONServlet extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String jsonString = request.getParameter("boardState");
-		System.out.println(jsonString);
-		Gson gson = new Gson();
-		PPSubmitObject CS = gson.fromJson(jsonString, PPSubmitObject.class);
-		System.out.println(gson.toJson(CS));
+		System.out.println(jsonString); 
+		PPSubmitObject CS = JsonUtils.deserialize(jsonString, PPSubmitObject.class);
+		System.out.println(JsonUtils.serialize(CS));
 	}
 
 }

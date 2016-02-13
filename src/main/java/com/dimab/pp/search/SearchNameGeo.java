@@ -11,21 +11,19 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.dimab.pickoplace.utils.JsonUtils;
 import com.dimab.pp.database.GetPlaceInfoFactory;
 import com.dimab.pp.dto.PlaceInfo;
 import com.dimab.pp.dto.SearchPidsAndCursor;
 import com.dimab.pp.dto.SearchRequestJSON;
 import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.DatastoreServiceFactory; 
 import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
+import com.google.appengine.api.datastore.Query; 
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
-import com.google.appengine.api.search.Cursor;
-import com.google.gson.Gson;
+import com.google.appengine.api.search.Cursor; 
 
 
 public class SearchNameGeo extends HttpServlet {
@@ -52,7 +50,7 @@ public class SearchNameGeo extends HttpServlet {
 			map.put("status", "requestError");
 			response.setContentType("application/json");
 			response.setCharacterEncoding("UTF-8");
-			response.getWriter().write(new Gson().toJson(map));
+			response.getWriter().write(JsonUtils.serialize(map));
 			return;
 		}
 		System.out.println(name+" "+lats+" "+lngs+" "+rads);
@@ -109,7 +107,7 @@ public class SearchNameGeo extends HttpServlet {
         }
         response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
-		response.getWriter().write(new Gson().toJson(map));
+		response.getWriter().write(JsonUtils.serialize(map));
 	}
 
 }

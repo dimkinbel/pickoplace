@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.dimab.pickoplace.utils.JsonUtils;
 import com.dimab.pp.dto.PlaceRatingDTO;
 import com.dimab.pp.login.CheckTokenValid;
 import com.dimab.pp.login.GenericUser;
@@ -24,8 +25,7 @@ import com.google.appengine.api.datastore.Transaction;
 import com.google.appengine.api.datastore.TransactionOptions;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
-import com.google.appengine.api.datastore.Query.FilterPredicate;
-import com.google.gson.Gson;
+import com.google.appengine.api.datastore.Query.FilterPredicate; 
 import com.google.gson.reflect.TypeToken;
 
 
@@ -57,11 +57,10 @@ public class RatingSubmit extends HttpServlet {
 			DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 			TransactionOptions options = TransactionOptions.Builder.withXG(true);
 			Transaction txn = datastore.beginTransaction(options);
-			
-			Gson gson = new Gson();
+			 
 			username_email = genuser.getEmail();
 			Type ratingType = new TypeToken<PlaceRatingDTO>(){}.getType();
-			PlaceRatingDTO rating = gson.fromJson(jsonString, ratingType);
+			PlaceRatingDTO rating = JsonUtils.deserialize(jsonString, ratingType);
 			String pid = rating.getPid();
 			String bid = rating.getBid();
 			
@@ -167,7 +166,7 @@ public class RatingSubmit extends HttpServlet {
 			if(psqb_.asSingleEntity()!=null) {
 				PlaceRatingDTO ShortRating = rating;
 				ShortRating.setTscore(""); // Removing review text
-				String ratingString = gson.toJson(ShortRating);
+				String ratingString = JsonUtils.serialize(ShortRating);
 				Entity bookingEntity = psqb_.asSingleEntity();
 				bookingEntity.setUnindexedProperty("rating", ratingString);
 				datastore.put(bookingEntity);
@@ -182,7 +181,7 @@ public class RatingSubmit extends HttpServlet {
 		
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
-		response.getWriter().write(new Gson().toJson(map));
+		response.getWriter().write(JsonUtils.serialize(map));
 	}
 
 }

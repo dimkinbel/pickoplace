@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.dimab.pickoplace.utils.JsonUtils;
 import com.dimab.pp.database.GetBookingShapesDataFactory;
 import com.dimab.pp.database.GetShapesOrders;
 import com.dimab.pp.dto.BookingRequestWrap;
@@ -31,7 +32,7 @@ import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
-import com.google.gson.Gson;
+
 import com.google.gson.reflect.TypeToken;
 
 
@@ -66,12 +67,12 @@ public class WaUpdateBookingsByDate extends HttpServlet {
 			username_email = genuser.getEmail();
 		}
 	
-		Gson gson = new Gson();
+ 
 		OrderedResponse orderedResponse = new OrderedResponse();
 		GetShapesOrders orderedResponseFactory = new GetShapesOrders();
   		GetBookingShapesDataFactory bookingFactory = new GetBookingShapesDataFactory();
 		
-		PlaceCheckAvailableJSON bookingRequest = gson.fromJson(jsonString, PlaceCheckAvailableJSON.class);
+		PlaceCheckAvailableJSON bookingRequest = JsonUtils.deserialize(jsonString, PlaceCheckAvailableJSON.class);
 		Long date = bookingRequest.getDate1970();// Ignoring client offset
 	    Long period = bookingRequest.getPeriod(); 
 	    int weekday = bookingRequest.getWeekday();
@@ -96,10 +97,10 @@ public class WaUpdateBookingsByDate extends HttpServlet {
 
    		   String closeDatesString = (String) userCanvasState.getProperty("closeDates");
    		   Type closeDateType = new TypeToken<List<Integer>>(){}.getType();
-   		   List<Integer> closeDates  = gson.fromJson(closeDatesString, closeDateType);
+   		   List<Integer> closeDates  = JsonUtils.deserialize(closeDatesString, closeDateType);
    		   
  		   String weekdays = (String) userCanvasState.getProperty("workinghours");
-			WorkingWeek weekdaysObject  = gson.fromJson(weekdays, WorkingWeek.class);
+			WorkingWeek weekdaysObject  = JsonUtils.deserialize(weekdays, WorkingWeek.class);
 
 
 			List<SingleTimeRangeLong> tempRanges = weekdaysObject.getRangesList(weekday,2);
@@ -132,7 +133,7 @@ public class WaUpdateBookingsByDate extends HttpServlet {
 
 	    response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
-		response.getWriter().write(new Gson().toJson(map));
+		response.getWriter().write(JsonUtils.serialize(map));
 		
 	}
 

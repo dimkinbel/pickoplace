@@ -160,7 +160,7 @@
 			<div id="header_drawing">
 				<div id="header">
 					<div id="logo_"><img src="img/pplogo.png" id="pplogoo"/></div>
-				       <div id="header_info_wrap" style="width:100%">
+				       <div id="header_info_wrap"  >
 						 <div id="header_info">
 						   <table style="border-collapse: collapse;" cellspacing="0" cellpadding="0"  >
 							   <tr><td>

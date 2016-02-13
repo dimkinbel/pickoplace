@@ -9,6 +9,8 @@ window.addEventListener('mouseup', function(e) {
         canvas_.mouseUpEvent();
         canvasMouseOut = false;
     }
+    $( ".scroll_right_tp_canvas" ).trigger( "mouseup" );
+    $( ".scroll_left_tp_canvas" ).trigger( "mouseup" );
 });
 window.addEventListener('mousemove', function(e) {
     if(canvasMouseOut==true) {

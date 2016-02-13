@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.dimab.pickoplace.utils.JsonUtils;
 import com.dimab.pp.dto.JsonSID_2_imgID;
 import com.google.appengine.api.channel.ChannelPresence;
 import com.google.appengine.api.channel.ChannelService;
@@ -23,8 +24,7 @@ import com.google.appengine.api.datastore.Transaction;
 import com.google.appengine.api.datastore.TransactionOptions;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
-import com.google.appengine.api.datastore.Query.FilterPredicate;
-import com.google.gson.Gson;
+import com.google.appengine.api.datastore.Query.FilterPredicate; 
 import com.google.gson.reflect.TypeToken;
 
 
@@ -43,8 +43,7 @@ public class ChannelConnect extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
  		TransactionOptions options = TransactionOptions.Builder.withXG(true);
- 		Transaction txn = datastore.beginTransaction(options);
- 		Gson gson = new Gson();
+ 		Transaction txn = datastore.beginTransaction(options); 
 		ChannelService channelService = ChannelServiceFactory.getChannelService();
 		ChannelPresence presence = channelService.parsePresence(request);
 		System.out.println("CHANNEL_CONNECT:"+presence.clientId());
@@ -61,15 +60,15 @@ public class ChannelConnect extends HttpServlet {
 	    	connected.add(presence.clientId());
 
 	    	channelEntity.setProperty("pid", pid);
-	    	channelEntity.setUnindexedProperty("clients", gson.toJson(connected));
+	    	channelEntity.setUnindexedProperty("clients", JsonUtils.serialize(connected));
 	    	datastore.put(channelEntity);
 	    } else {
 	    	String clientsJSON = (String)result.getProperty("clients");
 	    	Type collectionType = new TypeToken<List<String>>(){}.getType();
-	    	List<String> connected  = gson.fromJson(clientsJSON, collectionType);
+	    	List<String> connected  = JsonUtils.deserialize(clientsJSON, collectionType);
 	    	if(!connected.contains(presence.clientId())) {
 	    		connected.add(presence.clientId());
-	    		result.setUnindexedProperty("clients", gson.toJson(connected));
+	    		result.setUnindexedProperty("clients", JsonUtils.serialize(connected));
 	    	}
 	    	datastore.put(result);
 	    }

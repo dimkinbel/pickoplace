@@ -1,7 +1,6 @@
 package com.dimab.pp.account;
 
-import java.io.IOException;
-import java.lang.reflect.Array;
+import java.io.IOException; 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,19 +15,18 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.dimab.pickoplace.utils.JsonUtils;
 import com.dimab.pp.dto.IFresponse;
 import com.dimab.pp.dto.IFsave;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.Transaction;
-import com.google.appengine.api.datastore.TransactionOptions;
+import com.google.appengine.api.datastore.Query; 
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
-import com.google.gson.Gson;
+
 
 
 public class GetiFrames extends HttpServlet {
@@ -43,8 +41,7 @@ public class GetiFrames extends HttpServlet {
 	
 		String placeIDvalue = request.getParameter("pid");
 		List<IFresponse> ifresponse = new ArrayList<IFresponse>();
-		Gson gson = new Gson();
-		
+ 
 		Filter ifidfilter = new  FilterPredicate("pid",FilterOperator.EQUAL,placeIDvalue);
  	    Query piq = new Query("IFrames").setFilter(ifidfilter);
         PreparedQuery sbpiq = datastore.prepare(piq);
@@ -54,7 +51,7 @@ public class GetiFrames extends HttpServlet {
 			String uid = (String)iframeEntity.getProperty("savedby");
   			Date date_ = (Date)iframeEntity.getProperty("date");
   			String iframe_ = (String)iframeEntity.getProperty("ifjson");
-			IFsave SaveObject = gson.fromJson(iframe_, IFsave.class);
+			IFsave SaveObject = JsonUtils.deserialize(iframe_, IFsave.class);
 	        SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMMy HH:mm");
 	        System.out.println("date: " + dateFormat.format( date_ ) );
 	        
@@ -82,7 +79,7 @@ public class GetiFrames extends HttpServlet {
 		
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
-		response.getWriter().write(new Gson().toJson(map));
+		response.getWriter().write(JsonUtils.serialize(map));
 		
 	}
 

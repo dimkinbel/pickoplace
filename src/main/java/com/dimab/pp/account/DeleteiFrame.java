@@ -15,7 +15,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.dimab.pickoplace.i18n.I18n;
+
+import com.dimab.pickoplace.utils.JsonUtils;
 import com.dimab.pp.dto.IFresponse;
 import com.dimab.pp.dto.IFsave;
 import com.dimab.pp.login.CheckTokenValid;
@@ -30,7 +31,7 @@ import com.google.appengine.api.datastore.TransactionOptions;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
-import com.google.gson.Gson;
+ 
 
 
 public class DeleteiFrame extends HttpServlet {
@@ -77,8 +78,7 @@ public class DeleteiFrame extends HttpServlet {
 	  	} else {
 	  			map.put("status", "notremoved");
 	  	}
-		List<IFresponse> ifresponse = new ArrayList<IFresponse>();
-		Gson gson = new Gson();
+		List<IFresponse> ifresponse = new ArrayList<IFresponse>();  
 		
 		Filter ifidfilterList = new  FilterPredicate("pid",FilterOperator.EQUAL,placeIDvalue);
  	    Query piql = new Query("IFrames").setFilter(ifidfilterList);
@@ -89,7 +89,7 @@ public class DeleteiFrame extends HttpServlet {
 			String uid = (String)iframeEntity.getProperty("savedby");
   			Date date_ = (Date)iframeEntity.getProperty("date");
   			String iframe_ = (String)iframeEntity.getProperty("ifjson");
-			IFsave SaveObject = gson.fromJson(iframe_, IFsave.class);
+			IFsave SaveObject = JsonUtils.deserialize(iframe_, IFsave.class);
 	        SimpleDateFormat dateFormat = new SimpleDateFormat("wwMMMy HH:mm");
 	        System.out.println("date: " + dateFormat.format( date_ ) );
 	        
@@ -117,7 +117,7 @@ public class DeleteiFrame extends HttpServlet {
 		
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
-		response.getWriter().write(new Gson().toJson(map));
+		response.getWriter().write(JsonUtils.serialize(map));
 	}
 
 }

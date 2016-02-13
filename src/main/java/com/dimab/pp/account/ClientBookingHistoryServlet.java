@@ -13,43 +13,35 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.dimab.pickoplace.utils.JsonUtils;
 import com.dimab.pp.database.GetBookingShapesDataFactory;
-import com.dimab.pp.database.GetPlaceInfoFactory;
-import com.dimab.pp.dto.AdminUser;
+import com.dimab.pp.database.GetPlaceInfoFactory; 
 import com.dimab.pp.dto.BookingDTO;
-import com.dimab.pp.dto.BookingRequest;
-import com.dimab.pp.dto.BookingRequestWrap;
-import com.dimab.pp.dto.CanvasShape;
+import com.dimab.pp.dto.BookingRequest; 
 import com.dimab.pp.dto.ClientBookingHistoryRequestDTO;
 import com.dimab.pp.dto.ClientBookingsObject;
 import com.dimab.pp.dto.JsonImageID_2_GCSurl;
-import com.dimab.pp.dto.JsonSID_2_imgID;
-import com.dimab.pp.dto.PPSubmitObject;
+import com.dimab.pp.dto.JsonSID_2_imgID; 
 import com.dimab.pp.dto.PlaceInfo;
 import com.dimab.pp.dto.PlaceRatingDTO;
-import com.dimab.pp.dto.SingleShapeBookingResponse;
-import com.dimab.pp.dto.SingleTimeRange;
-import com.dimab.pp.dto.WeekDays;
+import com.dimab.pp.dto.SingleShapeBookingResponse; 
 import com.dimab.pp.login.CheckTokenValid;
 import com.dimab.pp.login.GenericUser;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.FetchOptions;
+import com.google.appengine.api.datastore.Entity; 
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Text;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
-import com.google.appengine.api.datastore.Query.FilterPredicate;
-import com.google.appengine.api.datastore.TransactionOptions;
+import com.google.appengine.api.datastore.Query.FilterPredicate; 
 import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
 import com.google.appengine.api.images.ImagesService;
 import com.google.appengine.api.images.ImagesServiceFactory;
 import com.google.appengine.api.images.ServingUrlOptions;
-import com.google.appengine.tools.cloudstorage.GcsFilename;
-import com.google.gson.Gson;
+import com.google.appengine.tools.cloudstorage.GcsFilename; 
 import com.google.gson.reflect.TypeToken;
 
 import static com.google.appengine.api.datastore.FetchOptions.Builder.*;
@@ -68,10 +60,8 @@ public class ClientBookingHistoryServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String jsonString = request.getParameter("bookingHistory");
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-		ClientBookingsObject bookingsResponse = new ClientBookingsObject();
-		Gson gson = new Gson();
-		Date date = new Date();
-		ClientBookingHistoryRequestDTO hisoryRequest = gson.fromJson(jsonString,ClientBookingHistoryRequestDTO.class);
+		ClientBookingsObject bookingsResponse = new ClientBookingsObject(); 
+		ClientBookingHistoryRequestDTO hisoryRequest = JsonUtils.deserialize(jsonString,ClientBookingHistoryRequestDTO.class);
 		System.out.println(jsonString);
 		
 		String username = new String();
@@ -108,7 +98,7 @@ public class ClientBookingHistoryServlet extends HttpServlet {
 				}
 				String bookingListJSON = ((Text) bookingE.getProperty("bookingList")).getValue();
 				Type bookingListType = new TypeToken<List<BookingRequest>>(){}.getType();
-				List<BookingRequest> bookingShapesList  = gson.fromJson(bookingListJSON, bookingListType);
+				List<BookingRequest> bookingShapesList  = JsonUtils.deserialize(bookingListJSON, bookingListType);
 				System.out.println("BOOKING:"+startAt+"("+pid+")\n"+bookingShapesList);
 				// Get CanvasState entity
 				Filter pidFilter = new  FilterPredicate("placeUniqID",FilterOperator.EQUAL,pid);
@@ -182,7 +172,7 @@ public class ClientBookingHistoryServlet extends HttpServlet {
                   if(!hisoryRequest.isFuture()) {
                 	  String ratingString = (String)bookingE.getProperty("rating");
                 	  Type ratingType = new TypeToken<PlaceRatingDTO>(){}.getType();
-          			  PlaceRatingDTO rating = gson.fromJson(ratingString, ratingType);
+          			  PlaceRatingDTO rating = JsonUtils.deserialize(ratingString, ratingType);
           			  singleBooking.setRating(rating);
                   } else {
 
@@ -200,13 +190,13 @@ public class ClientBookingHistoryServlet extends HttpServlet {
 			
 			response.setContentType("application/json");
 			response.setCharacterEncoding("UTF-8");
-			response.getWriter().write(new Gson().toJson(bookingsResponse));
+			response.getWriter().write(JsonUtils.serialize(bookingsResponse));
 		} else {
 			Map <String , Object> map = new HashMap<String , Object>();
 			map.put("logged", false);
 			response.setContentType("application/json");
 			response.setCharacterEncoding("UTF-8");
-			response.getWriter().write(new Gson().toJson(map));			
+			response.getWriter().write(JsonUtils.serialize(map));			
 		}
 	}
 

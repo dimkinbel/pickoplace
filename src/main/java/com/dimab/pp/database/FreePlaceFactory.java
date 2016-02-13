@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 
+import com.dimab.pickoplace.utils.JsonUtils;
 import com.dimab.pp.dto.BookingRequest;
 import com.dimab.pp.dto.BookingRequestWrap;
 import com.dimab.pp.dto.CanvasShape;
@@ -73,9 +74,9 @@ public class FreePlaceFactory {
 		GetPlaceInfoFactory placeFactory = new GetPlaceInfoFactory();
 		PlaceInfo placeInfo = placeFactory.getPlaceInfoNoImage(datastore, csEntity);
 		String shapesJSON =  ((Text) csEntity.getProperty("shapesJSON")).getValue();
-		Gson gson = new Gson();
+
 		Type CanvasListcollectionType = new TypeToken<List<PPSubmitObject>>(){}.getType();
-		List<PPSubmitObject> floors = gson.fromJson(shapesJSON, CanvasListcollectionType);
+		List<PPSubmitObject> floors = JsonUtils.deserialize(shapesJSON, CanvasListcollectionType);
 		ShapesMapObject personsMap = getPersonsMap(floors);
 		personsMap.printString();
 		

@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Servlet implementation class SendSMStestServlet
+ * for test purposes
  */
 @WebServlet("/SendSMStestServlet")
 public class SendSMStestServlet extends HttpServlet {

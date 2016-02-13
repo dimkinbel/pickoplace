@@ -13,24 +13,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 
-
-
-
-
+import com.dimab.pickoplace.utils.JsonUtils;
 import com.dimab.pp.database.GetPlaceInfoFactory;
 import com.dimab.pp.dto.PlaceInfo;
 import com.dimab.pp.dto.WaiterListAJAXDTO;
 import com.dimab.pp.login.CheckTokenValid;
 import com.dimab.pp.login.GenericUser;
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.*;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
-import com.google.gson.Gson;
+
 import com.google.gson.reflect.TypeToken;
 
 public class ListWaiterAvailable extends HttpServlet {
@@ -58,7 +51,8 @@ public class ListWaiterAvailable extends HttpServlet {
 			waiterlist.setStatus("not_logged");
 		} else {
 			username = genuser.getEmail();
-			Gson gson = new Gson();
+			
+			
 			Type collectionType = new TypeToken<List<String>>(){}.getType();
 			DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 			Filter UserExists__ = new  FilterPredicate("username",FilterOperator.EQUAL,username);
@@ -68,7 +62,7 @@ public class ListWaiterAvailable extends HttpServlet {
     		    if (result__ != null) {
     		    	List<String> ba_list__ = new ArrayList<String>();
   	      		    if(result__.getProperty("PID_book_admin")!=null) {
-	  	      			ba_list__ = gson.fromJson((String)result__.getProperty("PID_book_admin"),collectionType);
+	  	      			ba_list__ = JsonUtils.deserialize(((Text)result__.getProperty("PID_book_admin")).getValue(),collectionType);
 	  	      			if(ba_list__.size()==0) {
 	  	      			   waiterlist.setStatus("no_places");
 	  	      			} else {
@@ -98,7 +92,7 @@ public class ListWaiterAvailable extends HttpServlet {
 		}
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
-		response.getWriter().write(new Gson().toJson(waiterlist));
+		response.getWriter().write(JsonUtils.serialize(waiterlist));
 	}
 
 }

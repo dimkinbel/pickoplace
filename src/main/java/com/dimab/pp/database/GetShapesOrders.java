@@ -1,9 +1,9 @@
 package com.dimab.pp.database;
-
-import java.lang.reflect.Type;
+ 
 import java.util.ArrayList;
 import java.util.List;
 
+import com.dimab.pickoplace.utils.JsonUtils;
 import com.dimab.pp.dto.BookingListForJSON;
 import com.dimab.pp.dto.BookingSingleShapeList;
 import com.dimab.pp.dto.OrderedResponse;
@@ -17,13 +17,12 @@ import com.google.appengine.api.datastore.Text;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+
 
 public class GetShapesOrders {
   public OrderedResponse getOrderedResponse(OrderedResponse orderedResponse,String pid,Long fromTime , Long period , boolean full){
 	    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-	    Gson gson = new Gson();
+	     
 		Filter placeIdFilter = new  FilterPredicate("pid",FilterOperator.EQUAL,pid);
 		Query q = new Query("ShapeOrdersList").setFilter(placeIdFilter);
 		PreparedQuery pq = datastore.prepare(q);
@@ -33,12 +32,13 @@ public class GetShapesOrders {
 
 			String allOrdersJSON =   ((Text) shapeList.getProperty("bookingListJSON")).getValue();
 			singleShaperesponse.setSid(sid);
-			BookingListForJSON ordersList = gson.fromJson(allOrdersJSON, BookingListForJSON.class);
+			BookingListForJSON ordersList = JsonUtils.deserialize(allOrdersJSON, BookingListForJSON.class);
 			List<SingleTimeRangeLong> matchList = new ArrayList<SingleTimeRangeLong>();
 			if(full) {
 				matchList = ordersList.getInRangeWithBID(fromTime, period);
 			} else {
-				matchList = ordersList.getInRange(fromTime, period);
+				matchList = ordersList.getOrdersList();
+				//matchList = ordersList.getInRange(fromTime, period);
 			}
 			if (matchList.isEmpty()) {
 				SingleTimeRangeLong empty = new SingleTimeRangeLong();
@@ -51,7 +51,7 @@ public class GetShapesOrders {
 			orderedResponse.getShapesBooked().add(singleShaperesponse);
 		}
 
-	  System.out.println(new Gson().toJson(orderedResponse));
+	  System.out.println(JsonUtils.serialize(orderedResponse));
 	  return orderedResponse;
   }
 }

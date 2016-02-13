@@ -1,9 +1,7 @@
 package com.dimab.pp.login;
-
-import java.io.BufferedReader;
+ 
 import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.IOException; 
 import java.io.Reader;
 
 
@@ -12,6 +10,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import com.dimab.pickoplace.utils.JsonUtils;
 import com.google.api.client.auth.oauth2.TokenResponseException;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeTokenRequest;
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
@@ -27,7 +26,7 @@ import com.google.appengine.api.urlfetch.HTTPMethod;
 import com.google.appengine.api.urlfetch.HTTPRequest;
 import com.google.appengine.api.urlfetch.HTTPResponse;
 import com.google.appengine.api.urlfetch.URLFetchServiceFactory;
-import com.google.gson.Gson;
+ 
 
 public class GoogVerifyToken {
 	private static final HttpTransport TRANSPORT = new NetHttpTransport();   
@@ -86,13 +85,12 @@ public class GoogVerifyToken {
 	
 	public GOOGmeResponseJSON getData() {
 		GOOGmeResponseJSON gojson = new GOOGmeResponseJSON();
-		Gson gson = new Gson();
 		
 	    if(resp_!=null && this.isValid()) {
 		    String responseString;
 			try {
 				responseString = new String(resp_.getContent(),"UTF-8");
-				gojson = gson.fromJson(responseString, GOOGmeResponseJSON.class);
+				gojson = JsonUtils.deserialize(responseString, GOOGmeResponseJSON.class);
 				return gojson;
 			} catch (UnsupportedEncodingException e) {
 				// TODO Auto-generated catch block

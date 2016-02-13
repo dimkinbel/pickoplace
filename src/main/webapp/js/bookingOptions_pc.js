@@ -1199,50 +1199,7 @@ function calcTime(date,offset) {
     return  moment(nd).format("DD/MM/YY HH:mm:ss");
 
 }
-var bookingOrderJSONlist=[];
-var bookingOrderJSON = {};
-function displayBookingRequest() {
-  bookingOrderJSONlist=[];
-  bookingOrderJSON = {};
-  for (var i = 0;i < currentInSelection.length ; i ++) {
-      var sid = currentInSelection[i];
-      if ($("#book_checkbox_"+sid).attr("checked")) {
-		  var TimeOfTheDatePicker_1970 = +$("#datepicker").datepicker( "getDate" ).getTime()/1000;
-		  var SecondsOfSliderPicker = place_slider_value*15*60;
-		  var PlaceName = document.getElementById("up_place_name_val_"+sid).value;
-		  var PlaceSID = document.getElementById("up_place_sid_val_"+sid).value;
-		  var TimePeriod = document.getElementById("book_duration").value;
-		  var PID = document.getElementById("server_placeID").value;
-		  var persons = document.getElementById("booking_shape_num_persons_"+sid).value;
-		  var bookID =  "book_"+randomString(15);
-		  var testID = "temp_"+randomString(10);
-		  var d = new Date();
-		  var clientOffset = d.getTimezoneOffset();
-		  var placeUTCoffset = document.getElementById("server_placeUTC").value;
-		  bookingOrderJSON = {"pid":PID,
-				              "sid":PlaceSID,
-				              "bookID":bookID,
-				              "testID":testID,
-				              "dateSeconds":TimeOfTheDatePicker_1970,
-				              "time":SecondsOfSliderPicker,
-				              "period":TimePeriod,
-				              "persons":persons,
-				              "clientOffset":clientOffset,
-				              "placeOffcet":placeUTCoffset};
-		  bookingOrderJSONlist.push(bookingOrderJSON)
-		  $('#pb_name_'+sid).html(PlaceName + " (" +PlaceSID+")");
-		  $('#pb_date_'+sid).html($("#datepicker").datepicker( "getDate" ).toDateString() + "("+TimeOfTheDatePicker_1970+")");
-		  $('#pb_time_'+sid).html(TimeRangeValues[place_slider_value] + "(" + SecondsOfSliderPicker + ")");
-		  $('#pb_duration_'+sid).html(TimePeriod/60 + " min (" + TimePeriod + ")");
-		  $('#pb_persons_'+sid).html(persons);
-      }
-  }
-  document.getElementById("bookingConfirmationPopUp").style.display="";
- 
-}
-function bookingConfirmCancel() {
-	document.getElementById("bookingConfirmationPopUp").style.display="none";
-}
+
 
 
 var place_slider_value;
@@ -1383,49 +1340,6 @@ function appendSelctedShape(sid,appendToID,shape,floor) {
 	}
 }
 
-
-
-function requestBookingAvailability() {
-	var TimeOfTheDatePicker_1970 = +$("#datepicker").datepicker( "getDate" ).getTime()/1000; // The time is relative to client browser
-	var d = new Date();
-	var clientOffset = -1*d.getTimezoneOffset()/60;
-	var placeOffset = document.getElementById("server_placeUTC").value;
-	var placeID = document.getElementById("server_placeID").value;
-	var requestJSON = {};
-	
-	requestJSON.date1970 = TimeOfTheDatePicker_1970  ;// - d.getTimezoneOffset()*60 ;
-	requestJSON.period = 2*24*60*60;
-	requestJSON.clientOffset = clientOffset;
-	requestJSON.placeOffset = placeOffset;
-	requestJSON.pid = placeID;
-	var jsonData = {bookrequest:JSON.stringify(requestJSON)};
-	$.ajax({
-	      url : "/checkPidAvailable",
-	      data: jsonData,
-	      beforeSend: function () { $("#datepicker_ajax_gif").show(); },
-	      success : function(data){
-	    	 // alert(data);
-	    	 $("#datepicker_ajax_gif").hide();
-	    	 document.getElementById("server_shapes_prebooked").value=JSON.stringify(data);
-	    	  $("#for_debug").html(JSON.stringify(data));
-	    	  for(var c = 0 ; c < floorCanvases.length;c++) {
-	    		  var canvas__ = floorCanvases[c];
-		    	  if(canvas__.listSelcted.length > 0) {
-		    		  for (var s = 0; s < canvas__.listSelcted.length;s++) {
-		    		    var sid = canvas__.listSelcted[s].sid;
-		    		    drawBookingTimeCanvas('booking_slider_canvas',sid,15,400,30,2);
-		    		  }
-		    	  }
-	    	  }
-	    	 // d = new Date(data.date1970 * 1000);
-	    	 // $("#for_debug").append('<br/>'+d);
-	    	  
-	    	 
-	      },
-	      dataType : "JSON",
-	      type : "post"
-	  });
-}
 
 
 

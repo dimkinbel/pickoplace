@@ -5,6 +5,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.dimab.pickoplace.utils.JsonUtils;
 import com.dimab.pp.dto.CanvasShape;
 import com.dimab.pp.dto.JsonimgID_2_data;
 import com.dimab.pp.dto.PPSubmitObject;
@@ -24,9 +25,7 @@ import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.images.ImagesService;
 import com.google.appengine.api.images.ImagesServiceFactory;
 import com.google.appengine.api.images.ServingUrlOptions;
-import com.google.appengine.tools.cloudstorage.GcsFileMetadata;
 import com.google.appengine.tools.cloudstorage.GcsFilename;
-import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 public class GetPlaceInfoFactory {
@@ -43,7 +42,6 @@ public PlaceInfo getPlaceInfo (DatastoreService datastore , Entity csEntity , in
 		String Address = (String) csEntity.getProperty("address");
 		String mail = new String();
 		String phone = new String();
-		Gson gson = new Gson();
 		
 		if(csEntity.getProperty("placeMail") != null) {
 			mail = (String) csEntity.getProperty("placeMail");
@@ -63,7 +61,7 @@ public PlaceInfo getPlaceInfo (DatastoreService datastore , Entity csEntity , in
 		placeInfo.setType((ArrayList<String>)csEntity.getProperty("PlaceType"));
 		placeInfo.setSubtype((ArrayList<String>)csEntity.getProperty("PlaceSubType"));
 		String weekdays = (String)csEntity.getProperty("workinghours");		
-		WorkingWeek weekdaysObject  = gson.fromJson(weekdays, WorkingWeek.class);
+		WorkingWeek weekdaysObject  = JsonUtils.deserialize(weekdays, WorkingWeek.class);
 		placeInfo.setWeekdaysObject(weekdaysObject);
 		
 		Integer bookableShapes = 0;
@@ -74,7 +72,7 @@ public PlaceInfo getPlaceInfo (DatastoreService datastore , Entity csEntity , in
 	    String shapesJSON =  ((Text) csEntity.getProperty("shapesJSON")).getValue();
         
 		Type CanvasListcollectionType = new TypeToken<List<PPSubmitObject>>(){}.getType();
-		List<PPSubmitObject> floors = gson.fromJson(shapesJSON, CanvasListcollectionType);
+		List<PPSubmitObject> floors = JsonUtils.deserialize(shapesJSON, CanvasListcollectionType);
         String mainFloorName = new String();
         
 		for (PPSubmitObject floor : floors) {
@@ -123,7 +121,7 @@ public PlaceInfo getPlaceInfo (DatastoreService datastore , Entity csEntity , in
   	    // Update Images ---------------------------------------------------
 		//------------------------------------------------------------------
 		Type collectionType = new TypeToken<List<String>>(){}.getType();
-  	    List<String> photosList = gson.fromJson((String)csEntity.getProperty("photos"),collectionType);
+  	    List<String> photosList = JsonUtils.deserialize((String)csEntity.getProperty("photos"),collectionType);
   	    if(photosList!= null) {
 	  	    for (String imgID : photosList) {
 	  	    	bucket = "pp_images"; 
@@ -225,9 +223,9 @@ public PlaceInfo getPlaceInfo (DatastoreService datastore , Entity csEntity , in
 		Double Lat = Double.parseDouble((String) csEntity.getProperty("lat"));
 	    Double Lng = Double.parseDouble((String) csEntity.getProperty("lng"));
 	    String shapesJSON =  ((Text) csEntity.getProperty("shapesJSON")).getValue();
-      Gson gson = new Gson();
+
 		Type CanvasListcollectionType = new TypeToken<List<PPSubmitObject>>(){}.getType();
-		List<PPSubmitObject> floors = gson.fromJson(shapesJSON, CanvasListcollectionType);
+		List<PPSubmitObject> floors = JsonUtils.deserialize(shapesJSON, CanvasListcollectionType);
       String mainFloorName = new String();
       
 		for (PPSubmitObject floor : floors) {

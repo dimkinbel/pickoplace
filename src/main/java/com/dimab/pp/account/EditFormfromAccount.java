@@ -12,14 +12,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.dimab.pickoplace.utils.JsonUtils;
 import com.dimab.pp.dto.AJAXImagesJSON;
 import com.dimab.pp.dto.CanvasShape;
 import com.dimab.pp.dto.JsonImageID_2_GCSurl;
 import com.dimab.pp.dto.JsonSID_2_imgID;
-import com.dimab.pp.dto.PPSubmitObject;
-import com.dimab.pp.dto.ShapeBookingOptions;
-import com.dimab.pp.dto.SingleTimeRange;
-import com.dimab.pp.dto.WeekDays;
+import com.dimab.pp.dto.PPSubmitObject; 
 import com.dimab.pp.login.CheckTokenValid;
 import com.dimab.pp.login.GenericUser;
 import com.google.appengine.api.datastore.DatastoreService;
@@ -36,7 +34,6 @@ import com.google.appengine.api.images.ImagesService;
 import com.google.appengine.api.images.ImagesServiceFactory;
 import com.google.appengine.api.images.ServingUrlOptions;
 import com.google.appengine.tools.cloudstorage.GcsFilename;
-import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 
@@ -88,9 +85,9 @@ public class EditFormfromAccount extends HttpServlet {
   			String address = (String)  userCanvasState.getProperty("address");
   			String lat = (String)  userCanvasState.getProperty("lat");
   			String lng = (String)  userCanvasState.getProperty("lng");
-  			Gson gson = new Gson();
+			
   			Type CanvasListcollectionType = new TypeToken<List<PPSubmitObject>>(){}.getType();
-			List<PPSubmitObject> floors = gson.fromJson(shapesJSON, CanvasListcollectionType);
+			List<PPSubmitObject> floors = JsonUtils.deserialize(shapesJSON, CanvasListcollectionType);
 			// Restore shapes booking options
 			for (PPSubmitObject floor : floors) {
 				for (CanvasShape shape : floor.getShapes()) {
@@ -136,7 +133,7 @@ public class EditFormfromAccount extends HttpServlet {
 				}
 			}
 			Type collectionType = new TypeToken<List<JsonSID_2_imgID>>(){}.getType();
-			List<JsonSID_2_imgID> sid2imgID = gson.fromJson(sid2ImageIDJSON, collectionType);
+			List<JsonSID_2_imgID> sid2imgID = JsonUtils.deserialize(sid2ImageIDJSON, collectionType);
 			if(sid2imgID.isEmpty()) {
 				System.out.println("sid2imgID = null");
 				sid2imgID = null;

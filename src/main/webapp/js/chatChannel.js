@@ -51,6 +51,7 @@ requestToken = function(userid){
 			if (httpRequest.status === 200) {
 				//alert("HTTPReq:   "+ httpRequest.responseText);
 				openChannel(httpRequest.responseText);
+				console.log("Toked:"+httpRequest.responseText);
 				console.log("Channel connected:"+userid);
 			}else {
 				alert('There was a problem with the request.');

@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.dimab.pickoplace.utils.JsonUtils;
 import com.dimab.pp.dto.BookingRequestWrap;
 import com.google.appengine.api.channel.ChannelFailureException;
 import com.google.appengine.api.channel.ChannelMessage;
@@ -21,14 +22,14 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
-import com.google.gson.Gson;
+
 import com.google.gson.reflect.TypeToken;
 
 public class ChannelMessageFactory {
 	 private static ChannelService channelService = ChannelServiceFactory.getChannelService();
 	 public boolean SendBookingUpdate(String pid,BookingRequestWrap message) {
 		 DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-		 Gson gson = new Gson();
+		 
 		 Filter UserExists = new  FilterPredicate("pid",FilterOperator.EQUAL,pid);
 		 Query q = new Query("AdminChannels").setFilter(UserExists);
 		 PreparedQuery pq = datastore.prepare(q);
@@ -39,7 +40,7 @@ public class ChannelMessageFactory {
 	     } else {
 		    	String clientsJSON = (String)result.getProperty("clients");
 		    	Type collectionType = new TypeToken<List<String>>(){}.getType();
-		    	List<String> connected  = gson.fromJson(clientsJSON, collectionType);
+		    	List<String> connected  = JsonUtils.deserialize(clientsJSON, collectionType);
 
 	             for(String cliendID:connected) {
 	            	 Map <String , Object> map = new HashMap<String , Object>();
@@ -48,7 +49,7 @@ public class ChannelMessageFactory {
 	            	 map.put("message",message);
 
 	            	try{
-					  sendMessageToChannel(cliendID,new Gson().toJson(map));
+					  sendMessageToChannel(cliendID,JsonUtils.serialize(map));
 	                }catch (ChannelFailureException channelFailure) {
 		    	      System.out.println("Failed in sending message to channel:"+channelFailure);
 	                

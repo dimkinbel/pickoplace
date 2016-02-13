@@ -1,16 +1,14 @@
 package com.dimab.pp.database;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.ArrayList; 
 import java.util.List;
 
-import com.dimab.pp.dto.BookingDTO;
+import com.dimab.pickoplace.utils.JsonUtils;
 import com.dimab.pp.dto.BookingRequest;
 import com.dimab.pp.dto.BookingRequestWrap;
 import com.dimab.pp.dto.CanvasShape;
-import com.dimab.pp.dto.PPSubmitObject;
-import com.dimab.pp.dto.PlaceInfo;
+import com.dimab.pp.dto.PPSubmitObject; 
 import com.dimab.pp.dto.ShapeInfo;
 import com.dimab.pp.dto.SingleShapeBookingResponse;
 import com.dimab.pp.login.GenericUser;
@@ -24,7 +22,7 @@ import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.datastore.Query.SortDirection;
-import com.google.gson.Gson;
+
 import com.google.gson.reflect.TypeToken;
 //String pid;
 //String sid;
@@ -46,9 +44,9 @@ public class GetBookingShapesDataFactory {
 		  String shapesJSON =  ((Text) csEntity.getProperty("shapesJSON")).getValue();
 	      String placeID = (String) csEntity.getProperty("placeUniqID");
 	      
-	      Gson gson = new Gson();
+	     
 			Type CanvasListcollectionType = new TypeToken<List<PPSubmitObject>>(){}.getType();
-			List<PPSubmitObject> floors = gson.fromJson(shapesJSON, CanvasListcollectionType);
+			List<PPSubmitObject> floors = JsonUtils.deserialize(shapesJSON, CanvasListcollectionType);
 			// Restore shapes booking options
 			for (PPSubmitObject floor : floors) {
 				String floorName = floor.getFloor_name();
@@ -89,7 +87,7 @@ public class GetBookingShapesDataFactory {
 	  // Return list of bookings as stored in datastore Bookings
 	  public List<BookingRequestWrap> getDatastoreBookings(DatastoreService datastore , String pid , Integer from , Integer to) {
 		    List<BookingRequestWrap> bookings = new ArrayList<BookingRequestWrap>();
-		    Gson gson = new Gson();
+
 			Filter greaterF = new FilterPredicate("UTCstartSeconds", FilterOperator.GREATER_THAN_OR_EQUAL,from);
 			Filter lessF =   new FilterPredicate("UTCstartSeconds", FilterOperator.LESS_THAN_OR_EQUAL,to);
 			Filter pidF = new FilterPredicate("pid", FilterOperator.EQUAL,pid);
@@ -116,7 +114,7 @@ public class GetBookingShapesDataFactory {
 
 				String bookingListJSON = ((Text) BookingEntity.getProperty("bookingList")).getValue();
 				Type bookingListType = new TypeToken<List<BookingRequest>>(){}.getType();
-				List<BookingRequest> bookingShapesList = gson.fromJson(bookingListJSON, bookingListType);
+				List<BookingRequest> bookingShapesList = JsonUtils.deserialize(bookingListJSON, bookingListType);
 				
 				BookingRequestWrap booking = new BookingRequestWrap();
 				booking.setBookID(bid);	
@@ -131,7 +129,7 @@ public class GetBookingShapesDataFactory {
 				booking.setBookingList(bookingShapesList);
 				if(BookingEntity.getProperty("genuser")!=null) {
 					Type genuserType = new TypeToken<GenericUser>(){}.getType();
-					GenericUser genuser = gson.fromJson((String)BookingEntity.getProperty("genuser"), genuserType);
+					GenericUser genuser = JsonUtils.deserialize((String)BookingEntity.getProperty("genuser"), genuserType);
 					booking.setUser(genuser);
 				}
 
@@ -144,7 +142,7 @@ public class GetBookingShapesDataFactory {
 	public List<BookingRequestWrap> getDatastoreBookingsInludeStartBefore(DatastoreService datastore , String pid , Integer from , Integer to) {
 		List<BookingRequestWrap> bookings = new ArrayList<BookingRequestWrap>();
 		Integer maxBookingLength = 12*3600;//TBD (Use Place max booking period available)
-		Gson gson = new Gson();
+
 		Filter greaterF = new FilterPredicate("UTCstartSeconds", FilterOperator.GREATER_THAN_OR_EQUAL,from-maxBookingLength);
 		Filter lessF =   new FilterPredicate("UTCstartSeconds", FilterOperator.LESS_THAN_OR_EQUAL,to);
 
@@ -179,7 +177,7 @@ public class GetBookingShapesDataFactory {
 
 			String bookingListJSON = ((Text) BookingEntity.getProperty("bookingList")).getValue();
 			Type bookingListType = new TypeToken<List<BookingRequest>>(){}.getType();
-			List<BookingRequest> bookingShapesList = gson.fromJson(bookingListJSON, bookingListType);
+			List<BookingRequest> bookingShapesList = JsonUtils.deserialize(bookingListJSON, bookingListType);
 
 			BookingRequestWrap booking = new BookingRequestWrap();
 			booking.setBookID(bid);
@@ -194,7 +192,7 @@ public class GetBookingShapesDataFactory {
 			booking.setBookingList(bookingShapesList);
 			if(BookingEntity.getProperty("genuser")!=null) {
 				Type genuserType = new TypeToken<GenericUser>(){}.getType();
-				GenericUser genuser = gson.fromJson((String)BookingEntity.getProperty("genuser"), genuserType);
+				GenericUser genuser = JsonUtils.deserialize((String)BookingEntity.getProperty("genuser"), genuserType);
 				booking.setUser(genuser);
 			}
 

@@ -11,8 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 
-
-
+import com.dimab.pickoplace.utils.JsonUtils;
 import com.google.appengine.api.channel.ChannelPresence;
 import com.google.appengine.api.channel.ChannelService;
 import com.google.appengine.api.channel.ChannelServiceFactory;
@@ -26,7 +25,6 @@ import com.google.appengine.api.datastore.TransactionOptions;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
-import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 public class ChannelDisconnect extends HttpServlet {
@@ -46,7 +44,7 @@ public class ChannelDisconnect extends HttpServlet {
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
  		TransactionOptions options = TransactionOptions.Builder.withXG(true);
  		Transaction txn = datastore.beginTransaction(options);
- 		Gson gson = new Gson();
+ 		 
  		
 		String[] ops = presence.clientId().split("_PPID_");
 		String pid = ops[1];
@@ -59,13 +57,13 @@ public class ChannelDisconnect extends HttpServlet {
 	    } else {
 	    	String clientsJSON = (String)result.getProperty("clients");
 	    	Type collectionType = new TypeToken<List<String>>(){}.getType();
-	    	List<String> connected  = gson.fromJson(clientsJSON, collectionType);
+	    	List<String> connected  = JsonUtils.deserialize(clientsJSON, collectionType);
 	    	if(connected.contains(presence.clientId())) {
 	    		connected.remove(presence.clientId());
 	    		if(connected.size()==0) {
 	    			datastore.delete(result.getKey());
 	    		} else {
-	    		   result.setProperty("clients", gson.toJson(connected));
+	    		   result.setUnindexedProperty("clients", JsonUtils.serialize(connected));
 	    		   datastore.put(result);
 	    		}
 	    	}

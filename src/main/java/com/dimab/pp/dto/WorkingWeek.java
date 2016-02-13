@@ -1,9 +1,10 @@
 package com.dimab.pp.dto;
 
-import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class WorkingWeek {
 	WeekDayOpenClose sun = new WeekDayOpenClose();
@@ -13,6 +14,69 @@ public class WorkingWeek {
 	WeekDayOpenClose thu = new WeekDayOpenClose();
 	WeekDayOpenClose fri = new WeekDayOpenClose();
 	WeekDayOpenClose sat = new WeekDayOpenClose();
+
+	public OrderedResponse getRangesWeek( OrderedResponse orderedResponse) {
+		Map<Integer, WeekDay> weekObject = new HashMap<Integer, WeekDay>();
+
+		WeekDay sunday = new WeekDay();
+		sunday.setOpen(sun.isOpen());
+		WeekDayOpenClose openCloseSun = new WeekDayOpenClose();
+		openCloseSun.setFrom(sun.getFrom());
+		openCloseSun.setTo(sun.getTo());
+		sunday.getOpenList().add(openCloseSun);
+		weekObject.put(0,sunday);
+
+		WeekDay monday = new WeekDay();
+		monday.setOpen(mon.isOpen());
+		WeekDayOpenClose openCloseMon = new WeekDayOpenClose();
+		openCloseMon.setFrom(mon.getFrom());
+		openCloseMon.setTo(mon.getTo());
+		monday.getOpenList().add(openCloseMon);
+		weekObject.put(1,monday);
+
+		WeekDay tuesday = new WeekDay();
+		tuesday.setOpen(tue.isOpen());
+		WeekDayOpenClose openCloseTue = new WeekDayOpenClose();
+		openCloseTue.setFrom(tue.getFrom());
+		openCloseTue.setTo(tue.getTo());
+		tuesday.getOpenList().add(openCloseTue);
+		weekObject.put(2,tuesday);
+
+		WeekDay wednesday = new WeekDay();
+		wednesday.setOpen(wed.isOpen());
+		WeekDayOpenClose openCloseWed = new WeekDayOpenClose();
+		openCloseWed.setFrom(wed.getFrom());
+		openCloseWed.setTo(wed.getTo());
+		wednesday.getOpenList().add(openCloseWed);
+		weekObject.put(3,wednesday);
+
+		WeekDay thursday = new WeekDay();
+		thursday.setOpen(thu.isOpen());
+		WeekDayOpenClose openCloseThu = new WeekDayOpenClose();
+		openCloseThu.setFrom(thu.getFrom());
+		openCloseThu.setTo(thu.getTo());
+		thursday.getOpenList().add(openCloseThu);
+		weekObject.put(4,thursday);
+
+		WeekDay friday = new WeekDay();
+		friday.setOpen(fri.isOpen());
+		WeekDayOpenClose openCloseFri = new WeekDayOpenClose();
+		openCloseFri.setFrom(fri.getFrom());
+		openCloseFri.setTo(fri.getTo());
+		friday.getOpenList().add(openCloseFri);
+		weekObject.put(5,friday);
+
+		WeekDay saturday = new WeekDay();
+		saturday.setOpen(sat.isOpen());
+		WeekDayOpenClose openCloseSat = new WeekDayOpenClose();
+		openCloseSat.setFrom(sat.getFrom());
+		openCloseSat.setTo(sat.getTo());
+		saturday.getOpenList().add(openCloseSat);
+		weekObject.put(6,saturday);
+
+		orderedResponse.setWeekObject(weekObject);
+		return orderedResponse;
+	}
 	public WeekDayOpenClose  getWeekDayOpenClose(int getDayValue) {
 		if(getDayValue == 7) {
 			getDayValue = 1;
@@ -86,15 +150,17 @@ public class WorkingWeek {
 		return false;
 	}
 	public List<SingleTimeRangeLong> getRangesList(int dayStart , int daysTotal) {
-		Gson gson = new Gson();
 		List<SingleTimeRangeLong> returnRanges = new ArrayList<SingleTimeRangeLong>();
 		int i = 0;
 		int addDaySeconds = 0;
+		//System.out.println("dayStart = [" + dayStart + "], daysTotal = [" + daysTotal + "]");
 		while (i < daysTotal) {
+			//System.out.println("Day---"+i);
 			List<SingleTimeRangeLong> singleDayRanges = new ArrayList<SingleTimeRangeLong>();
-			WeekDayOpenClose prevDay = this.getWeekDayOpenClose(dayStart-1);
-			WeekDayOpenClose currDay = this.getWeekDayOpenClose(dayStart);
-
+			WeekDayOpenClose prevDay = this.getWeekDayOpenClose(dayStart+i-1);
+			WeekDayOpenClose currDay = this.getWeekDayOpenClose(dayStart+i);
+			//System.out.println("Prev Day:"+prevDay.getFrom() + " - " + prevDay.getTo());
+			//.out.println("Cur Day:"+currDay.getFrom() + " - " + currDay.getTo());
 			if(prevDay.isOpen()) {
 				if(prevDay.getTo() > 86400) { // End period of previous day is later than today starts
 					if(currDay.isOpen()) {
@@ -171,6 +237,7 @@ public class WorkingWeek {
 
 				}
 			}
+
 			i+=1;
 			addDaySeconds+=86400;
 		}
