@@ -61,7 +61,8 @@ public class WaiterDeleteBooking {
             userPlace.setBranch(branch);
             userPlace.setAddress(address);
             placeInfo.setUserPlace(userPlace);
-            mailFabric.SendEmail("waiterCancelUserBooking","pickoplace@appspot.gserviceaccount.com", bookingRequest.getUser().getEmail(), bookingRequest, placeInfo);
+            // todo(Dima): review!
+            // mailFabric.sendEmail("waiterCancelUserBooking","pickoplace@appspot.gserviceaccount.com", bookingRequest.getUser().getEmail(), bookingRequest, placeInfo);
             txn.commit();
             freePlaceFactory.UpdateFreePlaceRemoveBooking(bidEntity, bookingRequests, datastore);
             return true;
