@@ -1,30 +1,24 @@
 package com.dimab.pp.server;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
+import com.dimab.pickoplace.entity.EntityType;
 import com.dimab.pp.functions.RandomStringGenerator;
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.Transaction;
-import com.google.appengine.api.datastore.TransactionOptions;
+import com.google.appengine.api.datastore.*;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.gson.Gson;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 
 public class UserLoginLogout extends HttpServlet {
@@ -63,7 +57,7 @@ public class UserLoginLogout extends HttpServlet {
     		if (result == null) {
     			     // First Username login
     			Date date = new Date();
-    			Entity userEntity = new Entity("Users");
+    			Entity userEntity = new Entity(EntityType.Users);
     			RandomStringGenerator randomGen = new RandomStringGenerator();
     		    String random =  randomGen.generateRandomString(10,RandomStringGenerator.Mode.ALPHANUMERIC);
     			userEntity.setProperty("username", userGMail);

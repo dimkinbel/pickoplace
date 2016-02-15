@@ -1,55 +1,28 @@
 package com.dimab.pp.login;
 
-import java.io.IOException;
+import com.dimab.pickoplace.entity.EntityType;
+import com.dimab.pp.functions.RandomStringGenerator;
+import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeTokenRequest;
+import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
+import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.appengine.api.datastore.*;
+import com.google.appengine.api.datastore.Query.Filter;
+import com.google.appengine.api.datastore.Query.FilterOperator;
+import com.google.appengine.api.datastore.Query.FilterPredicate;
+import com.google.gson.Gson;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import com.dimab.pp.functions.RandomStringGenerator;
-import com.google.api.client.auth.oauth2.TokenResponseException;
-import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeTokenRequest;
-import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
-import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.Transaction;
-import com.google.appengine.api.datastore.TransactionOptions;
-import com.google.appengine.api.datastore.Query.Filter;
-import com.google.appengine.api.datastore.Query.FilterOperator;
-import com.google.appengine.api.datastore.Query.FilterPredicate;
-import com.google.gson.Gson;
+import java.io.*;
+import java.util.*;
 
 //import org.apache.log4j.BasicConfigurator;
-
-
-
-
-
-
-
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
-import java.io.FileReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.math.BigInteger;
-import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 
 public class ConnectUser extends HttpServlet {
@@ -149,7 +122,7 @@ public class ConnectUser extends HttpServlet {
 			    if (result == null) {
 			    	     // First Username login
 			    	Date date = new Date();
-			    	Entity userEntity = new Entity("Users");
+			    	Entity userEntity = new Entity(EntityType.Users);
 			    	RandomStringGenerator randomGen = new RandomStringGenerator();
 			        String random =  randomGen.generateRandomString(10,RandomStringGenerator.Mode.ALPHANUMERIC);
 			    	userEntity.setProperty("username", userData.getEmail());
@@ -235,7 +208,7 @@ public class ConnectUser extends HttpServlet {
 		    		if (result == null) {
 					     // First Username login
 						Date date = new Date();
-						Entity userEntity = new Entity("Users");
+						Entity userEntity = new Entity(EntityType.Users);
 						RandomStringGenerator randomGen = new RandomStringGenerator();
 					    String random =  randomGen.generateRandomString(10,RandomStringGenerator.Mode.ALPHANUMERIC);
 						userEntity.setProperty("username", userData.getEmail());

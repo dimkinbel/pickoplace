@@ -1,5 +1,6 @@
 package com.dimab.pp.server;
 
+import com.dimab.pickoplace.entity.EntityType;
 import com.dimab.pp.dto.AJAXFacebookResponse;
 import com.dimab.pp.functions.RandomStringGenerator;
 import com.google.appengine.api.datastore.*;
@@ -45,7 +46,7 @@ public class UserLoginLogoutFacebook extends HttpServlet {
     		if (result == null) {
 			     // First Username login
 				Date date = new Date();
-				Entity userEntity = new Entity("Users");
+				Entity userEntity = new Entity(EntityType.Users);
 				RandomStringGenerator randomGen = new RandomStringGenerator();
 			    String random =  randomGen.generateRandomString(10,RandomStringGenerator.Mode.ALPHANUMERIC);
 				userEntity.setProperty("username", fb_response.getResponse().getEmail());
