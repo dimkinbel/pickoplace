@@ -1,37 +1,26 @@
 package com.dimab.pp.account;
 
-import java.io.IOException;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-
-
-
-
-
+import com.dimab.pickoplace.entity.EntityKind;
 import com.dimab.pp.database.GetPlaceInfoFactory;
 import com.dimab.pp.dto.PlaceInfo;
 import com.dimab.pp.dto.WaiterListAJAXDTO;
 import com.dimab.pp.login.CheckTokenValid;
 import com.dimab.pp.login.GenericUser;
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.*;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ListWaiterAvailable extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -62,8 +51,8 @@ public class ListWaiterAvailable extends HttpServlet {
 			Type collectionType = new TypeToken<List<String>>(){}.getType();
 			DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 			Filter UserExists__ = new  FilterPredicate("username",FilterOperator.EQUAL,username);
-    		    Query q__ = new Query("Users").setFilter(UserExists__);
-    		    PreparedQuery pq__ = datastore.prepare(q__);
+			Query q__ = new Query(EntityKind.Users).setFilter(UserExists__);
+			PreparedQuery pq__ = datastore.prepare(q__);
     		    Entity result__ = pq__.asSingleEntity();
     		    if (result__ != null) {
     		    	List<String> ba_list__ = new ArrayList<String>();

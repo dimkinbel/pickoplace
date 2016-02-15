@@ -1,41 +1,27 @@
 package com.dimab.pp.server;
 
-import java.io.IOException;
-import java.lang.reflect.Type;
-import java.util.*;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.dimab.pickoplace.entity.EntityKind;
 import com.dimab.pp.channel.ChannelMessageFactory;
 import com.dimab.pp.database.FreePlaceFactory;
 import com.dimab.pp.database.GetPlaceInfoFactory;
-import com.dimab.pp.dto.BookingListForJSON;
-import com.dimab.pp.dto.BookingRequest;
-import com.dimab.pp.dto.BookingRequestWrap;
-import com.dimab.pp.dto.PlaceInfo;
-import com.dimab.pp.dto.SingleTimeRangeLong;
-import com.dimab.pp.dto.WeekDayOpenClose;
-import com.dimab.pp.dto.WorkingWeek;
+import com.dimab.pp.dto.*;
 import com.dimab.pp.login.CheckTokenValid;
 import com.dimab.pp.login.GenericUser;
 import com.dimab.smsmail.MailSenderFabric;
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.Text;
-import com.google.appengine.api.datastore.Transaction;
-import com.google.appengine.api.datastore.TransactionOptions;
+import com.google.appengine.api.datastore.*;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.*;
 
 
 public class ClientPlaceBooking extends HttpServlet {
@@ -114,7 +100,7 @@ public class ClientPlaceBooking extends HttpServlet {
 		if(sessionPhone==null || sessionPhone.isEmpty()) {
 			usedUsersEntity = true;
 			Filter UserEmail = new  FilterPredicate("username",FilterOperator.EQUAL,genuser.getEmail());
-			Query q = new Query("Users").setFilter(UserEmail);
+			Query q = new Query(EntityKind.Users).setFilter(UserEmail);
 			PreparedQuery pq = datastore.prepare(q);
 			userEntity = pq.asSingleEntity();
 			if (userEntity == null) {

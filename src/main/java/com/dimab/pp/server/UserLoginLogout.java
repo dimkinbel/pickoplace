@@ -1,6 +1,6 @@
 package com.dimab.pp.server;
 
-import com.dimab.pickoplace.entity.EntityType;
+import com.dimab.pickoplace.entity.EntityKind;
 import com.dimab.pp.functions.RandomStringGenerator;
 import com.google.appengine.api.datastore.*;
 import com.google.appengine.api.datastore.Query.Filter;
@@ -51,14 +51,14 @@ public class UserLoginLogout extends HttpServlet {
             String userGMail = req.getUserPrincipal().getName();
   
             Filter UserExists = new  FilterPredicate("username",FilterOperator.EQUAL,userGMail);
-    		Query q = new Query("Users").setFilter(UserExists);
-    		PreparedQuery pq = datastore.prepare(q);
+			Query q = new Query(EntityKind.Users).setFilter(UserExists);
+			PreparedQuery pq = datastore.prepare(q);
     		Entity result = pq.asSingleEntity();
     		if (result == null) {
     			     // First Username login
     			Date date = new Date();
-    			Entity userEntity = new Entity(EntityType.Users);
-    			RandomStringGenerator randomGen = new RandomStringGenerator();
+				Entity userEntity = new Entity(EntityKind.Users);
+				RandomStringGenerator randomGen = new RandomStringGenerator();
     		    String random =  randomGen.generateRandomString(10,RandomStringGenerator.Mode.ALPHANUMERIC);
     			userEntity.setProperty("username", userGMail);
     			userEntity.setProperty("GoogleAccount",true);
@@ -90,8 +90,8 @@ public class UserLoginLogout extends HttpServlet {
         	String userEmailsession = (String) session.getAttribute("userEmail");
             System.out.println("User Logout:"+ userEmailsession);
             Filter UserExists = new  FilterPredicate("username",FilterOperator.EQUAL,userEmailsession);
-    		Query q = new Query("Users").setFilter(UserExists);
-    		PreparedQuery pq = datastore.prepare(q);
+			Query q = new Query(EntityKind.Users).setFilter(UserExists);
+			PreparedQuery pq = datastore.prepare(q);
     		Entity result = pq.asSingleEntity();
     		if (result != null) {
     			Date date = new Date();

@@ -1,43 +1,26 @@
 package com.dimab.pp.account;
 
-import java.io.IOException;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.dimab.pickoplace.entity.EntityKind;
 import com.dimab.pp.dto.AdminUser;
 import com.dimab.pp.dto.UserPlace;
 import com.dimab.pp.login.CheckTokenValid;
 import com.dimab.pp.login.GenericUser;
 import com.dimab.pp.search.SearchFabric;
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.Transaction;
-import com.google.appengine.api.datastore.TransactionOptions;
+import com.google.appengine.api.datastore.*;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
-import com.google.appengine.tools.cloudstorage.GcsFilename;
-import com.google.appengine.tools.cloudstorage.GcsService;
-import com.google.appengine.tools.cloudstorage.GcsServiceFactory;
-import com.google.appengine.tools.cloudstorage.ListItem;
-import com.google.appengine.tools.cloudstorage.ListOptions;
-import com.google.appengine.tools.cloudstorage.ListResult;
-import com.google.appengine.tools.cloudstorage.RetryParams;
+import com.google.appengine.tools.cloudstorage.*;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.*;
 
 public class DeletePlaceData extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -109,7 +92,7 @@ public class DeletePlaceData extends HttpServlet {
 	  			// Remove from User lists
 	  			for (AdminUser adminObj : placeEditList) {
 	  				Filter UserExists = new  FilterPredicate("username",FilterOperator.EQUAL,adminObj.getMail());
-	  				Query q = new Query("Users").setFilter(UserExists);
+					Query q = new Query(EntityKind.Users).setFilter(UserExists);
 	  				PreparedQuery pq = datastore.prepare(q);
 	  				Entity result = pq.asSingleEntity();
 	  				if (result != null) { 

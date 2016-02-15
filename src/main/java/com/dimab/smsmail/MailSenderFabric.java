@@ -1,8 +1,14 @@
 package com.dimab.smsmail;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.util.Date;
-import java.util.Properties;
+
+import com.dimab.pickoplace.entity.EntityKind;
+import com.dimab.pp.dto.BookingRequestWrap;
+import com.dimab.pp.dto.PlaceInfo;
+import com.dimab.pp.login.GenericUser;
+import com.google.appengine.api.datastore.*;
+import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
+import com.google.appengine.api.datastore.Query.Filter;
+import com.google.appengine.api.datastore.Query.FilterOperator;
+import com.google.appengine.api.datastore.Query.FilterPredicate;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -11,19 +17,9 @@ import javax.mail.Transport;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-
-import com.dimab.pp.dto.BookingRequestWrap;
-import com.dimab.pp.dto.PlaceInfo;
-import com.dimab.pp.login.GenericUser;
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
-import com.google.appengine.api.datastore.Query.Filter;
-import com.google.appengine.api.datastore.Query.FilterOperator;
-import com.google.appengine.api.datastore.Query.FilterPredicate;
+import java.io.UnsupportedEncodingException;
+import java.util.Date;
+import java.util.Properties;
 
 public class MailSenderFabric {
    
@@ -61,7 +57,7 @@ public class MailSenderFabric {
 		Filter UserEmail = new  FilterPredicate("username",FilterOperator.EQUAL,genuser.getEmail());
 		Filter UserSubscribed = new  FilterPredicate("emailsend",FilterOperator.EQUAL,false);
 		Filter composeFilter = CompositeFilterOperator.and(UserEmail,UserSubscribed);
-		Query q = new Query("Users").setFilter(composeFilter).setKeysOnly();
+		Query q = new Query(EntityKind.Users).setFilter(composeFilter).setKeysOnly();
 		PreparedQuery pq = datastore.prepare(q);
 	    Entity result = pq.asSingleEntity();
 	    if (result == null) {
@@ -72,7 +68,7 @@ public class MailSenderFabric {
 	public String getUserKey(DatastoreService datastore,GenericUser genuser) {
 
 		Filter UserEmail = new  FilterPredicate("username",FilterOperator.EQUAL,genuser.getEmail());
-		Query q = new Query("Users").setFilter(UserEmail).setKeysOnly(); 
+		Query q = new Query(EntityKind.Users).setFilter(UserEmail).setKeysOnly();
 		
 		PreparedQuery pq = datastore.prepare(q);
 	    Entity result = pq.asSingleEntity();

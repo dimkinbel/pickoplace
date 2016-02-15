@@ -1,6 +1,6 @@
 package com.dimab.pp.server;
 
-import com.dimab.pickoplace.entity.EntityType;
+import com.dimab.pickoplace.entity.EntityKind;
 import com.dimab.pp.dto.AJAXFacebookResponse;
 import com.dimab.pp.functions.RandomStringGenerator;
 import com.google.appengine.api.datastore.*;
@@ -40,13 +40,13 @@ public class UserLoginLogoutFacebook extends HttpServlet {
 		if (fb_response.getLogin().equals("login")) {
 			System.out.println("Facebook Login:" + fb_response.getResponse().getEmail());
 			Filter UserExists = new  FilterPredicate("username",FilterOperator.EQUAL,fb_response.getResponse().getEmail());
-    		Query q = new Query("Users").setFilter(UserExists);
-    		PreparedQuery pq = datastore.prepare(q);
+			Query q = new Query(EntityKind.Users).setFilter(UserExists);
+			PreparedQuery pq = datastore.prepare(q);
     		Entity result = pq.asSingleEntity();
     		if (result == null) {
 			     // First Username login
 				Date date = new Date();
-				Entity userEntity = new Entity(EntityType.Users);
+				Entity userEntity = new Entity(EntityKind.Users);
 				RandomStringGenerator randomGen = new RandomStringGenerator();
 			    String random =  randomGen.generateRandomString(10,RandomStringGenerator.Mode.ALPHANUMERIC);
 				userEntity.setProperty("username", fb_response.getResponse().getEmail());
@@ -78,8 +78,8 @@ public class UserLoginLogoutFacebook extends HttpServlet {
 			} else {
 				System.out.println("Facebook Logout:" + fb_response.getResponse().getEmail());
 				Filter UserExists = new  FilterPredicate("username",FilterOperator.EQUAL,fb_response.getResponse().getEmail());
-	    		Query q = new Query("Users").setFilter(UserExists);
-	    		PreparedQuery pq = datastore.prepare(q);
+				Query q = new Query(EntityKind.Users).setFilter(UserExists);
+				PreparedQuery pq = datastore.prepare(q);
 	    		Entity result = pq.asSingleEntity();
 	    		if (result != null) {
 	    			Date date = new Date();

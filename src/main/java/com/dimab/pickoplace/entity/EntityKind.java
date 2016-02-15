@@ -1,6 +1,6 @@
 package com.dimab.pickoplace.entity;
 
-public class EntityType {
+public class EntityKind {
 
     public static String IFrames = "IFrames";
     public static String AdminChannels = "AdminChannels";

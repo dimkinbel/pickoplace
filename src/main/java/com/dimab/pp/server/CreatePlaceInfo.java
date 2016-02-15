@@ -1,7 +1,14 @@
 package com.dimab.pp.server;
 
-import java.io.IOException;
-import java.util.Date;
+import com.dimab.pickoplace.entity.EntityKind;
+import com.dimab.pp.functions.RandomStringGenerator;
+import com.dimab.pp.login.CheckTokenValid;
+import com.dimab.pp.login.GenericUser;
+import com.google.appengine.api.datastore.*;
+import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
+import com.google.appengine.api.datastore.Query.Filter;
+import com.google.appengine.api.datastore.Query.FilterOperator;
+import com.google.appengine.api.datastore.Query.FilterPredicate;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -9,28 +16,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import com.dimab.pp.functions.RandomStringGenerator;
-import com.dimab.pp.login.CheckTokenValid;
-import com.dimab.pp.login.GenericUser;
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.EntityNotFoundException;
-import com.google.appengine.api.datastore.GeoPt;
-import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.Text;
-import com.google.appengine.api.datastore.Transaction;
-import com.google.appengine.api.datastore.TransactionOptions;
-import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
-import com.google.appengine.api.datastore.Query.Filter;
-import com.google.appengine.api.datastore.Query.FilterOperator;
-import com.google.appengine.api.datastore.Query.FilterPredicate;
-import com.google.appengine.api.users.UserService;
-import com.google.appengine.api.users.UserServiceFactory;
+import java.io.IOException;
+import java.util.Date;
 
 
 public class CreatePlaceInfo extends HttpServlet {
@@ -72,8 +59,8 @@ public class CreatePlaceInfo extends HttpServlet {
 		    String Placerandom =  "PID_"+ randomGen.generateRandomString(12,RandomStringGenerator.Mode.ALPHANUMERIC);
 			
 			Filter UserExists = new  FilterPredicate("username",FilterOperator.EQUAL,username);
-    		Query q = new Query("Users").setFilter(UserExists);
-    		PreparedQuery pq = datastore.prepare(q);
+			Query q = new Query(EntityKind.Users).setFilter(UserExists);
+			PreparedQuery pq = datastore.prepare(q);
     		Entity result = pq.asSingleEntity();
     		if (result != null) {
     			Key userKey = result.getKey();

@@ -1,43 +1,29 @@
 package com.dimab.pp.login;
 
-import java.io.IOException;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-
-import javax.servlet.http.HttpSession;
-
+import com.dimab.pickoplace.entity.EntityKind;
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
-
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.Transaction;
-import com.google.appengine.api.datastore.TransactionOptions;
+import com.google.appengine.api.datastore.*;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.gson.Gson;
 
-//import org.apache.log4j.BasicConfigurator;
-
-
-
-
-
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.FileReader;
+import java.io.IOException;
 import java.io.Reader;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+//import org.apache.log4j.BasicConfigurator;
 
 public class DisconnectUser extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -119,7 +105,7 @@ public class DisconnectUser extends HttpServlet {
     	if(userEmailsession != null) {
 	        System.out.println("User Logout:"+ userEmailsession);
 	        Filter UserExists = new  FilterPredicate("username",FilterOperator.EQUAL,userEmailsession);
-			Query q = new Query("Users").setFilter(UserExists);
+			Query q = new Query(EntityKind.Users).setFilter(UserExists);
 			PreparedQuery pq = datastore.prepare(q);
 			Entity result = pq.asSingleEntity();
 			if (result != null) {

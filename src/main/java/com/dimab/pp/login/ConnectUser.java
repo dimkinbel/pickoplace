@@ -1,6 +1,6 @@
 package com.dimab.pp.login;
 
-import com.dimab.pickoplace.entity.EntityType;
+import com.dimab.pickoplace.entity.EntityKind;
 import com.dimab.pp.functions.RandomStringGenerator;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeTokenRequest;
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
@@ -116,14 +116,14 @@ public class ConnectUser extends HttpServlet {
 				 
 			  
 			    Filter UserExists = new  FilterPredicate("username",FilterOperator.EQUAL,userData.getEmail());
-			    Query q = new Query("Users").setFilter(UserExists);
-			    PreparedQuery pq = datastore.prepare(q);
+				 Query q = new Query(EntityKind.Users).setFilter(UserExists);
+				 PreparedQuery pq = datastore.prepare(q);
 			    Entity result = pq.asSingleEntity();
 			    if (result == null) {
 			    	     // First Username login
 			    	Date date = new Date();
-			    	Entity userEntity = new Entity(EntityType.Users);
-			    	RandomStringGenerator randomGen = new RandomStringGenerator();
+					Entity userEntity = new Entity(EntityKind.Users);
+					RandomStringGenerator randomGen = new RandomStringGenerator();
 			        String random =  randomGen.generateRandomString(10,RandomStringGenerator.Mode.ALPHANUMERIC);
 			    	userEntity.setProperty("username", userData.getEmail());
 			    	userEntity.setProperty("GoogleAccount",true);
@@ -202,13 +202,13 @@ public class ConnectUser extends HttpServlet {
 			       request.getSession().setAttribute("userEmail", userData.getEmail());
 			       
 					Filter UserExists = new  FilterPredicate("username",FilterOperator.EQUAL,userData.getEmail());
-		    		Query q = new Query("Users").setFilter(UserExists);
-		    		PreparedQuery pq = datastore.prepare(q);
+				 Query q = new Query(EntityKind.Users).setFilter(UserExists);
+				 PreparedQuery pq = datastore.prepare(q);
 		    		Entity result = pq.asSingleEntity();
 		    		if (result == null) {
 					     // First Username login
 						Date date = new Date();
-						Entity userEntity = new Entity(EntityType.Users);
+						Entity userEntity = new Entity(EntityKind.Users);
 						RandomStringGenerator randomGen = new RandomStringGenerator();
 					    String random =  randomGen.generateRandomString(10,RandomStringGenerator.Mode.ALPHANUMERIC);
 						userEntity.setProperty("username", userData.getEmail());
