@@ -1,6 +1,6 @@
 package com.dimab.pp.adminRest;
 
-import com.dimab.pickoplace.utils.JsonUtils;
+import com.dimab.pickoplace.utils.GsonUtils;
 import com.dimab.pp.database.EntityConverter;
 import com.dimab.pp.database.FreePlaceFactory;
 import com.dimab.pp.dto.*;
@@ -42,9 +42,9 @@ public class WaiterDeleteBooking {
                     String sid = (String) shapeList.getProperty("sid");
                     System.out.println("Removing booking from shape:" + sid);
                     String allOrdersJSON = ((Text) shapeList.getProperty("bookingListJSON")).getValue();
-                    BookingListForJSON ordersList = JsonUtils.deserialize(allOrdersJSON, BookingListForJSON.class);
+                    BookingListForJSON ordersList = GsonUtils.fromJson(allOrdersJSON, BookingListForJSON.class);
                     ordersList.remove(bid);
-                    Text ordersListJSON = new Text(JsonUtils.serialize(ordersList));
+                    Text ordersListJSON = new Text(GsonUtils.toJson(ordersList));
                     shapeList.setUnindexedProperty("bookingListJSON", ordersListJSON);
                     datastore.put(shapeList);
                 }

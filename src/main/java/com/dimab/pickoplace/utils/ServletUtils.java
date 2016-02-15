@@ -1,7 +1,5 @@
 package com.dimab.pickoplace.utils;
 
-import com.dimab.pickoplace.json.GsonUtils;
-
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 

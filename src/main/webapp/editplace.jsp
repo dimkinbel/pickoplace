@@ -1,9 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"
-    import = "com.dimab.pp.dto.*"
-    import = "java.util.*"
-    import = "java.lang.reflect.Type"%>
-<%@ page import="com.dimab.pickoplace.utils.JsonUtils" %>
+    import = "com.dimab.pickoplace.utils.GsonUtils"
+    import = "com.dimab.pp.dto.AJAXImagesJSON"
+    import = "com.dimab.pp.dto.JsonImageID_2_GCSurl"
+    import="com.dimab.pp.dto.JsonSID_2_imgID"
+%>
+<%@ page import="com.dimab.pp.dto.PPSubmitObject" %>
+<%@ page import="java.util.List" %>
 
 <!DOCTYPE html>
   
@@ -265,13 +268,13 @@
     		   backgroundURL = floor.getBackground();
     	   }  	   
     %>
-      <input type="text" id="server_canvasState_<%=floorid %>" name="server_canvasState" value='<%=JsonUtils.serialize(floor) %>'/>
+      <input type="text" id="server_canvasState_<%=floorid %>" name="server_canvasState" value='<%=GsonUtils.toJson(floor) %>'/>
       <img    id="server_background_<%=floorid %>" crossorigin="anonymous" name="server_background" src="<%=backgroundURL%>"/>
       <input type="text" id="server_floor_name_<%=floorid %>" value="<%=floor.getFloor_name() %>"/>
       <canvas id="canvas_tmp_<%=floorid %>"></canvas>
     <% }%>
       <% if (sid2imgID!=null && !sid2imgID.isEmpty()) {%>
-      <input type="text" id="server_sid2imgID" value='<%=JsonUtils.serialize(sid2imgID)%>'/>
+      <input type="text" id="server_sid2imgID" value='<%=GsonUtils.toJson(sid2imgID)%>'/>
       <%} %>
       <input type="text" id="server_placeName" value='<%=placeName%>'/>
       <input type="text" id="server_placeBranchName" value='<%=placeBranchName%>'/>

@@ -1,11 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"
+    import = "com.dimab.pickoplace.utils.GsonUtils"
     import = "com.dimab.pp.dto.*"
-    import = "com.google.gson.Gson"
-    import = "com.google.gson.reflect.TypeToken"
-    import = "java.util.*"
-    import = "java.lang.reflect.Type"%>
-<%@ page import="com.dimab.pickoplace.utils.JsonUtils" %>
+    import="java.util.List"
+%>
 <!DOCTYPE html>
 
 <html>
@@ -291,7 +289,7 @@
     	   }
     	   
     %>
-      <input type="text" id="server_canvasState_<%=floorid %>" name="server_canvasState" value='<%=JsonUtils.serialize(floor)%>'/>
+      <input type="text" id="server_canvasState_<%=floorid %>" name="server_canvasState" value='<%=GsonUtils.toJson(floor)%>'/>
       <img    id="server_background_<%=floorid %>" crossorigin="anonymous" name="server_background" src="<%=backgroundURL%>"/>
       <img  id="server_overview_<%=floorid %>" name="server_overview" src="<%=overviewURL%>"/>
       <input type="text" id="server_floor_name_<%=floorid %>" value="<%=floor.getFloor_name() %>"/>
@@ -302,7 +300,7 @@
     <% }%>
           
       <% if (sid2imgID!=null && !sid2imgID.isEmpty()) {%>
-      <input type="text" id="server_sid2imgID" value='<%=JsonUtils.serialize(sid2imgID)%>'/>
+      <input type="text" id="server_sid2imgID" value='<%=GsonUtils.toJson(sid2imgID)%>'/>
       <%} %>
       <input type="text" id="server_shapes_prebooked" />
       <div id="for_debug"></div>
@@ -320,17 +318,17 @@
       <input type="text" id="server_Lat" value='<%=placeLat%>'/>
       <input type="text" id="server_Lng" value='<%=placeLng%>'/>
       <input type="text" id="server_automatic_approval" value='<%=responseJSON.isAutomatic_approval()%>'/>
-      <input type="text" id="server_automaticApprovalList" value='<%=JsonUtils.serialize(responseJSON.getAdminApprovalList())%>'/>
-      <input type="text" id="server_adminApprovalList" value='<%=JsonUtils.serialize(responseJSON.getAdminApprovalList())%>'/>
-      <input type="text" id="server_workinghours" value='<%=JsonUtils.serialize(responseJSON.getWorkinghours())%>'/>
-      <input type="text" id="server_placeEditList" value='<%=JsonUtils.serialize(responseJSON.getPlaceEditList())%>'/>
-      <input type="text" id="server_closeDates" value='<%=JsonUtils.serialize(responseJSON.getCloseDates())%>'/>
+      <input type="text" id="server_automaticApprovalList" value='<%=GsonUtils.toJson(responseJSON.getAdminApprovalList())%>'/>
+      <input type="text" id="server_adminApprovalList" value='<%=GsonUtils.toJson(responseJSON.getAdminApprovalList())%>'/>
+      <input type="text" id="server_workinghours" value='<%=GsonUtils.toJson(responseJSON.getWorkinghours())%>'/>
+      <input type="text" id="server_placeEditList" value='<%=GsonUtils.toJson(responseJSON.getPlaceEditList())%>'/>
+      <input type="text" id="server_closeDates" value='<%=GsonUtils.toJson(responseJSON.getCloseDates())%>'/>
       <input type="text" id="server_logosrc" value='<%=responseJSON.getLogosrc()%>'/>
       
       <%for ( JsonimgID_2_data imgID2byte64 : responseJSON.getPlacePhotos()) {
     	  String imgID = imgID2byte64.getImageID();   	  
       %>
-      <input type="text" id="server_imap_<%=imgID %>" name="server_imap" value='<%=JsonUtils.serialize(imgID2byte64)%>'/>
+      <input type="text" id="server_imap_<%=imgID %>" name="server_imap" value='<%=GsonUtils.toJson(imgID2byte64)%>'/>
       <% }%>
 
        <% if (imgID2URL != null && !imgID2URL.isEmpty()) {

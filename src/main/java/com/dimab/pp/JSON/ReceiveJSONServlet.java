@@ -1,6 +1,6 @@
 package com.dimab.pp.JSON;
 
-import com.dimab.pickoplace.json.GsonUtils;
+import com.dimab.pickoplace.utils.GsonUtils;
 import com.dimab.pp.dto.PPSubmitObject;
 
 import javax.servlet.ServletException;

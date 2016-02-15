@@ -1,6 +1,6 @@
 package com.dimab.pp.cron;
 
-import com.dimab.pickoplace.json.GsonUtils;
+import com.dimab.pickoplace.utils.GsonUtils;
 import com.dimab.pp.dto.GoogleTimezoneResponse;
 import com.dimab.pp.dto.TimeZonePair;
 import com.google.appengine.api.datastore.*;

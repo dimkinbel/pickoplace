@@ -1,6 +1,6 @@
 package com.dimab.pp.channel;
 
-import com.dimab.pickoplace.json.GsonUtils;
+import com.dimab.pickoplace.utils.GsonUtils;
 import com.dimab.pp.dto.BookingRequestWrap;
 import com.google.appengine.api.channel.ChannelFailureException;
 import com.google.appengine.api.channel.ChannelMessage;

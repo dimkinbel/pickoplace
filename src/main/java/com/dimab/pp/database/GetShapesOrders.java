@@ -1,6 +1,6 @@
 package com.dimab.pp.database;
 
-import com.dimab.pickoplace.json.GsonUtils;
+import com.dimab.pickoplace.utils.GsonUtils;
 import com.dimab.pp.dto.BookingListForJSON;
 import com.dimab.pp.dto.BookingSingleShapeList;
 import com.dimab.pp.dto.OrderedResponse;

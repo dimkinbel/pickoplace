@@ -1,9 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
          pageEncoding="UTF-8"
+         import="com.dimab.pickoplace.utils.GsonUtils"
          import="com.dimab.pp.dto.*"
-         import="com.google.gson.Gson"
-         import="java.util.*" %>
-<%@ page import="com.dimab.pickoplace.utils.JsonUtils" %>
+         import="java.util.List"%>
 <%@taglib prefix="common" tagdir="/WEB-INF/tags/common" %>
 <!DOCTYPE html>
 <html style="height:100%">
@@ -357,7 +356,7 @@
             }
 
     %>
-    <input type="text" id="server_canvasState_<%=floorid %>" name="server_canvasState" value='<%=JsonUtils.serialize(floor)%>'/>
+    <input type="text" id="server_canvasState_<%=floorid %>" name="server_canvasState" value='<%=GsonUtils.toJson(floor)%>'/>
     <img id="server_background_<%=floorid %>" name="server_background" src="<%=backgroundURL%>"/>
     <img id="server_overview_<%=floorid %>" name="server_overview" src="<%=overviewURL%>"/>
     <input type="text" id="server_floor_name_<%=floorid %>" value="<%=floor.getFloor_name() %>"/>
@@ -368,7 +367,7 @@
     <% }%>
 
     <% if (sid2imgID != null && !sid2imgID.isEmpty()) {%>
-    <input type="text" id="server_sid2imgID" value='<%=JsonUtils.serialize(sid2imgID)%>'/>
+    <input type="text" id="server_sid2imgID" value='<%=GsonUtils.toJson(sid2imgID)%>'/>
     <%} %>
     <input type="text" id="server_shapes_prebooked"/>
 

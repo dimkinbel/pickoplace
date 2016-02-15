@@ -1,11 +1,11 @@
 package com.dimab.pp.adminRest;
-import com.dimab.pickoplace.utils.JsonUtils;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
+import com.dimab.pickoplace.utils.GsonUtils;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,12 +22,12 @@ public class WaiterRestService {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public String cancelReservation(AdminRestModel param) {
-        System.out.println("param = [" +  JsonUtils.serialize(param) + "]");
+        System.out.println("param = [" +  GsonUtils.toJson(param) + "]");
         WaiterDeleteBooking deleteBookingService = new WaiterDeleteBooking();
         boolean removed = deleteBookingService.deleteBooking(param.getBid(),param.getPlaceName(),param.getBranch(),param.getAddress());
         Map<String , Object> map = new HashMap<String , Object>();
         map.put("removed",removed);
-        return JsonUtils.serialize(map);
+        return GsonUtils.toJson(map);
     }
 
     public final static class AdminRestModel {

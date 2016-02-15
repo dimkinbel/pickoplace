@@ -1,6 +1,6 @@
 package com.dimab.pp.account;
 
-import com.dimab.pickoplace.json.GsonUtils;
+import com.dimab.pickoplace.utils.GsonUtils;
 import com.dimab.pp.database.GetAJAXimageJSONfromCSfactory;
 import com.dimab.pp.dto.AJAXImagesJSON;
 import com.dimab.pp.dto.IFresponse;

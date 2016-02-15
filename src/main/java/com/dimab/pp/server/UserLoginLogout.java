@@ -1,7 +1,7 @@
 package com.dimab.pp.server;
 
 import com.dimab.pickoplace.entity.EntityKind;
-import com.dimab.pickoplace.json.GsonUtils;
+import com.dimab.pickoplace.utils.GsonUtils;
 import com.dimab.pp.functions.RandomStringGenerator;
 import com.google.appengine.api.datastore.*;
 import com.google.appengine.api.datastore.Query.Filter;

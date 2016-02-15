@@ -1,6 +1,6 @@
 package com.dimab.pp.server;
 
-import com.dimab.pickoplace.json.GsonUtils;
+import com.dimab.pickoplace.utils.GsonUtils;
 import com.dimab.pp.database.GetPlaceInfoFactory;
 import com.dimab.pp.database.GetShapesOrders;
 import com.dimab.pp.dto.*;

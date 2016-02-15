@@ -1,7 +1,7 @@
 package com.dimab.pp.account;
 
 import com.dimab.pickoplace.entity.EntityKind;
-import com.dimab.pickoplace.json.GsonUtils;
+import com.dimab.pickoplace.utils.GsonUtils;
 import com.dimab.pickoplace.utils.ServletUtils;
 import com.dimab.pp.database.GetPlaceInfoFactory;
 import com.dimab.pp.dto.PlaceInfo;

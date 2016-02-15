@@ -1,6 +1,6 @@
 package com.dimab.pp.account;
 
-import com.dimab.pickoplace.json.GsonUtils;
+import com.dimab.pickoplace.utils.GsonUtils;
 import com.dimab.pp.dto.PPSubmitObject;
 import com.dimab.pp.dto.UserAccountData;
 import com.dimab.pp.dto.UserPlace;

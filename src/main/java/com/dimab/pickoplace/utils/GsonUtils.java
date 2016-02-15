@@ -1,11 +1,11 @@
-package com.dimab.pickoplace.json;
+package com.dimab.pickoplace.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 
 import java.lang.reflect.Type;
 
-public class GsonUtils {
+public final class GsonUtils {
 
     public static Gson GSON = new Gson();
 

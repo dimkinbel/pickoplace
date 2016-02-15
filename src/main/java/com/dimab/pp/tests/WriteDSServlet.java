@@ -1,6 +1,6 @@
 package com.dimab.pp.tests;
 
-import com.dimab.pickoplace.json.GsonUtils;
+import com.dimab.pickoplace.utils.GsonUtils;
 import com.google.appengine.tools.cloudstorage.*;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;

@@ -1,10 +1,9 @@
 package com.dimab.pp.database;
 
-import com.dimab.pickoplace.utils.JsonUtils;
+import com.dimab.pickoplace.utils.GsonUtils;
 import com.dimab.pp.dto.BookingRequest;
 import com.dimab.pp.dto.BookingRequestWrap;
 import com.dimab.pp.login.GenericUser;
-import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Text;
 import com.google.gson.reflect.TypeToken;
@@ -24,7 +23,7 @@ public class EntityConverter {
         String username_email = (String) bidEntity.getProperty("clientid");
         String bookingListJSON = ((Text) bidEntity.getProperty("bookingList")).getValue();
         Type bookinglistType = new TypeToken<List<BookingRequest>>() {}.getType();
-        List<BookingRequest> bookingRequests = JsonUtils.deserialize(bookingListJSON, bookinglistType);
+        List<BookingRequest> bookingRequests = GsonUtils.fromJson(bookingListJSON, bookinglistType);
 
         bookingRequestWrap.setBookID( (String) bidEntity.getProperty("bid"));
         bookingRequestWrap.setPid(pid);
@@ -35,7 +34,7 @@ public class EntityConverter {
         }
         if(bidEntity.getProperty("genuser")!= null) {
             Type genUserType = new TypeToken<GenericUser>() {}.getType();
-            GenericUser genUser =  JsonUtils.deserialize((String)bidEntity.getProperty("genuser"), genUserType);
+            GenericUser genUser =  GsonUtils.fromJson((String)bidEntity.getProperty("genuser"), genUserType);
             bookingRequestWrap.setUser(genUser);
         }
         bookingRequestWrap.setBookingList(bookingRequests);
