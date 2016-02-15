@@ -308,15 +308,6 @@
 		<url-pattern>/ppunsubscribe</url-pattern>
 	</servlet-mapping>
 
-    <servlet>
-        <servlet-name>isOrigin</servlet-name>
-        <servlet-class>com.dimab.pp.urlUtils.isOrigin</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>isOrigin</servlet-name>
-        <url-pattern>/isorigin</url-pattern>
-    </servlet-mapping>
-
 
 	<servlet>
 		<servlet-name>unsubscribe</servlet-name>

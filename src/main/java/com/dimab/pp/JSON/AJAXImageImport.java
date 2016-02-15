@@ -29,12 +29,6 @@ import java.util.*;
 
 public class AJAXImageImport extends HttpServlet {
 
-    private final GcsService gcsService = GcsServiceFactory.createGcsService(new RetryParams.Builder()
-            .initialRetryDelayMillis(10)
-            .retryMaxAttempts(10)
-            .totalRetryPeriodMillis(15000)
-            .build());
-
     /**
      * Used below to determine the size of chucks to read in. Should be > 1kb and < 10MB
      */

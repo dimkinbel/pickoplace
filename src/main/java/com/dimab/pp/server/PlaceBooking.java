@@ -226,8 +226,4 @@ public class PlaceBooking extends HttpServlet {
         session.setAttribute("urlreturn", urlrequest);
     }
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // TODO Auto-generated method stub
-    }
-
 }

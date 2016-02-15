@@ -21,6 +21,7 @@ import java.nio.channels.Channels;
 import java.util.*;
 
 public class FreePlaceFactory {
+
     private final GcsService gcsService = GcsServiceFactory.createGcsService(new RetryParams.Builder()
             .initialRetryDelayMillis(10)
             .retryMaxAttempts(10)
@@ -33,7 +34,6 @@ public class FreePlaceFactory {
     private static final int BUFFER_SIZE = 2 * 1024 * 1024;
 
     public List<FreePlaceOption> listFreeOptionsGCS(DatastoreService datastore, Entity csEntity, SearchRequestWizJSON serachObjectWiz) {
-        // TODO Auto-generated method stub
         List<FreePlaceOption> returnList = new ArrayList<FreePlaceOption>();
         Integer defaultSeconds = new Integer(15 * 60);
         Integer Day = serachObjectWiz.getDateUTC();

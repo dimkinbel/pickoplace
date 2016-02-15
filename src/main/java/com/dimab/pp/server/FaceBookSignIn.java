@@ -26,7 +26,7 @@ public class FaceBookSignIn extends HttpServlet {
         facebookSecret = config.getString("facebookSecret");
     }
 
-    public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {            
+    public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         String code = req.getParameter("code");
         if (code == null || code.equals("")) {
             // an error occurred, handle this
@@ -34,25 +34,25 @@ public class FaceBookSignIn extends HttpServlet {
 
         String token = null;
         try {
-            String g = "https://graph.facebook.com/oauth/access_token?client_id=953909477967729&redirect_uri=" + URLEncoder.encode("http://pickoplace.com/signin_fb", "UTF-8") + "&client_secret=" + facebookSecret +"&code=" + code;
+            String g = "https://graph.facebook.com/oauth/access_token?client_id=953909477967729&redirect_uri=" + URLEncoder.encode("http://pickoplace.com/signin_fb", "UTF-8") + "&client_secret=" + facebookSecret + "&code=" + code;
             URL u = new URL(g);
             URLConnection c = u.openConnection();
             BufferedReader in = new BufferedReader(new InputStreamReader(c.getInputStream()));
             String inputLine;
-            System.out.println("IN:"+in);
+            System.out.println("IN:" + in);
             StringBuffer b = new StringBuffer();
             while ((inputLine = in.readLine()) != null)
-                b.append(inputLine + "\n");            
+                b.append(inputLine + "\n");
             in.close();
             token = b.toString();
             if (token.startsWith("{"))
                 throw new Exception("error on requesting token: " + token + " with code: " + code);
         } catch (Exception e) {
-                // an error occurred, handle this
+            // an error occurred, handle this
         }
 
         String graph = null;
-        System.out.println("Token:"+token);
+        System.out.println("Token:" + token);
         try {
             String g = "https://graph.facebook.com/me?" + token;
             URL u = new URL(g);
@@ -61,11 +61,11 @@ public class FaceBookSignIn extends HttpServlet {
             String inputLine;
             StringBuffer b = new StringBuffer();
             while ((inputLine = in.readLine()) != null)
-                b.append(inputLine + "\n");            
+                b.append(inputLine + "\n");
             in.close();
             graph = b.toString();
         } catch (Exception e) {
-                // an error occurred, handle this
+            // an error occurred, handle this
         }
 
         String facebookId;
@@ -78,7 +78,7 @@ public class FaceBookSignIn extends HttpServlet {
             facebookId = json.getString("id");
             firstName = json.getString("first_name");
             if (json.has("middle_name"))
-               middleNames = json.getString("middle_name");
+                middleNames = json.getString("middle_name");
             else
                 middleNames = null;
             if (middleNames != null && middleNames.equals(""))
@@ -96,12 +96,4 @@ public class FaceBookSignIn extends HttpServlet {
         }
 
     }
-
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-	}
-
 }

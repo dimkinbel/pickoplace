@@ -27,11 +27,6 @@ import java.util.Map;
 
 
 public class WriteDSServlet extends HttpServlet {
-    private final GcsService gcsService = GcsServiceFactory.createGcsService(new RetryParams.Builder()
-            .initialRetryDelayMillis(10)
-            .retryMaxAttempts(10)
-            .totalRetryPeriodMillis(15000)
-            .build());
 
     /**
      * Used below to determine the size of chucks to read in. Should be > 1kb and < 10MB
@@ -110,12 +105,4 @@ public class WriteDSServlet extends HttpServlet {
             output.close();
         }
     }
-
-    /**
-     * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-     */
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // TODO Auto-generated method stub
-    }
-
 }
