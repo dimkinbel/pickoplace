@@ -1,38 +1,26 @@
 package com.dimab.pickoplace.utils;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 
-import java.io.IOException;
+import java.lang.reflect.Type;
 
 public final class JsonUtils {
 
-    public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    // todo(egor): migrate to jackson
+    private final static Gson GSON = new Gson();
 
     private JsonUtils() {
     }
 
     public static String serialize(Object o) {
-        try {
-            return OBJECT_MAPPER.writeValueAsString(o);
-        } catch (IOException e) {
-            throw new RuntimeException("can`t serialize object `" + o + "`", e);
-        }
+        return GSON.toJson(o);
     }
 
     public static <T> T deserialize(String objectAsJson, Class<T> clazz) {
-        try {
-            return (T) OBJECT_MAPPER.readValue(objectAsJson, clazz);
-        } catch (IOException e) {
-            throw new RuntimeException("can`t deserialize object from json`" + objectAsJson + "`", e);
-        }
+        return GSON.fromJson(objectAsJson, clazz);
     }
 
-    public static <T> T deserialize(String objectAsJson, TypeReference typeReference) {
-        try {
-            return OBJECT_MAPPER.readValue(objectAsJson, typeReference);
-        } catch (IOException e) {
-            throw new RuntimeException("can`t deserialize object from json`" + objectAsJson + "`", e);
-        }
+    public static <T> T deserialize(String objectAsJson, Type type) {
+        return GSON.fromJson(objectAsJson, type);
     }
 }

@@ -57,8 +57,9 @@
 
 
     <script type="text/javascript"
-            src="https://maps.googleapis.com/maps/api/js?key=${gcsServerKey}&libraries=places&&sensor=FALSE">
-    </script>
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAaX5Ow6oo_axUKMquFxnPpT6Kd-L7D40k&libraries=places&&sensor=FALSE">
+
+    </script> <!-- TODO: Global variable replace  -->
 
     <script type="text/javascript" src="js/maps_google.js"></script>
     <script type="text/javascript" src="js/updateCanvasData.js"></script>

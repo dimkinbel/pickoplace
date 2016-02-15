@@ -11,6 +11,6 @@ public class ObjectMapperProvider implements ContextResolver<ObjectMapper> {
 
     @Override
     public ObjectMapper getContext(Class<?> type) {
-        return JsonUtils.OBJECT_MAPPER;
+        return null;// JsonUtils.OBJECT_MAPPER;
     }
 }
