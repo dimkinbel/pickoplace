@@ -1,5 +1,8 @@
 package com.dimab.pp.dto;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class PlaceCheckAvailableJSON {
 	  String pid;
 	  int clientOffset;// Offset sent by client browser: In Israel is -2
@@ -7,7 +10,16 @@ public class PlaceCheckAvailableJSON {
 	  int weekday;
 	  Long date1970;
 	  Long period;
-	 
+	  List<String> listOfSids = new ArrayList<String>();
+
+	public List<String> getListOfSids() {
+		return listOfSids;
+	}
+
+	public void setListOfSids(List<String> listOfSids) {
+		this.listOfSids = listOfSids;
+	}
+
 	public int getWeekday() {
 		return weekday;
 	}

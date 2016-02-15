@@ -148,6 +148,14 @@ function BookingsManager(shapesPrebookedJSON) {
 	 }
   }
 }
+BookingsManager.prototype.addSidBooking = function(sid,utc_from,utc_to,bid,persons) {
+    var order = {};
+    order.bid = bid;
+    order.from = utc_from;
+    order.to = utc_to;
+    order.persons = persons;
+    this.sidToBookings[sid].orders.push(order);
+}
 BookingsManager.prototype.getSidBookings = function(sid,from_,to_) {
  var from;
  var to;

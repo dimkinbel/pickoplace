@@ -130,7 +130,7 @@ function updateSelectOptions(selid,type,datepickerId,minPeriodSeconds) {
 	var placeMinutes = placeTime.getMinutes();
 	var placeSecondsTotal = placeHours*3600 + placeMinutes*60;
 	var selected = false;
-	console.log("ddd " + minPeriodSeconds);
+	//console.log("ddd " + minPeriodSeconds);
 	var openStepList = bookingsManager.getOpenSecondsByDate($("#"+datepickerId).datepicker( "getDate" ).getTime()/1000,minPeriodSeconds);
 	console.log(openStepList);
 	
@@ -158,7 +158,7 @@ function updateSelectOptions(selid,type,datepickerId,minPeriodSeconds) {
 		   var s = openStepList[sl];
 		   var selectedString = "";
 		   var disabledString = "";
-		   var hours = getLeadingZero((s-(s%3600))/3600);
+		   var hours = getLeadingZero(((s-(s%3600))%(3600*24))/3600);
 		   var minutes = getLeadingZero((s%3600)/60); 
 		   
 		   var selectTime = new Date($("#"+datepickerId).datepicker( "getDate" ).getTime() + clientDay.getTimezoneOffset()*60*1000 + offset * 3600 * 1000 + s*1000);
@@ -214,7 +214,7 @@ function UpdateModal() {
         $("#modal_sid_lines").html('');
 			 $("#time_order_row_val").html('');
 			 var fromDate = getBookDate(parseInt(bookingOrder.dateSeconds),parseInt(bookingOrder.start),parseInt(bookingOrder.placeOffset));
-			 var toDate = getBookDate(parseInt(bookingOrder.dateSeconds),parseInt(bookingOrder.start + bookingOrder.period),parseInt(bookingOrder.placeOffset));
+			 var toDate = getBookDate(parseInt(bookingOrder.dateSeconds),parseInt(bookingOrder.start)+parseInt(bookingOrder.period),parseInt(bookingOrder.placeOffset));
 			 var monthNames = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"]; 
 	         var mon = monthNames[fromDate.getMonth()];
 			 

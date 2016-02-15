@@ -149,18 +149,7 @@
             }
         });
 
-        function SIapplyBooking() {
-            $("#loading_text_w").show();
-            setSessionData(function (result) {
-                if (result) {
-                    createBookingJSON();
-                    applyBooking();
-                    //$("#page_login_prompt").hide();
-                } else {
-                    updatePageView();
-                }
-            });
-        }
+
         ///
     </script>
 </head>
@@ -225,7 +214,8 @@
             <div class="input-group" id="user_bakashot">
                 <input type="text" class="form-control" id="user_input_hz" placeholder="תקסט חופשי"
                        aria-describedby="basic-addon2">
-                <span class="input-group-addon" id="basic-addon2"><i class="material-icons"  style="color: white;">edit</i></span>
+                <span class="input-group-addon" id="basic-addon2"><i class="material-icons"
+                                                                     style="color: white;">edit</i></span>
             </div>
             <div class="modal-footer " id="hz_footer">
                 <div id="book_sign_ask"> Login</div>
@@ -409,7 +399,7 @@
     <img id="server_clock20" src="img/clock20.png"/>
     <% if (imgID2URL != null && !imgID2URL.isEmpty()) {
         for (JsonImageID_2_GCSurl img2url : imgID2URL) {%>
-    <img id="server_<%=img2url.getImageID() %>" name="shape_images_from_server" src="<%=img2url.getGcsUrl() %>"/>
+    <img id="server_<%=img2url.getImageID() %>" crossorigin="Anonymous" name="shape_images_from_server" src="<%=img2url.getGcsUrl() %>"/>
     <%
             }
         }
@@ -718,6 +708,8 @@
                                         <div class="floor_book_badge" id="fbadge-floorid_iTwJZO27Ll"></div>
                                         Floor-2
                                     </div>
+                                    <div id="map_open_mat" class="material-icons" onclick="openMap()"  data-toggle="tooltip"
+                                    data-container="body" data-placement="bottom" title="מפה">location_on</div>
                                 </div>
                             </div>
                             <div class="col-md-4  col-sm-12" id="right_row_md_bottom_sm">

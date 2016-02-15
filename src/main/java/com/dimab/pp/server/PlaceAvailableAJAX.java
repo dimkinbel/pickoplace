@@ -3,7 +3,9 @@ package com.dimab.pp.server;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.dimab.pickoplace.utils.JsonUtils;
 
@@ -36,6 +38,7 @@ public class PlaceAvailableAJAX extends HttpServlet {
         OrderedResponse orderedResponse = new OrderedResponse();
         GetShapesOrders orderedResponseFactory = new GetShapesOrders();
         String jsonString = request.getParameter("bookrequest");
+        System.out.println("JSON:"+jsonString);
         PlaceCheckAvailableJSON bookingRequest = JsonUtils.deserialize(jsonString, PlaceCheckAvailableJSON.class);
         Long date = bookingRequest.getDate1970();// Ignoring client offset
         Long period = bookingRequest.getPeriod();
@@ -47,6 +50,28 @@ public class PlaceAvailableAJAX extends HttpServlet {
         System.out.println("date + clientOffset - placeOffset: " + date + " + " + clientOffset * 3600 + " - " + placeOffset * 3600);
         System.out.println("UTC date to check:" + UTCdate);
         orderedResponseFactory.getOrderedResponse(orderedResponse, bookingRequest.getPid(), UTCdate, period, false);
+
+        // Create empty booking lists for not booked SIDs
+        List<String> sidsBooked = new ArrayList<>();
+        for(BookingSingleShapeList existingList :  orderedResponse.getShapesBooked()) {
+            sidsBooked.add(existingList.getSid());
+        }
+        for(String singleSid : bookingRequest.getListOfSids()) {
+            if(!sidsBooked.contains(singleSid)) {
+                System.out.println("Not contains:"+singleSid);
+                BookingSingleShapeList singleShaperesponse = new BookingSingleShapeList();
+                singleShaperesponse.setSid(singleSid);
+                List<SingleTimeRangeLong> matchList = new ArrayList<SingleTimeRangeLong>();
+                SingleTimeRangeLong empty = new SingleTimeRangeLong();
+                empty.setFrom((long) 0);
+                empty.setTo((long) 0);
+                matchList.add(empty);
+                singleShaperesponse.setOrdersList(matchList);
+                orderedResponse.getShapesBooked().add(singleShaperesponse);
+            }
+        }
+
+
         orderedResponse.setDate1970(date);
         orderedResponse.setPeriod(period);
         orderedResponse.setClientOffset(clientOffset);
@@ -83,6 +108,11 @@ public class PlaceAvailableAJAX extends HttpServlet {
 
             openRanges = tempRanges;
             orderedResponse.setPlaceOpen(openRanges);
+            orderedResponse.setCloseDays(closeDates);
+            orderedResponse.setMinPeriod(1800); // TBD
+
+
+
         }
         System.out.println(JsonUtils.serialize(orderedResponse));
         response.setContentType("application/json");

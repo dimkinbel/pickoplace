@@ -609,7 +609,7 @@ function BCanvasState(canvas,pfrom,pto,offset) {
                         myState.adminSelection.to = myState.adminSelection.beganAt;
                     }
                 } else {
-				  //console.log(onmove.fromSec)
+				  ////console.log(onmove.fromSec)
 				   myState.adminSelection.from = myState.adminSelection.beganAt ;
                    myState.adminSelection.to = onmove.fromSec  + myState.step * 60
 				}
@@ -971,7 +971,7 @@ BCanvasState.prototype.organizeShapes = function() {
     this.shapeLineHeight = shapeLineHeight;
     this.height = this.SIDsorted.length * shapeLineHeight
  
-    //console.log(shapeLineHeight);
+    ////console.log(shapeLineHeight);
     var canvasPeriod = this.drawPeriodto - this.drawPeriodfrom ; // total seconds in canvas
     var oneSecondInPixels = (this.width  )/ canvasPeriod;
     this.oneSecondInPixels = oneSecondInPixels;
@@ -979,7 +979,7 @@ BCanvasState.prototype.organizeShapes = function() {
     var pixelsOffset = this.offset * 3600 * oneSecondInPixels;
     for (p = 0 ; p < this.SIDsorted.length ; p++) {
 
-        // console.log(currentY + " " + this.SIDsorted[p])
+        // //console.log(currentY + " " + this.SIDsorted[p])
         var pshape = this.pshapes[this.SIDsorted[p]]
         var books = pshape.bookings;
         for (var b = 0 ; b < books.length ; b++) {
@@ -1008,7 +1008,9 @@ BCanvasState.prototype.organizeShapes = function() {
 	if(this.weekObject != undefined) {
 		var firstDay = new Date(this.drawPeriodfrom*1000  + (this.offset*3600 + clientOffset*60)*1000); 
 		var nextDay  = new Date(this.drawPeriodto*1000  + (this.offset*3600 + clientOffset*60)*1000);
- 
+        ////console.log("FirstDay"); //console.log(firstDay);
+        ////console.log("Next"); //console.log(nextDay);
+
 		this.closeShapes = [];
 		var dcount = 1;
 		var daysObj = {};
@@ -1018,11 +1020,12 @@ BCanvasState.prototype.organizeShapes = function() {
 		   daysObj[dcount] = nextDay;
 		}
  
-		var allOpenRanges = [];	 
+		var allOpenRanges = [];
+        //console.log(this.weekObject)
 		for(var d = 1; d <= dcount ; d++) {
-		  
+          //console.log("d="+d)
 		  var day_ = this.weekObject[daysObj[d].getDay()];  
-		  //console.log(parseInt(daysObj[d].getTime()/1000 - (daysObj[d].getHours()*3600 + daysObj[d].getMinutes()*60) + this.offset * 3600));
+		  ////console.log(parseInt(daysObj[d].getTime()/1000 - (daysObj[d].getHours()*3600 + daysObj[d].getMinutes()*60) + this.offset * 3600));
 		  for(var cd = 0 ; cd < this.closeDays.length ; cd ++ ) { 
 			   if(this.closeDays[cd] == parseInt(daysObj[d].getTime()/1000 - (daysObj[d].getHours()*3600 + daysObj[d].getMinutes()*60) + this.offset * 3600)) {
 				   day_.open = false;

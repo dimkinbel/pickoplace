@@ -8,20 +8,29 @@ import java.util.Map;
 public class OrderedResponse {
     String pid;
     Long date1970;
+    Integer minPeriod;
     Long period;
     int clientOffset;// Offset sent by client browser: In Israel is 2
     double placeOffset;
     List<SingleTimeRangeLong> placeOpen = new ArrayList<SingleTimeRangeLong>();
     List<BookingSingleShapeList> shapesBooked = new ArrayList<BookingSingleShapeList>();
     Map<Integer, WeekDay> weekObject = new HashMap<Integer, WeekDay>();
-    List<Integer> closeDates = new ArrayList<>();
+    List<Integer> closeDays = new ArrayList<>();
 
-    public List<Integer> getCloseDates() {
-        return closeDates;
+    public Integer getMinPeriod() {
+        return minPeriod;
     }
 
-    public void setCloseDates(List<Integer> closeDates) {
-        this.closeDates = closeDates;
+    public void setMinPeriod(Integer minPeriod) {
+        this.minPeriod = minPeriod;
+    }
+
+    public List<Integer> getCloseDays() {
+        return closeDays;
+    }
+
+    public void setCloseDays(List<Integer> closeDates) {
+        this.closeDays = closeDates;
     }
 
     public Map<Integer, WeekDay> getWeekObject() {

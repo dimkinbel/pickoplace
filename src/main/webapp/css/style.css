@@ -9662,3 +9662,15 @@ div.book_modal_fail {
     background-color: #2196F3;
     color: white;
 }
+#map_open_mat {
+    float: right;
+    height: 50px;
+    line-height: 50px;
+    margin-left: 10px;
+    margin-right: 10px;
+    color: #8E8E8E;
+    cursor:pointer;
+}
+#map_open_mat:hover {
+    color: #464646;
+}

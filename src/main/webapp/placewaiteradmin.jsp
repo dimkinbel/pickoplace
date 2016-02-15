@@ -568,12 +568,14 @@
 						</div>
 						<div  class="show_pages">
 							<%
-								for (PPSubmitObject floor : canvasStateList) {
+							  for (PPSubmitObject floor : canvasStateList) {
 									String floorid = floor.getFloorid();
-
-							%> <div class="floor_page" id="floor_wrap_view_<%=floorid%>"></div>
-							<%
+                                    if(floor.isMainfloor()) {
+							          %> <div class="floor_page" id="floor_wrap_view_<%=floorid%>"></div> <%
+							         } else {
+									  %> <div class="floor_page" style="display: none" id="floor_wrap_view_<%=floorid%>"></div><%
 								}
+							  }
 							%>
 						</div>
 					</div>
