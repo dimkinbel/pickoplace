@@ -21,16 +21,6 @@ import java.util.List;
 
 
 public class ChannelConnect extends HttpServlet {
-    private static final long serialVersionUID = 1L;
-
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public ChannelConnect() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
-
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -52,16 +42,16 @@ public class ChannelConnect extends HttpServlet {
             connected.add(presence.clientId());
 
             channelEntity.setProperty("pid", pid);
-            channelEntity.setUnindexedProperty("clients", GsonUtils.GSON.toJson(connected));
+            channelEntity.setUnindexedProperty("clients", GsonUtils.toJson(connected));
             datastore.put(channelEntity);
         } else {
             String clientsJSON = (String) result.getProperty("clients");
             Type collectionType = new TypeToken<List<String>>() {
             }.getType();
-            List<String> connected = GsonUtils.GSON.fromJson(clientsJSON, collectionType);
+            List<String> connected = GsonUtils.fromJson(clientsJSON, collectionType);
             if (!connected.contains(presence.clientId())) {
                 connected.add(presence.clientId());
-                result.setUnindexedProperty("clients", GsonUtils.GSON.toJson(connected));
+                result.setUnindexedProperty("clients", GsonUtils.toJson(connected));
             }
             datastore.put(result);
         }

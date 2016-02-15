@@ -20,15 +20,6 @@ import java.util.List;
 
 
 public class UserLoginLogout extends HttpServlet {
-    private static final long serialVersionUID = 1L;
-
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public UserLoginLogout() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
 
     /**
      * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
@@ -66,10 +57,10 @@ public class UserLoginLogout extends HttpServlet {
                 userEntity.setUnindexedProperty("lastDate", date.toString());
 
                 List<String> pids = new ArrayList<String>();
-                userEntity.setUnindexedProperty("PID_full_access", GsonUtils.GSON.toJson(pids));
-                userEntity.setUnindexedProperty("PID_edit_place", GsonUtils.GSON.toJson(pids));
-                userEntity.setUnindexedProperty("PID_move_only", GsonUtils.GSON.toJson(pids));
-                userEntity.setUnindexedProperty("PID_book_admin", GsonUtils.GSON.toJson(pids));
+                userEntity.setUnindexedProperty("PID_full_access", GsonUtils.toJson(pids));
+                userEntity.setUnindexedProperty("PID_edit_place", GsonUtils.toJson(pids));
+                userEntity.setUnindexedProperty("PID_move_only", GsonUtils.toJson(pids));
+                userEntity.setUnindexedProperty("PID_book_admin", GsonUtils.toJson(pids));
                 datastore.put(userEntity);
             } else {
                 // User Not first login
@@ -101,12 +92,4 @@ public class UserLoginLogout extends HttpServlet {
         txn.commit();
         resp.sendRedirect(returnurl);
     }
-
-    /**
-     * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-     */
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // TODO Auto-generated method stub
-    }
-
 }

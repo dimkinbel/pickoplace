@@ -17,12 +17,6 @@ import java.util.Map;
  */
 @WebServlet("/Unsubscribe")
 public class Unsubscribe extends HttpServlet {
-    private static final long serialVersionUID = 1L;
-
-
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // TODO Auto-generated method stub
-    }
 
     /**
      * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
@@ -54,6 +48,6 @@ public class Unsubscribe extends HttpServlet {
         }
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(GsonUtils.GSON.toJson(map));
+        response.getWriter().write(GsonUtils.toJson(map));
     }
 }

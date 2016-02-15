@@ -25,7 +25,6 @@ import java.util.Map;
  */
 @WebServlet("/PlivoSMSValidationServlet")
 public class PlivoSMSValidationServlet extends HttpServlet {
-    private static final long serialVersionUID = 1L;
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Map<String, Object> map = new HashMap<String, Object>();
@@ -34,7 +33,7 @@ public class PlivoSMSValidationServlet extends HttpServlet {
         Transaction txn = datastore.beginTransaction(options);
 
         String jsonString = request.getParameter("jsonObject");
-        PlivoSMSRequestJSON smsrequest = GsonUtils.GSON.fromJson(jsonString, PlivoSMSRequestJSON.class);
+        PlivoSMSRequestJSON smsrequest = GsonUtils.fromJson(jsonString, PlivoSMSRequestJSON.class);
         String number = smsrequest.getNumber();
         PlivoSendSMS plivoFabric = new PlivoSendSMS();
         String sessionEmail = (String) request.getSession().getAttribute("userEmail");
@@ -42,7 +41,7 @@ public class PlivoSMSValidationServlet extends HttpServlet {
             map.put("status", "NOTLOGGED");
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
-            response.getWriter().write(GsonUtils.GSON.toJson(map));
+            response.getWriter().write(GsonUtils.toJson(map));
             return;
         }
         System.out.println(sessionEmail);
@@ -57,7 +56,7 @@ public class PlivoSMSValidationServlet extends HttpServlet {
             map.put("status", "NOTLOGGED");
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
-            response.getWriter().write(GsonUtils.GSON.toJson(map));
+            response.getWriter().write(GsonUtils.toJson(map));
             return;
         } else {
             if (result.getProperty("validations") == null) {
@@ -75,7 +74,7 @@ public class PlivoSMSValidationServlet extends HttpServlet {
                         map.put("status", "WAIT");
                         response.setContentType("application/json");
                         response.setCharacterEncoding("UTF-8");
-                        response.getWriter().write(GsonUtils.GSON.toJson(map));
+                        response.getWriter().write(GsonUtils.toJson(map));
                         return;
                     } else {
                         // reset 5 SMS
@@ -92,7 +91,7 @@ public class PlivoSMSValidationServlet extends HttpServlet {
             result.setUnindexedProperty("validationCode", verificationCode);
             result.setUnindexedProperty("phone", number);
             result.setUnindexedProperty("phoneValid", false);
-            result.setUnindexedProperty("phoneCountry", GsonUtils.GSON.toJson(smsrequest.getCountryData()));
+            result.setUnindexedProperty("phoneCountry", GsonUtils.toJson(smsrequest.getCountryData()));
             datastore.put(result);
             txn.commit();
 
@@ -133,7 +132,7 @@ public class PlivoSMSValidationServlet extends HttpServlet {
 
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
-            response.getWriter().write(GsonUtils.GSON.toJson(map));
+            response.getWriter().write(GsonUtils.toJson(map));
         }
     }
 }

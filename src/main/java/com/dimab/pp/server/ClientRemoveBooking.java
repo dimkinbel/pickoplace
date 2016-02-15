@@ -24,8 +24,6 @@ import java.util.List;
 import java.util.Map;
 
 public class ClientRemoveBooking extends HttpServlet {
-    private static final long serialVersionUID = 1L;
-
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String bid = request.getParameter("bid");
@@ -62,7 +60,7 @@ public class ClientRemoveBooking extends HttpServlet {
                 String bookingListJSON = ((Text) bidEntity.getProperty("bookingList")).getValue();
                 Type bookinglistType = new TypeToken<List<BookingRequest>>() {
                 }.getType();
-                List<BookingRequest> bookingRequests = GsonUtils.GSON.fromJson(bookingListJSON, bookinglistType);
+                List<BookingRequest> bookingRequests = GsonUtils.fromJson(bookingListJSON, bookinglistType);
 
                 for (BookingRequest bookRequest : bookingRequests) {
                     String bsid = bookRequest.getSid();
@@ -76,9 +74,9 @@ public class ClientRemoveBooking extends HttpServlet {
                         String sid = (String) shapeList.getProperty("sid");
                         System.out.println("Removing booking from shape:" + sid);
                         String allOrdersJSON = ((Text) shapeList.getProperty("bookingListJSON")).getValue();
-                        BookingListForJSON ordersList = GsonUtils.GSON.fromJson(allOrdersJSON, BookingListForJSON.class);
+                        BookingListForJSON ordersList = GsonUtils.fromJson(allOrdersJSON, BookingListForJSON.class);
                         ordersList.remove(bid);
-                        Text ordersListJSON = new Text(GsonUtils.GSON.toJson(ordersList));
+                        Text ordersListJSON = new Text(GsonUtils.toJson(ordersList));
                         shapeList.setUnindexedProperty("bookingListJSON", ordersListJSON);
                         datastore.put(shapeList);
                     }
@@ -92,6 +90,6 @@ public class ClientRemoveBooking extends HttpServlet {
         txn.commit();
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(GsonUtils.GSON.toJson(map));
+        response.getWriter().write(GsonUtils.toJson(map));
     }
 }

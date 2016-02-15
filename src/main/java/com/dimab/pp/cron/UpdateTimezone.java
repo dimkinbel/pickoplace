@@ -26,16 +26,6 @@ import java.util.List;
  */
 public class UpdateTimezone extends HttpServlet {
 
-    private static final long serialVersionUID = 1L;
-
-    public UpdateTimezone() {
-        super();
-    }
-
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-    }
-
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         System.out.println("UpdateTimezone.doGet");
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -52,7 +42,7 @@ public class UpdateTimezone extends HttpServlet {
             List<TimeZonePair> timezonePairs = new ArrayList<>();
             Type collectionType = new TypeToken<List<TimeZonePair>>() {
             }.getType();
-            timezonePairs = GsonUtils.GSON.fromJson(timezonesJSON, collectionType);
+            timezonePairs = GsonUtils.fromJson(timezonesJSON, collectionType);
 
             List<TimeZonePair> newTimezonePairs = new ArrayList<>();
 
@@ -111,8 +101,8 @@ public class UpdateTimezone extends HttpServlet {
                     String responseString;
                     try {
                         responseString = new String(resp_.getContent(), "UTF-8");
-                        timezoneResponse = GsonUtils.GSON.fromJson(responseString, GoogleTimezoneResponse.class);
-                        System.out.println(GsonUtils.GSON.toJson(timezoneResponse));
+                        timezoneResponse = GsonUtils.fromJson(responseString, GoogleTimezoneResponse.class);
+                        System.out.println(GsonUtils.toJson(timezoneResponse));
                     } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();
                     }
@@ -134,7 +124,7 @@ public class UpdateTimezone extends HttpServlet {
                         }.getType();
                         List<String> pidlist = new ArrayList<String>();
                         if (result.getProperty("PIDlist") != null) {
-                            pidlist = GsonUtils.GSON.fromJson((String) result.getProperty("PIDlist"), collectionType);
+                            pidlist = GsonUtils.fromJson((String) result.getProperty("PIDlist"), collectionType);
 
                             for (String pid : pidlist) {
                                 Query.Filter userPlaceEntityFilterByID = new Query.FilterPredicate("placeUniqID", Query.FilterOperator.EQUAL, pid);
@@ -171,7 +161,7 @@ public class UpdateTimezone extends HttpServlet {
             }
 
             if (timzonechanged) {
-                String timezonesString = GsonUtils.GSON.toJson(newTimezonePairs);
+                String timezonesString = GsonUtils.toJson(newTimezonePairs);
                 Text timezonesText = new Text(timezonesString);
                 timezonesEntity.setUnindexedProperty("value_", timezonesText);
                 datastore.put(timezonesEntity);

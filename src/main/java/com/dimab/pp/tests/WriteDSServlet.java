@@ -27,7 +27,6 @@ import java.util.Map;
 
 
 public class WriteDSServlet extends HttpServlet {
-    private static final long serialVersionUID = 1L;
     private final GcsService gcsService = GcsServiceFactory.createGcsService(new RetryParams.Builder()
             .initialRetryDelayMillis(10)
             .retryMaxAttempts(10)
@@ -38,14 +37,6 @@ public class WriteDSServlet extends HttpServlet {
      * Used below to determine the size of chucks to read in. Should be > 1kb and < 10MB
      */
     private static final int BUFFER_SIZE = 2 * 1024 * 1024;
-
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public WriteDSServlet() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
 
     /**
      * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
@@ -61,7 +52,7 @@ public class WriteDSServlet extends HttpServlet {
         list.add("matthew");
         map.put("list", list);
 
-        jsontext = GsonUtils.GSON.toJson(map);
+        jsontext = GsonUtils.toJson(map);
         final GcsService gcsService = GcsServiceFactory.createGcsService(RetryParams.getDefaultInstance());
         GcsFileOptions.Builder optionsBuilder = new GcsFileOptions.Builder();
         GcsOutputChannel outputChannel;
@@ -80,9 +71,9 @@ public class WriteDSServlet extends HttpServlet {
         map = new HashMap<String, Object>();
         Type mapobj = new TypeToken<Map<String, Object>>() {
         }.getType();
-        map = GsonUtils.GSON.fromJson(jso, mapobj);
+        map = GsonUtils.fromJson(jso, mapobj);
 
-        System.out.println(GsonUtils.GSON.toJson(map));
+        System.out.println(GsonUtils.toJson(map));
         System.out.println(element);
         System.out.println(jso.has("list"));
 
@@ -90,7 +81,7 @@ public class WriteDSServlet extends HttpServlet {
 
         Type closeDateType = new TypeToken<List<String>>() {
         }.getType();
-        List<String> list__ = GsonUtils.GSON.fromJson(lisl, closeDateType);
+        List<String> list__ = GsonUtils.fromJson(lisl, closeDateType);
         System.out.println(list__.size());
         for (String singleListVal : list__) {
             System.out.println(singleListVal);

@@ -26,11 +26,6 @@ import java.util.Map;
 
 
 public class WaUpdateBookingsByDate extends HttpServlet {
-    private static final long serialVersionUID = 1L;
-
-    public WaUpdateBookingsByDate() {
-        super();
-    }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -60,7 +55,7 @@ public class WaUpdateBookingsByDate extends HttpServlet {
         GetShapesOrders orderedResponseFactory = new GetShapesOrders();
         GetBookingShapesDataFactory bookingFactory = new GetBookingShapesDataFactory();
 
-        PlaceCheckAvailableJSON bookingRequest = GsonUtils.GSON.fromJson(jsonString, PlaceCheckAvailableJSON.class);
+        PlaceCheckAvailableJSON bookingRequest = GsonUtils.fromJson(jsonString, PlaceCheckAvailableJSON.class);
         Long date = bookingRequest.getDate1970();// Ignoring client offset
         Long period = bookingRequest.getPeriod();
         int weekday = bookingRequest.getWeekday();
@@ -86,10 +81,10 @@ public class WaUpdateBookingsByDate extends HttpServlet {
             String closeDatesString = (String) userCanvasState.getProperty("closeDates");
             Type closeDateType = new TypeToken<List<Integer>>() {
             }.getType();
-            List<Integer> closeDates = GsonUtils.GSON.fromJson(closeDatesString, closeDateType);
+            List<Integer> closeDates = GsonUtils.fromJson(closeDatesString, closeDateType);
 
             String weekdays = (String) userCanvasState.getProperty("workinghours");
-            WorkingWeek weekdaysObject = GsonUtils.GSON.fromJson(weekdays, WorkingWeek.class);
+            WorkingWeek weekdaysObject = GsonUtils.fromJson(weekdays, WorkingWeek.class);
 
 
             List<SingleTimeRangeLong> tempRanges = weekdaysObject.getRangesList(weekday, 2);
@@ -121,6 +116,6 @@ public class WaUpdateBookingsByDate extends HttpServlet {
 
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(GsonUtils.GSON.toJson(map));
+        response.getWriter().write(GsonUtils.toJson(map));
     }
 }

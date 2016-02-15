@@ -23,8 +23,6 @@ import java.util.Map;
 
 
 public class RatingSubmit extends HttpServlet {
-    private static final long serialVersionUID = 1L;
-
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String jsonString = request.getParameter("rating");
@@ -54,7 +52,7 @@ public class RatingSubmit extends HttpServlet {
             username_email = genuser.getEmail();
             Type ratingType = new TypeToken<PlaceRatingDTO>() {
             }.getType();
-            PlaceRatingDTO rating = GsonUtils.GSON.fromJson(jsonString, ratingType);
+            PlaceRatingDTO rating = GsonUtils.fromJson(jsonString, ratingType);
             String pid = rating.getPid();
             String bid = rating.getBid();
 
@@ -160,7 +158,7 @@ public class RatingSubmit extends HttpServlet {
             if (psqb_.asSingleEntity() != null) {
                 PlaceRatingDTO ShortRating = rating;
                 ShortRating.setTscore(""); // Removing review text
-                String ratingString = GsonUtils.GSON.toJson(ShortRating);
+                String ratingString = GsonUtils.toJson(ShortRating);
                 Entity bookingEntity = psqb_.asSingleEntity();
                 bookingEntity.setUnindexedProperty("rating", ratingString);
                 datastore.put(bookingEntity);
@@ -175,7 +173,7 @@ public class RatingSubmit extends HttpServlet {
 
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(GsonUtils.GSON.toJson(map));
+        response.getWriter().write(GsonUtils.toJson(map));
     }
 
 }

@@ -33,7 +33,7 @@ public class GetBookingShapesDataFactory {
 
         Type CanvasListcollectionType = new TypeToken<List<PPSubmitObject>>() {
         }.getType();
-        List<PPSubmitObject> floors = GsonUtils.GSON.fromJson(shapesJSON, CanvasListcollectionType);
+        List<PPSubmitObject> floors = GsonUtils.fromJson(shapesJSON, CanvasListcollectionType);
         // Restore shapes booking options
         for (PPSubmitObject floor : floors) {
             String floorName = floor.getFloor_name();
@@ -101,7 +101,7 @@ public class GetBookingShapesDataFactory {
             String bookingListJSON = ((Text) BookingEntity.getProperty("bookingList")).getValue();
             Type bookingListType = new TypeToken<List<BookingRequest>>() {
             }.getType();
-            List<BookingRequest> bookingShapesList = GsonUtils.GSON.fromJson(bookingListJSON, bookingListType);
+            List<BookingRequest> bookingShapesList = GsonUtils.fromJson(bookingListJSON, bookingListType);
 
             BookingRequestWrap booking = new BookingRequestWrap();
             booking.setBookID(bid);
@@ -117,7 +117,7 @@ public class GetBookingShapesDataFactory {
             if (BookingEntity.getProperty("genuser") != null) {
                 Type genuserType = new TypeToken<GenericUser>() {
                 }.getType();
-                GenericUser genuser = GsonUtils.GSON.fromJson((String) BookingEntity.getProperty("genuser"), genuserType);
+                GenericUser genuser = GsonUtils.fromJson((String) BookingEntity.getProperty("genuser"), genuserType);
                 booking.setUser(genuser);
             }
 
@@ -165,7 +165,7 @@ public class GetBookingShapesDataFactory {
             String bookingListJSON = ((Text) BookingEntity.getProperty("bookingList")).getValue();
             Type bookingListType = new TypeToken<List<BookingRequest>>() {
             }.getType();
-            List<BookingRequest> bookingShapesList = GsonUtils.GSON.fromJson(bookingListJSON, bookingListType);
+            List<BookingRequest> bookingShapesList = GsonUtils.fromJson(bookingListJSON, bookingListType);
 
             BookingRequestWrap booking = new BookingRequestWrap();
             booking.setBookID(bid);
@@ -181,7 +181,7 @@ public class GetBookingShapesDataFactory {
             if (BookingEntity.getProperty("genuser") != null) {
                 Type genuserType = new TypeToken<GenericUser>() {
                 }.getType();
-                GenericUser genuser = GsonUtils.GSON.fromJson((String) BookingEntity.getProperty("genuser"), genuserType);
+                GenericUser genuser = GsonUtils.fromJson((String) BookingEntity.getProperty("genuser"), genuserType);
                 booking.setUser(genuser);
             }
 

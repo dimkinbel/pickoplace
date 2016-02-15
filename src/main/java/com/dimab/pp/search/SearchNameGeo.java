@@ -26,7 +26,6 @@ import java.util.Map;
 
 
 public class SearchNameGeo extends HttpServlet {
-    private static final long serialVersionUID = 1L;
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String name = request.getParameter("name");
@@ -49,7 +48,7 @@ public class SearchNameGeo extends HttpServlet {
             map.put("status", "requestError");
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
-            response.getWriter().write(GsonUtils.GSON.toJson(map));
+            response.getWriter().write(GsonUtils.toJson(map));
             return;
         }
         System.out.println(name + " " + lats + " " + lngs + " " + rads);
@@ -106,7 +105,6 @@ public class SearchNameGeo extends HttpServlet {
         }
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(GsonUtils.GSON.toJson(map));
+        response.getWriter().write(GsonUtils.toJson(map));
     }
-
 }

@@ -11,18 +11,11 @@ import java.io.IOException;
 
 
 public class ReceiveJSONServlet extends HttpServlet {
-    private static final long serialVersionUID = 1L;
-
-    public ReceiveJSONServlet() {
-        super();
-    }
-
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String jsonString = request.getParameter("boardState");
         System.out.println(jsonString);
-        PPSubmitObject CS = GsonUtils.GSON.fromJson(jsonString, PPSubmitObject.class);
-        System.out.println(GsonUtils.GSON.toJson(CS));
+        PPSubmitObject CS = GsonUtils.fromJson(jsonString, PPSubmitObject.class);
+        System.out.println(GsonUtils.toJson(CS));
     }
-
 }

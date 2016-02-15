@@ -50,7 +50,7 @@ public class FreePlaceFactory {
         String shapesJSON = ((Text) csEntity.getProperty("shapesJSON")).getValue();
         Type CanvasListcollectionType = new TypeToken<List<PPSubmitObject>>() {
         }.getType();
-        List<PPSubmitObject> floors = GsonUtils.GSON.fromJson(shapesJSON, CanvasListcollectionType);
+        List<PPSubmitObject> floors = GsonUtils.fromJson(shapesJSON, CanvasListcollectionType);
         ShapesMapObject personsMap = getPersonsMap(floors);
         personsMap.printString();
 
@@ -350,7 +350,7 @@ public class FreePlaceFactory {
                 JsonObject jso = element.getAsJsonObject();
                 Type mapobj = new TypeToken<Map<String, Object>>() {
                 }.getType();
-                map = GsonUtils.GSON.fromJson(jso, mapobj);
+                map = GsonUtils.fromJson(jso, mapobj);
                 map = cleanPastPeriodsGCS(map);
                 for (Long rangeVal : rangesList) {
                     String rangeAsString = rangeVal.toString();
@@ -377,7 +377,7 @@ public class FreePlaceFactory {
                 optionsBuilder = new GcsFileOptions.Builder();
                 optionsBuilder.mimeType("application/json");
                 outputChannel = gcsService.createOrReplace(Sname, optionsBuilder.build());
-                String jsontext = GsonUtils.GSON.toJson(map);
+                String jsontext = GsonUtils.toJson(map);
                 copy(jsontext.getBytes(), Channels.newOutputStream(outputChannel));
             }
         } catch (IOException e) {
@@ -409,7 +409,7 @@ public class FreePlaceFactory {
                 JsonObject jso = element.getAsJsonObject();
                 Type mapobj = new TypeToken<Map<String, Object>>() {
                 }.getType();
-                map = GsonUtils.GSON.fromJson(jso, mapobj);
+                map = GsonUtils.fromJson(jso, mapobj);
             }
         } catch (IOException e) {
             // TODO Auto-generated catch block
@@ -446,7 +446,7 @@ public class FreePlaceFactory {
                         rangesFull.add(rangeVal.toString());
                     }
                 }
-                String jsontext = GsonUtils.GSON.toJson(map);
+                String jsontext = GsonUtils.toJson(map);
                 copy(jsontext.getBytes(), Channels.newOutputStream(outputChannel));
             } else {
                 readChannel = gcsService.openReadChannel(Sname, 0);
@@ -454,7 +454,7 @@ public class FreePlaceFactory {
                 JsonObject jso = element.getAsJsonObject();
                 Type mapobj = new TypeToken<Map<String, Object>>() {
                 }.getType();
-                map = GsonUtils.GSON.fromJson(jso, mapobj);
+                map = GsonUtils.fromJson(jso, mapobj);
                 map = cleanPastPeriodsGCS(map);
                 for (Long rangeVal : rangesList) {
                     String rangeAsString = rangeVal.toString();
@@ -491,7 +491,7 @@ public class FreePlaceFactory {
                 optionsBuilder = new GcsFileOptions.Builder();
                 optionsBuilder.mimeType("application/json");
                 outputChannel = gcsService.createOrReplace(Sname, optionsBuilder.build());
-                String jsontext = GsonUtils.GSON.toJson(map);
+                String jsontext = GsonUtils.toJson(map);
                 copy(jsontext.getBytes(), Channels.newOutputStream(outputChannel));
             }
         } catch (IOException e) {

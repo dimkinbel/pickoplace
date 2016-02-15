@@ -19,12 +19,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CheckPlaceUpdate extends HttpServlet {
-    private static final long serialVersionUID = 1L;
-
-    public CheckPlaceUpdate() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -48,10 +42,9 @@ public class CheckPlaceUpdate extends HttpServlet {
             username_email = genuser.getEmail();
         }
 
-
         String jsonString = request.getParameter("jsonObject");
         System.out.println(jsonString);
-        ValidatePlaceUpdate validateData = GsonUtils.GSON.fromJson(jsonString, ValidatePlaceUpdate.class);
+        ValidatePlaceUpdate validateData = GsonUtils.fromJson(jsonString, ValidatePlaceUpdate.class);
 
         Filter usernameFilter = new FilterPredicate("username", FilterOperator.EQUAL, username_email);
         Filter placeNameFilter = new FilterPredicate("placeName", FilterOperator.EQUAL, validateData.getPlaceName());
@@ -76,7 +69,6 @@ public class CheckPlaceUpdate extends HttpServlet {
     private void write(HttpServletResponse response, Map<String, Object> map) throws IOException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(GsonUtils.GSON.toJson(map));
+        response.getWriter().write(GsonUtils.toJson(map));
     }
-
 }

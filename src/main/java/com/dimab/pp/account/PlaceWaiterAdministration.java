@@ -31,15 +31,6 @@ import java.util.List;
 import java.util.Map;
 
 public class PlaceWaiterAdministration extends HttpServlet {
-    private static final long serialVersionUID = 1L;
-
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public PlaceWaiterAdministration() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -47,7 +38,6 @@ public class PlaceWaiterAdministration extends HttpServlet {
         String returnurl = "/user_waiter_list.jsp";
         response.addHeader("Access-Control-Allow-Origin", "*");
         response.sendRedirect(returnurl);
-
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -84,7 +74,7 @@ public class PlaceWaiterAdministration extends HttpServlet {
         GetBookingShapesDataFactory bookingFactory = new GetBookingShapesDataFactory();
         List<JsonImageID_2_GCSurl> JSONimageID2url = new ArrayList<JsonImageID_2_GCSurl>();
 
-        PlaceCheckAvailableJSON bookingRequest = GsonUtils.GSON.fromJson(jsonString, PlaceCheckAvailableJSON.class);
+        PlaceCheckAvailableJSON bookingRequest = GsonUtils.fromJson(jsonString, PlaceCheckAvailableJSON.class);
         Long date = bookingRequest.getDate1970();// Ignoring client offset
         Long period = bookingRequest.getPeriod();
         int weekday = bookingRequest.getWeekday();
@@ -108,10 +98,10 @@ public class PlaceWaiterAdministration extends HttpServlet {
             String closeDatesString = (String) userCanvasState.getProperty("closeDates");
             Type closeDateType = new TypeToken<List<Integer>>() {
             }.getType();
-            List<Integer> closeDates = GsonUtils.GSON.fromJson(closeDatesString, closeDateType);
+            List<Integer> closeDates = GsonUtils.fromJson(closeDatesString, closeDateType);
 
             String weekdays = (String) userCanvasState.getProperty("workinghours");
-            WorkingWeek weekdaysObject = GsonUtils.GSON.fromJson(weekdays, WorkingWeek.class);
+            WorkingWeek weekdaysObject = GsonUtils.fromJson(weekdays, WorkingWeek.class);
 
 
             List<SingleTimeRangeLong> tempRanges = weekdaysObject.getRangesList(weekday, 2);
@@ -182,8 +172,8 @@ public class PlaceWaiterAdministration extends HttpServlet {
 
         List<BookingRequestWrap> bookings_ = bookingFactory.getDatastoreBookingsInludeStartBefore(datastore, placeIDvalue, UTCdate.intValue(), UTCdate.intValue() + 2 * 24 * 3600);
         request.setAttribute("waiterResponse", waiterResponse);
-        request.setAttribute("waiterBookings", GsonUtils.GSON.toJson(bookings_));
-        request.setAttribute("imgid2link50", GsonUtils.GSON.toJson(JSONimageID2url));
+        request.setAttribute("waiterBookings", GsonUtils.toJson(bookings_));
+        request.setAttribute("imgid2link50", GsonUtils.toJson(JSONimageID2url));
         RequestDispatcher dispathser = request.getRequestDispatcher("/placewaiteradmin.jsp");
         response.addHeader("Access-Control-Allow-Origin", "*");
         dispathser.forward(request, response);

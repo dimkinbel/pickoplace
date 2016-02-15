@@ -21,14 +21,6 @@ import java.util.Date;
 
 
 public class CreatePlaceInfo extends HttpServlet {
-    private static final long serialVersionUID = 1L;
-
-
-    public CreatePlaceInfo() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
-
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 

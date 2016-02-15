@@ -53,8 +53,8 @@ public class FBVerifyToken {
                 }
                 String responseString = builder.toString();
                 System.out.println("ssss:" + responseString);
-                fbjson = GsonUtils.GSON.fromJson(responseString, FBmeResponseJSON.class);
-                System.out.println(GsonUtils.GSON.toJson(fbjson));
+                fbjson = GsonUtils.fromJson(responseString, FBmeResponseJSON.class);
+                System.out.println(GsonUtils.toJson(fbjson));
                 return fbjson;
             } catch (IllegalStateException | IOException e) {
                 // TODO Auto-generated catch block

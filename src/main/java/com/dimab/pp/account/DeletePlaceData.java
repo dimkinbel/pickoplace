@@ -26,12 +26,6 @@ import java.util.List;
 import java.util.Map;
 
 public class DeletePlaceData extends HttpServlet {
-    private static final long serialVersionUID = 1L;
-
-    public DeletePlaceData() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -74,7 +68,7 @@ public class DeletePlaceData extends HttpServlet {
 
             Type placeEditType = new TypeToken<List<AdminUser>>() {
             }.getType();
-            List<AdminUser> placeEditList = GsonUtils.GSON.fromJson(placeEditList_str, placeEditType);
+            List<AdminUser> placeEditList = GsonUtils.fromJson(placeEditList_str, placeEditType);
             boolean RemovalAllowedbyUser = false;
             if (!username_email.equals(canvasAdmin)) {
                 System.out.println("Requested user '" + username_email + "' is different from ADMIN user '" + canvasAdmin + "'");
@@ -104,31 +98,31 @@ public class DeletePlaceData extends HttpServlet {
                         List<String> mo_list = new ArrayList<String>();
                         List<String> ba_list = new ArrayList<String>();
                         if (result.getProperty("PID_full_access") != null) {
-                            fa_list = GsonUtils.GSON.fromJson((String) result.getProperty("PID_full_access"), collectionType);
+                            fa_list = GsonUtils.fromJson((String) result.getProperty("PID_full_access"), collectionType);
                             if (fa_list.contains(placeID)) {
                                 fa_list.remove(placeID);
-                                result.setUnindexedProperty("PID_full_access", GsonUtils.GSON.toJson(fa_list));
+                                result.setUnindexedProperty("PID_full_access", GsonUtils.toJson(fa_list));
                             }
                         }
                         if (result.getProperty("PID_edit_place") != null) {
-                            ep_list = GsonUtils.GSON.fromJson((String) result.getProperty("PID_edit_place"), collectionType);
+                            ep_list = GsonUtils.fromJson((String) result.getProperty("PID_edit_place"), collectionType);
                             if (ep_list.contains(placeID)) {
                                 ep_list.remove(placeID);
-                                result.setUnindexedProperty("PID_edit_place", GsonUtils.GSON.toJson(ep_list));
+                                result.setUnindexedProperty("PID_edit_place", GsonUtils.toJson(ep_list));
                             }
                         }
                         if (result.getProperty("PID_move_only") != null) {
-                            mo_list = GsonUtils.GSON.fromJson((String) result.getProperty("PID_move_only"), collectionType);
+                            mo_list = GsonUtils.fromJson((String) result.getProperty("PID_move_only"), collectionType);
                             if (mo_list.contains(placeID)) {
                                 mo_list.remove(placeID);
-                                result.setUnindexedProperty("PID_move_only", GsonUtils.GSON.toJson(mo_list));
+                                result.setUnindexedProperty("PID_move_only", GsonUtils.toJson(mo_list));
                             }
                         }
                         if (result.getProperty("PID_book_admin") != null) {
-                            ba_list = GsonUtils.GSON.fromJson((String) result.getProperty("PID_book_admin"), collectionType);
+                            ba_list = GsonUtils.fromJson((String) result.getProperty("PID_book_admin"), collectionType);
                             if (ba_list.contains(placeID)) {
                                 ba_list.remove(placeID);
-                                result.setUnindexedProperty("PID_book_admin", GsonUtils.GSON.toJson(ba_list));
+                                result.setUnindexedProperty("PID_book_admin", GsonUtils.toJson(ba_list));
                             }
                         }
 
@@ -231,6 +225,6 @@ public class DeletePlaceData extends HttpServlet {
         txn.commit();
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(GsonUtils.GSON.toJson(map));
+        response.getWriter().write(GsonUtils.toJson(map));
     }
 }

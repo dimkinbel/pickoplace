@@ -20,12 +20,6 @@ import java.util.Map;
 
 
 public class UserLoginLogoutFacebook extends HttpServlet {
-    private static final long serialVersionUID = 1L;
-
-    public UserLoginLogoutFacebook() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -34,7 +28,7 @@ public class UserLoginLogoutFacebook extends HttpServlet {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("logout", false);
         String jsonString = request.getParameter("fb_login");
-        AJAXFacebookResponse fb_response = GsonUtils.GSON.fromJson(jsonString, AJAXFacebookResponse.class);
+        AJAXFacebookResponse fb_response = GsonUtils.fromJson(jsonString, AJAXFacebookResponse.class);
         System.out.println(jsonString);
         if (fb_response.getLogin().equals("login")) {
             System.out.println("Facebook Login:" + fb_response.getResponse().getEmail());
@@ -51,7 +45,7 @@ public class UserLoginLogoutFacebook extends HttpServlet {
                 userEntity.setProperty("username", fb_response.getResponse().getEmail());
                 userEntity.setProperty("GoogleAccount", "");
                 userEntity.setProperty("FacebookAccount", true);
-                userEntity.setProperty("FacebookJSON", GsonUtils.GSON.toJson(fb_response.getResponse()));
+                userEntity.setProperty("FacebookJSON", GsonUtils.toJson(fb_response.getResponse()));
                 userEntity.setProperty("LoggedBy", "Facebook");
                 userEntity.setProperty("UserID", random);
                 userEntity.setUnindexedProperty("firstEntry", date.toString());
@@ -66,7 +60,7 @@ public class UserLoginLogoutFacebook extends HttpServlet {
                 }
                 result.setProperty("LoggedBy", "Facebook");
                 result.setProperty("FacebookAccount", true);
-                result.setProperty("FacebookJSON", GsonUtils.GSON.toJson(fb_response.getResponse()));
+                result.setProperty("FacebookJSON", GsonUtils.toJson(fb_response.getResponse()));
                 result.setUnindexedProperty("firstEntry", date.toString());
                 result.setUnindexedProperty("lastDateInSec", date.getTime() / 1000);
                 result.setUnindexedProperty("lastDate", date.toString());
@@ -92,6 +86,6 @@ public class UserLoginLogoutFacebook extends HttpServlet {
 
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(GsonUtils.GSON.toJson(map));
+        response.getWriter().write(GsonUtils.toJson(map));
     }
 }

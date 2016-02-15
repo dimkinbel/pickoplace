@@ -34,7 +34,7 @@ public class ChannelMessageFactory {
             String clientsJSON = (String) result.getProperty("clients");
             Type collectionType = new TypeToken<List<String>>() {
             }.getType();
-            List<String> connected = GsonUtils.GSON.fromJson(clientsJSON, collectionType);
+            List<String> connected = GsonUtils.fromJson(clientsJSON, collectionType);
 
             for (String cliendID : connected) {
                 Map<String, Object> map = new HashMap<String, Object>();

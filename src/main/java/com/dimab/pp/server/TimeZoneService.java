@@ -28,10 +28,10 @@ public class TimeZoneService {
             }.getType();
             List<String> pidlist = new ArrayList<String>();
             if (result.getProperty("PIDlist") != null) {
-                pidlist = GsonUtils.GSON.fromJson((String) result.getProperty("PIDlist"), collectionType);
+                pidlist = GsonUtils.fromJson((String) result.getProperty("PIDlist"), collectionType);
                 if (!pidlist.contains(pid)) {
                     pidlist.add(pid);
-                    result.setUnindexedProperty("PIDlist", GsonUtils.GSON.toJson(pidlist));
+                    result.setUnindexedProperty("PIDlist", GsonUtils.toJson(pidlist));
                     result.setUnindexedProperty("offset", offset);
                     datastore.put(result);
                 }
@@ -41,7 +41,7 @@ public class TimeZoneService {
             List<String> pidlist = new ArrayList<String>();
             pidlist.add(pid);
             timezoneEntity.setProperty("timezoneID", timezone);
-            timezoneEntity.setUnindexedProperty("PIDlist", GsonUtils.GSON.toJson(pidlist));
+            timezoneEntity.setUnindexedProperty("PIDlist", GsonUtils.toJson(pidlist));
             timezoneEntity.setUnindexedProperty("offset", offset);
             datastore.put(timezoneEntity);
         }
@@ -55,7 +55,7 @@ public class TimeZoneService {
             List<TimeZonePair> timezonePairs = new ArrayList<TimeZonePair>();
             Type collectionType = new TypeToken<List<TimeZonePair>>() {
             }.getType();
-            timezonePairs = GsonUtils.GSON.fromJson(timezonesJSON, collectionType);
+            timezonePairs = GsonUtils.fromJson(timezonesJSON, collectionType);
 
             List<TimeZonePair> newTimezonePairs = new ArrayList<TimeZonePair>();
 
@@ -75,7 +75,7 @@ public class TimeZoneService {
             if (timezonefound) {
                 if (timzonechanged) {
                     // Update Timezone pair (new Offset)
-                    String timezonesString = GsonUtils.GSON.toJson(newTimezonePairs);
+                    String timezonesString = GsonUtils.toJson(newTimezonePairs);
                     Text timezonesText = new Text(timezonesString);
                     timezonesEntity.setUnindexedProperty("value_", timezonesText);
                     datastore.put(timezonesEntity);
@@ -89,7 +89,7 @@ public class TimeZoneService {
                 timezonePair.setLat(lat);
                 timezonePair.setLng(lng);
                 timezonePairs.add(timezonePair);
-                String timezonesString = GsonUtils.GSON.toJson(timezonePairs);
+                String timezonesString = GsonUtils.toJson(timezonePairs);
                 Text timezonesText = new Text(timezonesString);
 
                 timezonesEntity.setUnindexedProperty("value_", timezonesText);
@@ -106,7 +106,7 @@ public class TimeZoneService {
             timezonePairs.add(timezonePair);
             timezonesEntity.setProperty("parameter_", "timezones");
 
-            String timezonesString = GsonUtils.GSON.toJson(timezonePairs);
+            String timezonesString = GsonUtils.toJson(timezonePairs);
             Text timezonesText = new Text(timezonesString);
 
             timezonesEntity.setUnindexedProperty("value_", timezonesText);

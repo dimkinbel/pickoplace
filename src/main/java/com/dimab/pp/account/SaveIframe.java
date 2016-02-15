@@ -20,11 +20,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SaveIframe extends HttpServlet {
-    private static final long serialVersionUID = 1L;
-
-    public SaveIframe() {
-        super();
-    }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -54,7 +49,7 @@ public class SaveIframe extends HttpServlet {
         String placeIDvalue = request.getParameter("pid");
         String ifid = request.getParameter("ifid");
         String ifsaveString = request.getParameter("ifsave");
-        IFsave SaveObject = GsonUtils.GSON.fromJson(ifsaveString, IFsave.class);
+        IFsave SaveObject = GsonUtils.fromJson(ifsaveString, IFsave.class);
 
         Filter ifidfilter = new FilterPredicate("ifid", FilterOperator.EQUAL, ifid);
         Query piq = new Query("IFrames").setFilter(ifidfilter);
@@ -66,14 +61,14 @@ public class SaveIframe extends HttpServlet {
             ifidEntity.setProperty("pid", placeIDvalue);
             ifidEntity.setProperty("savedby", username_email);
             ifidEntity.setProperty("date", date);
-            ifidEntity.setUnindexedProperty("ifjson", GsonUtils.GSON.toJson(SaveObject));
+            ifidEntity.setUnindexedProperty("ifjson", GsonUtils.toJson(SaveObject));
             map.put("newifid", true);
         } else {
             ifidEntity.setProperty("ifid", ifid);
             ifidEntity.setProperty("pid", placeIDvalue);
             ifidEntity.setProperty("savedby", username_email);
             ifidEntity.setProperty("date", date);
-            ifidEntity.setUnindexedProperty("ifjson", GsonUtils.GSON.toJson(SaveObject));
+            ifidEntity.setUnindexedProperty("ifjson", GsonUtils.toJson(SaveObject));
             map.put("newifid", false);
         }
         datastore.put(ifidEntity);

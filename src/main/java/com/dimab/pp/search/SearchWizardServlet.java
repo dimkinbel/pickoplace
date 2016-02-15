@@ -23,14 +23,8 @@ import java.util.List;
 import java.util.Map;
 
 public class SearchWizardServlet extends HttpServlet {
-    private static final long serialVersionUID = 1L;
+
     private String lastCursor = "";
-
-    public SearchWizardServlet() {
-        super();
-
-    }
-
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String name = request.getParameter("name");
@@ -53,7 +47,7 @@ public class SearchWizardServlet extends HttpServlet {
             map.put("status", "requestError");
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
-            response.getWriter().write(GsonUtils.GSON.toJson(map));
+            response.getWriter().write(GsonUtils.toJson(map));
             return;
         }
         System.out.println(name + " " + lats + " " + lngs + " " + rads);
@@ -92,7 +86,7 @@ public class SearchWizardServlet extends HttpServlet {
         } else {
             Type collectionType = new TypeToken<SearchPidsAndCursor>() {
             }.getType();
-            searchResult = GsonUtils.GSON.fromJson(cursor_, collectionType);
+            searchResult = GsonUtils.fromJson(cursor_, collectionType);
         }
         reducedResult.setCursor(searchResult.getCursor());
         System.out.println(searchResult.getPids());
@@ -150,7 +144,7 @@ public class SearchWizardServlet extends HttpServlet {
             if (reducedResult.getPids().size() == 0) {
                 wizResultData.setCursor("last");
             } else {
-                wizResultData.setCursor(GsonUtils.GSON.toJson(reducedResult));
+                wizResultData.setCursor(GsonUtils.toJson(reducedResult));
             }
 
             map.put("status", "OK");
@@ -166,7 +160,7 @@ public class SearchWizardServlet extends HttpServlet {
 
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(GsonUtils.GSON.toJson(map));
+        response.getWriter().write(GsonUtils.toJson(map));
     }
 
     public Boolean isPlaceOpenCurrently(Entity CanvasStateEntity, SearchRequestWizJSON serachObjectWiz) {
@@ -195,7 +189,7 @@ public class SearchWizardServlet extends HttpServlet {
         String closeDatesString = (String) CanvasStateEntity.getProperty("closeDates");
         Type closeDateType = new TypeToken<List<Integer>>() {
         }.getType();
-        List<Integer> closeDates = GsonUtils.GSON.fromJson(closeDatesString, closeDateType);
+        List<Integer> closeDates = GsonUtils.fromJson(closeDatesString, closeDateType);
         // Check for dates the place is close (set by Administrator)
         if (closeDates.contains(serachObjectWiz.getDateUTC())) {
             return false;
@@ -205,7 +199,7 @@ public class SearchWizardServlet extends HttpServlet {
             }
         }
         String weekdays = (String) CanvasStateEntity.getProperty("workinghours");
-        WorkingWeek weekdaysObject = GsonUtils.GSON.fromJson(weekdays, WorkingWeek.class);
+        WorkingWeek weekdaysObject = GsonUtils.fromJson(weekdays, WorkingWeek.class);
         WeekDayOpenClose today, tomorrow;
         if (weekday < 6) {
             today = weekdaysObject.getWeekDayOpenClose(weekday);

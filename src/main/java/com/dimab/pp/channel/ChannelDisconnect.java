@@ -19,12 +19,6 @@ import java.lang.reflect.Type;
 import java.util.List;
 
 public class ChannelDisconnect extends HttpServlet {
-    private static final long serialVersionUID = 1L;
-
-    public ChannelDisconnect() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         ChannelService channelService = ChannelServiceFactory.getChannelService();
@@ -48,13 +42,13 @@ public class ChannelDisconnect extends HttpServlet {
             String clientsJSON = (String) result.getProperty("clients");
             Type collectionType = new TypeToken<List<String>>() {
             }.getType();
-            List<String> connected = GsonUtils.GSON.fromJson(clientsJSON, collectionType);
+            List<String> connected = GsonUtils.fromJson(clientsJSON, collectionType);
             if (connected.contains(presence.clientId())) {
                 connected.remove(presence.clientId());
                 if (connected.size() == 0) {
                     datastore.delete(result.getKey());
                 } else {
-                    result.setProperty("clients", GsonUtils.GSON.toJson(connected));
+                    result.setProperty("clients", GsonUtils.toJson(connected));
                     datastore.put(result);
                 }
             }

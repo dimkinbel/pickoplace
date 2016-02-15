@@ -82,7 +82,7 @@ public class GoogVerifyToken {
             String responseString;
             try {
                 responseString = new String(resp_.getContent(), "UTF-8");
-                gojson = GsonUtils.GSON.fromJson(responseString, GOOGmeResponseJSON.class);
+                gojson = GsonUtils.fromJson(responseString, GOOGmeResponseJSON.class);
                 return gojson;
             } catch (UnsupportedEncodingException e) {
                 // TODO Auto-generated catch block

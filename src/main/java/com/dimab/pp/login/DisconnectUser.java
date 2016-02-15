@@ -2,8 +2,6 @@ package com.dimab.pp.login;
 
 import com.dimab.pickoplace.entity.EntityKind;
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.appengine.api.datastore.*;
 import com.google.appengine.api.datastore.Query.Filter;
@@ -26,9 +24,6 @@ import java.util.Map;
 //import org.apache.log4j.BasicConfigurator;
 
 public class DisconnectUser extends HttpServlet {
-    private static final long serialVersionUID = 1L;
-    private static final HttpTransport TRANSPORT = new NetHttpTransport();
-
     /*
      * Default JSON factory to use to deserialize JSON.
      */
@@ -62,11 +57,6 @@ public class DisconnectUser extends HttpServlet {
      * Optionally replace this with your application's name.
      */
     private static final String APPLICATION_NAME = "PickoPlace";
-
-    public DisconnectUser() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json");

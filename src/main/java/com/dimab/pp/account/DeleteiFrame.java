@@ -20,11 +20,6 @@ import java.util.*;
 
 
 public class DeleteiFrame extends HttpServlet {
-    private static final long serialVersionUID = 1L;
-
-    public DeleteiFrame() {
-        super();
-    }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -74,7 +69,7 @@ public class DeleteiFrame extends HttpServlet {
             String uid = (String) iframeEntity.getProperty("savedby");
             Date date_ = (Date) iframeEntity.getProperty("date");
             String iframe_ = (String) iframeEntity.getProperty("ifjson");
-            IFsave SaveObject = GsonUtils.GSON.fromJson(iframe_, IFsave.class);
+            IFsave SaveObject = GsonUtils.fromJson(iframe_, IFsave.class);
             SimpleDateFormat dateFormat = new SimpleDateFormat("wwMMMy HH:mm");
             System.out.println("date: " + dateFormat.format(date_));
 
@@ -102,6 +97,6 @@ public class DeleteiFrame extends HttpServlet {
 
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(GsonUtils.GSON.toJson(map));
+        response.getWriter().write(GsonUtils.toJson(map));
     }
 }

@@ -26,22 +26,13 @@ import static com.google.appengine.api.datastore.FetchOptions.Builder.withLimit;
 
 
 public class ClientBookingHistoryServlet extends HttpServlet {
-    private static final long serialVersionUID = 1L;
-
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public ClientBookingHistoryServlet() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String jsonString = request.getParameter("bookingHistory");
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         ClientBookingsObject bookingsResponse = new ClientBookingsObject();
         Date date = new Date();
-        ClientBookingHistoryRequestDTO hisoryRequest = GsonUtils.GSON.fromJson(jsonString, ClientBookingHistoryRequestDTO.class);
+        ClientBookingHistoryRequestDTO hisoryRequest = GsonUtils.fromJson(jsonString, ClientBookingHistoryRequestDTO.class);
         System.out.println(jsonString);
 
         String username = new String();
@@ -79,7 +70,7 @@ public class ClientBookingHistoryServlet extends HttpServlet {
                 String bookingListJSON = ((Text) bookingE.getProperty("bookingList")).getValue();
                 Type bookingListType = new TypeToken<List<BookingRequest>>() {
                 }.getType();
-                List<BookingRequest> bookingShapesList = GsonUtils.GSON.fromJson(bookingListJSON, bookingListType);
+                List<BookingRequest> bookingShapesList = GsonUtils.fromJson(bookingListJSON, bookingListType);
                 System.out.println("BOOKING:" + startAt + "(" + pid + ")\n" + bookingShapesList);
                 // Get CanvasState entity
                 Filter pidFilter = new FilterPredicate("placeUniqID", FilterOperator.EQUAL, pid);
@@ -154,7 +145,7 @@ public class ClientBookingHistoryServlet extends HttpServlet {
                         String ratingString = (String) bookingE.getProperty("rating");
                         Type ratingType = new TypeToken<PlaceRatingDTO>() {
                         }.getType();
-                        PlaceRatingDTO rating = GsonUtils.GSON.fromJson(ratingString, ratingType);
+                        PlaceRatingDTO rating = GsonUtils.fromJson(ratingString, ratingType);
                         singleBooking.setRating(rating);
                     } else {
 
@@ -172,13 +163,13 @@ public class ClientBookingHistoryServlet extends HttpServlet {
 
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
-            response.getWriter().write(GsonUtils.GSON.toJson(bookingsResponse));
+            response.getWriter().write(GsonUtils.toJson(bookingsResponse));
         } else {
             Map<String, Object> map = new HashMap<String, Object>();
             map.put("logged", false);
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
-            response.getWriter().write(GsonUtils.GSON.toJson(map));
+            response.getWriter().write(GsonUtils.toJson(map));
         }
     }
 

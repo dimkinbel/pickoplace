@@ -25,7 +25,7 @@ public class GetShapesOrders {
 
             String allOrdersJSON = ((Text) shapeList.getProperty("bookingListJSON")).getValue();
             singleShaperesponse.setSid(sid);
-            BookingListForJSON ordersList = GsonUtils.GSON.fromJson(allOrdersJSON, BookingListForJSON.class);
+            BookingListForJSON ordersList = GsonUtils.fromJson(allOrdersJSON, BookingListForJSON.class);
             List<SingleTimeRangeLong> matchList = new ArrayList<SingleTimeRangeLong>();
             if (full) {
                 matchList = ordersList.getInRangeWithBID(fromTime, period);
@@ -43,7 +43,7 @@ public class GetShapesOrders {
             orderedResponse.getShapesBooked().add(singleShaperesponse);
         }
 
-        System.out.println(GsonUtils.GSON.toJson(orderedResponse));
+        System.out.println(GsonUtils.toJson(orderedResponse));
         return orderedResponse;
     }
 }

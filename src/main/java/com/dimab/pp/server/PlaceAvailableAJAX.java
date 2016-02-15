@@ -22,18 +22,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PlaceAvailableAJAX extends HttpServlet {
-    private static final long serialVersionUID = 1L;
-
-    public PlaceAvailableAJAX() {
-        super();
-    }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         OrderedResponse orderedResponse = new OrderedResponse();
         GetShapesOrders orderedResponseFactory = new GetShapesOrders();
         String jsonString = request.getParameter("bookrequest");
-        PlaceCheckAvailableJSON bookingRequest = GsonUtils.GSON.fromJson(jsonString, PlaceCheckAvailableJSON.class);
+        PlaceCheckAvailableJSON bookingRequest = GsonUtils.fromJson(jsonString, PlaceCheckAvailableJSON.class);
         Long date = bookingRequest.getDate1970();// Ignoring client offset
         Long period = bookingRequest.getPeriod();
         int weekday = bookingRequest.getWeekday();
@@ -61,10 +56,10 @@ public class PlaceAvailableAJAX extends HttpServlet {
             String closeDatesString = (String) CanvasStateEntity.getProperty("closeDates");
             Type closeDateType = new TypeToken<List<Integer>>() {
             }.getType();
-            List<Integer> closeDates = GsonUtils.GSON.fromJson(closeDatesString, closeDateType);
+            List<Integer> closeDates = GsonUtils.fromJson(closeDatesString, closeDateType);
 
             String weekdays = (String) CanvasStateEntity.getProperty("workinghours");
-            WorkingWeek weekdaysObject = GsonUtils.GSON.fromJson(weekdays, WorkingWeek.class);
+            WorkingWeek weekdaysObject = GsonUtils.fromJson(weekdays, WorkingWeek.class);
             List<SingleTimeRangeLong> tempRanges = weekdaysObject.getRangesList(weekday, 2);
 
             // Check for dates the place is close (set by Administrator)
@@ -78,9 +73,9 @@ public class PlaceAvailableAJAX extends HttpServlet {
             openRanges = tempRanges;
             orderedResponse.setPlaceOpen(openRanges);
         }
-        System.out.println(GsonUtils.GSON.toJson(orderedResponse));
+        System.out.println(GsonUtils.toJson(orderedResponse));
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(GsonUtils.GSON.toJson(orderedResponse));
+        response.getWriter().write(GsonUtils.toJson(orderedResponse));
     }
 }

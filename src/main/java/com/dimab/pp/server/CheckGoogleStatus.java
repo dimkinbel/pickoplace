@@ -14,12 +14,6 @@ import java.util.Map;
 
 
 public class CheckGoogleStatus extends HttpServlet {
-    private static final long serialVersionUID = 1L;
-
-    public CheckGoogleStatus() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         UserService userService = UserServiceFactory.getUserService();
@@ -34,7 +28,7 @@ public class CheckGoogleStatus extends HttpServlet {
         }
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(GsonUtils.GSON.toJson(map));
+        response.getWriter().write(GsonUtils.toJson(map));
     }
 
 }

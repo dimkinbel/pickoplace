@@ -23,11 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ListWaiterAvailable extends HttpServlet {
-    private static final long serialVersionUID = 1L;
-
-    public ListWaiterAvailable() {
-        super();
-    }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         WaiterListAJAXDTO waiterlist = new WaiterListAJAXDTO();
@@ -57,7 +52,7 @@ public class ListWaiterAvailable extends HttpServlet {
             if (result__ != null) {
                 List<String> ba_list__ = new ArrayList<String>();
                 if (result__.getProperty("PID_book_admin") != null) {
-                    ba_list__ = GsonUtils.GSON.fromJson((String) result__.getProperty("PID_book_admin"), collectionType);
+                    ba_list__ = GsonUtils.fromJson((String) result__.getProperty("PID_book_admin"), collectionType);
                     if (ba_list__.size() == 0) {
                         waiterlist.setStatus("no_places");
                     } else {
@@ -87,6 +82,6 @@ public class ListWaiterAvailable extends HttpServlet {
         }
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(GsonUtils.GSON.toJson(waiterlist));
+        response.getWriter().write(GsonUtils.toJson(waiterlist));
     }
 }

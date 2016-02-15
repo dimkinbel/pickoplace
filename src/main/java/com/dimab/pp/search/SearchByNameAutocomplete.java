@@ -14,7 +14,6 @@ import java.util.Map;
 
 
 public class SearchByNameAutocomplete extends HttpServlet {
-    private static final long serialVersionUID = 1L;
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String name = request.getParameter("name");
@@ -31,6 +30,6 @@ public class SearchByNameAutocomplete extends HttpServlet {
         }
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(GsonUtils.GSON.toJson(map));
+        response.getWriter().write(GsonUtils.toJson(map));
     }
 }

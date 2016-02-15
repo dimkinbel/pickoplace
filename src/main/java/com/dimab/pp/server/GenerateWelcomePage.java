@@ -15,13 +15,7 @@ import java.io.IOException;
 
 
 public class GenerateWelcomePage extends HttpServlet {
-    private static final long serialVersionUID = 1L;
     private String lastCursor = "";
-
-    public GenerateWelcomePage() {
-        super();
-
-    }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
@@ -48,7 +42,7 @@ public class GenerateWelcomePage extends HttpServlet {
         welcomePagedata.setCursor(this.lastCursor);
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(GsonUtils.GSON.toJson(welcomePagedata));
+        response.getWriter().write(GsonUtils.toJson(welcomePagedata));
     }
 
     QueryResultList<Entity> getNEntities(int n, String cursor) {

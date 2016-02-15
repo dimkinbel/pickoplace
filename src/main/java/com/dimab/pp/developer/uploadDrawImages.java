@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Map;
 
 public class uploadDrawImages extends HttpServlet {
-    private static final long serialVersionUID = 1L;
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Map<String, Object> map = new HashMap<String, Object>();
@@ -41,6 +40,6 @@ public class uploadDrawImages extends HttpServlet {
         map.put("imageList", imageList);
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(GsonUtils.GSON.toJson(map));
+        response.getWriter().write(GsonUtils.toJson(map));
     }
 }

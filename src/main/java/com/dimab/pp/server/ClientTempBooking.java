@@ -20,13 +20,6 @@ import java.util.List;
 import java.util.Map;
 
 public class ClientTempBooking extends HttpServlet {
-    private static final long serialVersionUID = 1L;
-
-    public ClientTempBooking() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
-
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         System.out.println("TempBooking Called");
@@ -41,7 +34,7 @@ public class ClientTempBooking extends HttpServlet {
         TransactionOptions options = TransactionOptions.Builder.withXG(true);
         Transaction txn = datastore.beginTransaction(options);
 
-        BookingRequestWrap bookingRequestsWrap = GsonUtils.GSON.fromJson(jsonString, BookingRequestWrap.class);
+        BookingRequestWrap bookingRequestsWrap = GsonUtils.fromJson(jsonString, BookingRequestWrap.class);
         List<BookingRequest> bookingRequests = bookingRequestsWrap.getBookingList();
 
         Long fromSeconds = bookingRequestsWrap.getDateSeconds() + bookingRequestsWrap.getTime();
@@ -76,10 +69,10 @@ public class ClientTempBooking extends HttpServlet {
             String closeDatesString = (String) canvasEntity.getProperty("closeDates");
             Type closeDateType = new TypeToken<List<Integer>>() {
             }.getType();
-            List<Integer> closeDates = GsonUtils.GSON.fromJson(closeDatesString, closeDateType);
+            List<Integer> closeDates = GsonUtils.fromJson(closeDatesString, closeDateType);
 
             String weekdays = (String) canvasEntity.getProperty("workinghours");
-            WorkingWeek weekdaysObject = GsonUtils.GSON.fromJson(weekdays, WorkingWeek.class);
+            WorkingWeek weekdaysObject = GsonUtils.fromJson(weekdays, WorkingWeek.class);
             WeekDayOpenClose today, tomorrow;
             if (bookingRequestsWrap.getWeekday() < 6) {
                 today = weekdaysObject.getWeekDayOpenClose(bookingRequestsWrap.getWeekday());
@@ -154,7 +147,7 @@ public class ClientTempBooking extends HttpServlet {
                         // Booking available for this time
                     } else {
                         String allOrdersJSON = ((Text) shapeOrders.getProperty("bookingListJSON")).getValue();
-                        ordersList = GsonUtils.GSON.fromJson(allOrdersJSON, BookingListForJSON.class);
+                        ordersList = GsonUtils.fromJson(allOrdersJSON, BookingListForJSON.class);
                         boolean added = ordersList.isAvailable(OrderBid, 0);
                         if (added) {
                             // OK
@@ -178,7 +171,7 @@ public class ClientTempBooking extends HttpServlet {
 
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(GsonUtils.GSON.toJson(map));
+        response.getWriter().write(GsonUtils.toJson(map));
     }
 
 }

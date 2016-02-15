@@ -26,7 +26,6 @@ import java.util.*;
 
 
 public class ConnectUser extends HttpServlet {
-    private static final long serialVersionUID = 1L;
     private static final HttpTransport TRANSPORT = new NetHttpTransport();
 
     /*
@@ -62,14 +61,6 @@ public class ConnectUser extends HttpServlet {
      * Optionally replace this with your application's name.
      */
     private static final String APPLICATION_NAME = "PickoPlace";
-
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public ConnectUser() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

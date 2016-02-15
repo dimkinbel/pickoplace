@@ -50,7 +50,7 @@ public class GetPlaceInfoFactory {
         placeInfo.setType((ArrayList<String>) csEntity.getProperty("PlaceType"));
         placeInfo.setSubtype((ArrayList<String>) csEntity.getProperty("PlaceSubType"));
         String weekdays = (String) csEntity.getProperty("workinghours");
-        WorkingWeek weekdaysObject = GsonUtils.GSON.fromJson(weekdays, WorkingWeek.class);
+        WorkingWeek weekdaysObject = GsonUtils.fromJson(weekdays, WorkingWeek.class);
         placeInfo.setWeekdaysObject(weekdaysObject);
 
         Integer bookableShapes = 0;
@@ -62,7 +62,7 @@ public class GetPlaceInfoFactory {
 
         Type CanvasListcollectionType = new TypeToken<List<PPSubmitObject>>() {
         }.getType();
-        List<PPSubmitObject> floors = GsonUtils.GSON.fromJson(shapesJSON, CanvasListcollectionType);
+        List<PPSubmitObject> floors = GsonUtils.fromJson(shapesJSON, CanvasListcollectionType);
         String mainFloorName = new String();
 
         for (PPSubmitObject floor : floors) {
@@ -112,7 +112,7 @@ public class GetPlaceInfoFactory {
         //------------------------------------------------------------------
         Type collectionType = new TypeToken<List<String>>() {
         }.getType();
-        List<String> photosList = GsonUtils.GSON.fromJson((String) csEntity.getProperty("photos"), collectionType);
+        List<String> photosList = GsonUtils.fromJson((String) csEntity.getProperty("photos"), collectionType);
         if (photosList != null) {
             for (String imgID : photosList) {
                 bucket = "pp_images";
@@ -216,7 +216,7 @@ public class GetPlaceInfoFactory {
         String shapesJSON = ((Text) csEntity.getProperty("shapesJSON")).getValue();
         Type CanvasListcollectionType = new TypeToken<List<PPSubmitObject>>() {
         }.getType();
-        List<PPSubmitObject> floors = GsonUtils.GSON.fromJson(shapesJSON, CanvasListcollectionType);
+        List<PPSubmitObject> floors = GsonUtils.fromJson(shapesJSON, CanvasListcollectionType);
         String mainFloorName = new String();
 
         for (PPSubmitObject floor : floors) {

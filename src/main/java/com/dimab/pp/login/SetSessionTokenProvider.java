@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SetSessionTokenProvider extends HttpServlet {
-    private static final long serialVersionUID = 1L;
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String accessToken = request.getParameter("access_token");
@@ -27,6 +26,6 @@ public class SetSessionTokenProvider extends HttpServlet {
         System.out.println(provider + ":" + accessToken);
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(GsonUtils.GSON.toJson(map));
+        response.getWriter().write(GsonUtils.toJson(map));
     }
 }

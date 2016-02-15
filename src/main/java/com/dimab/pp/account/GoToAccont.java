@@ -27,11 +27,6 @@ import java.util.List;
 
 
 public class GoToAccont extends HttpServlet {
-    private static final long serialVersionUID = 1L;
-
-    public GoToAccont() {
-        super();
-    }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -89,7 +84,7 @@ public class GoToAccont extends HttpServlet {
                 String shapesJSON = ((Text) userCanvasState.getProperty("shapesJSON")).getValue();
                 Type CanvasListcollectionType = new TypeToken<List<PPSubmitObject>>() {
                 }.getType();
-                List<PPSubmitObject> floors = GsonUtils.GSON.fromJson(shapesJSON, CanvasListcollectionType);
+                List<PPSubmitObject> floors = GsonUtils.fromJson(shapesJSON, CanvasListcollectionType);
                 int shapesCount = 0;
                 for (PPSubmitObject floor : floors) {
                     shapesCount += floor.getShapes().size();

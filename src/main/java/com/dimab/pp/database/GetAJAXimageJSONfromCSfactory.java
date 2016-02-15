@@ -34,7 +34,7 @@ public class GetAJAXimageJSONfromCSfactory {
 
         Type CanvasListcollectionType = new TypeToken<List<PPSubmitObject>>() {
         }.getType();
-        List<PPSubmitObject> floors = GsonUtils.GSON.fromJson(shapesJSON, CanvasListcollectionType);
+        List<PPSubmitObject> floors = GsonUtils.fromJson(shapesJSON, CanvasListcollectionType);
         // Restore shapes booking options
         for (PPSubmitObject floor : floors) {
             for (CanvasShape shape : floor.getShapes()) {
@@ -106,7 +106,7 @@ public class GetAJAXimageJSONfromCSfactory {
         }
         Type collectionType = new TypeToken<List<JsonSID_2_imgID>>() {
         }.getType();
-        List<JsonSID_2_imgID> sid2imgID = GsonUtils.GSON.fromJson(sid2ImageIDJSON, collectionType);
+        List<JsonSID_2_imgID> sid2imgID = GsonUtils.fromJson(sid2ImageIDJSON, collectionType);
         if (sid2imgID.isEmpty()) {
             System.out.println("sid2imgID = null");
             sid2imgID = null;
@@ -206,28 +206,28 @@ public class GetAJAXimageJSONfromCSfactory {
             String automaticApprovalListJSON = (String) csEntity.getProperty("automaticApprovalList");
             collectionType = new TypeToken<List<String>>() {
             }.getType();
-            automaticApprovalList = GsonUtils.GSON.fromJson(automaticApprovalListJSON, collectionType);
+            automaticApprovalList = GsonUtils.fromJson(automaticApprovalListJSON, collectionType);
         }
         List<String> adminApprovalList = new ArrayList<String>();
         if (csEntity.getProperty("adminApprovalList") != null) {
             String adminApprovalListJSON = (String) csEntity.getProperty("adminApprovalList");
             collectionType = new TypeToken<List<String>>() {
             }.getType();
-            adminApprovalList = GsonUtils.GSON.fromJson(adminApprovalListJSON, collectionType);
+            adminApprovalList = GsonUtils.fromJson(adminApprovalListJSON, collectionType);
         }
         List<AdminUser> placeEditList = new ArrayList<AdminUser>();
         if (csEntity.getProperty("placeEditList") != null) {
             String placeEditListJSON = (String) csEntity.getProperty("placeEditList");
             collectionType = new TypeToken<List<AdminUser>>() {
             }.getType();
-            placeEditList = GsonUtils.GSON.fromJson(placeEditListJSON, collectionType);
+            placeEditList = GsonUtils.fromJson(placeEditListJSON, collectionType);
         }
         List<Integer> closeDates = new ArrayList<Integer>();
         if (csEntity.getProperty("closeDates") != null) {
             String closeDatesJSON = (String) csEntity.getProperty("closeDates");
             collectionType = new TypeToken<List<Integer>>() {
             }.getType();
-            closeDates = GsonUtils.GSON.fromJson(closeDatesJSON, collectionType);
+            closeDates = GsonUtils.fromJson(closeDatesJSON, collectionType);
         }
         Collections.sort(closeDates);
         WorkingWeek workinghours = new WorkingWeek();
@@ -236,7 +236,7 @@ public class GetAJAXimageJSONfromCSfactory {
             System.out.println(workinghoursJSON);
             collectionType = new TypeToken<WorkingWeek>() {
             }.getType();
-            workinghours = GsonUtils.GSON.fromJson(workinghoursJSON, collectionType);
+            workinghours = GsonUtils.fromJson(workinghoursJSON, collectionType);
         }
 
         CanvasStateEdit.setAddress(address);

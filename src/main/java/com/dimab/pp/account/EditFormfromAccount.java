@@ -28,12 +28,6 @@ import java.util.Map;
 
 
 public class EditFormfromAccount extends HttpServlet {
-    private static final long serialVersionUID = 1L;
-
-    public EditFormfromAccount() {
-        super();
-    }
-
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -78,7 +72,7 @@ public class EditFormfromAccount extends HttpServlet {
 
             Type CanvasListcollectionType = new TypeToken<List<PPSubmitObject>>() {
             }.getType();
-            List<PPSubmitObject> floors = GsonUtils.GSON.fromJson(shapesJSON, CanvasListcollectionType);
+            List<PPSubmitObject> floors = GsonUtils.fromJson(shapesJSON, CanvasListcollectionType);
             // Restore shapes booking options
             for (PPSubmitObject floor : floors) {
                 for (CanvasShape shape : floor.getShapes()) {
@@ -125,7 +119,7 @@ public class EditFormfromAccount extends HttpServlet {
             }
             Type collectionType = new TypeToken<List<JsonSID_2_imgID>>() {
             }.getType();
-            List<JsonSID_2_imgID> sid2imgID = GsonUtils.GSON.fromJson(sid2ImageIDJSON, collectionType);
+            List<JsonSID_2_imgID> sid2imgID = GsonUtils.fromJson(sid2ImageIDJSON, collectionType);
             if (sid2imgID.isEmpty()) {
                 System.out.println("sid2imgID = null");
                 sid2imgID = null;

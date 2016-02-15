@@ -25,11 +25,6 @@ import java.util.*;
 
 
 public class ClientPlaceBooking extends HttpServlet {
-    private static final long serialVersionUID = 1L;
-
-    public ClientPlaceBooking() {
-        super();
-    }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
@@ -50,13 +45,13 @@ public class ClientPlaceBooking extends HttpServlet {
             map.put("added", false);
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
-            response.getWriter().write(GsonUtils.GSON.toJson(map));
+            response.getWriter().write(GsonUtils.toJson(map));
             return;
         } else {
             username_email = genuser.getEmail();
         }
 
-        BookingRequestWrap bookingRequestsWrap = GsonUtils.GSON.fromJson(jsonString, BookingRequestWrap.class);
+        BookingRequestWrap bookingRequestsWrap = GsonUtils.fromJson(jsonString, BookingRequestWrap.class);
         // Check available by place open or time passed (1min)
         Date current = new Date();
         Long utcTimeSeconds = current.getTime() / 1000;
@@ -126,14 +121,14 @@ public class ClientPlaceBooking extends HttpServlet {
             bookingsMade = 1;
             canvasEntity.setUnindexedProperty("bookingsCount", bookingsMade);
         }
-        Text bookingListGSON = new Text(GsonUtils.GSON.toJson(bookingRequests));
+        Text bookingListGSON = new Text(GsonUtils.toJson(bookingRequests));
         Entity bookingOrder = new Entity("BookingOrders", canvasKey);
         bookingOrder.setUnindexedProperty("bookingList", bookingListGSON);
         bookingOrder.setProperty("clientid", username_email);
         bookingOrder.setUnindexedProperty("placeName", (String) canvasEntity.getProperty("placeName"));
         bookingOrder.setUnindexedProperty("placeBranchName", (String) canvasEntity.getProperty("placeBranchName"));
         bookingOrder.setUnindexedProperty("address", (String) canvasEntity.getProperty("address"));
-        bookingOrder.setUnindexedProperty("genuser", GsonUtils.GSON.toJson(genuser));
+        bookingOrder.setUnindexedProperty("genuser", GsonUtils.toJson(genuser));
         bookingOrder.setUnindexedProperty("UTCdateProper", UTCdateProper);
         bookingOrder.setUnindexedProperty("userPhone", sessionPhone);
 
@@ -160,10 +155,10 @@ public class ClientPlaceBooking extends HttpServlet {
             String closeDatesString = (String) canvasEntity.getProperty("closeDates");
             Type closeDateType = new TypeToken<List<Integer>>() {
             }.getType();
-            List<Integer> closeDates = GsonUtils.GSON.fromJson(closeDatesString, closeDateType);
+            List<Integer> closeDates = GsonUtils.fromJson(closeDatesString, closeDateType);
 
             String weekdays = (String) canvasEntity.getProperty("workinghours");
-            WorkingWeek weekdaysObject = GsonUtils.GSON.fromJson(weekdays, WorkingWeek.class);
+            WorkingWeek weekdaysObject = GsonUtils.fromJson(weekdays, WorkingWeek.class);
             List<SingleTimeRangeLong> tempRanges = weekdaysObject.getRangesList(bookingRequestsWrap.getWeekday(), 2);
 
             // Check for dates the place is close (set by Administrator)
@@ -179,7 +174,7 @@ public class ClientPlaceBooking extends HttpServlet {
             if (weekdaysObject.isInRangeList(tempRanges, bookFrom, bookTo)) {
 
             } else {
-                System.out.println("Place closed! Open ranges :" + GsonUtils.GSON.toJson(tempRanges));
+                System.out.println("Place closed! Open ranges :" + GsonUtils.toJson(tempRanges));
                 System.out.println("            Booking range :" + bookFrom + "-" + bookTo);
                 bookAvailable = false;
             }
@@ -214,18 +209,18 @@ public class ClientPlaceBooking extends HttpServlet {
                         shapeOrders.setProperty("sid", bookingRequest.getSid());
                         shapeOrders.setProperty("pid", bookingRequest.getPid());
                         ordersList.add(OrderBid, 0);
-                        Text ordersListJSON = new Text(GsonUtils.GSON.toJson(ordersList));
+                        Text ordersListJSON = new Text(GsonUtils.toJson(ordersList));
                         shapeOrders.setUnindexedProperty("bookingListJSON", ordersListJSON);
                         shapeEntities.add(shapeOrders);
                         //datastore.put(shapeOrders);
                         System.out.println("New Orders Entity");
                     } else {
                         String allOrdersJSON = ((Text) shapeOrders.getProperty("bookingListJSON")).getValue();
-                        ordersList = GsonUtils.GSON.fromJson(allOrdersJSON, BookingListForJSON.class);
+                        ordersList = GsonUtils.fromJson(allOrdersJSON, BookingListForJSON.class);
                         boolean added = ordersList.add(OrderBid, 0);
                         if (added) {
                             // OK
-                            Text ordersListJSON = new Text(GsonUtils.GSON.toJson(ordersList));
+                            Text ordersListJSON = new Text(GsonUtils.toJson(ordersList));
                             shapeOrders.setUnindexedProperty("bookingListJSON", ordersListJSON);
                             //datastore.put(shapeOrders);
                             shapeEntities.add(shapeOrders);
@@ -268,6 +263,6 @@ public class ClientPlaceBooking extends HttpServlet {
         txn.commit();
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(GsonUtils.GSON.toJson(map));
+        response.getWriter().write(GsonUtils.toJson(map));
     }
 }

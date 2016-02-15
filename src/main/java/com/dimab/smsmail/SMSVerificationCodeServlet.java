@@ -21,8 +21,6 @@ import java.util.Map;
  */
 @WebServlet("/SMSVerificationCodeServlet")
 public class SMSVerificationCodeServlet extends HttpServlet {
-    private static final long serialVersionUID = 1L;
-
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Map<String, Object> map = new HashMap<String, Object>();
@@ -36,7 +34,7 @@ public class SMSVerificationCodeServlet extends HttpServlet {
             map.put("status", "NOTLOGGED");
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
-            response.getWriter().write(GsonUtils.GSON.toJson(map));
+            response.getWriter().write(GsonUtils.toJson(map));
             return;
         } else {
             Filter UserExists = new FilterPredicate("username", FilterOperator.EQUAL, sessionEmail);
@@ -47,14 +45,14 @@ public class SMSVerificationCodeServlet extends HttpServlet {
                 map.put("status", "NOTLOGGED");
                 response.setContentType("application/json");
                 response.setCharacterEncoding("UTF-8");
-                response.getWriter().write(GsonUtils.GSON.toJson(map));
+                response.getWriter().write(GsonUtils.toJson(map));
                 return;
             } else {
                 if (result.getProperty("validationCode") == null) {
                     map.put("status", "NOCODE");
                     response.setContentType("application/json");
                     response.setCharacterEncoding("UTF-8");
-                    response.getWriter().write(GsonUtils.GSON.toJson(map));
+                    response.getWriter().write(GsonUtils.toJson(map));
                     return;
                 } else {
                     String datastoreCode = (String) result.getProperty("validationCode");
@@ -62,7 +60,7 @@ public class SMSVerificationCodeServlet extends HttpServlet {
                         map.put("status", "NOCODE");
                         response.setContentType("application/json");
                         response.setCharacterEncoding("UTF-8");
-                        response.getWriter().write(GsonUtils.GSON.toJson(map));
+                        response.getWriter().write(GsonUtils.toJson(map));
                         return;
                     } else {
                         if (datastoreCode.equals(vaerifiactionCode)) {
@@ -74,13 +72,13 @@ public class SMSVerificationCodeServlet extends HttpServlet {
 
                             response.setContentType("application/json");
                             response.setCharacterEncoding("UTF-8");
-                            response.getWriter().write(GsonUtils.GSON.toJson(map));
+                            response.getWriter().write(GsonUtils.toJson(map));
                             return;
                         } else {
                             map.put("status", "WRONG");
                             response.setContentType("application/json");
                             response.setCharacterEncoding("UTF-8");
-                            response.getWriter().write(GsonUtils.GSON.toJson(map));
+                            response.getWriter().write(GsonUtils.toJson(map));
                             return;
                         }
                     }

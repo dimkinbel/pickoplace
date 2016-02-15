@@ -18,11 +18,6 @@ import java.util.*;
 
 
 public class GetiFrames extends HttpServlet {
-    private static final long serialVersionUID = 1L;
-
-    public GetiFrames() {
-        super();
-    }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -40,7 +35,7 @@ public class GetiFrames extends HttpServlet {
             String uid = (String) iframeEntity.getProperty("savedby");
             Date date_ = (Date) iframeEntity.getProperty("date");
             String iframe_ = (String) iframeEntity.getProperty("ifjson");
-            IFsave SaveObject = GsonUtils.GSON.fromJson(iframe_, IFsave.class);
+            IFsave SaveObject = GsonUtils.fromJson(iframe_, IFsave.class);
             SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMMy HH:mm");
             System.out.println("date: " + dateFormat.format(date_));
 
@@ -68,7 +63,7 @@ public class GetiFrames extends HttpServlet {
 
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(GsonUtils.GSON.toJson(map));
+        response.getWriter().write(GsonUtils.toJson(map));
 
     }
 
