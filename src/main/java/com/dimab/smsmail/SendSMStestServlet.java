@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * Servlet implementation class SendSMStestServlet
+ * for test purposes
  */
 @WebServlet("/SendSMStestServlet")
 public class SendSMStestServlet extends HttpServlet {

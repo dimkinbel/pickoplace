@@ -8,5 +8,10 @@
     "english": "some text",
     "hebrew": "טקסט כלשהו",
     "russian": "по русски"
+  },
+  "freePlaceWizard": {
+    "english": "Free place wizard",
+    "hebrew": "מקום פנוי",
+    "russian": "Поиск мест"
   }
 }

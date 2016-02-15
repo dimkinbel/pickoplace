@@ -342,7 +342,6 @@ function updateNotification(divid,notificationJSON) {
 		for (var cf = 0 ; cf < floorCanvases.length ; cf++) {
 		   var floor = floorCanvases[cf];
 		   for (var sd = 0 ; sd < floor.shapes.length ; sd++) {
-		    console.log(floor.shapes[sd])
 			 if(floor.shapes[sd].sid == sid) {
 			    sidsJSON.fid = floor.floorid;
 			 }			 
@@ -534,50 +533,7 @@ function updateAdminLinePopover(popover_hidden_wrap_id,sid_shape) {
 	
 
 }
-function interactiveUpdateShapeBookable(sid,bookable) {
-    var fid;
-	var canvas_floor;
-    for(var f = 0 ;f < floorCanvases.length ; f++) {
-	    for(var s =  0; s < floorCanvases[f].shapes.length;s++) {
-		   if(floorCanvases[f].shapes[s].sid == sid) {
-		       canvas_floor = floorCanvases[f];
-		       floorCanvases[f].shapes[s].booking_options.bookable = bookable;
-			   fid = floorCanvases[f].floorid;
-			   break;
-		   }
-		} 
-	}
-	isOrigin(function(result) {
-	 if(result) {
-	    // Connected to server
-		 console.log("TODO:Update interactive mail send");	
-         $.ajax({
-                url : "/adminUpdateShapeBookable",
-                data: {sid:sid,fid:fid,bookable:bookable},//
-                success : function(data){
-                    if(data.status == "success") { 					    					
-						canvas_floor.valid = false;
-						tl_canvas.valid=false;
-						$('#canvas_timeline_admin_popover').popover('hide');
-                    } else {
-					    $(".modal").modal('hide');
-					    $("#alert_modal_title").html("Server request fail");
-						$("#alert_modal_body").html("Shape bookable not updated");
-						$("#alert_modal_body").modal("show");
-						$('#canvas_timeline_admin_popover').popover('hide');
-					}
-                },
-                dataType : "JSON",
-                type : "post"
-            });		 
-	  } else {
-	     // Not connected to server          					
-			canvas_floor.valid = false;
-		    tl_canvas.valid=false;		 
-			$('#canvas_timeline_admin_popover').popover('hide');
-	  }
-    });
-}
+
 function updateAdminSelectionPopover(popover_hidden_wrap_id,tl_canvas_selection ) {
 
     var sid;
@@ -640,63 +596,9 @@ function updateAdminSelectionPopover(popover_hidden_wrap_id,tl_canvas_selection 
 	appendData+='    </div>  ';
 	$("#"+popover_hidden_wrap_id).children().html(appendData);  
 }
-function removeAdminReservationInteractive(bid,sid) {
-     isOrigin(function(result) {
-	   if(result) {
-	   // Connected to server
-		 console.log("TODO:Update Interactive admin cancel reservation");	
-         $.ajax({
-                url : "/adminCancelReservation",
-                data: {bid:bid,sid:sid},//
-                success : function(data){
-                    if(data.status == "cancelled") { 
-						 tl_canvas.removeBookingByBid(bid);
-						 $('#canvas_timeline_admin_popover').popover('hide');
-                    } else {
-					    $('#canvas_timeline_admin_popover').popover('hide');
-					    $("#alert_modal_title").html("Server request fail");
-						$("#alert_modal_body").html("Cancelling reservation fail");
-						$("#alert_modal_body").modal("show");
-					}
-                },
-                dataType : "JSON",
-                type : "post"
-            });
-	   } else {
-	     tl_canvas.removeBookingByBid(bid);
-		 $('#canvas_timeline_admin_popover').popover('hide');
-	   }
-	 });
-}
- 
-function addAdminReservationInteractive(sid) {
-     isOrigin(function(result) {
-	   if(result) {
-	    // Connected to server
-		 console.log("TODO:Update Interactive admin selection");	
-         $.ajax({
-                url : "/adminAddReservation",
-                data: {bid:bid},//
-                success : function(data){
-                    if(data.status == "added") {
-                         addAdminReservation(sid)
-                    } else {
-					    $('#canvas_timeline_admin_popover').popover('hide');
-					    $("#alert_modal_title").html("Server request fail");
-						$("#alert_modal_body").html("Reservation fail");
-						$("#alert_modal_body").modal("show");
-					}
-                },
-                dataType : "JSON",
-                type : "post"
-            });		 
-	  } else {
-	     // Not connected to server
-		 addAdminReservation(sid)
-	  }
-  });
 
-}
+ 
+
 function addAdminReservation(sid) {
    var adminSelection = tl_canvas.adminSelection; 
    var from = adminSelection.from;
@@ -1093,66 +995,6 @@ function highlightTimeline(bid_) {
    $("#timeline_open").click();
 }
 
-function sendMessageFromModal(recepientEmail) {
-    var text =  $("#contact_email_modal_text").val();
-	isOrigin(function(result) {
-	 if(result) {
-	    // Connected to server
-		 console.log("TODO:Update interactive mail send");	
-         $.ajax({
-                url : "/adminSendMessage",
-                data: {email:recepientEmail,text:text},//
-                success : function(data){
-                    if(data.status == "sent") { 
-                    } else {
-					    $(".modal").modal('hide');
-					    $("#alert_modal_title").html("Server request fail");
-						$("#alert_modal_body").html("Email could not be sent.Please try later");
-						$("#alert_modal_body").modal("show");
-					}
-                },
-                dataType : "JSON",
-                type : "post"
-            });		 
-	  } else {
-	     // Not connected to server 
-		 $(".modal").modal('hide');
-	  }
-  });
-	
-}
-function InteractiveCancelReservation(bid) {
-  // todo(dima): Update interactive cancelation
-  console.log("TODO:Update interactive cancelation");
-  isOrigin(function(result) {
-	 if(result) {
-	    // Connected to server
-		 console.log("TODO:Update interactive cancelation");	
-         $.ajax({
-                url : "/adminCancelBooking",
-                data: {bid:bid},//
-                success : function(data){
-                    if(data.status == "removed") {
-                        tl_canvas.removeBookingByBid(bid);
-						bookingsManager.removeBooking(bid);
-                    } else {
-					    $(".modal").modal('hide');
-					    $("#alert_modal_title").html("Server request fail");
-						$("#alert_modal_body").html("Cancellation fail. Please try later on contact admin");
-						$("#alert_modal_body").modal("show");
-					}
-                },
-                dataType : "JSON",
-                type : "post"
-            });		 
-	  } else {
-	     // Not connected to server
-		 
-	     tl_canvas.removeBookingByBid(bid);
-		 bookingsManager.removeBooking(bid);
-		 
-	  }
-  });
-  $('#cancelation_info_modal').modal('hide');
-}
+
+
  

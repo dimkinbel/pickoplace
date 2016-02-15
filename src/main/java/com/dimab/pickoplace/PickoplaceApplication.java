@@ -18,7 +18,8 @@ public class PickoplaceApplication extends ResourceConfig {
         packages("com.dimab.pickoplace");
         packages("com.dimab.pickoplace.security");
         packages("com.dimab.pickoplace.jersey"); // integrations
-
+        packages("com.dimab.pickoplace.rest");
+        packages("com.dimab.pp.adminRest");
         property(ServletProperties.FILTER_FORWARD_ON_404, true);
 
         // register(LoggingFilter.class); // for dev purposes

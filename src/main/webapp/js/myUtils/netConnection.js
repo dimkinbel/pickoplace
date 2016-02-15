@@ -12,7 +12,7 @@ function hasNetConnection() {
 }
 function isOrigin(callback) {
     $.ajax({
-        url : "http://www.pickoplace.com/isorigin",
+        url : "/isorigin",
         success : function(data){
             return callback(true);
         },

@@ -5,6 +5,7 @@
 		 import = "com.google.gson.Gson"
 		 import = "java.util.*"
 %>
+<%@ page import="com.dimab.pickoplace.utils.JsonUtils" %>
 <!DOCTYPE html >
 
 <html>
@@ -217,12 +218,12 @@
 <div id="temp_appends" style="height:400px;width:400px;position:absolute!important;left:-2000px;top:-300px;"></div>
 
 <%
-	Gson gson = new Gson();
+
 	WaiterInitialDTO waiterResponse = (WaiterInitialDTO)request.getAttribute("waiterResponse");
 	String WaiterBookings = (String)request.getAttribute("waiterBookings");
 	String imgid2link50 = (String)request.getAttribute("imgid2link50");
 	OrderedResponse bookingsInitial = waiterResponse.getOrderedResponse();
-	String bookingsInitialJSON = gson.toJson(bookingsInitial);
+	String bookingsInitialJSON = JsonUtils.serialize(bookingsInitial);
 	AJAXImagesJSON responseJSON = waiterResponse.getPlaceJSON();
 
 	List<PPSubmitObject> canvasStateList = responseJSON.getFloors();
@@ -262,7 +263,7 @@
 
 
 	%>
-	<input type="text" id="server_canvasState_<%=floorid %>" name="server_canvasState" value='<%=gson.toJson(floor)%>'/>
+	<input type="text" id="server_canvasState_<%=floorid %>" name="server_canvasState" value='<%=JsonUtils.serialize(floor)%>'/>
 	<img    id="server_background_<%=floorid %>" name="server_background" src="<%=backgroundURL%>"/>
 	<img  id="server_overview_<%=floorid %>" name="server_overview" src="<%=overviewURL%>"/>
 	<input type="text" id="server_floor_name_<%=floorid %>" value="<%=floor.getFloor_name() %>"/>
@@ -273,7 +274,7 @@
 	<% }%>
 
 	<% if (sid2imgID!=null && !sid2imgID.isEmpty()) {%>
-	<input type="text" id="server_sid2imgID" value='<%=gson.toJson(sid2imgID)%>'/>
+	<input type="text" id="server_sid2imgID" value='<%=JsonUtils.serialize(sid2imgID)%>'/>
 	<%} %>
 	<input type="text" id="server_shapes_prebooked" />
 	<div id="for_debug"></div>
@@ -291,11 +292,11 @@
 	<input type="text" id="server_Lat" value='<%=placeLat%>'/>
 	<input type="text" id="server_Lng" value='<%=placeLng%>'/>
 	<input type="text" id="server_automatic_approval" value='<%=responseJSON.isAutomatic_approval()%>'/>
-	<input type="text" id="server_automaticApprovalList" value='<%=gson.toJson(responseJSON.getAdminApprovalList())%>'/>
-	<input type="text" id="server_adminApprovalList" value='<%=gson.toJson(responseJSON.getAdminApprovalList())%>'/>
-	<input type="text" id="server_workinghours" value='<%=gson.toJson(responseJSON.getWorkinghours())%>'/>
-	<input type="text" id="server_placeEditList" value='<%=gson.toJson(responseJSON.getPlaceEditList())%>'/>
-	<input type="text" id="server_closeDates" value='<%=gson.toJson(responseJSON.getCloseDates())%>'/>
+	<input type="text" id="server_automaticApprovalList" value='<%=JsonUtils.serialize(responseJSON.getAdminApprovalList())%>'/>
+	<input type="text" id="server_adminApprovalList" value='<%=JsonUtils.serialize(responseJSON.getAdminApprovalList())%>'/>
+	<input type="text" id="server_workinghours" value='<%=JsonUtils.serialize(responseJSON.getWorkinghours())%>'/>
+	<input type="text" id="server_placeEditList" value='<%=JsonUtils.serialize(responseJSON.getPlaceEditList())%>'/>
+	<input type="text" id="server_closeDates" value='<%=JsonUtils.serialize(responseJSON.getCloseDates())%>'/>
 	<input type="text" id="server_logosrc" value='<%=responseJSON.getLogosrc()%>'/>
 	<input type="text" id="server_bookingsInitial" value='<%=bookingsInitialJSON%>'/>
 	<input type="text" id="server_bookings" value='<%=WaiterBookings%>'/>
@@ -304,7 +305,7 @@
 	<%for ( JsonimgID_2_data imgID2byte64 : responseJSON.getPlacePhotos()) {
 		String imgID = imgID2byte64.getImageID();
 	%>
-	<input type="text" id="server_imap_<%=imgID %>" name="server_imap" value='<%=gson.toJson(imgID2byte64)%>'/>
+	<input type="text" id="server_imap_<%=imgID %>" name="server_imap" value='<%=JsonUtils.serialize(imgID2byte64)%>'/>
 	<% }%>
 
 	<% if (imgID2URL != null && !imgID2URL.isEmpty()) {
@@ -567,12 +568,14 @@
 						</div>
 						<div  class="show_pages">
 							<%
-								for (PPSubmitObject floor : canvasStateList) {
+							  for (PPSubmitObject floor : canvasStateList) {
 									String floorid = floor.getFloorid();
-
-							%> <div class="floor_page" id="floor_wrap_view_<%=floorid%>"></div>
-							<%
+                                    if(floor.isMainfloor()) {
+							          %> <div class="floor_page" id="floor_wrap_view_<%=floorid%>"></div> <%
+							         } else {
+									  %> <div class="floor_page" style="display: none" id="floor_wrap_view_<%=floorid%>"></div><%
 								}
+							  }
 							%>
 						</div>
 					</div>

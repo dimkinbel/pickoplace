@@ -42,7 +42,7 @@ define([
             const currentLanguage = options.data;
 
             this.ui.currentLangugage
-                .text('')
+                .text(languageToIsoCode(currentLanguage).toUpperCase())
                 .addClass('flag-icon flag-icon-' + languageToIsoCode(currentLanguage));
         },
 

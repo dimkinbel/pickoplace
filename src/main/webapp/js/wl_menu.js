@@ -192,7 +192,7 @@ function floorAppend(appendTo_,singleBoth,singleFloorID,temp) {
 			return;
 		} else {
 			if(document.getElementById("canvas_appended_wrapper-"+singleFloorID) != null) {
-				if(floorid2canvas[singleFloorID].mainfloor) {
+				if(floorid2canvas[singleFloorID].mainfloor == true) {
 					$("#"+appendTo_).show();
 				} else {
 					$("#"+appendTo_).hide();

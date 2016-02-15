@@ -9,7 +9,16 @@ import com.dimab.pp.dto.PlaceInfo;
 
 public class MailGenerator {
 	
-	
+public String GetCancellationEmail(BookingRequestWrap bookingRequestsWrap,PlaceInfo placeInfo) {
+    String message = "";
+    message = message.concat("<div  border='0' cellpadding='0' cellspacing='0' height='100%' width='100%' style='background-color: #F7F7F7;width: 100%;padding-top: 50px;padding-bottom: 50px; font-family: \'Helvetica neue\',Helvetica,arial,sans-serif;'>");
+    message = message.concat(" Unfortunately your booking has been cancelled by Administrator<br>");
+    message = message.concat(" At:"+placeInfo.getUserPlace().getPlace()+","+placeInfo.getUserPlace().getBranch());
+    message = message.concat(" Address:"+placeInfo.getUserPlace().getAddress());
+    message = message.concat(" Time:"+bookingRequestsWrap.getPlaceLocalTime());
+    message = message.concat("</div>");
+    return message;
+}
 public String GetConfirmationMail(BookingRequestWrap bookingRequestsWrap,PlaceInfo placeInfo) {
       String message = "";
       String topwhiteIcon = "https://storage.googleapis.com/pp_icons/splittertopwhite.jpg";

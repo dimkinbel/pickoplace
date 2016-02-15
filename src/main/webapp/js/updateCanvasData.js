@@ -35,13 +35,7 @@ function updateCanvasData() {
             $("#floor__selector").append($('<option value="' + floorname + '">' + floorname + '</option>'));
         }
     }
-// Update all shapes images
-    var all = document.getElementsByName("shape_images_from_server");
-    totalImages = all.length + 1;
-    for (var x = 0; x < all.length; x++) {
-        var serverImageID = all[x].id;
-        //   updateShapeImagesByServerData(serverImageID);
-    }
+
 // Update all canvases
     for (var x = 0; x < allfloors.length; x++) {
         var canvasfloor = allfloors[x].id;
@@ -54,4 +48,15 @@ function updateCanvasData() {
     }
 // Floor selector update
     canvas_ = maincanvas;
+
+    // Create BAW images
+    var all = document.getElementsByName("shape_images_from_server");
+    totalImages = all.length + 1;
+
+    for (var x = 0; x < all.length; x++) {
+        var serverImageID = all[x].id;
+        if($("#baw_images").length == 1) {
+            createBAWimage(serverImageID);
+        }
+    }
 }

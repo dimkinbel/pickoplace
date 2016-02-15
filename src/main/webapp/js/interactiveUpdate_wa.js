@@ -1,6 +1,182 @@
 /**
  * 
  */
+function addAdminReservationInteractive(sid) {
+	var pid = $("#server_placeID").val();
+	var from = tl_canvas.adminSelection.from;
+	var to = tl_canvas.adminSelection.to;
+	isOrigin(function(result) {
+		if(result) {
+			// Connected to server
+			console.log("TODO:Update Interactive admin selection");
+			$.ajax({
+				url : "/adminRequest/addReservation",
+				data: {sid:sid,pid:pid,from:from,to:to},//
+				success : function(data){
+					if(data.status == "added") {
+						addAdminReservation(sid)
+					} else {
+						$('#canvas_timeline_admin_popover').popover('hide');
+						$("#alert_modal_title").html("Server request fail");
+						$("#alert_modal_body").html("Reservation fail");
+						$("#alert_modal_body").modal("show");
+					}
+				},
+				dataType : "JSON",
+				type : "post"
+			});
+		} else {
+			// Not connected to server
+			addAdminReservation(sid)
+		}
+	});
+
+}
+function interactiveUpdateShapeBookable(sid,bookable) {
+	var fid;
+	var canvas_floor;
+	for(var f = 0 ;f < floorCanvases.length ; f++) {
+		for(var s =  0; s < floorCanvases[f].shapes.length;s++) {
+			if(floorCanvases[f].shapes[s].sid == sid) {
+				canvas_floor = floorCanvases[f];
+				floorCanvases[f].shapes[s].booking_options.bookable = bookable;
+				fid = floorCanvases[f].floorid;
+				break;
+			}
+		}
+	}
+	isOrigin(function(result) {
+		if(result) {
+			// Connected to server
+			console.log("TODO:Update interactive mail send");
+			$.ajax({
+				url : "/adminUpdateShapeBookable",
+				data: {sid:sid,fid:fid,bookable:bookable},//
+				success : function(data){
+					if(data.status == "success") {
+						canvas_floor.valid = false;
+						tl_canvas.valid=false;
+						$('#canvas_timeline_admin_popover').popover('hide');
+					} else {
+						$(".modal").modal('hide');
+						$("#alert_modal_title").html("Server request fail");
+						$("#alert_modal_body").html("Shape bookable not updated");
+						$("#alert_modal_body").modal("show");
+						$('#canvas_timeline_admin_popover').popover('hide');
+					}
+				},
+				dataType : "JSON",
+				type : "post"
+			});
+		} else {
+			// Not connected to server
+			canvas_floor.valid = false;
+			tl_canvas.valid=false;
+			$('#canvas_timeline_admin_popover').popover('hide');
+		}
+	});
+}
+function removeAdminReservationInteractive(bid,sid) {
+	var placeName = $("#server_placeName").val();
+	var branch = $("#server_placeBranchName").val();
+	var pid = $("#server_placeID").val();
+
+	isOrigin(function(result) {
+		if(result) {
+			// Connected to server
+			console.log("TODO:Update Interactive admin cancel reservation");
+			$.ajax({
+				url : "/adminRequest/cancelReservation",
+				data: {pid:pid,bid:bid,sid:sid,placeName:placeName,branch:branch},//
+				success : function(data){
+					if(data.status == "cancelled") {
+						tl_canvas.removeBookingByBid(bid);
+						$('#canvas_timeline_admin_popover').popover('hide');
+					} else {
+						$('#canvas_timeline_admin_popover').popover('hide');
+						$("#alert_modal_title").html("Server request fail");
+						$("#alert_modal_body").html("Cancelling reservation fail");
+						$("#alert_modal").modal("show");
+					}
+				},
+				dataType : "JSON",
+				type : "post"
+			});
+		} else {
+			tl_canvas.removeBookingByBid(bid);
+			$('#canvas_timeline_admin_popover').popover('hide');
+		}
+	});
+}
+function sendMessageFromModal(recepientEmail) {
+	var text =  $("#contact_email_modal_text").val();
+	isOrigin(function(result) {
+		if(result) {
+			// Connected to server
+			console.log("TODO:Update interactive mail send");
+			$.ajax({
+				url : "/adminRequest/sendMessage",
+				data: {email:recepientEmail,text:text},//
+				success : function(data){
+					if(data.status == "sent") {
+					} else {
+						$(".modal").modal('hide');
+						$("#alert_modal_title").html("Server request fail");
+						$("#alert_modal_body").html("Email could not be sent.Please try later");
+						$("#alert_modal_body").modal("show");
+					}
+				},
+				dataType : "JSON",
+				type : "post"
+			});
+		} else {
+			// Not connected to server
+			$(".modal").modal('hide');
+		}
+	});
+}
+function InteractiveCancelReservation(bid) {
+	var placeName = $("#server_placeName").val();
+	var branch = $("#server_placeBranchName").val();
+	var pid = $("#server_placeID").val();
+	var address = $("#server_Address").val();
+	isOrigin(function(result) {
+		if(result) {
+			// Connected to server
+			console.log("TODO:Update interactive cancelation");
+			$.ajax({
+				url : "/adminRequest/cancelUserBooking",
+				headers: {
+					'Accept': 'application/json',
+					'Content-Type': 'application/json'
+				},
+				data: JSON.stringify({pid:pid,bid:bid,placeName:placeName,branch:branch,address:address}),//
+				success : function(data){
+					console.log(data);
+					if(data.removed == true) {
+						tl_canvas.removeBookingByBid(bid);
+						bookingsManager.removeBooking(bid);
+
+					} else {
+						$(".modal").modal('hide');
+						$("#alert_modal_title").html("Server request fail");
+						$("#alert_modal_body").html("Cancellation fail. Please try later on contact admin");
+						$("#alert_modal").modal("show");
+					}
+				},
+				dataType : "JSON",
+				type : "post"
+			});
+		} else {
+			// Not connected to server
+
+			tl_canvas.removeBookingByBid(bid);
+			bookingsManager.removeBooking(bid);
+
+		}
+	});
+	$('#cancelation_info_modal').modal('hide');
+}
 function requestWlBookings() {
     var pid = document.getElementById("server_placeID").value;
     var placeOffset = document.getElementById("server_placeUTC").value;
