@@ -2,6 +2,8 @@ var gulp = require('gulp');
 var $ = require('gulp-load-plugins')();
 var del = require('del');
 
+var distFolder = './src/main/webapp/js/modules/dist';
+
 gulp.task('develop-lint', function lintTask() {
     return gulp.src('./src/main/webapp/js/modules/src/**/*.js')
         .pipe($.eslint())
@@ -15,11 +17,11 @@ gulp.task('babelify', function task() {
         .pipe(babel({
             presets: ['es2015']
         }))
-        .pipe(gulp.dest('./src/main/webapp/js/modules/dist'));
+        .pipe(gulp.dest(distFolder));
 });
 
 gulp.task('clean-scripts', function (cb) {
-    del(['./src/main/webapp/js/modules/dist/asdas']).then(function() {
+    del([distFolder]).then(function() {
         cb();
     });
 });

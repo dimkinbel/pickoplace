@@ -1,14 +1,25 @@
 package com.dimab.pickoplace.i18n;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import javax.servlet.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
+@Singleton
 public class I18nFilter implements Filter {
+
     private final static String MESSAGE_ATTRIBUTE_NAME = "i18n";
     private final static String CURRENT_LANGUAGE_ATTRIBUTE_NAME = "currentLanguage";
     private final static String LANGUAGE_COOKIE_NAME = "pickoplace.language";
+
+    private final I18nService i18nService;
+
+    @Inject
+    I18nFilter(I18nService i18nService) {
+        this.i18nService = i18nService;
+    }
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -25,7 +36,7 @@ public class I18nFilter implements Filter {
             @Override
             public void run() {
                 try {
-                    request.setAttribute(MESSAGE_ATTRIBUTE_NAME, I18nService.INSTANCE.getMessages(requestLanguage));
+                    request.setAttribute(MESSAGE_ATTRIBUTE_NAME, i18nService.getMessages(requestLanguage));
                     request.setAttribute(CURRENT_LANGUAGE_ATTRIBUTE_NAME, requestLanguage);
 
                     filterChain.doFilter(request, response);

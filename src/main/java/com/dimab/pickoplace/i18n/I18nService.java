@@ -1,28 +1,28 @@
 package com.dimab.pickoplace.i18n;
 
 import com.dimab.pickoplace.utils.JsonUtils;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.base.Charsets;
 import com.google.common.base.Preconditions;
 import com.google.common.io.CharStreams;
-import com.google.gson.reflect.TypeToken;
 
+import javax.inject.Singleton;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
 
+@Singleton
 public class I18nService {
 
-    private final static Type LOCALIZATION_TYPE = new TypeToken<Map<String, Message>>() {
-    }.getType();
+    public static final TypeReference LOCALIZATION_TYPE = new TypeReference<Map<String, Message>>() {
+    };
 
     private final Map<String, Message> messages;
     private final Map<Language, I18nMap> messagesByLanguage;
-
-    public final static I18nService INSTANCE = new I18nService(); // todo(egor): use IoC
 
     public I18nService() {
         InputStream localizationResource = I18nService.class.getResourceAsStream("/com/pickoplace/localization.json");
@@ -74,8 +74,13 @@ public class I18nService {
     }
 
     private final static class Message {
+        @JsonProperty
         private String english;
+
+        @JsonProperty
         private String hebrew;
+
+        @JsonProperty
         private String russian;
     }
 
