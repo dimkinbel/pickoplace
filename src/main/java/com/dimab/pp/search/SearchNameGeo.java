@@ -1,6 +1,6 @@
 package com.dimab.pp.search;
 
-import com.dimab.pickoplace.json.GsonUtils;
+import com.dimab.pickoplace.utils.ServletUtils;
 import com.dimab.pp.database.GetPlaceInfoFactory;
 import com.dimab.pp.dto.PlaceInfo;
 import com.dimab.pp.dto.SearchPidsAndCursor;
@@ -46,9 +46,8 @@ public class SearchNameGeo extends HttpServlet {
         Map<String, Object> map = new HashMap<String, Object>();
         if (name == null || lats == null || lngs == null || rads == null) {
             map.put("status", "requestError");
-            response.setContentType("application/json");
-            response.setCharacterEncoding("UTF-8");
-            response.getWriter().write(GsonUtils.toJson(map));
+
+            ServletUtils.writeJsonResponse(response, map);
             return;
         }
         System.out.println(name + " " + lats + " " + lngs + " " + rads);
@@ -103,8 +102,7 @@ public class SearchNameGeo extends HttpServlet {
                 map.put("cursor", searchResult.getCursor().toWebSafeString());
             }
         }
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(GsonUtils.toJson(map));
+
+        ServletUtils.writeJsonResponse(response, map);
     }
 }

@@ -1,6 +1,7 @@
 package com.dimab.pp.account;
 
 import com.dimab.pickoplace.json.GsonUtils;
+import com.dimab.pickoplace.utils.ServletUtils;
 import com.dimab.pp.database.GetBookingShapesDataFactory;
 import com.dimab.pp.database.GetPlaceInfoFactory;
 import com.dimab.pp.dto.*;
@@ -161,15 +162,12 @@ public class ClientBookingHistoryServlet extends HttpServlet {
             bookingsResponse.setJSONSIDlinks(JSONSIDlinks);
             bookingsResponse.setTotalBookings(10);
 
-            response.setContentType("application/json");
-            response.setCharacterEncoding("UTF-8");
-            response.getWriter().write(GsonUtils.toJson(bookingsResponse));
+            ServletUtils.writeJsonResponse(response, bookingsResponse);
         } else {
             Map<String, Object> map = new HashMap<String, Object>();
             map.put("logged", false);
-            response.setContentType("application/json");
-            response.setCharacterEncoding("UTF-8");
-            response.getWriter().write(GsonUtils.toJson(map));
+
+            ServletUtils.writeJsonResponse(response, map);
         }
     }
 

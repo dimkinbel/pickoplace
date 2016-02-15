@@ -1,6 +1,6 @@
 package com.dimab.smsmail;
 
-import com.dimab.pickoplace.json.GsonUtils;
+import com.dimab.pickoplace.utils.ServletUtils;
 import com.google.appengine.api.datastore.*;
 
 import javax.servlet.ServletException;
@@ -46,8 +46,7 @@ public class Unsubscribe extends HttpServlet {
             e.printStackTrace();
             map.put("status", "ERROR");
         }
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(GsonUtils.toJson(map));
+
+        ServletUtils.writeJsonResponse(response, map);
     }
 }

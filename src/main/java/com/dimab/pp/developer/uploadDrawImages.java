@@ -1,6 +1,6 @@
 package com.dimab.pp.developer;
 
-import com.dimab.pickoplace.json.GsonUtils;
+import com.dimab.pickoplace.utils.ServletUtils;
 import com.dimab.pp.dto.GCSdrawImage;
 
 import javax.servlet.ServletException;
@@ -36,10 +36,8 @@ public class uploadDrawImages extends HttpServlet {
             imageList = imageFactory.getImageList("pp_admin_draw_images", "draw_images/combo", imageType, imageCount, offset);
         }
 
-
         map.put("imageList", imageList);
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(GsonUtils.toJson(map));
+
+        ServletUtils.writeJsonResponse(response, map);
     }
 }

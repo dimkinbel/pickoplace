@@ -1,6 +1,6 @@
 package com.dimab.pp.search;
 
-import com.dimab.pickoplace.json.GsonUtils;
+import com.dimab.pickoplace.utils.ServletUtils;
 import com.dimab.pp.dto.PlaceNameAddressSearch;
 
 import javax.servlet.ServletException;
@@ -28,8 +28,7 @@ public class SearchByNameAutocomplete extends HttpServlet {
             map.put("status", "OK");
             map.put("places", placeNames);
         }
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(GsonUtils.toJson(map));
+
+        ServletUtils.writeJsonResponse(response, map);
     }
 }

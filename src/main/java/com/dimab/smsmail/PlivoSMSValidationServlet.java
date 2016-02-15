@@ -2,6 +2,7 @@ package com.dimab.smsmail;
 
 import com.dimab.pickoplace.entity.EntityKind;
 import com.dimab.pickoplace.json.GsonUtils;
+import com.dimab.pickoplace.utils.ServletUtils;
 import com.dimab.pp.dto.PlivoSMSRequestJSON;
 import com.dimab.pp.functions.RandomStringGenerator;
 import com.google.appengine.api.datastore.*;
@@ -39,9 +40,8 @@ public class PlivoSMSValidationServlet extends HttpServlet {
         String sessionEmail = (String) request.getSession().getAttribute("userEmail");
         if (sessionEmail == null || sessionEmail.isEmpty()) {
             map.put("status", "NOTLOGGED");
-            response.setContentType("application/json");
-            response.setCharacterEncoding("UTF-8");
-            response.getWriter().write(GsonUtils.toJson(map));
+
+            ServletUtils.writeJsonResponse(response, map);
             return;
         }
         System.out.println(sessionEmail);
@@ -54,9 +54,8 @@ public class PlivoSMSValidationServlet extends HttpServlet {
         Entity result = pq.asSingleEntity();
         if (result == null) {
             map.put("status", "NOTLOGGED");
-            response.setContentType("application/json");
-            response.setCharacterEncoding("UTF-8");
-            response.getWriter().write(GsonUtils.toJson(map));
+
+            ServletUtils.writeJsonResponse(response, map);
             return;
         } else {
             if (result.getProperty("validations") == null) {
@@ -72,9 +71,8 @@ public class PlivoSMSValidationServlet extends HttpServlet {
                     Long secondsDifference = currentdate.getTime() / 1000 - lastDate.getTime() / 1000;
                     if (secondsDifference < 1 * 60 * 60) {
                         map.put("status", "WAIT");
-                        response.setContentType("application/json");
-                        response.setCharacterEncoding("UTF-8");
-                        response.getWriter().write(GsonUtils.toJson(map));
+
+                        ServletUtils.writeJsonResponse(response, map);
                         return;
                     } else {
                         // reset 5 SMS
@@ -130,9 +128,7 @@ public class PlivoSMSValidationServlet extends HttpServlet {
                 }
             }
 
-            response.setContentType("application/json");
-            response.setCharacterEncoding("UTF-8");
-            response.getWriter().write(GsonUtils.toJson(map));
+            ServletUtils.writeJsonResponse(response, map);
         }
     }
 }

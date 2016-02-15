@@ -2,6 +2,7 @@ package com.dimab.pp.server;
 
 import com.dimab.pickoplace.entity.EntityKind;
 import com.dimab.pickoplace.json.GsonUtils;
+import com.dimab.pickoplace.utils.ServletUtils;
 import com.dimab.pp.dto.AJAXFacebookResponse;
 import com.dimab.pp.functions.RandomStringGenerator;
 import com.google.appengine.api.datastore.*;
@@ -84,8 +85,6 @@ public class UserLoginLogoutFacebook extends HttpServlet {
         }
         txn.commit();
 
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(GsonUtils.toJson(map));
+        ServletUtils.writeJsonResponse(response, map);
     }
 }

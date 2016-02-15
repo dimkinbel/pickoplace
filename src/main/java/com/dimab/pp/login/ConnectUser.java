@@ -1,6 +1,7 @@
 package com.dimab.pp.login;
 
 import com.dimab.pickoplace.entity.EntityKind;
+import com.dimab.pickoplace.utils.ServletUtils;
 import com.dimab.pp.functions.RandomStringGenerator;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeTokenRequest;
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
@@ -64,7 +65,6 @@ public class ConnectUser extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setContentType("application/json");
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("phone", true);
         String accessToken = request.getParameter("access_token");
@@ -258,10 +258,7 @@ public class ConnectUser extends HttpServlet {
 
         txn.commit();
 
-
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(new Gson().toJson(map));
+        ServletUtils.writeJsonResponse(response, map);
 
 
 /*      ByteArrayOutputStream resultStream = new ByteArrayOutputStream();

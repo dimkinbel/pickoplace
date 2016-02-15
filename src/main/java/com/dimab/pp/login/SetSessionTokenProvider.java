@@ -1,6 +1,6 @@
 package com.dimab.pp.login;
 
-import com.dimab.pickoplace.json.GsonUtils;
+import com.dimab.pickoplace.utils.ServletUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -16,7 +16,6 @@ public class SetSessionTokenProvider extends HttpServlet {
         String accessToken = request.getParameter("access_token");
         String provider = request.getParameter("provider");
 
-        response.setContentType("application/json");
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("valid", false);
 
@@ -24,8 +23,7 @@ public class SetSessionTokenProvider extends HttpServlet {
         request.getSession().setAttribute("access_token", accessToken);
         map.put("valid", true);
         System.out.println(provider + ":" + accessToken);
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(GsonUtils.toJson(map));
+
+        ServletUtils.writeJsonResponse(response, map);
     }
 }

@@ -1,6 +1,6 @@
 package com.dimab.pp.server;
 
-import com.dimab.pickoplace.json.GsonUtils;
+import com.dimab.pickoplace.utils.ServletUtils;
 import com.dimab.pp.database.GetPlaceInfoFactory;
 import com.dimab.pp.dto.PlaceInfo;
 import com.dimab.pp.dto.WelcomePageData;
@@ -40,9 +40,8 @@ public class GenerateWelcomePage extends HttpServlet {
         }
 
         welcomePagedata.setCursor(this.lastCursor);
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(GsonUtils.toJson(welcomePagedata));
+
+        ServletUtils.writeJsonResponse(response, welcomePagedata);
     }
 
     QueryResultList<Entity> getNEntities(int n, String cursor) {

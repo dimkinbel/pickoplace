@@ -2,6 +2,7 @@ package com.dimab.pp.JSON;
 
 import com.dimab.pickoplace.entity.EntityKind;
 import com.dimab.pickoplace.json.GsonUtils;
+import com.dimab.pickoplace.utils.ServletUtils;
 import com.dimab.pp.dto.*;
 import com.dimab.pp.login.CheckTokenValid;
 import com.dimab.pp.login.GenericUser;
@@ -151,9 +152,8 @@ public class AJAXImageImport extends HttpServlet {
                 imageVersionEntity = datastore.get(pidkey);
             } catch (EntityNotFoundException e) {
                 map.put("status", "No-ImageVersion-Exists");
-                response.setContentType("application/json");
-                response.setCharacterEncoding("UTF-8");
-                response.getWriter().write(GsonUtils.toJson(map));
+
+                ServletUtils.writeJsonResponse(response, map);
                 return;
             }
             try {
@@ -162,9 +162,8 @@ public class AJAXImageImport extends HttpServlet {
                 canvasState = datastore.get(pidkey);
             } catch (EntityNotFoundException e) {
                 map.put("status", "No-CanvasState-Exists");
-                response.setContentType("application/json");
-                response.setCharacterEncoding("UTF-8");
-                response.getWriter().write(GsonUtils.toJson(map));
+
+                ServletUtils.writeJsonResponse(response, map);
                 return;
             }
 
@@ -556,21 +555,14 @@ public class AJAXImageImport extends HttpServlet {
             }
 
             txn.commit();
-            response.setContentType("application/json");
-            response.setCharacterEncoding("UTF-8");
-            response.getWriter().write(GsonUtils.toJson(map));
-            return;
 
+            ServletUtils.writeJsonResponse(response, map);
         } else {
             // No user exists
             map.put("status", "No-User-Entity-Exists");
-            response.setContentType("application/json");
-            response.setCharacterEncoding("UTF-8");
-            response.getWriter().write(GsonUtils.toJson(map));
 
-            return;
+            ServletUtils.writeJsonResponse(response, map);
         }
-
     }
 
     private void copy(byte[] Byteinput, OutputStream output) throws IOException {

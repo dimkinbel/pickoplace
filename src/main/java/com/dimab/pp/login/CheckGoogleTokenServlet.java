@@ -1,12 +1,12 @@
 package com.dimab.pp.login;
 
-import com.dimab.pickoplace.json.GsonUtils;
+import com.dimab.pickoplace.utils.ServletUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,19 +28,7 @@ public class CheckGoogleTokenServlet extends HttpServlet {
         } else {
             map.put("valid", false);
         }
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(GsonUtils.toJson(map));
-    }
 
-    static void getContent(InputStream inputStream, ByteArrayOutputStream outputStream)
-            throws IOException {
-        // Read the response into a buffered stream
-        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-        int readChar;
-        while ((readChar = reader.read()) != -1) {
-            outputStream.write(readChar);
-        }
-        reader.close();
+        ServletUtils.writeJsonResponse(response, map);
     }
 }

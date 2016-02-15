@@ -1,6 +1,7 @@
 package com.dimab.pp.account;
 
 import com.dimab.pickoplace.json.GsonUtils;
+import com.dimab.pickoplace.utils.ServletUtils;
 import com.dimab.pp.dto.IFresponse;
 import com.dimab.pp.dto.IFsave;
 import com.dimab.pp.login.CheckTokenValid;
@@ -95,8 +96,6 @@ public class DeleteiFrame extends HttpServlet {
             map.put("size", 0);
         }
 
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(GsonUtils.toJson(map));
+        ServletUtils.writeJsonResponse(response, map);
     }
 }

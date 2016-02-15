@@ -1,6 +1,7 @@
 package com.dimab.pp.account;
 
 import com.dimab.pickoplace.json.GsonUtils;
+import com.dimab.pickoplace.utils.ServletUtils;
 import com.dimab.pp.database.GetBookingShapesDataFactory;
 import com.dimab.pp.database.GetShapesOrders;
 import com.dimab.pp.dto.*;
@@ -114,8 +115,6 @@ public class WaUpdateBookingsByDate extends HttpServlet {
         map.put("orderedResponse", orderedResponse);
         map.put("bookings", bookings_);
 
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(GsonUtils.toJson(map));
+        ServletUtils.writeJsonResponse(response, map);
     }
 }

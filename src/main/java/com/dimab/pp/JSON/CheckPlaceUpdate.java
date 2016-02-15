@@ -1,6 +1,7 @@
 package com.dimab.pp.JSON;
 
 import com.dimab.pickoplace.json.GsonUtils;
+import com.dimab.pickoplace.utils.ServletUtils;
 import com.dimab.pp.dto.ValidatePlaceUpdate;
 import com.dimab.pp.login.CheckTokenValid;
 import com.dimab.pp.login.GenericUser;
@@ -62,13 +63,8 @@ public class CheckPlaceUpdate extends HttpServlet {
             System.out.println("Entity exists");
             Map<String, Object> map = new HashMap<String, Object>();
             map.put("exists", true);
-            write(response, map);
-        }
-    }
 
-    private void write(HttpServletResponse response, Map<String, Object> map) throws IOException {
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(GsonUtils.toJson(map));
+            ServletUtils.writeJsonResponse(response, map);
+        }
     }
 }

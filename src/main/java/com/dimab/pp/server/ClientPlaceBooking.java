@@ -2,6 +2,7 @@ package com.dimab.pp.server;
 
 import com.dimab.pickoplace.entity.EntityKind;
 import com.dimab.pickoplace.json.GsonUtils;
+import com.dimab.pickoplace.utils.ServletUtils;
 import com.dimab.pp.channel.ChannelMessageFactory;
 import com.dimab.pp.database.FreePlaceFactory;
 import com.dimab.pp.database.GetPlaceInfoFactory;
@@ -43,9 +44,8 @@ public class ClientPlaceBooking extends HttpServlet {
         }
         if (genuser == null) {
             map.put("added", false);
-            response.setContentType("application/json");
-            response.setCharacterEncoding("UTF-8");
-            response.getWriter().write(GsonUtils.toJson(map));
+
+            ServletUtils.writeJsonResponse(response, map);
             return;
         } else {
             username_email = genuser.getEmail();
@@ -261,8 +261,7 @@ public class ClientPlaceBooking extends HttpServlet {
             }
         }
         txn.commit();
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(GsonUtils.toJson(map));
+
+        ServletUtils.writeJsonResponse(response, map);
     }
 }

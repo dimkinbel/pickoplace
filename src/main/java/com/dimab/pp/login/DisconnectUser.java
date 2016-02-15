@@ -1,13 +1,13 @@
 package com.dimab.pp.login;
 
 import com.dimab.pickoplace.entity.EntityKind;
+import com.dimab.pickoplace.utils.ServletUtils;
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.appengine.api.datastore.*;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
-import com.google.gson.Gson;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -59,7 +59,6 @@ public class DisconnectUser extends HttpServlet {
     private static final String APPLICATION_NAME = "PickoPlace";
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setContentType("application/json");
         Map<String, Object> map = new HashMap<String, Object>();
 
         String accessToken = request.getParameter("access_token");
@@ -80,8 +79,6 @@ public class DisconnectUser extends HttpServlet {
             System.out.println("Disonnecting GOOGLE token:" + Stoken);
             RevokeGoogleToken googleRevokeFactory = new RevokeGoogleToken();
             googleRevokeFactory.revoke(accessToken);
-
-        } else {
 
         }
 
@@ -108,13 +105,9 @@ public class DisconnectUser extends HttpServlet {
             map.put("reason", "no_session_user");
         }
 
-
         request.getSession().removeAttribute("access_token");
         request.getSession().removeAttribute("provider");
 
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(new Gson().toJson(map));
-
+        ServletUtils.writeJsonResponse(response, map);
     }
 }

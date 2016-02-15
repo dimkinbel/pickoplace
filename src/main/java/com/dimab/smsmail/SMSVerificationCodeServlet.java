@@ -1,7 +1,7 @@
 package com.dimab.smsmail;
 
 import com.dimab.pickoplace.entity.EntityKind;
-import com.dimab.pickoplace.json.GsonUtils;
+import com.dimab.pickoplace.utils.ServletUtils;
 import com.google.appengine.api.datastore.*;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
@@ -32,9 +32,7 @@ public class SMSVerificationCodeServlet extends HttpServlet {
         String sessionEmail = (String) request.getSession().getAttribute("userEmail");
         if (sessionEmail == null || sessionEmail.isEmpty()) {
             map.put("status", "NOTLOGGED");
-            response.setContentType("application/json");
-            response.setCharacterEncoding("UTF-8");
-            response.getWriter().write(GsonUtils.toJson(map));
+            ServletUtils.writeJsonResponse(response, map);
             return;
         } else {
             Filter UserExists = new FilterPredicate("username", FilterOperator.EQUAL, sessionEmail);
@@ -43,24 +41,18 @@ public class SMSVerificationCodeServlet extends HttpServlet {
             Entity result = pq.asSingleEntity();
             if (result == null) {
                 map.put("status", "NOTLOGGED");
-                response.setContentType("application/json");
-                response.setCharacterEncoding("UTF-8");
-                response.getWriter().write(GsonUtils.toJson(map));
+                ServletUtils.writeJsonResponse(response, map);
                 return;
             } else {
                 if (result.getProperty("validationCode") == null) {
                     map.put("status", "NOCODE");
-                    response.setContentType("application/json");
-                    response.setCharacterEncoding("UTF-8");
-                    response.getWriter().write(GsonUtils.toJson(map));
+                    ServletUtils.writeJsonResponse(response, map);
                     return;
                 } else {
                     String datastoreCode = (String) result.getProperty("validationCode");
                     if (datastoreCode.isEmpty()) {
                         map.put("status", "NOCODE");
-                        response.setContentType("application/json");
-                        response.setCharacterEncoding("UTF-8");
-                        response.getWriter().write(GsonUtils.toJson(map));
+                        ServletUtils.writeJsonResponse(response, map);
                         return;
                     } else {
                         if (datastoreCode.equals(vaerifiactionCode)) {
@@ -70,15 +62,11 @@ public class SMSVerificationCodeServlet extends HttpServlet {
                             datastore.put(result);
                             txn.commit();
 
-                            response.setContentType("application/json");
-                            response.setCharacterEncoding("UTF-8");
-                            response.getWriter().write(GsonUtils.toJson(map));
+                            ServletUtils.writeJsonResponse(response, map);
                             return;
                         } else {
                             map.put("status", "WRONG");
-                            response.setContentType("application/json");
-                            response.setCharacterEncoding("UTF-8");
-                            response.getWriter().write(GsonUtils.toJson(map));
+                            ServletUtils.writeJsonResponse(response, map);
                             return;
                         }
                     }

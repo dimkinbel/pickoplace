@@ -2,6 +2,7 @@ package com.dimab.pp.account;
 
 import com.dimab.pickoplace.entity.EntityKind;
 import com.dimab.pickoplace.json.GsonUtils;
+import com.dimab.pickoplace.utils.ServletUtils;
 import com.dimab.pp.dto.AdminUser;
 import com.dimab.pp.dto.UserPlace;
 import com.dimab.pp.login.CheckTokenValid;
@@ -223,8 +224,7 @@ public class DeletePlaceData extends HttpServlet {
             }
         }
         txn.commit();
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(GsonUtils.toJson(map));
+
+        ServletUtils.writeJsonResponse(response, map);
     }
 }

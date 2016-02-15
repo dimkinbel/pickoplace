@@ -1,6 +1,7 @@
 package com.dimab.pp.server;
 
 import com.dimab.pickoplace.json.GsonUtils;
+import com.dimab.pickoplace.utils.ServletUtils;
 import com.dimab.pp.database.FreePlaceFactory;
 import com.dimab.pp.dto.BookingListForJSON;
 import com.dimab.pp.dto.BookingRequest;
@@ -88,8 +89,7 @@ public class ClientRemoveBooking extends HttpServlet {
             }
         }
         txn.commit();
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(GsonUtils.toJson(map));
+
+        ServletUtils.writeJsonResponse(response, map);
     }
 }

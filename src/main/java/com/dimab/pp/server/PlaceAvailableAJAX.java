@@ -1,6 +1,7 @@
 package com.dimab.pp.server;
 
 import com.dimab.pickoplace.json.GsonUtils;
+import com.dimab.pickoplace.utils.ServletUtils;
 import com.dimab.pp.database.GetShapesOrders;
 import com.dimab.pp.dto.OrderedResponse;
 import com.dimab.pp.dto.PlaceCheckAvailableJSON;
@@ -74,8 +75,7 @@ public class PlaceAvailableAJAX extends HttpServlet {
             orderedResponse.setPlaceOpen(openRanges);
         }
         System.out.println(GsonUtils.toJson(orderedResponse));
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(GsonUtils.toJson(orderedResponse));
+
+        ServletUtils.writeJsonResponse(response, orderedResponse);
     }
 }

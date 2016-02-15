@@ -1,6 +1,7 @@
 package com.dimab.pp.server;
 
 import com.dimab.pickoplace.json.GsonUtils;
+import com.dimab.pickoplace.utils.ServletUtils;
 import com.dimab.pp.dto.*;
 import com.google.appengine.api.datastore.*;
 import com.google.appengine.api.datastore.Query.Filter;
@@ -160,18 +161,10 @@ public class ClientTempBooking extends HttpServlet {
                     }
                 }
             }
-            if (allAvailable) {
-
-            } else {
-
-            }
         } else {
             map.put("added", false);
         }
 
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(GsonUtils.toJson(map));
+        ServletUtils.writeJsonResponse(response, map);
     }
-
 }

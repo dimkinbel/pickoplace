@@ -1,6 +1,6 @@
 package com.dimab.pp.server;
 
-import com.dimab.pickoplace.json.GsonUtils;
+import com.dimab.pickoplace.utils.ServletUtils;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 
@@ -26,9 +26,7 @@ public class CheckGoogleStatus extends HttpServlet {
         } else {
             map.put("status", "logout");
         }
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(GsonUtils.toJson(map));
-    }
 
+        ServletUtils.writeJsonResponse(response, map);
+    }
 }

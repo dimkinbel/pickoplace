@@ -2,6 +2,7 @@ package com.dimab.pp.account;
 
 import com.dimab.pickoplace.entity.EntityKind;
 import com.dimab.pickoplace.json.GsonUtils;
+import com.dimab.pickoplace.utils.ServletUtils;
 import com.dimab.pp.database.GetPlaceInfoFactory;
 import com.dimab.pp.dto.PlaceInfo;
 import com.dimab.pp.dto.WaiterListAJAXDTO;
@@ -80,8 +81,7 @@ public class ListWaiterAvailable extends HttpServlet {
             }
 
         }
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(GsonUtils.toJson(waiterlist));
+
+        ServletUtils.writeJsonResponse(response, waiterlist);
     }
 }
