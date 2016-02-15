@@ -1,6 +1,7 @@
 package com.dimab.pp.JSON;
 
 import com.dimab.pickoplace.entity.EntityKind;
+import com.dimab.pickoplace.json.GsonUtils;
 import com.dimab.pp.dto.*;
 import com.dimab.pp.login.CheckTokenValid;
 import com.dimab.pp.login.GenericUser;
@@ -11,7 +12,6 @@ import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.tools.cloudstorage.*;
-import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import javax.servlet.ServletException;
@@ -66,6 +66,7 @@ public class AJAXImageImport extends HttpServlet {
             response.addHeader("Access-Control-Allow-Origin", "*");
             response.sendRedirect(returnurl);
         }
+
         if (genuser == null) {
             String returnurl = "/welcome.jsp";
             response.addHeader("Access-Control-Allow-Origin", "*");
@@ -73,9 +74,9 @@ public class AJAXImageImport extends HttpServlet {
         } else {
             username_email = genuser.getEmail();
         }
+
         String jsonString = request.getParameter("jsonObject");
-        Gson gson = new Gson();
-        AJAXImagesJSON SaveObject = gson.fromJson(jsonString, AJAXImagesJSON.class);
+        AJAXImagesJSON SaveObject = GsonUtils.GSON.fromJson(jsonString, AJAXImagesJSON.class);
         String stage = SaveObject.getStage();
         String userRandom = "";
         GeoPt center = new GeoPt(Float.valueOf(SaveObject.getLat()), Float.valueOf(SaveObject.getLng()));
@@ -94,32 +95,32 @@ public class AJAXImageImport extends HttpServlet {
             List<String> mo_list = new ArrayList<String>();
             List<String> ba_list = new ArrayList<String>();
             if (result.getProperty("PID_full_access") != null) {
-                fa_list = gson.fromJson((String) result.getProperty("PID_full_access"), collectionType);
+                fa_list = GsonUtils.GSON.fromJson((String) result.getProperty("PID_full_access"), collectionType);
             }
             if (result.getProperty("PID_edit_place") != null) {
-                ep_list = gson.fromJson((String) result.getProperty("PID_edit_place"), collectionType);
+                ep_list = GsonUtils.GSON.fromJson((String) result.getProperty("PID_edit_place"), collectionType);
             }
             if (result.getProperty("PID_move_only") != null) {
-                mo_list = gson.fromJson((String) result.getProperty("PID_move_only"), collectionType);
+                mo_list = GsonUtils.GSON.fromJson((String) result.getProperty("PID_move_only"), collectionType);
             }
             if (result.getProperty("PID_book_admin") != null) {
-                ba_list = gson.fromJson((String) result.getProperty("PID_book_admin"), collectionType);
+                ba_list = GsonUtils.GSON.fromJson((String) result.getProperty("PID_book_admin"), collectionType);
             }
             if (!fa_list.contains(placeID)) {
                 fa_list.add(placeID);
-                result.setUnindexedProperty("PID_full_access", gson.toJson(fa_list));
+                result.setUnindexedProperty("PID_full_access", GsonUtils.GSON.toJson(fa_list));
             }
             if (!ep_list.contains(placeID)) {
                 ep_list.add(placeID);
-                result.setUnindexedProperty("PID_edit_place", gson.toJson(ep_list));
+                result.setUnindexedProperty("PID_edit_place", GsonUtils.GSON.toJson(ep_list));
             }
             if (!mo_list.contains(placeID)) {
                 mo_list.add(placeID);
-                result.setUnindexedProperty("PID_move_only", gson.toJson(mo_list));
+                result.setUnindexedProperty("PID_move_only", GsonUtils.GSON.toJson(mo_list));
             }
             if (!ba_list.contains(placeID)) {
                 ba_list.add(placeID);
-                result.setUnindexedProperty("PID_book_admin", gson.toJson(ba_list));
+                result.setUnindexedProperty("PID_book_admin", GsonUtils.GSON.toJson(ba_list));
             }
             datastore.put(result);
 
@@ -165,7 +166,7 @@ public class AJAXImageImport extends HttpServlet {
                 map.put("status", "No-ImageVersion-Exists");
                 response.setContentType("application/json");
                 response.setCharacterEncoding("UTF-8");
-                response.getWriter().write(new Gson().toJson(map));
+                response.getWriter().write(GsonUtils.GSON.toJson(map));
                 return;
             }
             try {
@@ -176,7 +177,7 @@ public class AJAXImageImport extends HttpServlet {
                 map.put("status", "No-CanvasState-Exists");
                 response.setContentType("application/json");
                 response.setCharacterEncoding("UTF-8");
-                response.getWriter().write(new Gson().toJson(map));
+                response.getWriter().write(GsonUtils.GSON.toJson(map));
                 return;
             }
 
@@ -322,10 +323,8 @@ public class AJAXImageImport extends HttpServlet {
                 }
             }
 
-
-            gson = new Gson();
-            String canvasStateJSON = gson.toJson(CanvasObjectList);
-            String sid2ImageIDJSON = gson.toJson(sid2ImageID);
+            String canvasStateJSON = GsonUtils.GSON.toJson(CanvasObjectList);
+            String sid2ImageIDJSON = GsonUtils.GSON.toJson(sid2ImageID);
             Text TcanvasStateJSON = new Text(canvasStateJSON);
             Text Tsid2ImageIDJSON = new Text(sid2ImageIDJSON);
             System.out.println("Canvas JSON:" + canvasStateJSON);
@@ -350,11 +349,11 @@ public class AJAXImageImport extends HttpServlet {
                 canvasState.setUnindexedProperty("placeURL", SaveObject.getPlaceURL());
                 canvasState.setUnindexedProperty("placeDescription", SaveObject.getPlaceDescription());
                 canvasState.setUnindexedProperty("automatic_approval", SaveObject.isAutomatic_approval());
-                canvasState.setUnindexedProperty("automaticApprovalList", gson.toJson(SaveObject.getAutomaticApprovalList()));
-                canvasState.setUnindexedProperty("adminApprovalList", gson.toJson(SaveObject.getAdminApprovalList()));
-                canvasState.setUnindexedProperty("placeEditList", gson.toJson(adminList));
-                canvasState.setUnindexedProperty("closeDates", gson.toJson(SaveObject.getCloseDates()));
-                canvasState.setUnindexedProperty("workinghours", gson.toJson(SaveObject.getWorkinghours()));
+                canvasState.setUnindexedProperty("automaticApprovalList", GsonUtils.GSON.toJson(SaveObject.getAutomaticApprovalList()));
+                canvasState.setUnindexedProperty("adminApprovalList", GsonUtils.GSON.toJson(SaveObject.getAdminApprovalList()));
+                canvasState.setUnindexedProperty("placeEditList", GsonUtils.GSON.toJson(adminList));
+                canvasState.setUnindexedProperty("closeDates", GsonUtils.GSON.toJson(SaveObject.getCloseDates()));
+                canvasState.setUnindexedProperty("workinghours", GsonUtils.GSON.toJson(SaveObject.getWorkinghours()));
                 canvasState.setUnindexedProperty("UTCoffcet", SaveObject.getUTCoffset());
                 canvasState.setUnindexedProperty("bookingsCount", 0);
                 canvasState.setProperty("TotalRating", (double) 0);
@@ -395,11 +394,11 @@ public class AJAXImageImport extends HttpServlet {
                 canvasState.setUnindexedProperty("placeURL", SaveObject.getPlaceURL());
                 canvasState.setUnindexedProperty("placeDescription", SaveObject.getPlaceDescription());
                 canvasState.setUnindexedProperty("automatic_approval", SaveObject.isAutomatic_approval());
-                canvasState.setUnindexedProperty("automaticApprovalList", gson.toJson(SaveObject.getAutomaticApprovalList()));
-                canvasState.setUnindexedProperty("adminApprovalList", gson.toJson(SaveObject.getAdminApprovalList()));
-                canvasState.setUnindexedProperty("placeEditList", gson.toJson(SaveObject.getPlaceEditList()));
-                canvasState.setUnindexedProperty("closeDates", gson.toJson(SaveObject.getCloseDates()));
-                canvasState.setUnindexedProperty("workinghours", gson.toJson(SaveObject.getWorkinghours()));
+                canvasState.setUnindexedProperty("automaticApprovalList", GsonUtils.GSON.toJson(SaveObject.getAutomaticApprovalList()));
+                canvasState.setUnindexedProperty("adminApprovalList", GsonUtils.GSON.toJson(SaveObject.getAdminApprovalList()));
+                canvasState.setUnindexedProperty("placeEditList", GsonUtils.GSON.toJson(SaveObject.getPlaceEditList()));
+                canvasState.setUnindexedProperty("closeDates", GsonUtils.GSON.toJson(SaveObject.getCloseDates()));
+                canvasState.setUnindexedProperty("workinghours", GsonUtils.GSON.toJson(SaveObject.getWorkinghours()));
                 canvasState.setUnindexedProperty("UTCoffcet", SaveObject.getUTCoffset());
 
 
@@ -413,45 +412,45 @@ public class AJAXImageImport extends HttpServlet {
                         if (auser.isFull_access()) {
                             List<String> fa_list__ = new ArrayList<String>();
                             if (result__.getProperty("PID_full_access") != null) {
-                                fa_list__ = gson.fromJson((String) result__.getProperty("PID_full_access"), collectionType);
+                                fa_list__ = GsonUtils.GSON.fromJson((String) result__.getProperty("PID_full_access"), collectionType);
 
                             }
                             if (!fa_list__.contains(placeID)) {
                                 fa_list__.add(placeID);
-                                result__.setUnindexedProperty("PID_full_access", gson.toJson(fa_list__));
+                                result__.setUnindexedProperty("PID_full_access", GsonUtils.GSON.toJson(fa_list__));
                             }
                         }
                         if (auser.isEdit_place()) {
                             List<String> ep_list__ = new ArrayList<String>();
                             if (result__.getProperty("PID_edit_place") != null) {
-                                ep_list__ = gson.fromJson((String) result__.getProperty("PID_edit_place"), collectionType);
+                                ep_list__ = GsonUtils.GSON.fromJson((String) result__.getProperty("PID_edit_place"), collectionType);
 
                             }
                             if (!ep_list__.contains(placeID)) {
                                 ep_list__.add(placeID);
-                                result__.setUnindexedProperty("PID_edit_place", gson.toJson(ep_list__));
+                                result__.setUnindexedProperty("PID_edit_place", GsonUtils.GSON.toJson(ep_list__));
                             }
                         }
                         if (auser.isMove_only()) {
                             List<String> mo_list__ = new ArrayList<String>();
                             if (result__.getProperty("PID_move_only") != null) {
-                                mo_list__ = gson.fromJson((String) result__.getProperty("PID_move_only"), collectionType);
+                                mo_list__ = GsonUtils.GSON.fromJson((String) result__.getProperty("PID_move_only"), collectionType);
 
                             }
                             if (!mo_list__.contains(placeID)) {
                                 mo_list__.add(placeID);
-                                result__.setUnindexedProperty("PID_move_only", gson.toJson(mo_list__));
+                                result__.setUnindexedProperty("PID_move_only", GsonUtils.GSON.toJson(mo_list__));
                             }
                         }
                         if (auser.isBook_admin()) {
                             List<String> ba_list__ = new ArrayList<String>();
                             if (result__.getProperty("PID_book_admin") != null) {
-                                ba_list__ = gson.fromJson((String) result__.getProperty("PID_book_admin"), collectionType);
+                                ba_list__ = GsonUtils.GSON.fromJson((String) result__.getProperty("PID_book_admin"), collectionType);
 
                             }
                             if (!ba_list__.contains(placeID)) {
                                 ba_list__.add(placeID);
-                                result__.setUnindexedProperty("PID_book_admin", gson.toJson(ba_list__));
+                                result__.setUnindexedProperty("PID_book_admin", GsonUtils.GSON.toJson(ba_list__));
                             }
                         }
                         datastore.put(result__);
@@ -496,7 +495,7 @@ public class AJAXImageImport extends HttpServlet {
                 if (canvasState.getProperty("photos") != null) {
                     collectionType = new TypeToken<List<String>>() {
                     }.getType();
-                    prevPhotosList = gson.fromJson((String) canvasState.getProperty("photos"), collectionType);
+                    prevPhotosList = GsonUtils.GSON.fromJson((String) canvasState.getProperty("photos"), collectionType);
                 }
 
 
@@ -530,7 +529,7 @@ public class AJAXImageImport extends HttpServlet {
                         gcsService.delete(new GcsFilename("pp_images", fileName));
                     }
                 }
-                canvasState.setUnindexedProperty("photos", gson.toJson(photosList));
+                canvasState.setUnindexedProperty("photos", GsonUtils.GSON.toJson(photosList));
             }
 
             SearchFabric searchIndexFabrix = new SearchFabric();
@@ -572,7 +571,7 @@ public class AJAXImageImport extends HttpServlet {
             txn.commit();
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
-            response.getWriter().write(new Gson().toJson(map));
+            response.getWriter().write(GsonUtils.GSON.toJson(map));
             return;
 
         } else {
@@ -580,7 +579,7 @@ public class AJAXImageImport extends HttpServlet {
             map.put("status", "No-User-Entity-Exists");
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
-            response.getWriter().write(new Gson().toJson(map));
+            response.getWriter().write(GsonUtils.GSON.toJson(map));
 
             return;
         }

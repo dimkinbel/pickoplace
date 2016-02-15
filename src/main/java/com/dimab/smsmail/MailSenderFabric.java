@@ -22,60 +22,62 @@ import java.util.Date;
 import java.util.Properties;
 
 public class MailSenderFabric {
-   
-	public void SendConfirmationEmail(String from , String to , BookingRequestWrap bookingRequestsWrap,PlaceInfo placeInfo) {
-		
-		Properties props = new Properties();
+
+    public void SendConfirmationEmail(String from, String to, BookingRequestWrap bookingRequestsWrap, PlaceInfo placeInfo) {
+
+        Properties props = new Properties();
         Session session = Session.getDefaultInstance(props, null);
         MailGenerator mailGenerator = new MailGenerator();
-		try {
-	            Message msg = new MimeMessage(session);
-	            msg.setFrom(new InternetAddress(from, "PickoPlace"));
-	            msg.addRecipient(Message.RecipientType.TO,
-	                             new InternetAddress(to, "You"));
-	            
-	            msg.setSubject("Order Confirmation");
-	            //msg.setText(msgBody);
-	            String message = mailGenerator.GetConfirmationMail(bookingRequestsWrap, placeInfo);
-	            System.out.println(message);
-	            msg.setContent(message, "text/html; charset=utf-8");	           
-	            msg.setSentDate(new Date());
- 	            
-	            Transport.send(msg);
+        try {
+            Message msg = new MimeMessage(session);
+            msg.setFrom(new InternetAddress(from, "PickoPlace"));
+            msg.addRecipient(Message.RecipientType.TO,
+                    new InternetAddress(to, "You"));
 
-	        } catch (AddressException e) {
-	            // ...
-	        } catch (MessagingException e) {
-	            // ...
-	        } catch (UnsupportedEncodingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		  
-	}
-	public boolean isSubscribed(DatastoreService datastore,GenericUser genuser) {
-		Filter UserEmail = new  FilterPredicate("username",FilterOperator.EQUAL,genuser.getEmail());
-		Filter UserSubscribed = new  FilterPredicate("emailsend",FilterOperator.EQUAL,false);
-		Filter composeFilter = CompositeFilterOperator.and(UserEmail,UserSubscribed);
-		Query q = new Query(EntityKind.Users).setFilter(composeFilter).setKeysOnly();
-		PreparedQuery pq = datastore.prepare(q);
-	    Entity result = pq.asSingleEntity();
-	    if (result == null) {
-	    	return true;
-	    }
-	    return false;
-	}
-	public String getUserKey(DatastoreService datastore,GenericUser genuser) {
+            msg.setSubject("Order Confirmation");
+            //msg.setText(msgBody);
+            String message = mailGenerator.GetConfirmationMail(bookingRequestsWrap, placeInfo);
+            System.out.println(message);
+            msg.setContent(message, "text/html; charset=utf-8");
+            msg.setSentDate(new Date());
 
-		Filter UserEmail = new  FilterPredicate("username",FilterOperator.EQUAL,genuser.getEmail());
-		Query q = new Query(EntityKind.Users).setFilter(UserEmail).setKeysOnly();
-		
-		PreparedQuery pq = datastore.prepare(q);
-	    Entity result = pq.asSingleEntity();
-	    if (result != null) {
-	    	return KeyFactory.keyToString(result.getKey());
-	    } else {
-	    	return "nokey";
-	    }
-	}
+            Transport.send(msg);
+
+        } catch (AddressException e) {
+            // ...
+        } catch (MessagingException e) {
+            // ...
+        } catch (UnsupportedEncodingException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+    }
+
+    public boolean isSubscribed(DatastoreService datastore, GenericUser genuser) {
+        Filter UserEmail = new FilterPredicate("username", FilterOperator.EQUAL, genuser.getEmail());
+        Filter UserSubscribed = new FilterPredicate("emailsend", FilterOperator.EQUAL, false);
+        Filter composeFilter = CompositeFilterOperator.and(UserEmail, UserSubscribed);
+        Query q = new Query(EntityKind.Users).setFilter(composeFilter).setKeysOnly();
+        PreparedQuery pq = datastore.prepare(q);
+        Entity result = pq.asSingleEntity();
+        if (result == null) {
+            return true;
+        }
+        return false;
+    }
+
+    public String getUserKey(DatastoreService datastore, GenericUser genuser) {
+
+        Filter UserEmail = new FilterPredicate("username", FilterOperator.EQUAL, genuser.getEmail());
+        Query q = new Query(EntityKind.Users).setFilter(UserEmail).setKeysOnly();
+
+        PreparedQuery pq = datastore.prepare(q);
+        Entity result = pq.asSingleEntity();
+        if (result != null) {
+            return KeyFactory.keyToString(result.getKey());
+        } else {
+            return "nokey";
+        }
+    }
 }
