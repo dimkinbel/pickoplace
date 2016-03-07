@@ -76,7 +76,7 @@ public class ListWaiterAvailable extends HttpServlet {
 			  	        		if (canvasEntity != null) {
 			  	        			PlaceInfo placeInfo = new PlaceInfo();
 			  			  		    GetPlaceInfoFactory placeInfoFactory = new GetPlaceInfoFactory();
-			  			  		    placeInfo = placeInfoFactory.getPlaceInfo(datastore, canvasEntity,100);
+			  			  		    placeInfo = placeInfoFactory.getPlaceInfo(datastore, canvasEntity,100,false,false);
 			  			  		    waiterPlaces.add(placeInfo);
 			  	        		}
 	  	      				}

@@ -223,10 +223,7 @@ $(document).ready(function() {
 		});
 	});
 });
-function closeIframe() {
-	$("#frame_prev_wrap").hide();
-	$("#frame-canvas").html("");
-}
+
 function updateIFlist(data) {
 	 if(data.size == 0) {
 		 var appendData = "<div class='no_list_'>NO SAVED IFRAMES EXIST</div>";

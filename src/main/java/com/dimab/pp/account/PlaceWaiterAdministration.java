@@ -156,7 +156,7 @@ public class PlaceWaiterAdministration extends HttpServlet {
 	  		    	
 	  		    	if(shapeInfo_.getShapeInfo().getType().equals("image") && !gcsurlUpdated.containsKey(shapeInfo_.getShapeInfo().getImgID())) {
 	  		    		JsonImageID_2_GCSurl imgID2url = new JsonImageID_2_GCSurl();	
-	  		    		String fileName = CanvasStateEdit.getUsernameRandom() +"/"+ CanvasStateEdit.getPlace_() + "/" + CanvasStateEdit.getSnif_() +  "/" + CanvasStateEdit.getPlaceID() +"/"+"main" +"/" + imgID + ".png";
+	  		    		String fileName = CanvasStateEdit.getUsernameRandom() +"/"+   CanvasStateEdit.getPlaceID() +"/"+"main" +"/" + imgID + ".png";
 	     		  	    String bucket = "pp_images"; 
 	     		  	    GcsFilename gcsFilename = new GcsFilename(bucket, fileName);
 	     		  	    ImagesService is = ImagesServiceFactory.getImagesService(); 

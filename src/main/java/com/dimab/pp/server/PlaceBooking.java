@@ -104,8 +104,8 @@ public class PlaceBooking extends HttpServlet {
 				String floorID=floor.getFloorid();
 				if (!floor.getState().getBackgroundType().contains("color")) {
 					
-					String fileName_ = usernameRandom +"/"+ placeName + "/" + placeBranchName + "/" + placeID+"/"+"main"+"/"+floorID +"/backgroundImage.png";
-					String overview = usernameRandom +"/"+ placeName + "/" + placeBranchName + "/" + placeID+"/"+"main"+"/"+floorID +"/overview.png";
+					String fileName_ = usernameRandom +"/"+   placeID+"/"+"main"+"/"+floorID +"/backgroundImage.png";
+					String overview = usernameRandom +"/"+   placeID+"/"+"main"+"/"+floorID +"/overview.png";
 					Filter imageVersion = new  FilterPredicate("PID",FilterOperator.EQUAL,placeID);
 			 	    Query piq = new Query("ImageVersion").setFilter(imageVersion);
 			        PreparedQuery sbpiq = datastore.prepare(piq);
@@ -113,8 +113,8 @@ public class PlaceBooking extends HttpServlet {
 			  		if (imageVersionEntity != null) {
 			  			int backgroundVersion = (int)(long)imageVersionEntity.getProperty("backgroundVersion");
 			  			int overviewVersion = (int)(long)imageVersionEntity.getProperty("overviewVersion");
-			  			fileName_ =  usernameRandom +"/"+ placeName + "/" + placeBranchName+"/"+placeID+"/"+"main"+"/"+floorID+"/backgroundImage"+"_"+backgroundVersion+".png";
-			  			overview =  usernameRandom +"/"+ placeName + "/" + placeBranchName+"/"+placeID+"/"+"main"+"/"+floorID+"/overview"+"_"+overviewVersion+".png";
+			  			fileName_ =  usernameRandom +"/"+  placeID+"/"+"main"+"/"+floorID+"/backgroundImage"+"_"+backgroundVersion+".png";
+			  			overview =  usernameRandom +"/"+  placeID+"/"+"main"+"/"+floorID+"/overview"+"_"+overviewVersion+".png";
 			  		}
 					String bucket = "pp_images"; 
 					// Background
@@ -134,14 +134,14 @@ public class PlaceBooking extends HttpServlet {
 			  	    
 				} else {
 					//Overview only
-					String overview = usernameRandom +"/"+ placeName + "/" + placeBranchName + "/" + placeID+"/"+"main"+"/"+floorID +"/overview.png";
+					String overview = usernameRandom +"/"+   placeID+"/"+"main"+"/"+floorID +"/overview.png";
 					Filter imageVersion = new  FilterPredicate("PID",FilterOperator.EQUAL,placeID);
 			 	    Query piq = new Query("ImageVersion").setFilter(imageVersion);
 			        PreparedQuery sbpiq = datastore.prepare(piq);
 			  		Entity imageVersionEntity = sbpiq.asSingleEntity();
 			  		if (imageVersionEntity != null) {
 			  			int overviewVersion = (int)(long)imageVersionEntity.getProperty("overviewVersion");
-			  			overview =  usernameRandom +"/"+ placeName + "/" + placeBranchName+"/"+placeID+"/"+"main"+"/"+floorID+"/overview"+"_"+overviewVersion+".png";
+			  			overview =  usernameRandom +"/"+  placeID+"/"+"main"+"/"+floorID+"/overview"+"_"+overviewVersion+".png";
 			  		}
 					String bucket = "pp_images"; 
 					 // Overview
@@ -184,7 +184,7 @@ public class PlaceBooking extends HttpServlet {
 				for (JsonSID_2_imgID shapeImgData : sid2imgID) {
 	                 String imgID = shapeImgData.getImageID();
 	                 if(!gcsurlUpdated.containsKey(imgID)) {
-	                	String fileName = usernameRandom +"/"+ placeName + "/" + placeBranchName +  "/" + placeID+"/"+"main" +"/" + imgID + ".png";
+	                	String fileName = usernameRandom +"/"+  placeID+"/"+"main" +"/" + imgID + ".png";
 	     		  	    String bucket = "pp_images"; 
 	     		  	    GcsFilename gcsFilename = new GcsFilename(bucket, fileName);
 	     		  	    ImagesService is = ImagesServiceFactory.getImagesService(); 
@@ -222,7 +222,7 @@ public class PlaceBooking extends HttpServlet {
 
   		// Get Place Info Global
   		GetPlaceInfoFactory placeInfoFactory = new GetPlaceInfoFactory();
-  		PlaceInfo placeInfo = placeInfoFactory.getPlaceInfo(datastore, userCanvasState, 150);
+  		PlaceInfo placeInfo = placeInfoFactory.getPlaceInfo(datastore, userCanvasState, 150,true,true);
   		//
   		request.setAttribute("placeAddress", Address);
   		request.setAttribute("placeLat", Lat);

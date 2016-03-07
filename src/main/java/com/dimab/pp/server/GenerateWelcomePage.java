@@ -47,7 +47,7 @@ public class GenerateWelcomePage extends HttpServlet {
 		
 		QueryResultList<Entity> CanvasStateEntities = getNEntities(numInt,lastCursor);
 		for (Entity csEntity : CanvasStateEntities) {
-			PlaceInfo placeInfo = placeInfoFactory.getPlaceInfo(datastore, csEntity, 222);
+			PlaceInfo placeInfo = placeInfoFactory.getPlaceInfo(datastore, csEntity, 222,false,true);
 			welcomePagedata.getPlaces().add(placeInfo);			
 		}
 		

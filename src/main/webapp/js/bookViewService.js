@@ -197,7 +197,7 @@ function updateSelectOptions(selid,type,datepickerId,minPeriodSeconds) {
 					 $("#book_top_start").parent().attr("aria-haspopup","true");
 					 $("#book_top_start").parent().attr("aria-expanded","true");
 			  } else {
-			    	selectedTime = "מקום סגור להיום";
+			    	selectedTime = "סגור";
 					$("#book_top_start").html(selectedTime);
 					$("#book_top_start").parent().removeClass("dropdown-toggle");
 					$("#book_top_start").parent().removeAttr("data-toggle");

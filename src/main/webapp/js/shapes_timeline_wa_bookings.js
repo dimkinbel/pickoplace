@@ -435,7 +435,7 @@ function BCanvasState(canvas,pfrom,pto,offset) {
     this.tooltipmx = 0;
     this.tooltipmy = 0;
     this.tooltipStart = 0;
-    this.tooltipText = ""
+    this.tooltipText = "";
     this.lineHoverIdx = -1;
 
     this.mousedown_ = false;

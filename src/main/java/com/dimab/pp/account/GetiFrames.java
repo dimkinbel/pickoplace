@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.dimab.pickoplace.utils.JsonUtils;
 import com.dimab.pp.dto.IFresponse;
 import com.dimab.pp.dto.IFsave;
+import com.dimab.pp.dto.iFrameObj;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -40,7 +41,7 @@ public class GetiFrames extends HttpServlet {
   		Map <String , Object> map = new HashMap<String , Object>();
 	
 		String placeIDvalue = request.getParameter("pid");
-		List<IFresponse> ifresponse = new ArrayList<IFresponse>();
+		List<iFrameObj> ifresponse = new ArrayList<iFrameObj>();
  
 		Filter ifidfilter = new  FilterPredicate("pid",FilterOperator.EQUAL,placeIDvalue);
  	    Query piq = new Query("IFrames").setFilter(ifidfilter);
@@ -50,23 +51,30 @@ public class GetiFrames extends HttpServlet {
 			String ifid = (String)iframeEntity.getProperty("ifid");
 			String uid = (String)iframeEntity.getProperty("savedby");
   			Date date_ = (Date)iframeEntity.getProperty("date");
-  			String iframe_ = (String)iframeEntity.getProperty("ifjson");
-			IFsave SaveObject = JsonUtils.deserialize(iframe_, IFsave.class);
+			Integer width = (int)(long)iframeEntity.getProperty("width");
+			Integer height = (int)(long)iframeEntity.getProperty("height");
+			Boolean booking = (Boolean)iframeEntity.getProperty("booking");
+			String theme = (String)iframeEntity.getProperty("theme");
+
+
 	        SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMMy HH:mm");
 	        System.out.println("date: " + dateFormat.format( date_ ) );
 	        
-	        IFresponse ifresp = new IFresponse();
+	        iFrameObj ifresp = new iFrameObj();
 	        ifresp.setDate(dateFormat.format( date_ ));
 	        ifresp.setIfid(ifid);
-	        ifresp.setSavedby(uid);
+	        ifresp.setUser(uid);
 	        ifresp.setTime(date_.getTime());
-	        ifresp.setIframedata(SaveObject);
+	        ifresp.setWidth(width);
+			ifresp.setHeight(height);
+			ifresp.setBooking(booking);
+			ifresp.setTheme(theme);
 	        ifresponse.add(ifresp);
 	        
 		}
-		Collections.sort(ifresponse, new Comparator<IFresponse>(){
+		Collections.sort(ifresponse, new Comparator<iFrameObj>(){
 			@Override
-			public int compare(IFresponse o1, IFresponse o2) {				
+			public int compare(iFrameObj o1, iFrameObj o2) {
 				return -1 * o1.getTime().compareTo(o2.getTime());
 			}
 		});

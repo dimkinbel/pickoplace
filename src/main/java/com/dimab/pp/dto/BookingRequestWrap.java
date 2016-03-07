@@ -11,8 +11,6 @@ public class BookingRequestWrap {
     String pid;
     String testID;
     String bookID;
-    String textRquest = "";
-
 
     String phone;
     Long dateSeconds;
@@ -30,13 +28,6 @@ public class BookingRequestWrap {
     String address;
     Date reservationMadeUTC = new Date();
 
-    public String getTextRquest() {
-        return textRquest;
-    }
-
-    public void setTextRquest(String textRquest) {
-        this.textRquest = textRquest;
-    }
 
     public Date getReservationMadeUTC() {
         return reservationMadeUTC;

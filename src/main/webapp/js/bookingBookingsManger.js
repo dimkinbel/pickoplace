@@ -18,103 +18,148 @@ function Hazmana() {
    this.clientOffset = d.getTimezoneOffset(); 
    this.placeOffset = document.getElementById("server_placeUTC").value;
 }
-Hazmana.prototype.addSid = function(sid,persons) { 
+Hazmana.prototype.addSid = function(sid,persons,iframe_) { 
   var singlePlace = {};
   singlePlace.sid = sid;
   singlePlace.persons = persons;
- 
-  for(var f = 0 ; f < floorCanvases.length ; f++ ) {
-     for (var s = 0 ; s < floorCanvases[f].shapes.length ; s++ ) {
-	    if(floorCanvases[f].shapes[s].sid == sid) {
-		   floorCanvases[f].shapes[s].choosen = true;
-		   floorCanvases[f].valid = false;
-		   singlePlace.floor_name = floorCanvases[f].floor_name;
-		   singlePlace.floorid = floorCanvases[f].floorid;
-		   singlePlace.name = floorCanvases[f].shapes[s].booking_options.givenName;
+  var floorList;
+  if(iframe_!= undefined && iframe_ == true) {
+    floorList = if_floorCanvases
+  } else {
+    floorList = floorCanvases;
+  }
+  for(var f = 0 ; f < floorList.length ; f++ ) {
+     for (var s = 0 ; s < floorList[f].shapes.length ; s++ ) {
+	    if(floorList[f].shapes[s].sid == sid) {
+		   floorList[f].shapes[s].choosen = true;
+		   floorList[f].valid = false;
+		   singlePlace.floor_name = floorList[f].floor_name;
+		   singlePlace.floorid = floorList[f].floorid;
+		   singlePlace.name = floorList[f].shapes[s].booking_options.givenName;
 		   this.listOfSids.push(singlePlace);
-		   return floorCanvases[f].floorid;
+		   return floorList[f].floorid;
 		} 
 	 }
 	 
   }
 }
-Hazmana.prototype.removeSid = function(sid) { 
+Hazmana.prototype.removeSid = function(sid,iframe_) { 
   for(var i = 0; i < this.listOfSids.length ; i++) {
      var single = this.listOfSids[i];
      if(single.sid == sid) {
 	    this.listOfSids.remove(single);
 	 }
   } 
-  for(var f = 0 ; f < floorCanvases.length ; f++ ) {
-     for (var s = 0 ; s < floorCanvases[f].shapes.length ; s++ ) {
-	    if(floorCanvases[f].shapes[s].sid == sid) {
-		   floorCanvases[f].shapes[s].choosen = false;
-		   floorCanvases[f].valid = false;
-		   return floorCanvases[f].floorid;
+  var iframe = false;
+  var floorList = floorCanvases;
+  if(iframe_ != undefined && iframe_ == true) {
+    iframe = true;
+	floorList  = if_floorCanvases
+  }
+  for(var f = 0 ; f < floorList.length ; f++ ) {
+     for (var s = 0 ; s < floorList[f].shapes.length ; s++ ) {
+	    if(floorList[f].shapes[s].sid == sid) {
+		   floorList[f].shapes[s].choosen = false;
+		   floorList[f].valid = false;
+		   return floorList[f].floorid;
 		} 
 	 } 
   }
 }
 var bookingOrder = null;
-function Booking_addToOrder(sid) {
+function Booking_addToOrder(sid,iframe_) {
+  var iframe = false;
   if(bookingOrder == null) {
-   bookingOrder = new Hazmana();
-     $("#hz_text_o").html('בצע הזמנה');
-     $("#booking_top_button").removeClass("disabled");  
+      bookingOrder = new Hazmana();
+	  if(iframe_!=undefined && iframe_ == true) {
+	     $("#hazmana_iframe_button_empty").hide();
+		 $("#hazmana_iframe_button").show();
+	  } else {
+		 $("#hz_text_o").html('בצע הזמנה');
+		 $("#booking_top_button").removeClass("disabled");  
+	 }
+  }
+  if(iframe_==undefined || iframe_ == false) {
+  
+  } else {
+    iframe = true;
   }
   var persons = $("#persons_bs_select-"+sid).val();
-  var floorID = bookingOrder.addSid(sid,persons);
+  var floorID = bookingOrder.addSid(sid,persons,iframe);
   $("#book_bnt_count").html(bookingOrder.listOfSids.length);
+  $("#hazmana_badge").html(bookingOrder.listOfSids.length);
   $("#book_bnt_count").show();
   $('#canvas_popover').popover('hide');
-  for(var f = 0 ; f < floorCanvases.length ; f++ ) {
+  $("#iframe_popover").popover('hide');
+  
+ 
+  var floorList = floorCanvases;
+  if(iframe_ != undefined && iframe_ == true) {
+    iframe = true;
+	floorList  = if_floorCanvases
+  }
+  for(var f = 0 ; f < floorList.length ; f++ ) {
      var count = 0;
-     for (var s = 0 ; s < floorCanvases[f].shapes.length ; s++ ) {
-	    if(floorCanvases[f].shapes[s].choosen == true) {
+     for (var s = 0 ; s < floorList[f].shapes.length ; s++ ) {
+	    if(floorList[f].shapes[s].choosen == true) {
 		   count++;
 		}
 	 }
 	 if(count > 0) {
-	   $("#fbadge-"+floorCanvases[f].floorid).html(count); 
-	   $("#fbadge-"+floorCanvases[f].floorid).show();
+	   $("#fbadge-"+floorList[f].floorid).html(count); 
+	   $("#fbadge-"+floorList[f].floorid).show();
 	 } else {
-	   $("#fbadge-"+floorCanvases[f].floorid).hide();
+	   $("#fbadge-"+floorList[f].floorid).hide();
 	 }
   }
-  
 }
-function Booking_removeFromOrder(sid) {
+function Booking_removeFromOrder(sid,iframe_) {
   if(bookingOrder == null) {
      //bookingOrder = new Hazmana();
      //$("#booking_top_button").removeClass("disabled");  
   } 
-  bookingOrder.removeSid(sid);
+  var iframe = false;
+  var floorList  = floorCanvases;
+  if(iframe_ != undefined && iframe_ == true) {
+    iframe = true;
+	floorList  = if_floorCanvases
+  }
+  bookingOrder.removeSid(sid,iframe_);
   $("#book_bnt_count").html(bookingOrder.listOfSids.length);
+  $("#hazmana_badge").html(bookingOrder.listOfSids.length);
   if(bookingOrder.listOfSids.length == 0) {
     $("#book_bnt_count").hide();
 	 $("#hz_text_o").html('הזמנה ריקה');
 	$("#booking_top_button").addClass("disabled");
+	
+		 $("#hazmana_iframe_button").hide();
+		 $("#hazmana_iframe_button_empty").show();
 	bookingOrder = null;
   }  
   $('#canvas_popover').popover('hide');
+  $("#iframe_popover").popover('hide');
   
-  for(var f = 0 ; f < floorCanvases.length ; f++ ) {
+  for(var f = 0 ; f < floorList.length ; f++ ) {
      var count = 0;
-     for (var s = 0 ; s < floorCanvases[f].shapes.length ; s++ ) {
-	    if(floorCanvases[f].shapes[s].choosen == true) {
+     for (var s = 0 ; s < floorList[f].shapes.length ; s++ ) {
+	    if(floorList[f].shapes[s].choosen == true) {
 		   count++;
 		}
 	 }
 	 if(count > 0) {
-	   $("#fbadge-"+floorCanvases[f].floorid).html(count); 
-	   $("#fbadge-"+floorCanvases[f].floorid).show();
+	   $("#fbadge-"+floorList[f].floorid).html(count); 
+	   $("#fbadge-"+floorList[f].floorid).show();
 	 } else {
-	   $("#fbadge-"+floorCanvases[f].floorid).hide();
+	   $("#fbadge-"+floorList[f].floorid).hide();
 	 }
   }
 }
-function cancelFromOrder(sid) {
-  Booking_removeFromOrder(sid);
+function cancelFromOrder(sid,iframe_) {
+  var iframe = false; 
+  if(iframe_ != undefined && iframe_ == true) {
+    iframe = true; 
+  }
+  Booking_removeFromOrder(sid,iframe);
   if(bookingOrder == null) {
     $('#booking_order_modal').modal('hide');
   } else {

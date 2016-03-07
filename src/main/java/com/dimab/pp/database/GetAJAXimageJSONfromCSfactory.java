@@ -74,14 +74,14 @@ public class GetAJAXimageJSONfromCSfactory {
 
 			if (!floor.getState().getBackgroundType().contains("color")) {
 
-				String fileName_ = usernameRandom +"/"+ placeName + "/" + placeBranchName + "/" + placeID+"/"+"main"+"/"+floorID +"/backgroundImage.png";
+				String fileName_ = usernameRandom +"/"+   placeID+"/"+"main"+"/"+floorID +"/backgroundImage.png";
 		  	    Filter imageVersion = new  FilterPredicate("PID",FilterOperator.EQUAL,placeID);
 		 	    Query piq = new Query("ImageVersion").setFilter(imageVersion);
 		        PreparedQuery sbpiq = datastore.prepare(piq);
 		  		Entity imageVersionEntity = sbpiq.asSingleEntity();
 		  		if (imageVersionEntity != null) {
 		  			int backgroundVersion = (int)(long)imageVersionEntity.getProperty("backgroundVersion");
-		  			fileName_ =  usernameRandom +"/"+ placeName + "/" + placeBranchName+"/"+placeID+"/"+"main"+"/"+floorID+"/backgroundImage"+"_"+backgroundVersion+".png";
+		  			fileName_ =  usernameRandom +"/"+  placeID+"/"+"main"+"/"+floorID+"/backgroundImage"+"_"+backgroundVersion+".png";
 		  		}
 				String bucket = "pp_images"; 
 		  	    GcsFilename gcsFilename = new GcsFilename(bucket, fileName_);
@@ -97,7 +97,7 @@ public class GetAJAXimageJSONfromCSfactory {
 
 			}
 
-			String fileName_ = usernameRandom +"/"+ placeName + "/" + placeBranchName + "/" + placeID+"/"+"main"+"/"+floorID +"/overview.png";
+			String fileName_ = usernameRandom +"/"+   placeID+"/"+"main"+"/"+floorID +"/overview.png";
 			System.out.println(fileName_);
 			Filter imageVersion = new  FilterPredicate("PID",FilterOperator.EQUAL,placeID);
 			Query piq = new Query("ImageVersion").setFilter(imageVersion);
@@ -105,7 +105,7 @@ public class GetAJAXimageJSONfromCSfactory {
 			Entity imageVersionEntity = sbpiq.asSingleEntity();
 			if (imageVersionEntity != null) {
 				int overviewVersion = (int)(long)imageVersionEntity.getProperty("overviewVersion");
-				fileName_ =  usernameRandom +"/"+ placeName + "/" + placeBranchName+"/"+placeID+"/"+"main"+"/"+floorID+"/overview"+"_"+overviewVersion+".png";
+				fileName_ =  usernameRandom +"/"+  placeID+"/"+"main"+"/"+floorID+"/overview"+"_"+overviewVersion+".png";
 			}
 
 			String bucket = "pp_images";
@@ -128,6 +128,8 @@ public class GetAJAXimageJSONfromCSfactory {
 		CanvasStateEdit.setJSONSIDlinks(sid2imgID);
 		CanvasStateEdit.setPlace_(placeName);
 		CanvasStateEdit.setSnif_(placeBranchName);
+	    CanvasStateEdit.setPlaceName(placeName);
+	    CanvasStateEdit.setBranchName(placeBranchName);
 		CanvasStateEdit.setUsernameRandom(usernameRandom);
 		CanvasStateEdit.setPlaceID(placeID);
 		CanvasStateEdit.setUTCoffset(UTCoffcet);
@@ -143,12 +145,12 @@ public class GetAJAXimageJSONfromCSfactory {
 			for (JsonSID_2_imgID shapeImgData : sid2imgID) {
                String imgID = shapeImgData.getImageID();
                if(!gcsurlUpdated.containsKey(imgID)) {
-              	String fileName = usernameRandom +"/"+ placeName + "/" + placeBranchName +  "/" + placeID+"/"+"main" +"/" + imgID + ".png";
+              	String fileName = usernameRandom +"/"+   placeID+"/"+"main" +"/" + imgID + ".png";
    		  	    String bucket = "pp_images"; 
    		  	    GcsFilename gcsFilename = new GcsFilename(bucket, fileName);
    		  	    ImagesService is = ImagesServiceFactory.getImagesService(); 
    		  	    String filename = String.format("/gs/%s/%s", gcsFilename.getBucketName(), gcsFilename.getObjectName());
-   		  	    String servingUrl = is.getServingUrl(ServingUrlOptions.Builder.withGoogleStorageFileName(filename));
+   		  	    String servingUrl = is.getServingUrl(ServingUrlOptions.Builder.withGoogleStorageFileName(filename).secureUrl(true));
    		  	    JsonImageID_2_GCSurl imgID2url = new JsonImageID_2_GCSurl();
    		  	    imgID2url.setImageID(imgID);
    		  	    imgID2url.setGcsUrl(servingUrl);
@@ -264,13 +266,13 @@ public class GetAJAXimageJSONfromCSfactory {
 		String logoUrl = "";
 		if (csEntity.getProperty("logo")!= null && !((String)csEntity.getProperty("logo")).isEmpty() && (String)csEntity.getProperty("logo")!= ""){
 			String bucket = "pp_images"; 
-			String logoFileName = usernameRandom +"/"+placeName+"/"+placeBranchName+"/"+placeID+"/"+"main"+"/logo.png";
+			String logoFileName = usernameRandom +"/" +placeID+"/"+"main"+"/logo.png";
 	  	    GcsFilename gcsFilename = new GcsFilename(bucket, logoFileName);
 	  	    System.out.println("LOGO Upload:" + gcsFilename);
 	  	    ImagesService is = ImagesServiceFactory.getImagesService(); 
 	  	    String filename = String.format("/gs/%s/%s", gcsFilename.getBucketName(), gcsFilename.getObjectName());
 	  	    logoUrl = is.getServingUrl(ServingUrlOptions.Builder.withGoogleStorageFileName(filename));
-	  	    logoUrl = logoUrl + "=s100";
+	  	    logoUrl = logoUrl + "=s150";
 	   }
 	    CanvasStateEdit.setLogosrc(logoUrl);  
 	    return CanvasStateEdit;

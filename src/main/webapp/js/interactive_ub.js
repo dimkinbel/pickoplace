@@ -158,7 +158,7 @@ function createBookingJSON() {
 	   }
 	  }
 	  bookingRequestWrap.bookingList = bookingOrderJSONlist;
-	  bookingRequestWrap.textRquest = $("#user_input_hz").val();
+	  bookingRequestWrap.textRequest = $("#user_input_hz").val();
 	  bookingRequestWrap.weekday = dayOfweek;
 }
 
@@ -240,21 +240,21 @@ function applyBooking() {
 		      success : function(data){
 
 				  $("#loading_text_w").hide();
-				  tk = bookingOrder;
-				  for(var s = 0; s < tk.listOfSids.length;s++) {
-					  bookingsManager.addSidBooking(tk.listOfSids[s].sid,
-							                        parseInt(tk.dateSeconds) + parseInt(tk.start),
-							                        parseInt(tk.dateSeconds) + parseInt(tk.start) + parseInt(tk.period),
-							                        bookingRequestWrap.bookID);
-				  }
-				  updateCloseShapes();
-				  emptyOrder();
-		    	   
+
 			    	  if(data.added==true) {
 			    		  $("#bookingAcceptedModal_header").removeClass("book_modal_fail").addClass("book_modal_success");
 						  $("#bookingAcceptedModal_body").removeClass("book_modal_fail").addClass("book_modal_success");
 						  $("#bookingAcceptedModal_body").html("הזמנתך התקבלה בהצלחה");
 						  $("#bookingAcceptedModal").modal("show");
+						  tk = bookingOrder;
+						  for(var s = 0; s < tk.listOfSids.length;s++) {
+							  bookingsManager.addSidBooking(tk.listOfSids[s].sid,
+									  parseInt(tk.dateSeconds) + parseInt(tk.start),
+									  parseInt(tk.dateSeconds) + parseInt(tk.start) + parseInt(tk.period),
+									  bookingRequestWrap.bookID);
+						  }
+						  updateCloseShapes();
+						  emptyOrder();
 			    	  } else {
 						  $("#bookingAcceptedModal_header").removeClass("book_modal_success").addClass("book_modal_fail");
 						  $("#bookingAcceptedModal_body").removeClass("book_modal_success").addClass("book_modal_fail");

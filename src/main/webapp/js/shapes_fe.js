@@ -12,13 +12,8 @@
 
 // Constructor for Shape objects to hold data for all drawn objects.
 // For now they will just be defined as rectangles.
-var rotate_Shape = new CustomEvent("rotateShape", {
-   detail: {
-       angle: 0
-    }
-});
-
-function Shape(state, x, y, w, h,type,options,angle_) {
+ 
+function ifShape(state, x, y, w, h,type,options,angle_) {
   "use strict";
   // This is a very simple and unsafe constructor. All we're doing is checking if the values exist.
   // "x || 0" just means "if there is a value for x, use that. Otherwise use 0."
@@ -60,13 +55,14 @@ function Shape(state, x, y, w, h,type,options,angle_) {
    var txt = this.options.text;
    this.w = parseInt(ctx.measureText(txt).width + 2);
   }
-  
+    this.isAvailable = true;
     this.sid = randomString(12);
+	this.choosen = false;
   
 }
 
 // Draws this shape to a given context
-Shape.prototype.draw = function(ctx, optionalColor) {
+ifShape.prototype.draw = function(ctx, optionalColor) {
   "use strict";
   var i, cur, half;
   ctx.fillStyle = this.fill;
@@ -76,22 +72,32 @@ Shape.prototype.draw = function(ctx, optionalColor) {
   if(this == this.state.shapeHover && this.booking_options.bookable == true) {
 	  hoverAdd = 2;
   }
-  if (this.angle != 0  && this.type!="line") {
+  if (this.angle != 0 && this.type!="line") {
     ctx.save();
 	ctx.translate(this.x , this.y );
 	ctx.rotate(this.angle * Math.PI / 180);
 	fillX =  0;
 	fillY = 0
    }
+  
   if (this.type == "rectangle" ) {
-    dbDrawRect  (ctx,fillX,fillY,this.w+hoverAdd,this.h+hoverAdd,
-	              this.options.lineColor,
-				  this.options.fillColor,
-				  this.options.alpha,
-				  this.options.salpha,
-				  this.options.sw);
+    if(this.isAvailable == true ) {
+		dbDrawRect  (ctx,fillX,fillY,this.w+hoverAdd,this.h+hoverAdd,
+					  this.options.lineColor,
+					  this.options.fillColor,
+					  this.options.alpha,
+					  this.options.salpha,
+					  this.options.sw);
+	} else {
+		dbDrawRect  (ctx,fillX,fillY,this.w+hoverAdd,this.h+hoverAdd,
+					  colorToGreyscale(this.options.lineColor),
+					  colorToGreyscale(this.options.fillColor),
+					  this.options.alpha,
+					  this.options.salpha,
+					  this.options.sw);	
+	}
   } else if (this.type == "line" ) {
-  //dbText(ctx,x,y,text,font_bold,font_style,font_size,font_color,alpha,shadow,shadow_x,shadow_y,shadow_blur,shadow_color)
+   if(this.isAvailable == true ) { 
       dbLine (ctx,this.options.x1,
 				  this.options.y1,
 				  this.options.x2,
@@ -99,8 +105,17 @@ Shape.prototype.draw = function(ctx, optionalColor) {
 				  this.options.sw,
 				  this.options.salpha,
 				  this.options.lineColor);
-  } else if (this.type == "text" ) {
-    dbText(ctx,fillX,fillY,
+	} else {
+       dbLine (ctx,this.options.x1,
+				  this.options.y1,
+				  this.options.x2,
+				  this.options.y2,
+				  this.options.sw,
+				  this.options.salpha,
+				  colorToGreyscale(this.options.lineColor));
+	}
+  } else if (this.type == "text" ) { 
+        dbText(ctx,fillX,fillY,
 	                 this.options.text,
 	                 this.options.font_bold,
 					 this.options.font_style ,
@@ -113,14 +128,25 @@ Shape.prototype.draw = function(ctx, optionalColor) {
 					 this.options.shadow_blur,
 					 this.options.shadow_color);
   } else if (this.type == "round" ) {
-    dbRoundRect (ctx,fillX,fillY,this.w+hoverAdd,this.h+hoverAdd,
+   if(this.isAvailable == true ) { 
+     dbRoundRect (ctx,fillX,fillY,this.w+hoverAdd,this.h+hoverAdd,
 	              this.options.lineColor,
 				  this.options.fillColor,
 				  this.options.alpha,
 				  this.options.salpha,
 				  this.options.sw,
 				  this.options.roundRad);
+	} else {
+     dbRoundRect (ctx,fillX,fillY,this.w+hoverAdd,this.h+hoverAdd,
+	              colorToGreyscale(this.options.lineColor),
+				  colorToGreyscale(this.options.fillColor),
+				  this.options.alpha,
+				  this.options.salpha,
+				  this.options.sw,
+				  this.options.roundRad);	
+	}
   } else if (this.type == "circle" ) {
+     if(this.isAvailable == true ) { 
     dbCircle (ctx,fillX,fillY,this.w+hoverAdd,this.h+hoverAdd,
 				  this.options.startA,
 				  this.options.endA,
@@ -129,7 +155,18 @@ Shape.prototype.draw = function(ctx, optionalColor) {
 				  this.options.alpha,
 				  this.options.salpha,
 				  this.options.sw);
+	} else {
+    dbCircle (ctx,fillX,fillY,this.w+hoverAdd,this.h+hoverAdd,
+				  this.options.startA,
+				  this.options.endA,
+	              colorToGreyscale(this.options.lineColor),
+				  colorToGreyscale(this.options.fillColor),
+				  this.options.alpha,
+				  this.options.salpha,
+				  this.options.sw);
+	}
   } else if (this.type == "trapex" ) {
+   if(this.isAvailable == true ) { 
     dbTrapez (ctx,fillX,fillY,this.w+hoverAdd,this.h+hoverAdd,
 	              this.options.lineColor,
 				  this.options.fillColor,
@@ -137,10 +174,26 @@ Shape.prototype.draw = function(ctx, optionalColor) {
 				  this.options.salpha,
 				  this.options.sw,
 				  this.options.cutX);
+	} else {
+    dbTrapez (ctx,fillX,fillY,this.w+hoverAdd,this.h+hoverAdd,
+	              colorToGreyscale(this.options.lineColor),
+				  colorToGreyscale(this.options.fillColor),
+				  this.options.alpha,
+				  this.options.salpha,
+				  this.options.sw,
+				  this.options.cutX);
+	}
   } else if (this.type == "image" ) {
-    dbImage (ctx,fillX,fillY,this.w+hoverAdd,this.h+hoverAdd,
+    if(this.isAvailable == true ) {
+      dbImage (ctx,fillX,fillY,this.w+hoverAdd,this.h+hoverAdd,
 	              this.options.imgID,
 				  this.options.alpha);
+	} else {
+	 // Draw black and white
+	  dbImage (ctx,fillX,fillY,this.w+hoverAdd,this.h+hoverAdd,
+	              this.options.imgID,
+				  this.options.alpha,true);
+	}
   }
  
    ctx.restore();
@@ -168,7 +221,7 @@ function toRadians (angle) {
   return angle * (Math.PI / 180);
 }
 // Determine if a point is inside the shape's bounds
-Shape.prototype.contains = function(ctx,mx, my) {
+ifShape.prototype.contains = function(ctx,mx, my) {
   "use strict";
   var mxt = mx;
   var myt = my;
@@ -194,7 +247,7 @@ Shape.prototype.contains = function(ctx,mx, my) {
  
   return isInside
 };
-Shape.prototype.getCorners = function () {
+ifShape.prototype.getCorners = function () {
   var list = [];
   var returnlist = [];
     var xy1 = {};
@@ -243,7 +296,7 @@ Shape.prototype.getCorners = function () {
   }
   return returnlist;
 }
-function CanvasState(canvas) {
+function ifCanvasState(canvas) {
   "use strict";
   // **** First some setup! ****
   
@@ -317,10 +370,10 @@ function CanvasState(canvas) {
   this.selectionHandles = [];
   this.lineselectionHandles = [];
   for (i = 0; i < 1; i += 1) {
-    this.selectionHandles.push(new Shape(this));
+    this.selectionHandles.push(new ifShape(this));
   }
   for (i = 0; i < 2; i += 1) {
-    this.lineselectionHandles.push(new Shape(this));
+    this.lineselectionHandles.push(new ifShape(this));
   }
   
   // **** Then events! ****
@@ -336,8 +389,7 @@ function CanvasState(canvas) {
   canvas.addEventListener('selectstart', function(e) { e.preventDefault(); return false; }, false);
   // Up, down, and move are for dragging
 
-  canvas.addEventListener('mousedown', function(e) {
-	  canvasMouseDown = true;
+  canvas.addEventListener('mousedown', function(e) { 
     var mouse, mx, my, shapes, l, i, mySel;
 	 if(e.which == 3) //1: left, 2: middle, 3: right
        { 
@@ -360,34 +412,26 @@ function CanvasState(canvas) {
     for (i = l-1; i >= 0; i -= 1) {
     	
       if (shapes[i].contains(myState.ctx ,mx, my) && shapes[i].type != "text" && shapes[i].type != "line" ) {
-    	  if (shapes[i].booking_options.bookable == false) {} else {
+    	  if (shapes[i].booking_options.bookable == false  ) {} else {
 		        mySel = shapes[i];
 				myState.mousemoveclicked = null;
 		        if( myState.selection == null) {
 				   myState.listSelected.push(mySel);
 				   myState.selection = mySel;		
-				   tcanvas_.addTshapeList(mySel.sid);
+				   //tcanvas_.addTshapeList(mySel.sid);
 				   
-				   appendSelectedImage(mySel);
+				   //appendSelectedImage(mySel);
+				   showFloorPopoverIF(e.pageX, e.pageY,mySel);
 				} else {
-				  if(myState.listSelected.contains(mySel)) {
-				    myState.listSelected.remove(mySel);
-					tcanvas_.removeTshapeList(mySel.sid);
-					if(myState.listSelected.length == 0) {
-					   myState.selection = null;
-					} else {
-					   myState.selection = myState.listSelected[0];
-					}
-					removeSelectedImage(mySel)
+				  if(myState.selection == mySel) {
+				    showFloorPopoverIF(e.pageX, e.pageY,mySel); 
 				  } else {
-				    myState.listSelected.push(mySel);
+				    myState.listSelected.remove(myState.selection);
+					myState.listSelected.push(mySel);
 				    myState.selection = mySel;	
-					tcanvas_.addTshapeList(mySel.sid);
-					appendSelectedImage(mySel);
+				    showFloorPopoverIF(e.pageX, e.pageY,mySel);
 				  }
-				 
-				}		  
-		        updatePersonsSpinner();
+				}		   
 				myState.valid = false;
 				return;
     	  }
@@ -395,7 +439,8 @@ function CanvasState(canvas) {
     }
     // havent returned means we have failed to select anything.
     // If there was an object selected, we deselect it
-
+      myState.selection = null;
+	  myState.listSelected = [];
 	  myState.canvasDrag  = true;
 	 
 	  myState.prevCmx = mox ;
@@ -403,80 +448,37 @@ function CanvasState(canvas) {
       myState.valid = false; // Need to clear the old selection border
 
   }, true);
-  
- canvas.addEventListener("mouseout", function(e) {
-      myState.mouseOutEvent();
+  canvas.addEventListener("mouseout", function(e) {	   
+		 myState.mouseOutEvent();
+  }, true);
+
+  canvas.addEventListener('mousemove', function(e) {
+	         myState.mouseMoveEvent(e);
+  }, true);
+  canvas.addEventListener('mouseup', function(e) {
+	    myState.mouseUpEvent();
   }, true);
  
- canvas.addEventListener('mousemove', function(e) {
-	         myState.mouseMoveEvent(e);
- }, true);
- 
- canvas.addEventListener('mouseup', function(e) {
-	    myState.mouseUpEvent();
- }, true);
- 
+
   
   this.selectionColor = '#CC0000';
   this.selectionWidth = 2;  
   this.selectionBoxSize = 6;
   this.selectionBoxColor = 'darkred';
   this.interval = 30;
-  setInterval(function() { myState.draw(); }, myState.interval);
+  this.intervalID = setInterval(function() { myState.draw(); }, myState.interval);
 }
-CanvasState.prototype.mouseMoveEvent = function(e) {
-	var myState = this;
-    var mouse = myState.getMouse(e),
-    mx = mouse.x,
-    my = mouse.y,
-	mox = mouse.orgx,
-	moy = mouse.orgy,
-	orgx = mouse.orgx , orgy = mouse.orgy ,
-    oldx, oldy, oldw, oldh ,i, cur;
-
-	if (myState.canvasDrag) {
+ifCanvasState.prototype.resetInterval = function() {
+   myState = this;
+   this.intervalID = setInterval(function() { myState.draw(); }, myState.interval);
+}
+ifCanvasState.prototype.mouseOutEvent = function() {
 	   
-	    var leftDrag = mox - myState.prevCmx;
-		var topDrag = moy - myState.prevCmy;
-		
-	 //  if (myState.main) {
-		 document.getElementById(myState.scrollID).scrollTop -= topDrag;
-		 document.getElementById(myState.scrollID).scrollLeft -= leftDrag;
-	//   }
-		 myState.prevCmx = mox ;
-	     myState.prevCmy = moy ;	
-		 myState.valid = false;
-	}
+	};
 	
-	 var contains = false;	 
-	 var prevHover = myState.shapeHover;
-	 for (i = 0; i <  myState.shapes.length ; i ++) {
-		 if(myState.shapes[i].type!="text" && myState.shapes[i].type!="line" && myState.shapes[i].booking_options.bookable == true) {
-			 // Line And Text not bookable
-			  if (myState.shapes[i].contains(myState.ctx ,mx, my)) {
-				  this.canvas.style.cursor='pointer';
-				myState.shapeHover = myState.shapes[i];
-				contains = true;
-			  }
-		 }
-	}
+ifCanvasState.prototype.mouseUpEvent = function() {
+	var myState = this; 
 	
-	if (!contains) {
-		this.canvas.style.cursor='auto';
-	   myState.shapeHover = null;
-	}
-	if(myState.shapeHover!=prevHover) {
-	    myState.valid = false;
-	}	
-};
-CanvasState.prototype.mouseOutEvent = function() {
-	  if(canvasMouseDown) {
-	     canvasMouseOut = true;
-	  }
- };
-CanvasState.prototype.mouseUpEvent = function() {
-	var myState = this;
-	canvasMouseDown = false;
     myState.dragging = false;
     myState.resizeDragging = false;
     myState.expectResize = -1;
@@ -504,36 +506,83 @@ CanvasState.prototype.mouseUpEvent = function() {
     }
 	if (myState.canvasDrag) {
 	   myState.canvasDrag = false;
-	}	
+	}		
+}
+ifCanvasState.prototype.mouseMoveEvent = function(e) {
+	var myState = this;
+    var mouse = myState.getMouse(e),
+    mx = mouse.x,
+    my = mouse.y,
+	mox = mouse.orgx,
+	moy = mouse.orgy,
+	orgx = mouse.orgx , orgy = mouse.orgy ,
+    oldx, oldy, oldw, oldh ,i, cur;
+	
+	if (myState.canvasDrag) {
+	   
+	    var leftDrag = mox - myState.prevCmx;
+		var topDrag = moy - myState.prevCmy;
+		
+	 //  if (myState.main) {
+		 document.getElementById(myState.scrollID).scrollTop -= topDrag;
+		 document.getElementById(myState.scrollID).scrollLeft -= leftDrag;
+	//   }
+		 myState.prevCmx = mox ;
+	     myState.prevCmy = moy ;	
+		 myState.valid = false;
+	}
+	
+	 var contains = false;	 
+	 var prevHover = myState.shapeHover;
+	 for (i = 0; i <  myState.shapes.length ; i ++) {
+		 if(myState.shapes[i].type!="text" && myState.shapes[i].type!="line" && myState.shapes[i].booking_options.bookable == true) {
+			 // Line And Text not bookable
+			  if (myState.shapes[i].contains(myState.ctx ,mx, my)) {
+				this.canvas.style.cursor='pointer';
+				myState.shapeHover = myState.shapes[i];
+				contains = true;
+			  }
+		 }
+	}
+	
+	if (!contains) {
+	   this.canvas.style.cursor='auto';
+	   myState.shapeHover = null;
+	} 
+	if(myState.shapeHover!=prevHover) {
+	    myState.valid = false;
+	}
+
 };
-CanvasState.prototype.rotateSelection = function(val) {
+ifCanvasState.prototype.rotateSelection = function(val) {
  if (this.selection != null) {
    this.valid = false;
     this.selection.angle = val;
 	}
-}
+};
 
-CanvasState.prototype.addShape = function(shape) {
+ifCanvasState.prototype.addShape = function(shape) {
   "use strict";
   if(this.bgmode == true) {
 	   shape.bookableShape=false;
 	   this.bgshapes.push(shape);
- } else {
-     this.shapes.push(shape);
- }
+  } else {
+      this.shapes.push(shape);
+  }
+ 
   this.valid = false;
 };
 
 
-CanvasState.prototype.clear = function() {
+ifCanvasState.prototype.clear = function() {
   "use strict";
   this.ctx.clearRect(0, 0, this.width/this.zoom, this.height/this.zoom);
 };
-function sizeDown(canvas_ref_,scrolled_id) {
+function iFsizeDown(canvas_ref_,scrolled_id) {
     var canvas_ref = canvas_ref_;
    for (var f = 0 ;f < 0 ; f++) {
-     if(floorid_ == floorCanvases[f].floorid) {
-	     canvas_ref = floorCanvases[f];
+     if(floorid_ == if_floorCanvases[f].floorid) {
+	     canvas_ref = if_floorCanvases[f];
 	 }
    }
   var newWidth = canvas_ref.width * 0.9;
@@ -549,11 +598,11 @@ function sizeDown(canvas_ref_,scrolled_id) {
   $('#'+scrolled_id).perfectScrollbar();
   $('#'+scrolled_id).perfectScrollbar('update');
 }
-function sizeUp(canvas_ref_,scrolled_id) {
+function iFsizeUp(canvas_ref_,scrolled_id) {
     var canvas_ref = canvas_ref_;
    for (var f = 0 ;f < 0 ; f++) {
-     if(floorid_ == floorCanvases[f].floorid) {
-	     canvas_ref = floorCanvases[f];
+     if(floorid_ == if_floorCanvases[f].floorid) {
+	     canvas_ref = if_floorCanvases[f];
 	 }
    }
   canvas_ref.zoom *= 1/0.9;
@@ -593,17 +642,17 @@ function zoomReset(state_) {
      $('#'+state.scrollID).perfectScrollbar('update');
  }
 }
-function zoomResetWrap(canvas_ref_,dividwrap,scrolled_id) {
+function iFzoomResetWrap(canvas_ref_,dividwrap,scrolled_id) { 
   var state = canvas_ref_;
    for (var f = 0 ;f < 0 ; f++) {
-     if(floorid_ == floorCanvases[f].floorid) {
-	     state = floorCanvases[f];
+     if(floorid_ == if_floorCanvases[f].floorid) {
+	     state = if_floorCanvases[f];
 	 }
    }
 
   
-  var ww = document.getElementById(dividwrap).offsetWidth ;
-  var wh = document.getElementById(dividwrap).offsetHeight ;
+  var ww = document.getElementById(scrolled_id).offsetWidth  ;
+  var wh = document.getElementById(scrolled_id).offsetHeight  ;
   
 
   var required_zoom;
@@ -633,7 +682,7 @@ function zoomResetWrap(canvas_ref_,dividwrap,scrolled_id) {
 }
 // While draw is called as often as the INTERVAL variable demands,
 // It only ever does something if the canvas gets invalidated by our code
-CanvasState.prototype.draw = function() {
+ifCanvasState.prototype.draw = function() {
   "use strict";
   var ctx, shapes, l, i, shape, mySel;
   // if our state is invalid, redraw and validate!
@@ -705,45 +754,79 @@ CanvasState.prototype.draw = function() {
 		}
 
     // draw all shapes
-    l = shapes.length;
+
     for (i = 0; i < this.bgshapes.length; i += 1) {
 		  this.bgshapes[i].draw(ctx);
 	} 
 	 l = shapes.length;
-	for (i = 0; i < l; i += 1) {
+	for (i = 0; i < l; i += 1) { 
 		  shapes[i].draw(ctx);
+		  if(shapes[i].choosen == true) {
+			  var mins;
+			  if (shapes[i].h < 50 || shapes[i].w < 50) {
+			     mins = (shapes[i].h < shapes[i].w ? shapes[i].h : shapes[i].w) * 0.8;
+			     
+			  } else {
+			     mins = 40;
+			  }
+			  ctx.drawImage(document.getElementById("server_v_logo"),shapes[i].x ,shapes[i].y-mins,mins,mins);	
+		  }
+		
 	}     
     // draw selection
     // right now this is just a stroke along the edge of the selected Shape
 	
 
 		// draw multiple selection
-	if(this.listSelected.length > 0) {
-	    for (var s = 0; s < this.listSelected.length ; s++) {
-			  mySel = this.listSelected[s];
+
+	  if(this.listSelected.length > 0) {
+		    for (var s = 0; s < this.listSelected.length ; s++) {
+				  mySel = this.listSelected[s];
+				  var fillX = mySel.x ;
+				  var fillY = mySel.y ;				  
+				  if (mySel.angle != 0) {
+					   ctx.save();
+					   ctx.translate(mySel.x , mySel.y );
+					   ctx.rotate(mySel.angle * Math.PI / 180);
+					   fillX =  0;
+					   fillY = 0;
+				  }
+				   dbRoundRect(ctx,fillX,fillY,mySel.w+10,mySel.h+10,"#00FF99","transparent",0,0.8,2,15);//(ctx,x,y,w,h,strokeColor,fillColor,alpha,salpha,sw,R) 
+				   if (mySel.angle != 0) {
+					  ctx.restore();
+				   }
+				   var mins;
+				   if (mySel.h < 50 || mySel.w < 50) {
+					   mins = (mySel.h < mySel.w ? mySel.h : mySel.w) * 0.8;
+					   
+				   } else {
+					   mins = 40;
+				   }
+				  // ctx.drawImage(document.getElementById("server_v_logo"),mySel.x ,mySel.y-mins,mins,mins);	   
+			}
+		}
+		// ** Add stuff you want drawn on top all the time here **
+		
+		//Draw hover
+		if(this.shapeHover!=null) {
+			  mySel = this.shapeHover;
 			  var fillX = mySel.x ;
 			  var fillY = mySel.y ;
+			  ctx.save();
 			  if (mySel.angle != 0) {
-				   ctx.save();
+				   
 				   ctx.translate(mySel.x , mySel.y );
 				   ctx.rotate(mySel.angle * Math.PI / 180);
 				   fillX =  0;
 				   fillY = 0;
-			  }
-			   if (mySel.angle != 0) {
-				  ctx.restore();
-			   }
-			   var mins;
-			   if (mySel.h < 50 || mySel.w < 50) {
-				   mins = (mySel.h < mySel.w ? mySel.h : mySel.w) * 0.8;
+				}	 
 
-			   } else {
-				   mins = 40;
-			   }
-			   ctx.drawImage(document.getElementById("server_v_logo"),mySel.x ,mySel.y-mins,mins,mins);
+                 // dbRoundRect(ctx,fillX,fillY,mySel.w+10,mySel.h+10,"#00FF99","white",0,1,2,15);
+			   if (mySel.angle != 0) {
+				
+			   }	
+			   ctx.restore();			
 		}
-	}
-		// ** Add stuff you want drawn on top all the time here **
     
     this.valid = true;
 
@@ -753,36 +836,13 @@ CanvasState.prototype.draw = function() {
 
 // Creates an object with x and y defined, set to the mouse position relative to the state's canvas
 // If you wanna be super-correct this can be tricky, we have to worry about padding and borders
-CanvasState.prototype.getMouse = function(e) {
+ifCanvasState.prototype.getMouse = function(e) {
   "use strict";
   var element = this.canvas, offsetX = 0, offsetY = 0, mx, my;
-  
-  // Compute the total offset
-  var scrollTop = 0;
-  var scrollLeft = 0;
-  if (element.offsetParent !== undefined) {
-    do {
-	   scrollTop = 0;
-	   scrollLeft = 0;
-	   var leftb = parseInt(getComputedStyle(element,null).getPropertyValue('border-left-width'),10);
-	   var topb = parseInt(getComputedStyle(element,null).getPropertyValue('border-top-width'),10);
-	   if(element.id == this.scrollID) {
-	      scrollTop = element.scrollTop;
-		  scrollLeft = element.scrollLeft;
-       }
-      offsetX += element.offsetLeft + leftb - scrollLeft;
-      offsetY += element.offsetTop  + topb - scrollTop;
-      element = element.offsetParent;
-    } while (element);
-  }
+  var parentOffset = $(this.canvas).parent().offset();
 
-  // Add padding and border style widths to offset
-  // Also add the <html> offsets in case there's a position:fixed bar
-  offsetX += this.stylePaddingLeft + this.styleBorderLeft + this.htmlLeft;
-  offsetY += this.stylePaddingTop + this.styleBorderTop + this.htmlTop;
-  //alert(this.stylePaddingLeft);
-  mx = parseInt((e.pageX - offsetX)/this.zoom);
-  my = parseInt((e.pageY - offsetY)/this.zoom);
+  mx = parseInt((e.pageX - parentOffset.left)/this.zoom);
+  my = parseInt((e.pageY -  parentOffset.top)/this.zoom);
 
   // We return a simple javascript object (a hash) with x and y defined
   return {x: mx, y: my , orgx: e.pageX , orgy: e.pageY};
@@ -812,7 +872,17 @@ function dbDrawRect(ctx,x,y,w,h,strokeColor,fillColor,alpha,salpha,sw) {
   ctx.globalAlpha = 1; 
   ctx.lineWidth = 1;
 }
-
+function dbDottedRect (ctx,x,y,w,h,dotColor1,dotColor2,salpha,sw) {
+  ctx.save();
+ // ctx.lineWidth = sw;
+ // ctx.strokeStyle = dotColor1;
+ // ctx.globalAlpha = salpha;
+  ctx.setLineDash([2,10]);
+  dbDrawRect (ctx,x,y,w,h,dotColor1,"white",0,1,sw);
+  ctx.lineDashOffset = -6;
+  dbDrawRect (ctx,x,y,w,h,dotColor2,"white",0,1,sw);
+  ctx.restore();
+}
 function dbRoundRect (ctx,x,y,w,h,strokeColor,fillColor,alpha,salpha,sw,R) {
 //
 //    (cx,cy)   (cx+r,cy)   (cx+w/2,cy)      (cx+w-r,cy)  (cx+w,cy)      
@@ -960,224 +1030,58 @@ function dbText(ctx,x,y,text,font_bold,font_stle,font_size,font_color,alpha,shad
   ctx.fillText(text, x, y);
   ctx.restore();
 }
-function dbImage(ctx,x,y,w,h,imgID,alpha) {
+function dbImage(ctx,x,y,w,h,imgID,alpha,baw) {
    ctx.globalAlpha = alpha;
    var img_=  document.getElementById(imgID);
-   ctx.drawImage(img_,x-0.5*w,y-0.5*h,w,h);
+
+   if(baw == undefined || baw == false) {
+       ctx.drawImage(img_,x-0.5*w,y-0.5*h,w,h);	 
+	} else {
+	   if(document.getElementById(imgID+"_baw") != null) {
+         img_=  document.getElementById(imgID+"_baw");
+		 ctx.globalAlpha = alpha*0.5;
+	     ctx.drawImage(img_,x-0.5*w,y-0.5*h,w,h);	
+	   } else {
+	     ctx.drawImage(img_,x-0.5*w,y-0.5*h,w,h);
+	   }
+	}
    ctx.globalAlpha = 1;
 }
-function allShapesSpreadHorisontal() {
-  if(canvas_.listSelected.length > 1) {
-      //TBD
-  }
+function hexToRgb(hex) {
+    // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
+    var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+    hex = hex.replace(shorthandRegex, function(m, r, g, b) {
+        return r + r + g + g + b + b;
+    });
+
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16)
+    } : null;
 }
-function allShapesSpreadVertical() {
-  if(canvas_.listSelected.length > 1) {
-      //TBD
-  }
+function getRGB(RGBstring) {
+  var result = RGBstring.match(/[0-9]+/g);
+  return {r: parseInt(result[0]) , g:parseInt(result[1]) ,b:parseInt(result[2])};
 }
-function allShapesLeft() {
-  if(canvas_.listSelected.length > 1) {
-      var list = canvas_.listSelected;
-	  var mostLeft = 1000000;
-	  var mostLeftShape = null;
-	  var sleft = {};
-	  for (var s = 0 ; s < list.length ; s ++ ) {
-		var shape = list[s];
-		console.log(shape.sid + ":x = " + shape.x);
-		var mostLefts = 1000000;
-		var listxy = shape.getCorners();
-		console.log(listxy);
-		for (var i = 0 ; i < 8; i+=2) {
-		   if(listxy[i]<mostLeft) {
-			mostLeft = listxy[i];
-			mostLeftShape = shape;
-		   }
-		   if(listxy[i]<mostLefts) {
-			  mostLefts = listxy[i];
-			  sleft[shape.sid] = mostLefts;
-		   }
-		} 
-		console.log("Shape left= "+mostLefts);
-	  }
-	  console.log("Most left: "+mostLeft);
-	  for (var s = 0 ; s < list.length ; s ++ ) {
-		 if (list[s] != mostLeftShape) {
-			var shape = list[s];
-			var left = sleft[shape.sid];
-			var diff = left - mostLeft;
-			shape.x -= diff;
-			if (shape.type=="line") {
-			  shape.options.x1 -= diff;
-			  shape.options.x2 -= diff;
-			}
-			shape.state.valid = false;
-		 }
-	  }
+function colorToGreyscale(color) {
+  var rgb = {};
+  if(color.indexOf("#") > -1) {
+    rgb = hexToRgb(color);
+  } else if(color.indexOf("rgb") > -1) {
+    rgb = getRGB(color);
+  } else {
+     d = document.getElementById("baw_images");
+     d.style.color = color; 
+     //Color in RGB 
+     rgb = getRGB(window.getComputedStyle(d).color);
   }
+  var grayscale = parseInt(rgb.r * .3 + rgb.g * .59 + rgb.b * .11);
+  return "rgb("+grayscale+","+grayscale+","+grayscale+")";
 }
 
-function allShapesRight() {
-  if(canvas_.listSelected.length > 1) {
-      var list = canvas_.listSelected;
-	  var mostRight = -1000000;
-	  var mostRightShape = null;
-	  var sright = {};
-	  for (var s = 0 ; s < list.length ; s ++ ) {
-		var shape = list[s];
-		//console.log(shape.sid + ":x = " + shape.x);
-		var mostRights = -1000000;
-		var listxy = shape.getCorners();
-		//console.log(listxy);
-		for (var i = 0 ; i < 8; i+=2) {
-		   if(listxy[i]>mostRight) {
-			mostRight = listxy[i];
-			mostRightShape = shape;
-		   }
-		   if(listxy[i]>mostRights) {
-			  mostRights = listxy[i];
-			  sright[shape.sid] = mostRights;
-		   }
-		} 
-		//console.log("Shape left= "+mostLefts);
-	  }
-	  //console.log("Most left: "+mostLeft);
-	  for (var s = 0 ; s < list.length ; s ++ ) {
-		 if (list[s] != mostRightShape) {
-			var shape = list[s];
-			var right = sright[shape.sid];
-			var diff = mostRight - right;
-			shape.x += diff;
-			if (shape.type=="line") {
-			  shape.options.x1 += diff;
-			  shape.options.x2 += diff;
-			}
-			shape.state.valid = false;
-		 }
-	  }
-  }
-}
-function allShapesCenter() {
-  if(canvas_.listSelected.length > 1) {
-     var list = canvas_.listSelected;
-     if(canvas_.selection != null) {
-	    var xs = canvas_.selection.x;
-		for (var s = 0 ; s < list.length ; s ++ ) {
-		  var shape = list[s];
-		  if (shape!= canvas_.selection) {
-		    var diff = shape.x - xs;
-		    shape.x = xs;
-		    if (shape.type=="line") {
-			  shape.options.x1 -= diff;
-			  shape.options.x2 -= diff;
-			}
-			canvas_.valid = false;
-		  }
-		}
-	 } 
-  }
-}
-function allShapesBottom() {
-  if(canvas_.listSelected.length > 1) {
-      var list = canvas_.listSelected;
-	  var mostBottom = -1000000;
-	  var mostBottomShape = null;
-	  var sright = {};
-	  for (var s = 0 ; s < list.length ; s ++ ) {
-		var shape = list[s];
-		//console.log(shape.sid + ":x = " + shape.x);
-		var mostBottoms = -1000000;
-		var listxy = shape.getCorners();
-		//console.log(listxy);
-		for (var i = 1 ; i < 8; i+=2) {
-		   if(listxy[i]>mostBottom) {
-			mostBottom = listxy[i];
-			mostBottomShape = shape;
-		   }
-		   if(listxy[i]>mostBottoms) {
-			  mostBottoms = listxy[i];
-			  sright[shape.sid] = mostBottoms;
-		   }
-		} 
-		//console.log("Shape left= "+mostLefts);
-	  }
-	  //console.log("Most left: "+mostLeft);
-	  for (var s = 0 ; s < list.length ; s ++ ) {
-		 if (list[s] != mostBottomShape) {
-			var shape = list[s];
-			var bottom = sright[shape.sid];
-			var diff = mostBottom - bottom;
-			shape.y += diff;
-			if (shape.type=="line") {
-			  shape.options.y1 += diff;
-			  shape.options.y2 += diff;
-			}
-			shape.state.valid = false;
-		 }
-	  }
-  }
-}
 
-function allShapesTop() {
-  if(canvas_.listSelected.length > 1) {
-      var list = canvas_.listSelected;
-	  var mostTop = 1000000;
-	  var mostTopShape = null;
-	  var sright = {};
-	  for (var s = 0 ; s < list.length ; s ++ ) {
-		var shape = list[s];
-		//console.log(shape.sid + ":x = " + shape.x);
-		var mostTops = 1000000;
-		var listxy = shape.getCorners();
-		//console.log(listxy);
-		for (var i = 1 ; i < 8; i+=2) {
-		   if(listxy[i]<mostTop) {
-			mostTop = listxy[i];
-			mostTopShape = shape;
-		   }
-		   if(listxy[i]<mostTops) {
-			  mostTops = listxy[i];
-			  sright[shape.sid] = mostTops;
-		   }
-		} 
-		//console.log("Shape left= "+mostLefts);
-	  }
-	  //console.log("Most left: "+mostLeft);
-	  for (var s = 0 ; s < list.length ; s ++ ) {
-		 if (list[s] != mostTopShape) {
-			var shape = list[s];
-			var top = sright[shape.sid];
-			var diff = top - mostTop;
-			shape.y -= diff;
-			if (shape.type=="line") {
-			  shape.options.y1 -= diff;
-			  shape.options.y2 -= diff;
-			}
-			shape.state.valid = false;
-		 }
-	  }
-  }
-}
-function allShapesMiddle() {
-  if(canvas_.listSelected.length > 1) {
-     var list = canvas_.listSelected;
-     if(canvas_.selection != null) {
-	    var ys = canvas_.selection.y;
-		for (var s = 0 ; s < list.length ; s ++ ) {
-		  var shape = list[s];
-		  if (shape!= canvas_.selection) {
-		    var diff = shape.y - ys;
-		    shape.y = ys;
-		    if (shape.type=="line") {
-			  shape.options.y1 -= diff;
-			  shape.options.y2 -= diff;
-			}
-			canvas_.valid = false;
-		  }
-		}
-	 } 
-  }
-}
 Array.prototype.remove = function(value) {
 var idx = this.indexOf(value);
 if (idx != -1) {
@@ -1193,4 +1097,13 @@ Array.prototype.contains = function(obj) {
         }
     }
     return false;
+}
+Math.degrees = function(rad)
+{
+  return rad*(180/Math.PI);
+}
+
+Math.radians = function(deg)
+{
+  return deg * (Math.PI/180);
 }

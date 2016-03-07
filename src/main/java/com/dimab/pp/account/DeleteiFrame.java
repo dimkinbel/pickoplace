@@ -1,6 +1,7 @@
 package com.dimab.pp.account;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,7 +32,7 @@ import com.google.appengine.api.datastore.TransactionOptions;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
- 
+import com.google.gson.reflect.TypeToken;
 
 
 public class DeleteiFrame extends HttpServlet {
@@ -66,53 +67,32 @@ public class DeleteiFrame extends HttpServlet {
 		}
 		String placeIDvalue = request.getParameter("pid");
 		String iFID = request.getParameter("ifid");
-		
-		Filter ifidfilter = new  FilterPredicate("ifid",FilterOperator.EQUAL,iFID);
-	    Query piq = new Query("IFrames").setFilter(ifidfilter);
-	    PreparedQuery sbpiq = datastore.prepare(piq);
-	  	Entity ifidEntity = sbpiq.asSingleEntity();
-	  	if (ifidEntity != null) {
-	  			datastore.delete(ifidEntity.getKey());
-	  			txn.commit();
-	  			map.put("status", "removed");
-	  	} else {
-	  			map.put("status", "notremoved");
-	  	}
-		List<IFresponse> ifresponse = new ArrayList<IFresponse>();  
-		
-		Filter ifidfilterList = new  FilterPredicate("pid",FilterOperator.EQUAL,placeIDvalue);
- 	    Query piql = new Query("IFrames").setFilter(ifidfilterList);
-        PreparedQuery sbpiql = datastore.prepare(piql);
-
-		for (Entity iframeEntity : sbpiql.asIterable()) {
-			String ifid = (String)iframeEntity.getProperty("ifid");
-			String uid = (String)iframeEntity.getProperty("savedby");
-  			Date date_ = (Date)iframeEntity.getProperty("date");
-  			String iframe_ = (String)iframeEntity.getProperty("ifjson");
-			IFsave SaveObject = JsonUtils.deserialize(iframe_, IFsave.class);
-	        SimpleDateFormat dateFormat = new SimpleDateFormat("wwMMMy HH:mm");
-	        System.out.println("date: " + dateFormat.format( date_ ) );
-	        
-	        IFresponse ifresp = new IFresponse();
-	        ifresp.setDate(dateFormat.format( date_ ));
-	        ifresp.setIfid(ifid);
-	        ifresp.setSavedby(uid);
-	        ifresp.setTime(date_.getTime());
-	        ifresp.setIframedata(SaveObject);
-	        ifresponse.add(ifresp);
-	        
-		}
-		Collections.sort(ifresponse, new Comparator<IFresponse>(){
-			@Override
-			public int compare(IFresponse o1, IFresponse o2) {				
-				return -1 * o1.getTime().compareTo(o2.getTime());
+		Filter placeIdFilter  = new  FilterPredicate("placeUniqID",FilterOperator.EQUAL,placeIDvalue);
+		Query q = new Query("CanvasState").setFilter(placeIdFilter);
+		PreparedQuery pq = datastore.prepare(q);
+		Entity userCanvasState = pq.asSingleEntity();
+		boolean allowedUser = false;
+		if (userCanvasState != null) {
+			Type closeDateType = new TypeToken<List<String>>(){}.getType();
+			List<String> admins = JsonUtils.deserialize((String) userCanvasState.getProperty("adminList"),closeDateType);
+			if(admins.contains(username_email)) {
+				allowedUser = true;
+				map.put("valid",true);
 			}
-		});
-		if(ifresponse.size()>0) {
-			map.put("size", ifresponse.size());
-			map.put("list", ifresponse);
-		} else {
-			map.put("size", 0);
+
+		}
+		if(allowedUser) {
+			Filter ifidfilter = new FilterPredicate("ifid", FilterOperator.EQUAL, iFID);
+			Query piq = new Query("IFrames").setFilter(ifidfilter);
+			PreparedQuery sbpiq = datastore.prepare(piq);
+			Entity ifidEntity = sbpiq.asSingleEntity();
+			if (ifidEntity != null) {
+				datastore.delete(ifidEntity.getKey());
+				txn.commit();
+				map.put("status", "removed");
+			} else {
+				map.put("status", "notremoved");
+			}
 		}
 		
 		response.setContentType("application/json");

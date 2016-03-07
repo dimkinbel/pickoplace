@@ -110,14 +110,14 @@ public class EditFormfromAccount extends HttpServlet {
 				
 				if (!floor.getState().getBackgroundType().contains("color")) {
 					String floorID=floor.getFloorid();
-					String fileName_ = usernameRandom +"/"+ placeName + "/" + placeBranchName + "/" + placeID+"/"+"main"+"/"+floorID +"/backgroundImage.png";
+					String fileName_ = usernameRandom +"/"+  placeID+"/"+"main"+"/"+floorID +"/backgroundImage.png";
 			  	    Filter imageVersion = new  FilterPredicate("PID",FilterOperator.EQUAL,placeID);
 			 	    Query piq = new Query("ImageVersion").setFilter(imageVersion);
 			        PreparedQuery sbpiq = datastore.prepare(piq);
 			  		Entity imageVersionEntity = sbpiq.asSingleEntity();
 			  		if (imageVersionEntity != null) {
 			  			int backgroundVersion = (int)(long)imageVersionEntity.getProperty("backgroundVersion");
-			  			fileName_ =  usernameRandom +"/"+ placeName + "/" + placeBranchName+"/"+placeID+"/"+"main"+"/"+floorID+"/backgroundImage"+"_"+backgroundVersion+".png";
+			  			fileName_ =  usernameRandom +"/"+  placeID+"/"+"main"+"/"+floorID+"/backgroundImage"+"_"+backgroundVersion+".png";
 			  		}
 					String bucket = "pp_images"; 
 			  	    GcsFilename gcsFilename = new GcsFilename(bucket, fileName_);
@@ -161,7 +161,7 @@ public class EditFormfromAccount extends HttpServlet {
 				for (JsonSID_2_imgID shapeImgData : sid2imgID) {
 	                 String imgID = shapeImgData.getImageID();
 	                 if(!gcsurlUpdated.containsKey(imgID)) {
-	                	String fileName = usernameRandom +"/"+ placeName + "/" + placeBranchName +  "/" + placeID+"/"+"main" +"/" + imgID + ".png";
+	                	String fileName = usernameRandom +"/"+   placeID+"/"+"main" +"/" + imgID + ".png";
 	     		  	    String bucket = "pp_images"; 
 	     		  	    GcsFilename gcsFilename = new GcsFilename(bucket, fileName);
 	     		  	    System.out.println(gcsFilename);

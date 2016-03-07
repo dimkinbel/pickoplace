@@ -30,7 +30,7 @@ import com.google.gson.reflect.TypeToken;
 
 public class GetPlaceInfoFactory {
   @SuppressWarnings("unchecked")
-public PlaceInfo getPlaceInfo (DatastoreService datastore , Entity csEntity , int ovrv_width) {
+public PlaceInfo getPlaceInfo (DatastoreService datastore , Entity csEntity , int ovrv_width , boolean includePhotos,boolean includeRating) {
 	    PlaceInfo placeInfo = new PlaceInfo();
 	    UserPlace userPlace = new UserPlace();
 	    
@@ -87,7 +87,7 @@ public PlaceInfo getPlaceInfo (DatastoreService datastore , Entity csEntity , in
 		}
 
   		// Get serving Overview URL;
-  		String fileName_ = userRnd +"/"+ placeName + "/" + placeBranchName + "/" + placeID+"/"+"main"+"/"+mainFloorID +"/overview.png";
+  		String fileName_ = userRnd +"/"+   placeID+"/"+"main"+"/"+mainFloorID +"/overview.png";
   		System.out.println(fileName_);
   		Filter imageVersion = new  FilterPredicate("PID",FilterOperator.EQUAL,placeID);
  	    Query piq = new Query("ImageVersion").setFilter(imageVersion);
@@ -95,7 +95,7 @@ public PlaceInfo getPlaceInfo (DatastoreService datastore , Entity csEntity , in
   		Entity imageVersionEntity = sbpiq.asSingleEntity();
   		if (imageVersionEntity != null) {
   			int overviewVersion = (int)(long)imageVersionEntity.getProperty("overviewVersion");
-  			fileName_ =  userRnd +"/"+ placeName + "/" + placeBranchName+"/"+placeID+"/"+"main"+"/"+mainFloorID+"/overview"+"_"+overviewVersion+".png";
+  			fileName_ =  userRnd +"/"+  placeID+"/"+"main"+"/"+mainFloorID+"/overview"+"_"+overviewVersion+".png";
   		}
         
   	    String bucket = "pp_images"; 
@@ -109,7 +109,7 @@ public PlaceInfo getPlaceInfo (DatastoreService datastore , Entity csEntity , in
 		// Update logo and images
 		String logoUrl = "";
 		if (csEntity.getProperty("logo")!= null && !((String)csEntity.getProperty("logo")).isEmpty() && (String)csEntity.getProperty("logo")!= ""){ 
-			String logoFileName = userRnd +"/"+placeName+"/"+placeBranchName+"/"+placeID+"/"+"main"+"/logo.png";
+			String logoFileName = userRnd +"/" +placeID+"/"+"main"+"/logo.png";
 		    gcsFilename = new GcsFilename(bucket, logoFileName);
 		    System.out.println("LOGO Upload:" + gcsFilename);
 		    is = ImagesServiceFactory.getImagesService(); 
@@ -121,54 +121,58 @@ public PlaceInfo getPlaceInfo (DatastoreService datastore , Entity csEntity , in
   	    // Update Images ---------------------------------------------------
 		//------------------------------------------------------------------
 		Type collectionType = new TypeToken<List<String>>(){}.getType();
-  	    List<String> photosList = JsonUtils.deserialize((String)csEntity.getProperty("photos"),collectionType);
-  	    if(photosList!= null) {
-	  	    for (String imgID : photosList) {
-	  	    	bucket = "pp_images"; 
-				String photoFileName = userRnd +"/"+placeName+"/"+placeBranchName+"/"+placeID+"/"+"main"+"/photos/"+imgID+".png";
-				gcsFilename = new GcsFilename(bucket, photoFileName);
-				is = ImagesServiceFactory.getImagesService(); 
-				filename = String.format("/gs/%s/%s", gcsFilename.getBucketName(), gcsFilename.getObjectName());
+	    if(includePhotos) {
+			List<String> photosList = JsonUtils.deserialize((String) csEntity.getProperty("photos"), collectionType);
+			if (photosList != null) {
+				for (String imgID : photosList) {
+					bucket = "pp_images";
+					String photoFileName = userRnd + "/" +  placeID + "/" + "main" + "/photos/" + imgID + ".png";
+					gcsFilename = new GcsFilename(bucket, photoFileName);
+					is = ImagesServiceFactory.getImagesService();
+					filename = String.format("/gs/%s/%s", gcsFilename.getBucketName(), gcsFilename.getObjectName());
+					System.out.println("FILENAME=" + filename);
+					String imgUrl = is.getServingUrl(ServingUrlOptions.Builder.withGoogleStorageFileName(filename));
+					imgUrl = imgUrl + "=s50";
 
-		  	    String imgUrl = is.getServingUrl(ServingUrlOptions.Builder.withGoogleStorageFileName(filename));
-		  	    imgUrl = imgUrl + "=s50" ; 
-
-		  	  JsonimgID_2_data imgID2byte64 = new JsonimgID_2_data();
-              imgID2byte64.setData64(imgUrl);
-              imgID2byte64.setImageID(imgID);
-              placeInfo.getPlaceImageThumbnails().add(imgID2byte64);
-	  	    } 
-  	    }		
+					JsonimgID_2_data imgID2byte64 = new JsonimgID_2_data();
+					imgID2byte64.setData64(imgUrl);
+					imgID2byte64.setImageID(imgID);
+					placeInfo.getPlaceImageThumbnails().add(imgID2byte64);
+				}
+			}
+		}
 		//-----------------------------------------------------------------
   	    // Update Rating --------------------------------------------------
   	    //-----------------------------------------------------------------
-		Filter pidFilter = new  FilterPredicate("pid",FilterOperator.EQUAL,placeID);
-		Query sq_ = new Query("PlaceRating").setFilter(pidFilter);
-		PreparedQuery psq_ = datastore.prepare(sq_);
-  		Entity PlaceRatingEntity = psq_.asSingleEntity();
-		if(PlaceRatingEntity != null) {	
-			PlaceRatingSummary rating = new PlaceRatingSummary();
-			Double foodScore = (Double)PlaceRatingEntity.getProperty("food");
-			Integer foodTotal = (int)(long)PlaceRatingEntity.getProperty("foodTotal");
-			Double staffScore = (Double)PlaceRatingEntity.getProperty("staff");
-			Integer staffTotal = (int)(long)PlaceRatingEntity.getProperty("staffTotal");
-			Double locationScore = (Double)PlaceRatingEntity.getProperty("location");
-			Integer locationTotal = (int)(long)PlaceRatingEntity.getProperty("locationTotal");
-			rating.getRating().setFscore(foodScore);
-			rating.getRating().setSscore(staffScore);
-			rating.getRating().setLscore(locationScore);
-			rating.setAverage((locationScore * locationTotal + staffScore * staffTotal + foodScore * foodTotal) / (foodTotal + staffTotal + locationTotal));
-			rating.setTotal(Math.max(Math.max(foodTotal.intValue(),staffTotal.intValue()),locationTotal.intValue()));
-			placeInfo.setRating(rating);
-		} else {
-			PlaceRatingSummary rating = new PlaceRatingSummary();
-			rating.getRating().setFscore((double) 0);
-			rating.getRating().setSscore((double) 0);
-			rating.getRating().setLscore((double) 0);
-			rating.setAverage((double) 0);
-			rating.setTotal(0);
-			placeInfo.setRating(rating);
-		}
+	  if(includeRating) {
+		  Filter pidFilter = new FilterPredicate("pid", FilterOperator.EQUAL, placeID);
+		  Query sq_ = new Query("PlaceRating").setFilter(pidFilter);
+		  PreparedQuery psq_ = datastore.prepare(sq_);
+		  Entity PlaceRatingEntity = psq_.asSingleEntity();
+		  if (PlaceRatingEntity != null) {
+			  PlaceRatingSummary rating = new PlaceRatingSummary();
+			  Double foodScore = (Double) PlaceRatingEntity.getProperty("food");
+			  Integer foodTotal = (int) (long) PlaceRatingEntity.getProperty("foodTotal");
+			  Double staffScore = (Double) PlaceRatingEntity.getProperty("staff");
+			  Integer staffTotal = (int) (long) PlaceRatingEntity.getProperty("staffTotal");
+			  Double locationScore = (Double) PlaceRatingEntity.getProperty("location");
+			  Integer locationTotal = (int) (long) PlaceRatingEntity.getProperty("locationTotal");
+			  rating.getRating().setFscore(foodScore);
+			  rating.getRating().setSscore(staffScore);
+			  rating.getRating().setLscore(locationScore);
+			  rating.setAverage((locationScore * locationTotal + staffScore * staffTotal + foodScore * foodTotal) / (foodTotal + staffTotal + locationTotal));
+			  rating.setTotal(Math.max(Math.max(foodTotal.intValue(), staffTotal.intValue()), locationTotal.intValue()));
+			  placeInfo.setRating(rating);
+		  } else {
+			  PlaceRatingSummary rating = new PlaceRatingSummary();
+			  rating.getRating().setFscore((double) 0);
+			  rating.getRating().setSscore((double) 0);
+			  rating.getRating().setLscore((double) 0);
+			  rating.setAverage((double) 0);
+			  rating.setTotal(0);
+			  placeInfo.setRating(rating);
+		  }
+	  }
 		//-----------------------------------------------------------------
   	    //-----------------------------------------------------------------
   	    //-----------------------------------------------------------------		

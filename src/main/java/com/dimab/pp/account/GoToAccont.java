@@ -69,21 +69,22 @@ public class GoToAccont extends HttpServlet {
 		  		//----------------------------------------------------------------
 		  		
 		  		// Get serving Overview URL;
-		  		String fileName_ = userRnd +"/"+ placeName + "/" + placeBranchName + "/" + placeID+"/"+"main"+"/"+mainFloorID +"/overview.png";
+		  		String fileName_ = userRnd +"/"+   placeID+"/"+"main"+"/"+mainFloorID +"/overview.png";
 		  		Filter imageVersion = new  FilterPredicate("PID",FilterOperator.EQUAL,placeID);
 		 	    Query piq = new Query("ImageVersion").setFilter(imageVersion);
 		        PreparedQuery sbpiq = datastore.prepare(piq);
 		  		Entity imageVersionEntity = sbpiq.asSingleEntity();
 		  		if (imageVersionEntity != null) {
 		  			int overviewVersion = (int)(long)imageVersionEntity.getProperty("overviewVersion");
-		  			fileName_ =  userRnd +"/"+ placeName + "/" + placeBranchName+"/"+placeID+"/"+"main"+"/"+mainFloorID+"/overview"+"_"+overviewVersion+".png";
+		  			fileName_ =  userRnd +"/"+  placeID+"/"+"main"+"/"+mainFloorID+"/overview"+"_"+overviewVersion+".png";
 		  		}
 		        
 		  	    String bucket = "pp_images"; 
 		  	    GcsFilename gcsFilename = new GcsFilename(bucket, fileName_);
 		  	    ImagesService is = ImagesServiceFactory.getImagesService(); 
 		  	    String filename = String.format("/gs/%s/%s", gcsFilename.getBucketName(), gcsFilename.getObjectName());
-		  	    String servingUrl = is.getServingUrl(ServingUrlOptions.Builder.withGoogleStorageFileName(filename));
+				System.out.println(filename);
+				String servingUrl = is.getServingUrl(ServingUrlOptions.Builder.withGoogleStorageFileName(filename));
 		  	    servingUrl = servingUrl + "=s190";
 		  	    userPlace.setOverviewCloudURL(servingUrl);
 		  	    userPlace.setAddress(Address);

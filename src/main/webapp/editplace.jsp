@@ -179,7 +179,7 @@
 		  
 			<div id="header_drawing">
 				<div id="header">
-					<div id="logo_"><img src="img/pplogo.png" id="pplogoo"/></div>
+					<div id="logo_"><img src="img/pplogomarker.png" id="pplogoo"/><div id="logotext">ickoplace</div></div>
 				       <div id="header_info_wrap" >
 						 <div id="header_info">
 						   <table style="border-collapse: collapse;" cellspacing="0" cellpadding="0"  >

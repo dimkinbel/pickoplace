@@ -132,7 +132,7 @@ $(document).on("click",".stopclick", function (event) {
 
    <div id="header_drawing">
 	<div id="header">
-		<div id="logo_"><img src="img/pplogo.png" id="pplogoo"/></div>
+		<div id="logo_"><img src="img/pplogomarker.png" id="pplogoo"/><div id="logotext">ickoplace</div></div>
 
 		<div class="login_in_header_wrap">
 		   	<table id="login_tbl_a" cellspacing="0" cellpadding="0" style=" border-collapse: collapse">

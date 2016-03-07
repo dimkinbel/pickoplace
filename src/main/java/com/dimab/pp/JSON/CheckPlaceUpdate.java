@@ -63,7 +63,7 @@ public class CheckPlaceUpdate extends HttpServlet {
 		Filter placeNameFilter = new  FilterPredicate("placeName",FilterOperator.EQUAL,validateData.getPlaceName());
 		Filter branchNameFilter = new  FilterPredicate("placeBranchName",FilterOperator.EQUAL,validateData.getBranchName());
 		Filter placeIdFilter = new  FilterPredicate("placeUniqID",FilterOperator.EQUAL,validateData.getPlaceID());
-		System.out.println(username_email + "/" + validateData.getPlaceName() + "/" + validateData.getBranchName() + "/"+validateData.getPlaceID());
+		System.out.println(username_email + "/"+validateData.getPlaceID());
 		Filter filter = CompositeFilterOperator.and(usernameFilter,
 				                                    placeNameFilter,
 				                                    branchNameFilter,

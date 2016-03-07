@@ -846,10 +846,12 @@ function zoomReset(state_) {
 function zoomResetWrap(canvas_ref_,dividwrap,scrolled_id) {
     var state = canvas_ref_;
 
-    var ww = document.getElementById(dividwrap).offsetWidth   ;
-    var wh = document.getElementById(dividwrap).offsetHeight  ;
-
-
+   // var ww = document.getElementById(dividwrap).offsetWidth   ;
+   // var wh = document.getElementById(dividwrap).offsetHeight  ;
+    var ww = $("#"+dividwrap).width();
+    var wh = $("#"+dividwrap).height();
+   console.log(dividwrap);
+    console.log(ww+" "+wh);
     var required_zoom;
     var required_zoom_w = ww/state.origWidth ;// constant zoom width
     var required_zoom_h = wh/state.origHeight;// constant zoom height

@@ -383,7 +383,7 @@
 						String floorid = floor.getFloorid();
 						String display="";
 				%>
-				<div id="div_wrap-canvas_<%=floorid%>" style="display:<%=display%>"  class="canvas_floor_wrap">
+				<div id="div_wrap-canvas_<%=floorid%>"    class="canvas_floor_wrap">
 					<canvas id="canvas_<%=floorid%>" width="400" height="400"  tabindex='1' class="cmenu2 main_conf" >
 						This text is displayed if your browser does not support HTML5 Canvas.
 					</canvas>
@@ -573,7 +573,7 @@
                                     if(floor.isMainfloor()) {
 							          %> <div class="floor_page" id="floor_wrap_view_<%=floorid%>"></div> <%
 							         } else {
-									  %> <div class="floor_page" style="display: none" id="floor_wrap_view_<%=floorid%>"></div><%
+									  %> <div class="floor_page"  id="floor_wrap_view_<%=floorid%>"></div><%
 								}
 							  }
 							%>

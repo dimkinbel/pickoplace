@@ -207,9 +207,17 @@
     <servlet-mapping>
        <servlet-name>deleteIframe</servlet-name>
        <url-pattern>/deleteIframe</url-pattern>
-    </servlet-mapping> 
-    
-     <servlet>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>editIframe</servlet-name>
+        <servlet-class>com.dimab.pp.account.EditIFrame</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>editIframe</servlet-name>
+        <url-pattern>/editIframe</url-pattern>
+    </servlet-mapping>
+    <servlet>
        <servlet-name>getiframeslist</servlet-name>
        <servlet-class>com.dimab.pp.account.GetiFrames</servlet-class>
     </servlet>
@@ -440,7 +448,7 @@
        <servlet-name>getiframe</servlet-name>
        <url-pattern>/getiframe</url-pattern>
     </servlet-mapping> 
-    
+   <!--
  <security-constraint>
         <web-resource-collection>
             <web-resource-name>getiframe</web-resource-name>
@@ -449,8 +457,8 @@
         <user-data-constraint>
             <transport-guarantee>CONFIDENTIAL</transport-guarantee>
         </user-data-constraint>
-    </security-constraint>  
-    
+    </security-constraint>  -->
+
     <servlet>
        <servlet-name>editIFrame</servlet-name>
        <servlet-class>com.dimab.pp.account.EditIFrame</servlet-class>

@@ -93,7 +93,7 @@ public class SearchNameGeo extends HttpServlet {
        	      PreparedQuery pq = datastore.prepare(q);
        	      if(pq.asSingleEntity()!= null) {
        	    	GetPlaceInfoFactory placeDataFActory = new GetPlaceInfoFactory();
-    			places.add(placeDataFActory.getPlaceInfo(datastore, pq.asSingleEntity(), 222));
+    			places.add(placeDataFActory.getPlaceInfo(datastore, pq.asSingleEntity(), 222,false,true));
        	      }
            }
 

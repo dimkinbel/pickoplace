@@ -15,9 +15,7 @@ var DatepickerSetDate = "+0";
 $(document).ready(function () {
 	updateTimeRangeValues();
 
-	$( "#booking_shape_num_persons").spinner({});
-	$( "#booking_shape_num_persons").spinner("widget").addClass("marginright10_");
-	$( "#booking_shape_num_persons").spinner( "disable" );
+
 
 	$("#left_triangle_btn").click(function(){
 		var curleft = $("#selected_append").position().left;
@@ -356,18 +354,6 @@ function updatePersonsSpinner() {
 		}
 	}
 
-	if(max==0) {
-		$( "#booking_shape_num_persons" ).spinner( "option", "min", 0 );
-		$( "#booking_shape_num_persons" ).spinner( "option", "max", 0 );
-		$( "#booking_shape_num_persons" ).spinner( "value",  0 );
-		$( "#booking_shape_num_persons").spinner( "disable" );
-
-	} else {
-		$( "#booking_shape_num_persons" ).spinner( "option", "min", min );
-		$( "#booking_shape_num_persons" ).spinner( "option", "max", max );
-		$( "#booking_shape_num_persons" ).spinner( "value",  min );
-		$( "#booking_shape_num_persons").spinner( "enable" );
-	}
 	$("#selected_num").html(count);
 }
 //Function for dynamically check booking availability in terms of "place_closed" OR "time_passed"

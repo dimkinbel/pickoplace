@@ -10,9 +10,7 @@ $(document).ready(function() {
 			floorPopoverOpening = false;
 			
 	});
-	$("#book_sign_ask").click(function(){
-		$("#page_login_prompt").show();
-	});
+
 placeUTCOffsetGlobal = document.getElementById("server_placeUTC").value;
 var d = new Date();
 var utc = d.getTime() + (d.getTimezoneOffset() * 60000);

@@ -152,4 +152,49 @@ public String GetConfirmationMail(BookingRequestWrap bookingRequestsWrap,PlaceIn
        
       return message;
       }
+
+    public String GetNewAdminConfirmationEmail(PlaceInfo placeInfo, String verificationCode) {
+        String message = "";
+        message = message.concat("<div  border='0' cellpadding='0' cellspacing='0' height='100%' width='100%' style='background-color: #F7F7F7;width: 100%;padding-top: 50px;padding-bottom: 50px; font-family: \'Helvetica neue\',Helvetica,arial,sans-serif;'>");
+        message = message.concat("Your email was registered in Pickoplace service as site administrator for:<br>");
+        message = message.concat( placeInfo.getUserPlace().getPlace()+","+placeInfo.getUserPlace().getBranch()+"<br>");
+        message = message.concat("<br><div style=\"color:#999;text-align:center;font:11px Arial;line-height:1.4em;max-width:600px;\"><p style=\"text-decoration:none;color:#999;display:inline-block;padding-bottom:4px\">This message was sent from a notification-only email address that does not accept incoming email.</p></div> ");
+        message = message.concat("<div style=\"color:#999;text-align:center;font:11px Arial;line-height:1.4em;max-width:600px;\"><p style=\"text-decoration:none;color:#999;display:inline-block;padding-bottom:4px\">If you did not make this request, simply ignore this message.</p></div> ");
+        message = message.concat("</div>");
+        return message;
+    }
+    public String GetRemoveAdminConfirmationEmail(PlaceInfo placeInfo, String verificationCode) {
+        String message = "";
+        message = message.concat("<div  border='0' cellpadding='0' cellspacing='0' height='100%' width='100%' style='background-color: #F7F7F7;width: 100%;padding-top: 50px;padding-bottom: 50px; font-family: \'Helvetica neue\',Helvetica,arial,sans-serif;'>");
+        message = message.concat("Your email has been removed from Pickoplace service as site administrator for:<br>");
+        message = message.concat( placeInfo.getUserPlace().getPlace()+","+placeInfo.getUserPlace().getBranch()+"<br>");
+        message = message.concat("<br><div style=\"color:#999;text-align:center;font:11px Arial;line-height:1.4em;max-width:600px;\"><p style=\"text-decoration:none;color:#999;display:inline-block;padding-bottom:4px\">This message was sent from a notification-only email address that does not accept incoming email.</p></div> ");
+        message = message.concat("<div style=\"color:#999;text-align:center;font:11px Arial;line-height:1.4em;max-width:600px;\"><p style=\"text-decoration:none;color:#999;display:inline-block;padding-bottom:4px\">If you did not make this request, simply ignore this message.</p></div> ");
+        message = message.concat("</div>");
+        return message;
+    }
+
+    public String VerificationCodeEmail(PlaceInfo placeInfo, String verificationCode) {
+        String message = "";
+        message = message.concat("<div  border='0' cellpadding='0' cellspacing='0' height='100%' width='100%' style='background-color: #F7F7F7;width: 100%;padding-top: 50px;padding-bottom: 50px; font-family: \'Helvetica neue\',Helvetica,arial,sans-serif;'>");
+        message = message.concat("Your email has been set to receive Booking Approval requests for:<br>");
+        message = message.concat( placeInfo.getUserPlace().getPlace()+","+placeInfo.getUserPlace().getBranch()+"<br>");
+        message = message.concat("Please verify it at administration console with the next passcode (Valid for 10 minutes)<br>");
+        message = message.concat("<div style=\"font-size:16px;color:red;font-weight: bold;\">"+verificationCode+"</div><br>");
+        message = message.concat("<br><div style=\"color:#999;text-align:center;font:11px Arial;line-height:1.4em;max-width:600px;\"><p style=\"text-decoration:none;color:#999;display:inline-block;padding-bottom:4px\">This message was sent from a notification-only email address that does not accept incoming email.</p></div> ");
+        message = message.concat("<div style=\"color:#999;text-align:center;font:11px Arial;line-height:1.4em;max-width:600px;\"><p style=\"text-decoration:none;color:#999;display:inline-block;padding-bottom:4px\">If you did not make this request, simply ignore this message.</p></div> ");
+        message = message.concat("</div>");
+        return message;
+    }
+
+    public String RemoveConfirmationEmail(PlaceInfo placeInfo ) {
+        String message = "";
+        message = message.concat("<div  border='0' cellpadding='0' cellspacing='0' height='100%' width='100%' style='background-color: #F7F7F7;width: 100%;padding-top: 50px;padding-bottom: 50px; font-family: \'Helvetica neue\',Helvetica,arial,sans-serif;'>");
+        message = message.concat("Your email has been removed from Pickoplace service. You will not be able to review booking request<br>");
+        message = message.concat( placeInfo.getUserPlace().getPlace()+","+placeInfo.getUserPlace().getBranch()+"<br>");
+        message = message.concat("<br><div style=\"color:#999;text-align:center;font:11px Arial;line-height:1.4em;max-width:600px;\"><p style=\"text-decoration:none;color:#999;display:inline-block;padding-bottom:4px\">This message was sent from a notification-only email address that does not accept incoming email.</p></div> ");
+        message = message.concat("<div style=\"color:#999;text-align:center;font:11px Arial;line-height:1.4em;max-width:600px;\"><p style=\"text-decoration:none;color:#999;display:inline-block;padding-bottom:4px\">If you did not make this request, simply ignore this message.</p></div> ");
+        message = message.concat("</div>");
+        return message;
+    }
 }

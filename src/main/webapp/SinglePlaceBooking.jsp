@@ -89,6 +89,7 @@
             updatePlaceInfo();
             initialTCanvas();
 
+
         });
         function openMap() {
             document.getElementById("map_wrapper").style.display = "";
@@ -514,7 +515,7 @@
                             <div class="col-sm-12 ">
                                 <div id="header_td_div_wsa" class="main_page_header_wsa">
                                     <div id="header_bbok">
-                                        <div id="logo_"><img src="img/pplogo.png" id="pplogoo"/></div>
+                                        <div id="logo_"><img src="img/pplogomarker.png" id="pplogoo"/><div id="logotext">ickoplace</div></div>
                                         <div class="login_in_header_wrap">
                                             <div id="fg_profile_image_wrap">
                                                 <div id="fg_profile_image_inner">
@@ -592,10 +593,10 @@
                             <div class="col-md-7 col-sm-12 booking_top_nav">
                                 <div class="row booking_top_nav_innner">
                                     <div class="col-sm-2 floors_col_sel top_boot_but" data-toggle="tooltip"
-                                         data-container="body" data-placement="bottom" title="יום">
+                                         data-container="body" data-placement="top" title="יום">
                                         <div class="material-icons mat_book_top">event</div>
                                         <div id="main_book_calendar_tab">
-                                            <input id="datepicker_ub" type="text"/>
+                                            <input id="datepicker_ub" class="datepicker_ub" type="text"/>
 
                                             <div id="calendar_show_date_on_select">
                                                 <div id="csdos_day"></div>
@@ -615,12 +616,12 @@
 
                                     </div>
                                     <div class="col-sm-2 padding_0 top_boot_but" data-toggle="tooltip"
-                                         data-container="body" data-placement="bottom" title="זמן התחלה">
+                                         data-container="body" data-placement="top" title="זמן התחלה">
                                         <div class="material-icons mat_book_top">access_time</div>
                                         <div class="dropdown">
                                             <div class="dropdown-toggle" id="floorsTimeDropDown" data-toggle="dropdown"
                                                  aria-haspopup="true" aria-expanded="true">
-                                                <div id="book_top_start">12:30</div>
+                                                <div id="book_top_start" class="book_top_start_ub">12:30</div>
                                                 <input type="text" id="book_start_val_" style="display:none" value=""/>
                                             </div>
                                             <ul class="dropdown-menu  dropdown_start_floors" id="dropdown_start_floors"
@@ -629,12 +630,12 @@
                                         </div>
                                     </div>
                                     <div class="col-sm-2 padding_0 top_boot_but" data-toggle="tooltip"
-                                         data-container="body" data-placement="bottom" title="שהות במקום">
+                                         data-container="body" data-placement="top" title="שהות במקום">
                                         <div class="material-icons mat_book_top">timelapse</div>
                                         <div class="dropdown">
                                             <div class="dropdown-toggle" id="floorsPeriodDropDown"
                                                  data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                                <div id="book_top_period">שעתיים</div>
+                                                <div id="book_top_period" class="book_top_period_ub">שעתיים</div>
                                                 <input type="text" id="book_period_val_" style="display:none"
                                                        value="7200"/>
                                             </div>
@@ -647,12 +648,12 @@
                                         </div>
                                     </div>
                                     <div class="col-sm-1 padding_0 top_boot_but" data-toggle="tooltip"
-                                         data-container="body" data-placement="bottom" title="כמות אנשים">
+                                         data-container="body" data-placement="top" title="כמות אנשים">
                                         <div class="material-icons mat_book_top">person_outline</div>
                                         <div class="dropdown">
                                             <div class="dropdown-toggle" id="floorsPersonsDropDown"
                                                  data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                                <div id="book_top_persons">2</div>
+                                                <div id="book_top_persons" class="book_top_persons_ub">2</div>
                                                 <input type="text" id="book_persons_val_" style="display:none"
                                                        value="2"/>
                                             </div>
@@ -699,16 +700,31 @@
                                     </div>
                                 </div>
                                 <div id="floor_bottom_buttons">
-                                    <div class="bottom_floors_button bottom_floors_button_left selected_f"
-                                         onclick="selectFloorByID('floorid_H8qF0ZvL0W')" id="bfb-floorid_H8qF0ZvL0W">
-                                        Floor-1
-                                        <div class="floor_book_badge" id="fbadge-floorid_H8qF0ZvL0W"></div>
-                                    </div>
-                                    <div class="bottom_floors_button" onclick="selectFloorByID('floorid_iTwJZO27Ll')"
-                                         id="bfb-floorid_iTwJZO27Ll">
-                                        <div class="floor_book_badge" id="fbadge-floorid_iTwJZO27Ll"></div>
-                                        Floor-2
-                                    </div>
+                                    <%
+                                        for (PPSubmitObject floor : canvasStateList) {
+                                            String floorid = floor.getFloorid();
+                                            String display = "none";
+                                            if (floor.isMainfloor()) { %>
+                                                <div class="bottom_floors_button bottom_floors_button_left selected_f"
+                                                onclick="selectFloorByID('<%=floorid%>')" id="bfb-<%=floorid%>">
+                                                        <%=floor.getFloor_name()%>
+                                                        <div class="floor_book_badge" id="fbadge-<%=floorid%>"></div>
+                                                </div>
+                                            <%}
+                                         }
+                                    %>
+                                    <%
+                                        for (PPSubmitObject floor : canvasStateList) {
+                                            String floorid = floor.getFloorid();
+                                            if (!floor.isMainfloor()) { %>
+                                            <div class="bottom_floors_button "
+                                                 onclick="selectFloorByID('<%=floorid%>')" id="bfb-<%=floorid%>">
+                                                <%=floor.getFloor_name()%>
+                                                <div class="floor_book_badge" id="fbadge-<%=floorid%>"></div>
+                                            </div>
+                                            <%}
+                                         }
+                                    %>
                                     <div id="map_open_mat" class="material-icons" onclick="openMap()"  data-toggle="tooltip"
                                     data-container="body" data-placement="bottom" title="מפה">location_on</div>
                                 </div>

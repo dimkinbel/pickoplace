@@ -111,7 +111,7 @@ public class ClientBookingHistoryServlet extends HttpServlet {
                     
 		  		    GetPlaceInfoFactory placeInfoFactory = new GetPlaceInfoFactory();
 		  		    GetBookingShapesDataFactory shapeInfoFactory = new GetBookingShapesDataFactory();
-		  		    placeInfo = placeInfoFactory.getPlaceInfo(datastore, canvasEntity,190);
+		  		    placeInfo = placeInfoFactory.getPlaceInfo(datastore, canvasEntity,190,false,true);
 		  		    List<String> shapesIDs = new ArrayList<String>();
 		  		    List<SingleShapeBookingResponse> shapesList = new ArrayList<SingleShapeBookingResponse>();
 		  		    for(BookingRequest singleShapeBooking : bookingShapesList) {
@@ -139,7 +139,7 @@ public class ClientBookingHistoryServlet extends HttpServlet {
 		  		    	JSONSIDlinks.add(sid2ImgID); 
 		  		    	if(shapeInfo_.getShapeInfo().getType().equals("image") && !gcsurlUpdated.containsKey(shapeInfo_.getShapeInfo().getImgID())) {
 		  		    		JsonImageID_2_GCSurl imgID2url = new JsonImageID_2_GCSurl();	
-		  		    		String fileName = placeInfo.getUserPlace().getUserRand() +"/"+ placeInfo.getUserPlace().getPlace() + "/" + placeInfo.getUserPlace().getBranch() +  "/" + placeInfo.getUserPlace().getPlaceID()+"/"+"main" +"/" + imgID + ".png";
+		  		    		String fileName = placeInfo.getUserPlace().getUserRand() +"/"+   placeInfo.getUserPlace().getPlaceID()+"/"+"main" +"/" + imgID + ".png";
 		     		  	    String bucket = "pp_images"; 
 		     		  	    GcsFilename gcsFilename = new GcsFilename(bucket, fileName);
 		     		  	    ImagesService is = ImagesServiceFactory.getImagesService(); 

@@ -15,6 +15,7 @@ import com.dimab.pp.database.GetAJAXimageJSONfromCSfactory;
 import com.dimab.pp.dto.AJAXImagesJSON;
 import com.dimab.pp.dto.IFresponse;
 import com.dimab.pp.dto.IFsave;
+import com.dimab.pp.dto.iFrameObj;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -41,7 +42,7 @@ public class ShowIframe extends HttpServlet {
 
   		GetAJAXimageJSONfromCSfactory csFactory = new GetAJAXimageJSONfromCSfactory();
   		AJAXImagesJSON CanvasStateEdit = new AJAXImagesJSON();
-	  	IFresponse ifresp = new IFresponse();
+		iFrameObj ifresp = new iFrameObj();
 	  	boolean showonlyResponse = true;
   		
 		Filter placeIdFilter  = new  FilterPredicate("placeUniqID",FilterOperator.EQUAL,pid);
@@ -58,21 +59,25 @@ public class ShowIframe extends HttpServlet {
 			Filter ifpidfilter =  CompositeFilterOperator.and(ifidfilter, pidfilter);
 		    Query piq = new Query("IFrames").setFilter(ifpidfilter);
 		    PreparedQuery sbpiq = datastore.prepare(piq);
-		  	Entity ifidEntity = sbpiq.asSingleEntity();
+		  	Entity iframeEntity = sbpiq.asSingleEntity();
 		  	 
-		  	if (ifidEntity != null) {
-	  	  		String ifid_ = (String)ifidEntity.getProperty("ifid");
-				String uid = (String)ifidEntity.getProperty("savedby");
-	  			Date date_ = (Date)ifidEntity.getProperty("date");
-	  			String iframe_ = (String)ifidEntity.getProperty("ifjson");
-				IFsave SaveObject = JsonUtils.deserialize(iframe_, IFsave.class);
-		        SimpleDateFormat dateFormat = new SimpleDateFormat("wwMMMy HH:mm");
-		        
+		  	if (iframeEntity != null) {
+				String uid = (String)iframeEntity.getProperty("savedby");
+				Date date_ = (Date)iframeEntity.getProperty("date");
+				Integer width = (int)(long)iframeEntity.getProperty("width");
+				Integer height = (int)(long)iframeEntity.getProperty("height");
+				Boolean booking = (Boolean)iframeEntity.getProperty("booking");
+				String theme = (String)iframeEntity.getProperty("theme");
+				SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMMy HH:mm");
+
 		        ifresp.setDate(dateFormat.format( date_ ));
-		        ifresp.setIfid(ifid_);
-		        ifresp.setSavedby(uid);
+		        ifresp.setIfid(ifid);
+		        ifresp.setUser(uid);
 		        ifresp.setTime(date_.getTime());
-		        ifresp.setIframedata(SaveObject);
+		        ifresp.setBooking(booking);
+				ifresp.setWidth(width);
+				ifresp.setHeight(height);
+				ifresp.setTheme(theme);
 		        if(showonly == null || showonly.equals("")) {
 		        	// Add booking availability
 		        	showonlyResponse = false;

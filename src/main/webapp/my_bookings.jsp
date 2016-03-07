@@ -43,7 +43,7 @@
 		<tr id="header_tr">
 			<td id="header_td">
 				<div id="header">
-					<div id="logo_"><img src="img/pplogo.png" id="pplogoo"/></div>
+					<div id="logo_"><img src="img/pplogomarker.png" id="pplogoo"/><div id="logotext">ickoplace</div></div>
 					<div class="login_in_header_wrap">
 						<div id="fg_profile_image_wrap" >
                          <div id="fg_profile_image_inner" >

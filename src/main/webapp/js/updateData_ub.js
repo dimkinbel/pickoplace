@@ -328,36 +328,7 @@ function updateBackgroundImageByServer(stateid) {
 
 	}
 }
-function createBAWimage(imgID) {
-	var images4load = {};
-	var img_=  document.getElementById(imgID);
-	images4load = new Image();
-	images4load.crossOrigin = 'anonymous';
-	images4load.src = document.getElementById(imgID).src ;
 
-	images4load.onload = function() {
-		actualWidth = this.width;
-		actualHeight = this.height;
-		document.getElementById("filtered_canvas").width = actualWidth;
-		document.getElementById("filtered_canvas").height = actualHeight;
-		var canvas = document.getElementById("filtered_canvas");
-		var context = canvas.getContext("2d");
-		context.drawImage(img_,0,0,actualWidth,actualHeight);
-
-		var imgd = context.getImageData(0, 0, actualWidth, actualHeight);
-		var pix = imgd.data;
-		for (var i = 0, n = pix.length; i < n; i += 4) {
-			var grayscale = pix[i  ] * .3 + pix[i+1] * .59 + pix[i+2] * .11;
-			pix[i] = grayscale;   // red
-			pix[i+1] = grayscale;   // green
-			pix[i+2] = grayscale;   // blue
-		}
-		context.putImageData(imgd, 0, 0);
-		var appendData = '<img id="'+imgID+'_baw" />';
-		$("#baw_images").append(appendData);
-		$("#"+imgID+"_baw").attr("src",canvas.toDataURL('image/png'));
-	}
-}
 function updateShapeImagesByServerData(imgID) {
 
 	var actualWidth;

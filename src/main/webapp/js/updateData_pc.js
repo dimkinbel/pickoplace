@@ -3,8 +3,12 @@
  */
 var totalImages = 0;
 var currentUploaded = 0;
-function updateCanvasShapes(canvas,canvasStateJSON) {
-
+var sid2shape = {};
+function updateCanvasShapes(canvas,canvasStateJSON,iframe) {
+    var iframe_ = false;
+    if(iframe != undefined && iframe == true) {
+	   iframe_ = true;
+	}
 	canvas.width = canvasStateJSON.state.width;	
 	canvas.height = canvasStateJSON.state.height;
 	canvas.origWidth = canvasStateJSON.state.width;
@@ -44,7 +48,12 @@ function updateCanvasShapes(canvas,canvasStateJSON) {
 
 		 if (shape.type == "rectangle") {
 			 var options = JSON.parse(JSON.stringify(shape.options));
-			 var Sshape = new Shape(canvas, shape.x , shape.y , shape.w, shape.h, "rectangle" , options );
+			 var Sshape;
+			 if(iframe_ == true) {
+			    Sshape = new ifShape(canvas, shape.x , shape.y , shape.w, shape.h, "rectangle" , options );
+			 } else {
+			    Sshape = new Shape(canvas, shape.x , shape.y , shape.w, shape.h, "rectangle" , options );
+			 }
 			 Sshape.rotate = shape.rotate;
 			 Sshape.angle = shape.angle;
 			 Sshape.sid=shape.sid;
@@ -52,12 +61,17 @@ function updateCanvasShapes(canvas,canvasStateJSON) {
 					booking_options	 = JSON.parse(JSON.stringify(shape.booking_options));	
 					Sshape.booking_options = booking_options;
 			 }
-			 
+			 sid2shape[shape.sid] = Sshape;
 			 canvas.addShape(Sshape);
 		     canvas.valid = false;
 		  } else if (shape.type == "round") {
 			  var options = JSON.parse(JSON.stringify(shape.options));
-		      var Sshape = new Shape(canvas, shape.x , shape.y , shape.w, shape.h, "round" , options );
+		      var Sshape;
+			 if(iframe_ == true) {
+			    Sshape = new ifShape(canvas, shape.x , shape.y , shape.w, shape.h, "round" , options);
+			 } else {
+			    Sshape  = new Shape(canvas, shape.x , shape.y , shape.w, shape.h, "round" , options );
+			 }
 		      Sshape.rotate = shape.rotate;
 		      Sshape.angle = shape.angle;
 		      Sshape.sid=shape.sid;
@@ -65,11 +79,17 @@ function updateCanvasShapes(canvas,canvasStateJSON) {
 						booking_options	 = JSON.parse(JSON.stringify(shape.booking_options));	
 						Sshape.booking_options = booking_options;
 				 }
+				 sid2shape[shape.sid] = Sshape;
 		      canvas.addShape(Sshape);
 		      canvas.valid = false;
 		  } else  if (shape.type == "circle") {
 			  var options = JSON.parse(JSON.stringify(shape.options));
-		      var Sshape = new Shape(canvas, shape.x , shape.y , shape.w, shape.h, "circle" , options );
+		      var Sshape;
+			 if(iframe_ == true) {
+			    Sshape = new ifShape(canvas, shape.x , shape.y , shape.w, shape.h, "circle" , options);
+			 } else {
+			    Sshape  = new Shape(canvas, shape.x , shape.y , shape.w, shape.h, "circle" , options );
+				}
 		      Sshape.rotate = shape.rotate;
 		      Sshape.angle = shape.angle;
 		      Sshape.sid=shape.sid;
@@ -78,10 +98,16 @@ function updateCanvasShapes(canvas,canvasStateJSON) {
 						Sshape.booking_options = booking_options;
 				 }
 		      canvas.addShape(Sshape);
+			  sid2shape[shape.sid] = Sshape;
 		      canvas.valid = false;
 		  } else  if (shape.type == "trapex") {
 			  var options = JSON.parse(JSON.stringify(shape.options));
-		      var Sshape = new Shape(canvas, shape.x , shape.y , shape.w, shape.h, "trapex" , options );
+		      var Sshape;
+			  if(iframe_ == true) {
+			    Sshape = new ifShape(canvas, shape.x , shape.y , shape.w, shape.h, "trapex" , options);
+			  } else {
+			    Sshape = new Shape(canvas, shape.x , shape.y , shape.w, shape.h, "trapex" , options );
+			  }
 		      Sshape.rotate = shape.rotate;
 		      Sshape.angle = shape.angle;
 		      Sshape.sid=shape.sid;
@@ -90,10 +116,16 @@ function updateCanvasShapes(canvas,canvasStateJSON) {
 						Sshape.booking_options = booking_options;
 				 }
 		      canvas.addShape(Sshape);
+			  sid2shape[shape.sid] = Sshape;
 		      canvas.valid = false;
 		  }  else  if (shape.type == "text") {
 			  var options = JSON.parse(JSON.stringify(shape.options));
-		      var Sshape = new Shape(canvas, shape.x , shape.y , shape.w, shape.h, "text" , options );
+		      var Sshape;
+			  if(iframe_ == true) {
+			    Sshape = new ifShape(canvas, shape.x , shape.y , shape.w, shape.h, "text" , options);
+			  } else {
+			    Sshape  = new Shape(canvas, shape.x , shape.y , shape.w, shape.h, "text" , options );
+			  }
 		      Sshape.rotate = shape.rotate;
 		      Sshape.angle = shape.angle;
 		      Sshape.sid=shape.sid;
@@ -102,10 +134,16 @@ function updateCanvasShapes(canvas,canvasStateJSON) {
 						Sshape.booking_options = booking_options;
 				 }
 		      canvas.addShape(Sshape);
+			  sid2shape[shape.sid] = Sshape;
 		      canvas.valid = false;
 		  }  else  if (shape.type == "line") {
 			  var options = JSON.parse(JSON.stringify(shape.options));
-		      var Sshape = new Shape(canvas, shape.x , shape.y , shape.w, shape.h, "line" , options );
+		      var Sshape;
+			  if(iframe_ == true) {
+			    Sshape = new ifShape(canvas, shape.x , shape.y , shape.w, shape.h, "line" , options);
+			  } else {
+			    Sshape  = new Shape(canvas, shape.x , shape.y , shape.w, shape.h, "line" , options );
+				}
 		      Sshape.rotate = shape.rotate;
 		      Sshape.angle = shape.angle;
 		      Sshape.sid=shape.sid;
@@ -114,6 +152,7 @@ function updateCanvasShapes(canvas,canvasStateJSON) {
 						Sshape.booking_options = booking_options;
 				 }
 		      canvas.addShape(Sshape);
+			  sid2shape[shape.sid] = Sshape;
 		      canvas.valid = false;
 		  }  else  if (shape.type == "image") {
 			  var options = JSON.parse(JSON.stringify(shape.options));
@@ -134,7 +173,12 @@ function updateCanvasShapes(canvas,canvasStateJSON) {
 					  // such image ID exists in a drawing tool
 				 // }
 			  }
-		      var Sshape = new Shape(canvas, shape.x , shape.y , shape.w, shape.h, "image" , options );
+		      var Sshape;
+			  if(iframe_ == true) {
+			    Sshape = new ifShape(canvas, shape.x , shape.y , shape.w, shape.h, "image" , options);
+			  } else {
+			    Sshape  = new Shape(canvas, shape.x , shape.y , shape.w, shape.h, "image" , options );
+			  }
 		      Sshape.rotate = shape.rotate;
 		      Sshape.angle = shape.angle;
 		      Sshape.sid=shape.sid;
@@ -143,6 +187,7 @@ function updateCanvasShapes(canvas,canvasStateJSON) {
 						Sshape.booking_options = booking_options;
 				 }
 		      canvas.addShape(Sshape);
+			  sid2shape[shape.sid] = Sshape;
 		      canvas.valid = false;
 		  }
 	}
@@ -153,7 +198,12 @@ function updateCanvasShapes(canvas,canvasStateJSON) {
 
 		 if (shape.type == "rectangle") {
 			 var options = JSON.parse(JSON.stringify(shape.options));
-			 var Sshape = new Shape(canvas, shape.x , shape.y , shape.w, shape.h, "rectangle" , options );
+			 var Sshape;
+			  if(iframe_ == true) {
+			    Sshape = new ifShape(canvas, shape.x , shape.y , shape.w, shape.h, "rectangle" , options);
+			  } else {
+			    Sshape   = new Shape(canvas, shape.x , shape.y , shape.w, shape.h, "rectangle" , options );
+				}
 			 Sshape.rotate = shape.rotate;
 			 Sshape.angle = shape.angle;
 			 Sshape.sid=shape.sid;
@@ -162,7 +212,12 @@ function updateCanvasShapes(canvas,canvasStateJSON) {
 		     canvas.valid = false;
 		  } else if (shape.type == "round") {
 			  var options = JSON.parse(JSON.stringify(shape.options));
-		      var Sshape = new Shape(canvas, shape.x , shape.y , shape.w, shape.h, "round" , options );
+		      var Sshape;
+			  if(iframe_ == true) {
+			    Sshape = new ifShape(canvas, shape.x , shape.y , shape.w, shape.h, "round" , options);
+			  } else {
+			    Sshape   = new Shape(canvas, shape.x , shape.y , shape.w, shape.h, "round" , options );
+				}
 		      Sshape.rotate = shape.rotate;
 		      Sshape.angle = shape.angle;
 		      Sshape.sid=shape.sid;
@@ -171,7 +226,12 @@ function updateCanvasShapes(canvas,canvasStateJSON) {
 		      canvas.valid = false;
 		  } else  if (shape.type == "circle") {
 			  var options = JSON.parse(JSON.stringify(shape.options));
-		      var Sshape = new Shape(canvas, shape.x , shape.y , shape.w, shape.h, "circle" , options );
+		      var Sshape;
+			  if(iframe_ == true) {
+			    Sshape = new ifShape(canvas, shape.x , shape.y , shape.w, shape.h, "circle" , options);
+			  } else {
+			    Sshape   = new Shape(canvas, shape.x , shape.y , shape.w, shape.h, "circle" , options );
+				}
 		      Sshape.rotate = shape.rotate;
 		      Sshape.angle = shape.angle;
 		      Sshape.sid=shape.sid;
@@ -180,7 +240,12 @@ function updateCanvasShapes(canvas,canvasStateJSON) {
 		      canvas.valid = false;
 		  } else  if (shape.type == "trapex") {
 			  var options = JSON.parse(JSON.stringify(shape.options));
-		      var Sshape = new Shape(canvas, shape.x , shape.y , shape.w, shape.h, "trapex" , options );
+		      var Sshape;
+			  if(iframe_ == true) {
+			    Sshape = new ifShape(canvas, shape.x , shape.y , shape.w, shape.h, "trapex" , options);
+			  } else {
+			    Sshape   = new Shape(canvas, shape.x , shape.y , shape.w, shape.h, "trapex" , options );
+				}
 		      Sshape.rotate = shape.rotate;
 		      Sshape.angle = shape.angle;
 		      Sshape.sid=shape.sid;
@@ -189,7 +254,12 @@ function updateCanvasShapes(canvas,canvasStateJSON) {
 		      canvas.valid = false;
 		  }  else  if (shape.type == "text") {
 			  var options = JSON.parse(JSON.stringify(shape.options));
-		      var Sshape = new Shape(canvas, shape.x , shape.y , shape.w, shape.h, "text" , options );
+		      var Sshape;
+			  if(iframe_ == true) {
+			    Sshape = new ifShape(canvas, shape.x , shape.y , shape.w, shape.h, "text" , options);
+			  } else {
+			    Sshape   = new Shape(canvas, shape.x , shape.y , shape.w, shape.h, "text" , options );
+				}
 		      Sshape.rotate = shape.rotate;
 		      Sshape.angle = shape.angle;
 		      Sshape.sid=shape.sid;
@@ -198,7 +268,12 @@ function updateCanvasShapes(canvas,canvasStateJSON) {
 		      canvas.valid = false;
 		  }  else  if (shape.type == "line") {
 			  var options = JSON.parse(JSON.stringify(shape.options));
-		      var Sshape = new Shape(canvas, shape.x , shape.y , shape.w, shape.h, "line" , options );
+		      var Sshape ;
+			  if(iframe_ == true) {
+			    Sshape = new ifShape(canvas, shape.x , shape.y , shape.w, shape.h, "line" , options);
+			  } else {
+			    Sshape  = new Shape(canvas, shape.x , shape.y , shape.w, shape.h, "line" , options );
+				}
 		      Sshape.rotate = shape.rotate;
 		      Sshape.angle = shape.angle;
 		      Sshape.sid=shape.sid;
@@ -226,7 +301,12 @@ function updateCanvasShapes(canvas,canvasStateJSON) {
 				 // }
 			  }
 			  options.imgID = origImageID;
-		      var Sshape = new Shape(canvas, shape.x , shape.y , shape.w, shape.h, "image" , options );
+		      var Sshape ;
+			  if(iframe_ == true) {
+			    Sshape = new ifShape(canvas, shape.x , shape.y , shape.w, shape.h, "image" , options);
+			  } else {
+			    Sshape  = new Shape(canvas, shape.x , shape.y , shape.w, shape.h, "image" , options );
+				}
 		      Sshape.rotate = shape.rotate;
 		      Sshape.angle = shape.angle;
 		      Sshape.sid=shape.sid;

@@ -1,10 +1,9 @@
 package com.dimab.pp.account;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -15,11 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.dimab.pickoplace.utils.JsonUtils;
 import com.dimab.pp.database.GetAJAXimageJSONfromCSfactory;
 import com.dimab.pp.database.GetBookingShapesDataFactory;
-import com.dimab.pp.dto.AJAXImagesJSON;
-import com.dimab.pp.dto.IFresponse;
-import com.dimab.pp.dto.IFsave;
-import com.dimab.pp.dto.JsonImageID_2_GCSurl;
-import com.dimab.pp.dto.SingleShapeBookingResponse;
+import com.dimab.pp.dto.*;
 import com.dimab.pp.login.CheckTokenValid;
 import com.dimab.pp.login.GenericUser;
 import com.google.appengine.api.datastore.DatastoreService;
@@ -31,6 +26,7 @@ import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
+import com.google.gson.reflect.TypeToken;
 
 
 public class EditIFrame extends HttpServlet {
@@ -42,8 +38,8 @@ public class EditIFrame extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-		String placeIDvalue = request.getParameter("placeIDvalue");
-		String ifid = request.getParameter("iFIDvalue");
+		Map<String , Object> map = new HashMap<String , Object>();
+		map.put("valid",false);
 		
 		String username_email = new String();
 		CheckTokenValid tokenValid = new CheckTokenValid(request);
@@ -63,52 +59,64 @@ public class EditIFrame extends HttpServlet {
 		} else {
 			username_email = genuser.getEmail();
 		}
-		
 
-  		GetAJAXimageJSONfromCSfactory csFactory = new GetAJAXimageJSONfromCSfactory();
-  		List<JsonImageID_2_GCSurl> JSONimageID2url = new ArrayList<JsonImageID_2_GCSurl>();
-  		AJAXImagesJSON CanvasStateEdit = new AJAXImagesJSON();
-  		
-		Filter usernameFilter = new  FilterPredicate("username",FilterOperator.EQUAL,username_email);
+		String placeIDvalue = request.getParameter("pid");
+		String ifid = request.getParameter("ifid");
+
+
 		Filter placeIdFilter  = new  FilterPredicate("placeUniqID",FilterOperator.EQUAL,placeIDvalue);
-		Filter composeFilter = CompositeFilterOperator.and(usernameFilter,placeIdFilter);
-		Query q = new Query("CanvasState").setFilter(composeFilter);
+		Query q = new Query("CanvasState").setFilter(placeIdFilter);
 		PreparedQuery pq = datastore.prepare(q);		
   		Entity userCanvasState = pq.asSingleEntity();
-  		
+  		boolean allowedUser = false;
   		if (userCanvasState != null) {
-  			CanvasStateEdit = csFactory.getBaseData(userCanvasState, datastore);	
+			Type closeDateType = new TypeToken<List<String>>(){}.getType();
+  			List<String> admins = JsonUtils.deserialize((String) userCanvasState.getProperty("adminList"),closeDateType);
+			if(admins.contains(username_email)) {
+				allowedUser = true;
+				map.put("valid",true);
+			}
  
   		}
-  		IFresponse ifresp = new IFresponse();
-  		if(ifid!=null && !ifid.isEmpty()) {
-  			Filter ifidfilter = new  FilterPredicate("ifid",FilterOperator.EQUAL,ifid);
-  	 	    Query piq = new Query("IFrames").setFilter(ifidfilter);
-  	        PreparedQuery sbpiq = datastore.prepare(piq);
-  	  		Entity ifidEntity = sbpiq.asSingleEntity();
-  	  		if (ifidEntity != null) {
-  	  		String ifid_ = (String)ifidEntity.getProperty("ifid");
-			String uid = (String)ifidEntity.getProperty("savedby");
-  			Date date_ = (Date)ifidEntity.getProperty("date");
-  			String iframe_ = (String)ifidEntity.getProperty("ifjson");
-			IFsave SaveObject = JsonUtils.deserialize(iframe_, IFsave.class);
-	        SimpleDateFormat dateFormat = new SimpleDateFormat("wwMMMy HH:mm");
-	        System.out.println("date: " + dateFormat.format( date_ ) );
-	        
-	        ifresp.setDate(dateFormat.format( date_ ));
-	        ifresp.setIfid(ifid_);
-	        ifresp.setSavedby(uid);
-	        ifresp.setTime(date_.getTime());
-	        ifresp.setIframedata(SaveObject);
+  		if(allowedUser) {
+			Filter ifidfilter = new  FilterPredicate("ifid",FilterOperator.EQUAL,ifid);
+			Query piq = new Query("IFrames").setFilter(ifidfilter);
+			PreparedQuery sbpiq = datastore.prepare(piq);
+			Entity iframeEntity = sbpiq.asSingleEntity();
+			if (iframeEntity != null) {
+				String uid = (String)iframeEntity.getProperty("savedby");
+				Date date_ = (Date)iframeEntity.getProperty("date");
+				Integer width = (int)(long)iframeEntity.getProperty("width");
+				Integer height = (int)(long)iframeEntity.getProperty("height");
+				Boolean booking = (Boolean)iframeEntity.getProperty("booking");
+				String theme = (String)iframeEntity.getProperty("theme");
 
-  	  		}
-  		}
-  		request.setAttribute("ifid", ifid);
-  		request.setAttribute("iframedata", ifresp);
-  		request.setAttribute("canvasState", CanvasStateEdit);
-	    RequestDispatcher dispathser  = request.getRequestDispatcher("/iframeEditor.jsp");
-	    response.addHeader("Access-Control-Allow-Origin", "*");
-	    dispathser.forward(request, response);
+
+				SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMMy HH:mm");
+				System.out.println("date: " + dateFormat.format( date_ ) );
+
+				iFrameObj ifresp = new iFrameObj();
+				ifresp.setDate(dateFormat.format( date_ ));
+				ifresp.setIfid(ifid);
+				ifresp.setUser(uid);
+				ifresp.setTime(date_.getTime());
+				ifresp.setWidth(width);
+				ifresp.setHeight(height);
+				ifresp.setBooking(booking);
+				ifresp.setTheme(theme);
+
+				map.put("iframe",ifresp);
+			} else {
+				map.put("reason","no_iframe");
+			}
+		} else {
+			map.put("reason","not_allowed");
+		}
+
+
+		response.setContentType("application/json");
+		response.setCharacterEncoding("UTF-8");
+		response.getWriter().write(JsonUtils.serialize(map));
 
 	}
 

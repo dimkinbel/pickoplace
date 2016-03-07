@@ -1,4 +1,4 @@
-
+ 
 
 function floorAppend(appendTo_,singleBoth,singleFloorID,temp) {
 
@@ -82,7 +82,7 @@ function floorAppend(appendTo_,singleBoth,singleFloorID,temp) {
 
 				appendData +='</div>';
 				$("#canvas_appended_wrapper-both").append(appendData);
-
+ 
 
 				appendData =' <div id="canvas_wrap_not_scroll_conf-both" class="canvas_wrap_not_scroll_conf"></div>';
 				$("#canvas_appended_wrapper-both").append(appendData);
@@ -112,99 +112,109 @@ function floorAppend(appendTo_,singleBoth,singleFloorID,temp) {
 		}
 	}
 }
-function selectFloorByID(floorID) {
-	for (var f = 0 ;f < floorCanvases.length ; f++) {
-		canvas_ref = floorCanvases[f];
-		if(canvas_ref.floorid == floorID) {
-			$('#div_wrap-canvas_'+canvas_ref.floorid).show();
-			zoomResetWrap(canvas_ref,'canvas_appended_wrapper-both','canvas_wrap_not_scroll_conf-both');
-			canvas_ = canvas_ref;
-		} else {
-			$('#div_wrap-canvas_'+canvas_ref.floorid).hide();
-		}
-	}
-	$(".bottom_floors_button").removeClass("selected_f");
-	$("#bfb-"+floorID).addClass("selected_f");
+function updateMaxTables() {
+   var tables_count
+   for (var f = 0 ;f < floorCanvases.length ; f++) {
+      for(var s = 0 ; s < floorCanvases[f].shapes[s].length ; s++) {
+	  
+	  }
+   
+   }
 }
+	function selectFloorByID(floorID) {
+	    for (var f = 0 ;f < floorCanvases.length ; f++) {  
+				canvas_ref = floorCanvases[f];
+				if(canvas_ref.floorid == floorID) {
+				   $('#div_wrap-canvas_'+canvas_ref.floorid).show();
+				   zoomResetWrap(canvas_ref,'canvas_appended_wrapper-both','canvas_wrap_not_scroll_conf-both');
+				   canvas_ = canvas_ref;
+				} else {
+					$('#div_wrap-canvas_'+canvas_ref.floorid).hide();
+				}
+			}
+			$(".bottom_floors_button").removeClass("selected_f");
+			$("#bfb-"+floorID).addClass("selected_f");
+	}
 
-
-
+ 
+ 
 var mainFloor__ = {};
 function updateFloorWrapDimentions () {
-	var browserHeight =  window.innerHeight;
-	var browserWidth =  window.innerWidth;
-	var bs_wrap_width = $("#canvas_append_wrap_ub").width();
-	for (f= 0 ; f < floorCanvases.length ; f++) {
-		if(floorCanvases[f].mainfloor == true) {
-			var width2height =floorCanvases[f].origWidth / floorCanvases[f].origHeight;
-			if(bs_wrap_width / parseFloat( browserHeight - $("#header_td_div").height() - 100) > width2height ) {
-				// Set floor height axis to maximum available
-				$("#canvas_append_wrap_ub").height(browserHeight - $("#header_td_div").height() - 100);
-			} else {
-				// Set floor height axis relative
-				$("#canvas_append_wrap_ub").height(bs_wrap_width / width2height);
-			}
-		}
-	}
+   var browserHeight =  window.innerHeight;
+   var browserWidth =  window.innerWidth;
+   var bs_wrap_width = $("#canvas_append_wrap_ub").width();
+   for (f= 0 ; f < floorCanvases.length ; f++) {
+      if(floorCanvases[f].mainfloor == true) {
+	     var width2height =floorCanvases[f].origWidth / floorCanvases[f].origHeight;
+		 if(bs_wrap_width / parseFloat( browserHeight - $("#header_td_div").height() - 100) > width2height ) {
+		    // Set floor height axis to maximum available
+			$("#canvas_append_wrap_ub").height(browserHeight - $("#header_td_div").height() - 100);
+		 } else {
+		     // Set floor height axis relative
+			 $("#canvas_append_wrap_ub").height(bs_wrap_width / width2height);
+		 }
+	  }
+   }
 }
 
 function ApplyFinalPosition() {
-	floorAppend("canvas_append_wrap_ub",false);
+	       floorAppend("canvas_append_wrap_ub",false);
 }
 
-//var currentPosition.timeline = "id"
-//var currentPosition.floorid{fid} = "id";
-//var gridObj = {};
-//gridObj.timeline = true;
-//gridObj.single = true;
-//gridObj.floorid = "floorid";
-function getAvailable(width,right_width) {
-	var browserHeight =  document.body.offsetHeight;
-	var browserWidth =  document.body.offsetWidth;
+	//var currentPosition.timeline = "id"
+	//var currentPosition.floorid{fid} = "id";
+	//var gridObj = {};
+	//gridObj.timeline = true;
+	//gridObj.single = true;
+	//gridObj.floorid = "floorid";
+	function getAvailable(width,right_width) {
+		var browserHeight =  document.body.offsetHeight;
+	    var browserWidth =  document.body.offsetWidth;
 
-	// assignments
-	var rightColumnWidth = right_width;
-	if(width) {
-		var availableWidth = browserWidth;
-		return availableWidth;
-	} else {
-		var availableHeight = browserHeight;
-		return availableHeight;
+	  // assignments
+	   var rightColumnWidth = right_width;
+	   if(width) {
+	     var availableWidth = browserWidth;
+		 return availableWidth;
+	   } else {
+	      var availableHeight = browserHeight;
+		  return availableHeight;
+	   }
 	}
-}
 
-
+ 
 $(window).resize(function () {
-	waitForFinalEvent(function(){
-		// applyPosition() ;
-		updateFloorWrapDimentions();
-		ApplyFinalPosition()
-		//...
-	}, 500, "some unique string");
-});
-
-
+		waitForFinalEvent(function(){
+			// applyPosition() ;
+			updateFloorWrapDimentions();		
+			ApplyFinalPosition()
+			bookingFullWidth();
+			//...
+		}, 500, "some unique string");
+	});
+	
+	
 var waitForFinalEvent = (function () {
-	var timers = {};
-	return function (callback, ms, uniqueId) {
-		if (!uniqueId) {
-			uniqueId = "Don't call this twice without a uniqueId";
-		}
-		if (timers[uniqueId]) {
-			clearTimeout (timers[uniqueId]);
-		}
-		timers[uniqueId] = setTimeout(callback, ms);
-	};
+  var timers = {};
+  return function (callback, ms, uniqueId) {
+    if (!uniqueId) {
+      uniqueId = "Don't call this twice without a uniqueId";
+    }
+    if (timers[uniqueId]) {
+      clearTimeout (timers[uniqueId]);
+    }
+    timers[uniqueId] = setTimeout(callback, ms);
+  };
 })();
 function hexc(colorval) {
-	var color = '';
-	var parts = colorval.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
-	delete(parts[0]);
-	for (var i = 1; i <= 3; ++i) {
-		parts[i] = parseInt(parts[i]).toString(16);
-		if (parts[i].length == 1) parts[i] = '0' + parts[i];
-	}
-	color = '#' + parts.join('');
+    var color = '';
+    var parts = colorval.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+    delete(parts[0]);
+    for (var i = 1; i <= 3; ++i) {
+        parts[i] = parseInt(parts[i]).toString(16);
+        if (parts[i].length == 1) parts[i] = '0' + parts[i];
+    }
+    color = '#' + parts.join('');
 	return color;
 }
 

@@ -148,7 +148,7 @@ public class DeletePlaceData extends HttpServlet {
 	  			GcsService gcsService = GcsServiceFactory.createGcsService(RetryParams.getDefaultInstance());
 	  			ListOptions.Builder b = new ListOptions.Builder();
 	  			b.setRecursive(true);
-	  			b.setPrefix(adminID+"/"+placeName+"/"+branchName);
+	  			b.setPrefix(adminID+"/");
 	  			ListResult result = gcsService.list("pp_images", b.build());
 	  			while (result.hasNext()){
 	  			    ListItem l = result.next();

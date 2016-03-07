@@ -169,6 +169,7 @@ public class ClientPlaceBooking extends HttpServlet {
 		if(utcTimeSeconds + 60 > secondsRelativeToClient) {
 			System.out.println("Plase time passed:\n   UTCTime = "+utcTimeSeconds+"\n   bookTime="+secondsRelativeToClient);			
 			bookAvailable = false;
+			map.put("reason", "זמן עבר");
 		}
 		
   		if (canvasEntity != null && bookAvailable) {
@@ -196,6 +197,7 @@ public class ClientPlaceBooking extends HttpServlet {
             	System.out.println("Place closed! Open ranges :" +JsonUtils.serialize(tempRanges));
 				System.out.println("            Booking range :" +bookFrom + "-"+bookTo);
             	bookAvailable = false;
+				map.put("reason", "מקום סגור");
             }
    		}
   		List<Entity> shapesEntities = new ArrayList<Entity>();
@@ -247,6 +249,7 @@ public class ClientPlaceBooking extends HttpServlet {
 			  				allAvailable = false;
 			  				//datastore.delete(bookingOrder.getKey());
 			  				map.put("added", false);
+							map.put("reason", "מקום שמור");
 			  			}
 			  		}
 			  			  		   
@@ -276,7 +279,7 @@ public class ClientPlaceBooking extends HttpServlet {
   			if(mailFabric.isSubscribed(datastore, genuser)) {
   				String userKeyString = mailFabric.getUserKey(datastore, genuser);
   				bookingRequestsWrap.setUserEntityKeyString(userKeyString);
-  				mailFabric.SendEmail("userConfirmation","pickoplace@appspot.gserviceaccount.com", genuser.getEmail(), bookingRequestsWrap, placeInfo);
+  				mailFabric.SendEmail("userConfirmation","pickoplace@appspot.gserviceaccount.com", genuser.getEmail(), bookingRequestsWrap, placeInfo,"");
   			}
   		}
   		txn.commit();

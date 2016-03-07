@@ -28,7 +28,7 @@ import com.google.appengine.api.datastore.Query.FilterPredicate;
 public class MailSenderFabric {
 
 
-	public void SendEmail(String type,String from , String to , BookingRequestWrap bookingRequestsWrap,PlaceInfo placeInfo) {
+	public void SendEmail(String type,String from , String to , BookingRequestWrap bookingRequestsWrap,PlaceInfo placeInfo,String VerificationCode) {
 		String message = "";
 		MailGenerator mailGenerator = new MailGenerator();
 		switch(type){
@@ -38,10 +38,18 @@ public class MailSenderFabric {
 			case "waiterCancelUserBooking":
 				message = mailGenerator.GetCancellationEmail(bookingRequestsWrap,placeInfo);
 				break;
-			case "AaBBAa": break;
-			case "AaBBBB": break;
-			case "BBAaAa": break;
-			case "BBAaBB": break;
+			case "NewAdminNotification":
+				message = mailGenerator.GetNewAdminConfirmationEmail(placeInfo,VerificationCode);
+				break;
+			case "RemoveAdminNotification":
+				message = mailGenerator.GetRemoveAdminConfirmationEmail(placeInfo,VerificationCode);
+				break;
+			case "SendVerificationCode":
+				message = mailGenerator.VerificationCodeEmail(placeInfo,VerificationCode);
+				break;
+			case "RemoveConfirmationEmail":
+				message = mailGenerator.RemoveConfirmationEmail(placeInfo);
+				break;
 			case "BBBBAa": break;
 			case "BBBBBB": break;
 		}
@@ -54,7 +62,24 @@ public class MailSenderFabric {
 			msg.addRecipient(Message.RecipientType.TO,
 					new InternetAddress(to, "You"));
 
-			msg.setSubject("Order Confirmation");
+			switch(type){
+				case "userConfirmation":
+					msg.setSubject("Order Confirmation");
+					break;
+				case "waiterCancelUserBooking":
+					msg.setSubject("Order Cancellation");
+					break;
+				case "NewAdminNotification":
+					msg.setSubject("Pickoplace: New Admin Confirmation ");
+					break;
+				case "RemoveAdminNotification":
+					msg.setSubject("Pickoplace: Admin Removal Notification");
+					break;
+				case "RemoveConfirmationEmail":
+					msg.setSubject("Pickoplace: Confirmation mail removed");
+					break;
+			}
+
 			System.out.println(message);
 			msg.setContent(message, "text/html; charset=utf-8");
 			msg.setSentDate(new Date());

@@ -277,7 +277,7 @@
                             <goal>npm</goal>
                         </goals>
                     </execution>
--->
+
 
                     <execution>
                         <id>gulp build</id>
@@ -288,6 +288,7 @@
                             <arguments>default</arguments>
                         </configuration>
                     </execution>
+      Dimab - slower the appengine update    -->
                 </executions>
             </plugin>
 

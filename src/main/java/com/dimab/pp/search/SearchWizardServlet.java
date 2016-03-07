@@ -147,7 +147,7 @@ public class SearchWizardServlet extends HttpServlet {
 								System.out.println("Persons:"+op.getPersons()+",Count:"+op.getCount());
 							}
 							if(!freeOptions.isEmpty()) {
-								PlaceInfo placeInfo = placeInfoFactory.getPlaceInfo(datastore, csEntity, 222);
+								PlaceInfo placeInfo = placeInfoFactory.getPlaceInfo(datastore, csEntity, 222,false,true);
 								FreePlaceInfo freePlaceInfo = new FreePlaceInfo();
 								freePlaceInfo.setFreeOptions(freeOptions);
 								freePlaceInfo.setPlaceInfo(placeInfo);

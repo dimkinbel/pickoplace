@@ -72,7 +72,10 @@ Shape.prototype.draw = function(ctx, optionalColor) {
   ctx.fillStyle = this.fill;
   var fillX = this.x;
   var fillY = this.y;
-
+  var hoverAdd = 0;
+  if(this == this.state.shapeHover && this.booking_options.bookable == true) {
+	  hoverAdd = 2;
+  }
   if (this.angle != 0  && this.type!="line") {
     ctx.save();
 	ctx.translate(this.x , this.y );
@@ -81,7 +84,7 @@ Shape.prototype.draw = function(ctx, optionalColor) {
 	fillY = 0
    }
   if (this.type == "rectangle" ) {
-    dbDrawRect  (ctx,fillX,fillY,this.w,this.h,
+    dbDrawRect  (ctx,fillX,fillY,this.w+hoverAdd,this.h+hoverAdd,
 	              this.options.lineColor,
 				  this.options.fillColor,
 				  this.options.alpha,
@@ -110,7 +113,7 @@ Shape.prototype.draw = function(ctx, optionalColor) {
 					 this.options.shadow_blur,
 					 this.options.shadow_color);
   } else if (this.type == "round" ) {
-    dbRoundRect (ctx,fillX,fillY,this.w,this.h,
+    dbRoundRect (ctx,fillX,fillY,this.w+hoverAdd,this.h+hoverAdd,
 	              this.options.lineColor,
 				  this.options.fillColor,
 				  this.options.alpha,
@@ -118,7 +121,7 @@ Shape.prototype.draw = function(ctx, optionalColor) {
 				  this.options.sw,
 				  this.options.roundRad);
   } else if (this.type == "circle" ) {
-    dbCircle (ctx,fillX,fillY,this.w,this.h,
+    dbCircle (ctx,fillX,fillY,this.w+hoverAdd,this.h+hoverAdd,
 				  this.options.startA,
 				  this.options.endA,
 	              this.options.lineColor,
@@ -127,7 +130,7 @@ Shape.prototype.draw = function(ctx, optionalColor) {
 				  this.options.salpha,
 				  this.options.sw);
   } else if (this.type == "trapex" ) {
-    dbTrapez (ctx,fillX,fillY,this.w,this.h,
+    dbTrapez (ctx,fillX,fillY,this.w+hoverAdd,this.h+hoverAdd,
 	              this.options.lineColor,
 				  this.options.fillColor,
 				  this.options.alpha,
@@ -135,7 +138,7 @@ Shape.prototype.draw = function(ctx, optionalColor) {
 				  this.options.sw,
 				  this.options.cutX);
   } else if (this.type == "image" ) {
-    dbImage (ctx,fillX,fillY,this.w,this.h,
+    dbImage (ctx,fillX,fillY,this.w+hoverAdd,this.h+hoverAdd,
 	              this.options.imgID,
 				  this.options.alpha);
   }
@@ -345,6 +348,7 @@ function CanvasState(canvas) {
   
   this.floorid = "floorid_"+randomString(10);
   this.mainfloor = false;
+  this.scrollID = "canvas_wrap_not_scroll_conf";
   this.canvas = canvas;
   this.width = canvas.width;
   this.height = canvas.height;
@@ -435,10 +439,6 @@ function CanvasState(canvas) {
    
     var mouse, mx, my, shapes, l, i, mySel;
 	
-    if (myState.expectResize !== -1 || myState.lexpectResize !== -1) {
-      myState.resizeDragging = true;
-      return;
-    }
     mouse = myState.getMouse(e);
     mx = mouse.x;
     my = mouse.y;
@@ -449,95 +449,43 @@ function CanvasState(canvas) {
     shapes = myState.shapes;
     l = shapes.length;
     for (i = l-1; i >= 0; i -= 1) {
-      if (shapes[i].contains(myState.ctx ,mx, my)) {
-	   if(e.which == 3) //1: left, 2: middle, 3: right
-        {
-            return;
-        }
-        mySel = shapes[i];
-		
-		var regular_behavior = false;
-		myState.mousemoveclicked = null;
-
-		  if( myState.selection == null && myState.listSelected.length == 0) {
-		    regular_behavior = true;
-		  } else {
-		    if( myState.listSelected.length == 1) {
-			  if(myState.listSelected[0] == mySel) {
-			    myState.selection = null;
-			    myState.listSelected = [];
-				
-				myState.mousemoveclicked = mySel;
-			  } else {
-			    myState.selection = null;
-			    myState.listSelected.push(mySel);
-                addShapeConfigSelected(mySel);				
-			  }
-			} else {
-			  	if(myState.listSelected.contains(mySel)) {
-				  // remove from selected List
-				  myState.listSelected.remove(mySel);
-				  removeShapeConfigSelected(mySel);
-				  if (myState.listSelected.length == 1) {
-				     myState.selection = myState.listSelected[0];
-				  }
-				  //myState.mousemoveclicked = mySel; // For further moving
+    	
+      if (shapes[i].contains(myState.ctx ,mx, my) && shapes[i].type != "text" && shapes[i].type != "line" ) {
+    	  
+		        mySel = shapes[i];
+				myState.mousemoveclicked = null;
+		        if( myState.selection == null) {
+				   myState.listSelected.push(mySel);
+				   myState.selection = mySel;		
+				   //tcanvas_.addTshapeList(mySel.sid);
+				   
+				   //appendSelectedImage(mySel);
+				   showFloorPopover(e.pageX, e.pageY,mySel);
 				} else {
-				  // Add to the selected list
-				  myState.listSelected.push(mySel);	
-                  addShapeConfigSelected(mySel)				  
-				}
-			}	
-			
-			if (myState.selection!=null ) {
-			  myState.dragoffx = mx - myState.selection.x;
-			  myState.dragoffy = my - myState.selection.y;
-			 
-			  myState.dragging = true;
-			  }
-			if (myState.mousemoveclicked!=null) {
-				  myState.dragoffx = mx - myState.mousemoveclicked.x;
-				  myState.dragoffy = my - myState.mousemoveclicked.y;
-				 
-				  myState.dragging = true;
-			}			
-		      myState.valid = false;             			
-		  }
-		  
-
-		if (regular_behavior) {
-			myState.listSelected = [];
-			myState.listSelected.push(mySel);
-			addShapeConfigSelected(mySel)
-			var prevSelection = myState.selection;
-			
-			// Keep track of where in the object we clicked
-			// so we can move it smoothly (see mousemove)
-			myState.dragoffx = mx - mySel.x;
-			myState.dragoffy = my - mySel.y;
-			myState.dragging = true;
-			myState.selection = mySel;
-			myState.valid = false;
-		}
-        return;
+				  if(myState.selection == mySel) {
+				    showFloorPopover(e.pageX, e.pageY,mySel); 
+				  } else {
+				    myState.listSelected.remove(myState.selection);
+					myState.listSelected.push(mySel);
+				    myState.selection = mySel;	
+				    showFloorPopover(e.pageX, e.pageY,mySel);
+				  }
+				}		  
+		        //updatePersonsSpinner();
+				myState.valid = false;
+				return;
+    	  
       }
     }
     // havent returned means we have failed to select anything.
     // If there was an object selected, we deselect it
-    myState.mousemoveclicked = null;
-    if (myState.selection) {
-
+      myState.selection = null;
+	  myState.listSelected = [];
 	  myState.canvasDrag  = true;
 	 
 	  myState.prevCmx = mox ;
       myState.prevCmy = moy ;
       myState.valid = false; // Need to clear the old selection border
-    } else {
-	  myState.canvasDrag  = true;
-	  
-	  myState.prevCmx = mox ;
-      myState.prevCmy = moy ;	
-	}
   }, true);
   canvas.addEventListener('mousemove', function(e) {
     var mouse = myState.getMouse(e),
@@ -555,388 +503,14 @@ function CanvasState(canvas) {
 		
 		
        if (myState.main) {
-		 document.getElementById("canvas_wrap_not_scroll_conf").scrollTop -= topDrag;
-		 document.getElementById("canvas_wrap_not_scroll_conf").scrollLeft -= leftDrag;
+		 document.getElementById(myState.scrollID).scrollTop -= topDrag;
+		 document.getElementById(myState.scrollID).scrollLeft -= leftDrag;
 	   }
 		 myState.prevCmx = mox ;
          myState.prevCmy = moy ;	
 		 myState.valid = false;
 	}
-    if (myState.dragging){
-  	  if (myState.mousemoveclicked != null &&  myState.selection == null) {
- 	     myState.listSelected.push(myState.mousemoveclicked);	
- 		 myState.selection = myState.mousemoveclicked;
- 		// myState.mousemoveclicked = null;
- 		// addShapeConfigSelected(myState.selection);
- 	  } 
-	  mouse = myState.getMouse(e);
-	  var difx = mouse.x - myState.dragoffx - myState.selection.x;
-	  var dify = mouse.y - myState.dragoffy - myState.selection.y;
-		  if (myState.selection.type == "line") {
-			 
-			  myState.selection.x = mouse.x - myState.dragoffx;
-			  myState.selection.y = mouse.y - myState.dragoffy;  
-			  myState.selection.options.x1 +=  difx;
-			  myState.selection.options.x2 +=  difx;
-			  myState.selection.options.y1 +=  dify;
-			  myState.selection.options.y2 +=  dify;
-			  myState.valid = false; // Something's dragging so we must redraw
-		  } else {
-			  
-			  // We don't want to drag the object by its top-left corner, we want to drag it
-			  // from where we clicked. Thats why we saved the offset and use it here
-			  myState.selection.x = mouse.x - myState.dragoffx;
-			  myState.selection.y = mouse.y - myState.dragoffy;   
-			  myState.valid = false; // Something's dragging so we must redraw
-		  }
-
-	 if (myState.listSelected.length > 1) {
-	     for (var i = 0; i < myState.listSelected.length ; i++) {
-		    var shape = myState.listSelected[i];
-			if (shape != myState.selection) {
-			   	 if (shape.type == "line") {
-					  shape.x +=  difx;
-					  shape.y +=  dify;  
-					  shape.options.x1 +=  difx;
-					  shape.options.x2 +=  difx;
-					  shape.options.y1 +=  dify;
-					  shape.options.y2 +=  dify;
-					  myState.valid = false; // Something's dragging so we must redraw
-				  } else {
-					  
-					  // We don't want to drag the object by its top-left corner, we want to drag it
-					  // from where we clicked. Thats why we saved the offset and use it here
-					  shape.x +=  difx;
-					  shape.y +=  dify;   
-					  myState.valid = false; // Something's dragging so we must redraw
-				  }			
-			}
-		 }
-	  }
-    } else if (myState.resizeDragging) {
-      // time ro resize!
-      if (myState.selection.type == "line") {
-	        		  var prevX;
-		  var prevY;
-		  var prevAngle;
-		  
-		  if ( myState.selection.startX == null) {
-			  myState.selection.startX = myState.selection.x;
-			  myState.selection.startY = myState.selection.y;
-		  }
-		  var omx = mx;
-		  var omy = my;
-		  var movedX = mx - myState.selection.startX;
-		  var movedY = my - myState.selection.startY;
-		  var radius = Math.sqrt(Math.pow(movedX,2) + Math.pow(movedY,2));
-		  var initAngle =  toRadians(myState.selection.angle);
-		  var mouseAngle = getAngle(movedX,movedY);
-		  mx = parseInt(radius * Math.cos(  mouseAngle - initAngle));
-		  my = parseInt(radius * Math.sin(  mouseAngle - initAngle));  	  
-		  
-		  if ( myState.selection.prevMX == null) {
-			myState.selection.prevMX = mx;
-			myState.selection.prevMY = my;
-			myState.selection.prevAngle = mouseAngle;
-		  } 
-			prevX = myState.selection.prevMX;
-			prevY = myState.selection.prevMY;
-			prevAngle = myState.selection.prevAngle;
-		  
-		  var difX = mx - prevX;
-		  var difY = my - prevY;
-		  var difAngle = toDegrees(mouseAngle) - toDegrees(prevAngle);
-		  
-	    	switch (myState.lexpectResize) {
-			case 0:
-			  myState.selection.options.x1 += difX;
-			  myState.selection.options.y1 += difY;
-			  myState.selection.x += 0.5* difX;
-			  myState.selection.y += 0.5* difY;
-			  myState.selection.w = Math.abs(myState.selection.options.x1 - myState.selection.options.x2);
-			  myState.selection.h = Math.abs(myState.selection.options.y1 - myState.selection.options.y2);
-			  break;
-			case 1:
-			  myState.selection.options.x2 += difX;
-			  myState.selection.options.y2 += difY;
-			  myState.selection.x += 0.5 * difX ;
-			  myState.selection.y += 0.5 * difY ;
-			  myState.selection.w = Math.abs(myState.selection.options.x1 - myState.selection.options.x2);
-			  myState.selection.h = Math.abs(myState.selection.options.y1 - myState.selection.options.y2);
-			  break;
-			}
-			
-			myState.selection.prevMX = mx;
-			myState.selection.prevMY = my;
-			myState.selection.prevAngle = mouseAngle;
-			myState.valid = false; // Something's dragging so we must redraw
-	  } else {
-		  var prevX;
-		  var prevY;
-		  var prevAngle;
-		  
-		  if ( myState.selection.startX == null) {
-			  myState.selection.startX = myState.selection.x;
-			  myState.selection.startY = myState.selection.y;
-		  }
-		  var omx = mx;
-		  var omy = my;
-		  var movedX = mx - myState.selection.startX;
-		  var movedY = my - myState.selection.startY;
-		  var radius = Math.sqrt(Math.pow(movedX,2) + Math.pow(movedY,2));
-		  var initAngle =  toRadians(myState.selection.angle);
-		  var mouseAngle = getAngle(movedX,movedY);
-		  mx = parseInt(radius * Math.cos(  mouseAngle - initAngle));
-		  my = parseInt(radius * Math.sin(  mouseAngle - initAngle));  	  
-		  
-		  if ( myState.selection.prevMX == null) {
-			myState.selection.prevMX = mx;
-			myState.selection.prevMY = my;
-			myState.selection.prevAngle = mouseAngle;
-		  } 
-			prevX = myState.selection.prevMX;
-			prevY = myState.selection.prevMY;
-			prevAngle = myState.selection.prevAngle;
-		  
-		  var difX = mx - prevX;
-		  var difY = my - prevY;
-		  var difAngle = toDegrees(mouseAngle) - toDegrees(prevAngle);
-		  
-
-		  // 0  1  2
-		  // 3     4
-		  // 5  6  7
-
-		  switch (myState.expectResize) {
-			case 0:
-			  myState.selection.w -= difX;
-			  myState.selection.h -= difY;
-			  myState.selection.x += 0.5 * difX* Math.cos(toRadians(myState.selection.angle)) - 0.5 * difY * Math.sin(toRadians(myState.selection.angle));
-			  myState.selection.y += 0.5 * difY* Math.cos(toRadians(myState.selection.angle)) + 0.5 * difX * Math.sin(toRadians(myState.selection.angle));
-			  
-			  break;
-			case 1:
-			  myState.selection.h -= difY;
-			  myState.selection.y += 0.5 * difY * Math.cos(toRadians(myState.selection.angle));
-			  myState.selection.x -= 0.5 * difY * Math.sin(toRadians(myState.selection.angle));
-			  
-			  break;
-			case 2:
-			  myState.selection.w += difX;
-			  myState.selection.h -= difY;
-			  myState.selection.x += 0.5 * difX * Math.cos(toRadians(myState.selection.angle)) - 0.5 * difY * Math.sin(toRadians(myState.selection.angle));
-			  myState.selection.y += 0.5 * difY * Math.cos(toRadians(myState.selection.angle)) + 0.5 * difX * Math.sin(toRadians(myState.selection.angle));         
-			  break;
-			case 3:
-			  myState.selection.w -= difX;
-			  myState.selection.x += 0.5 * difX * Math.cos(toRadians(myState.selection.angle));
-			  myState.selection.y += 0.5 * difX * Math.sin(toRadians(myState.selection.angle));
-			  break;
-			case 4:
-			   myState.selection.w += difX;
-			   myState.selection.x += 0.5 * difX * Math.cos(toRadians(myState.selection.angle));
-			   myState.selection.y += 0.5 * difX * Math.sin(toRadians(myState.selection.angle));
-			  break;
-			case 5:
-			  myState.selection.w -= difX;
-			  myState.selection.h += difY;
-			  myState.selection.x += 0.5 * difX  * Math.cos(toRadians(myState.selection.angle)) - 0.5 * difY * Math.sin(toRadians(myState.selection.angle));
-			  myState.selection.y += 0.5 * difY * Math.cos(toRadians(myState.selection.angle)) + 0.5 * difX * Math.sin(toRadians(myState.selection.angle));
-
-			  break;
-			case 6:
-			  myState.selection.h += difY;
-			  myState.selection.y += 0.5 * difY * Math.cos(toRadians(myState.selection.angle));
-			  myState.selection.x -= 0.5 * difY * Math.sin(toRadians(myState.selection.angle));
-			  break;
-			case 7:
-			  myState.selection.w += difX;
-			  myState.selection.h += difY;
-			  myState.selection.x += 0.5 * difX * Math.cos(toRadians(myState.selection.angle)) - 0.5 * difY * Math.sin(toRadians(myState.selection.angle));
-			  myState.selection.y += 0.5 * difY * Math.cos(toRadians(myState.selection.angle)) + 0.5 * difX * Math.sin(toRadians(myState.selection.angle));
-			  break;
-			case 8:
-			  myState.selection.angle += difAngle;
-			  if (myState.selection.angle >360) {
-				myState.selection.angle-=360;
-			  } else if (myState.selection.angle < 0) {
-				myState.selection.angle+=360;
-			  } 
-			//  $('#rotate_slider').slider('setValue', myState.selection.angle)
-			  break;
-		  }
-			myState.selection.prevMX = mx;
-			myState.selection.prevMY = my;
-			myState.selection.prevAngle = mouseAngle;
-			myState.valid = false; // Something's dragging so we must redraw
-		}
-    }
-    // if there's a selection see if we grabbed one of the selection handles
-	if (myState.selection !== null && !myState.resizeDragging && myState.selection.type == "line") {
-	  for (i = 0; i < 2; i += 1) {
-	    cur = myState.lineselectionHandles[i];
-		var curX = cur.x;
-		var curY = cur.y;
-		var mxt = mx;
-		var myt = my;
-        var centerX = curX ;
-        var centerY = curY ;
-		var topCornerX = curX - 3;
-		var topCornerY = curY - 3;
-	    // we dont need to use the ghost context because
-        // selection handles will always be rectangles
-        if (mxt >= topCornerX && mxt <= topCornerX + myState.selectionBoxSize &&
-            myt >= topCornerY && myt <= topCornerY + myState.selectionBoxSize) {
-          // we found one!
-          myState.lexpectResize = i;
-          myState.valid = false;
-		  this.style.cursor='pointer';
-		  return;
-		  }
-	  }
-	        // not over a selection box, return to normal
-      myState.resizeDragging = false;
-      myState.lexpectResize = -1;
-      this.style.cursor = 'auto';
-	}
-    if (myState.selection !== null && !myState.resizeDragging && myState.selection.type != "line") {
-
-      for (i = 0; i < 9; i += 1) {
-        // 0  1  2
-        // 3     4
-        // 5  6  7
-        
-        cur = myState.selectionHandles[i];
-		var curX = cur.x;
-		var curY = cur.y;
-		var mxt = mx;
-		var myt = my;
-        var centerX = curX ;
-        var centerY = curY ;
-		var topCornerX = curX - 3;
-		var topCornerY = curY - 3;
-  
-
-        // we dont need to use the ghost context because
-        // selection handles will always be rectangles
-        if (mxt >= topCornerX && mxt <= topCornerX + myState.selectionBoxSize &&
-            myt >= topCornerY && myt <= topCornerY + myState.selectionBoxSize) {
-          // we found one!
-          myState.expectResize = i;
-          myState.valid = false;
-			  var nw_resize = 'nw-resize'; //  
-			  var n_resize  = 'n-resize '; //  |
-			  var ne_resize = 'ne-resize'; //  /
-			  var w_resize  = 'w-resize '; //  ->
-			  var e_resize  = 'e-resize '; //  <-
-			  var sw_resize = 'sw-resize'; //  /
-			  var s_resize  = 's-resize '; //  |
-			  var se_resize = 'se-resize'; //  
-                 if (337.5 <= myState.selection.angle && myState.selection.angle < 22.5 ) {
-  		  
-		  } else if (22.5 <= myState.selection.angle && myState.selection.angle < 67.5 ) {
-			  var nw_resize = 'n-resize'; //  
-			  var n_resize  = 'ne-resize '; //  |
-			  var ne_resize = 'w-resize'; //  /
-			  var e_resize  = 'se-resize '; //  <-
-			  var se_resize = 's-resize'; //	
-			  var s_resize  = 'ne-resize '; //  |
-			  var sw_resize = 'w-resize'; //  /
-			  var w_resize  = 'nw-resize '; //  ->			  	  
-		  } else if (67.5 <= myState.selection.angle && myState.selection.angle < 112.5 ) {
-			  var nw_resize = 'ne-resize '; //  
-			  var n_resize  = 'w-resize  '; //  |
-			  var ne_resize = 'se-resize '; //  /
-			  var e_resize  = 's-resize  '; //  <-
-			  var se_resize = 'ne-resize '; //	
-			  var s_resize  = 'w-resize  '; //  |
-			  var sw_resize = 'nw-resize '; //  /
-			  var w_resize  = 'n-resize '; //  ->		
-		  
-		  } else if (112.5 <= myState.selection.angle && myState.selection.angle < 157.5 ) {
-			  var nw_resize = 'w-resize  '; //  
-			  var n_resize  = 'se-resize '; //  |
-			  var ne_resize = 's-resize  '; //  /
-			  var e_resize  = 'ne-resize '; //  <-
-			  var se_resize = 'w-resize  '; //	
-			  var s_resize  = 'nw-resize '; //  |
-			  var sw_resize = 'n-resize  '; //  /
-			  var w_resize  = 'ne-resize '; //  ->			  
-		  } else if (157.5 <= myState.selection.angle && myState.selection.angle < 202.5 ) {
-			  var nw_resize = 'se-resize '; //  
-			  var n_resize  = 's-resize  '; //  |
-			  var ne_resize = 'ne-resize '; //  /
-			  var e_resize  = 'w-resize  '; //  <-
-			  var se_resize = 'nw-resize '; //	
-			  var s_resize  = 'n-resize  '; //  |
-			  var sw_resize = 'ne-resize '; //  /
-			  var w_resize  = 'w-resize '; //  ->			  
-		  } else if (202.5 <= myState.selection.angle && myState.selection.angle < 247.5 ) {
-			  var nw_resize = 's-resize  '; //  
-			  var n_resize  = 'ne-resize '; //  |
-			  var ne_resize = 'w-resize  '; //  /
-			  var e_resize  = 'nw-resize '; //  <-
-			  var se_resize = 'n-resize  '; //	
-			  var s_resize  = 'ne-resize '; //  |
-			  var sw_resize = 'w-resize  '; //  /
-			  var w_resize  = 'se-resize '; //  ->			  
-		  } else if (247.5 <= myState.selection.angle && myState.selection.angle < 292.5 ) {
-			  var nw_resize = 'ne-resize '; //  
-			  var n_resize  = 'w-resize  '; //  |
-			  var ne_resize = 'nw-resize '; //  /
-			  var e_resize  = 'n-resize  '; //  <-
-			  var se_resize = 'ne-resize '; //	
-			  var s_resize  = 'w-resize  '; //  |
-			  var sw_resize = 'se-resize '; //  /
-			  var w_resize  = 's-resize '; //  ->		  
-		  } else if (292.5 <= myState.selection.angle && myState.selection.angle < 337.5 ) {
-			  var nw_resize = 'w-resize  '; //  
-			  var n_resize  = 'nw-resize '; //  |
-			  var ne_resize = 'n-resize  '; //  /
-			  var e_resize  = 'ne-resize '; //  <-
-			  var se_resize = 'w-resize  '; //	
-			  var s_resize  = 'se-resize '; //  |
-			  var sw_resize = 's-resize  '; //  /
-			  var w_resize  = 'ne-resize '; //  ->			  
-		  } 
-          switch (i) {
-            case 0:
-              this.style.cursor= nw_resize;
-              break;
-            case 1:
-              this.style.cursor= n_resize;
-              break;
-            case 2:
-              this.style.cursor= ne_resize ;
-              break;
-            case 3:
-              this.style.cursor= w_resize ;
-              break;
-            case 4:
-              this.style.cursor= e_resize ;
-              break;
-            case 5:
-              this.style.cursor= sw_resize ;
-              break;
-            case 6:
-              this.style.cursor= s_resize ;
-              break;
-            case 7:
-              this.style.cursor= se_resize ;
-              break;
-			case 8:
-              this.style.cursor='pointer';
-              break;
-          }
-          return;
-        }
-        
-      }
-      // not over a selection box, return to normal
-      myState.resizeDragging = false;
-      myState.expectResize = -1;
-      this.style.cursor = 'auto';
-    }
+ 
 	 var contains = false;	 
 	 var prevHover = myState.shapeHover;
      for (i = 0; i <  myState.shapes.length ; i ++) {
@@ -996,12 +570,15 @@ function CanvasState(canvas) {
   this.selectionBoxSize = 6;
   this.selectionBoxColor = 'darkred';
   this.interval = 30;
-  setInterval(function() { myState.draw(); }, myState.interval);
+  this.intervalID = setInterval(function() { myState.draw(); }, myState.interval);
 }
-
+CanvasState.prototype.resetInterval = function() {
+   myState = this;
+   this.intervalID = setInterval(function() { myState.draw(); }, myState.interval);
+}
 CanvasState.prototype.rotateSelection = function(val) {
  if (this.selection != null) {
-   this.valid = false;
+    this.valid = false;
     this.selection.angle = val;
 	}
 }
@@ -1075,16 +652,16 @@ function zoomReset(state_) {
      $('#canvas_wrap_not_scroll_conf').perfectScrollbar('update');
  }
 }
-function zoomResetWrap(state_,w,h) {
-  var ww = w;
-  var wh = h;
-  
-  var state;
-  if(state_==null || state_==undefined) {
-	  state = canvas_;
-  } else {
-	  state = state_;
-  }
+function zoomResetWrap(canvas_ref_,dividwrap,scrolled_id) {
+  var state = canvas_ref_;
+   for (var f = 0 ;f < 0 ; f++) {
+     if(floorid_ == floorCanvases[f].floorid) {
+	     state = floorCanvases[f];
+	 }
+   }
+  var ww = document.getElementById(scrolled_id).offsetWidth ;
+  var wh = document.getElementById(scrolled_id).offsetHeight ;
+ 
   var required_zoom;
   var required_zoom_w = ww/state.origWidth ;// constant zoom width
   var required_zoom_h = wh/state.origHeight;// constant zoom height
@@ -1095,7 +672,7 @@ function zoomResetWrap(state_,w,h) {
   }
   var totalZoom = state.zoom; // current zoom
   var resetZoom = required_zoom / totalZoom; // relative zoom
-  
+ 
   document.getElementById(state.canvas.id).width = state.origWidth * required_zoom;
   document.getElementById(state.canvas.id).height = state.origHeight * required_zoom;
   state.ctx.scale(required_zoom,required_zoom);
@@ -1105,8 +682,8 @@ function zoomResetWrap(state_,w,h) {
   state.width = newWidth;
   state.height = newHeight;
   
-     $('#canvas_wrap_not_scroll_conf').perfectScrollbar();
-     $('#canvas_wrap_not_scroll_conf').perfectScrollbar('update');
+     $('#'+scrolled_id).perfectScrollbar();
+     $('#'+scrolled_id).perfectScrollbar('update');
 
  state.valid = false;
 }
@@ -1144,7 +721,7 @@ CanvasState.prototype.draw = function() {
 					  ctx.drawImage(this.backgroundImageID,0 + j*this.tilew,0 + i*this.tileh,this.tilew,this.tileh);
 				}	 
 			 }
-			 ctx.strokeRect(0,0,this.width/this.zoom,this.height/this.zoom);
+			 //ctx.strokeRect(0,0,this.width/this.zoom,this.height/this.zoom);
 			 ctx.strokeStyle = ss;
 		  } else {
 			// User Background
@@ -1152,7 +729,7 @@ CanvasState.prototype.draw = function() {
 				 var ss = ctx.strokeStyle;
 				 ctx.strokeStyle = this.line_color;
 				 ctx.drawImage(this.backgroundImageID,0,0,this.width/this.zoom,this.height/this.zoom);	
-				 ctx.strokeRect(0,0,this.width/this.zoom,this.height/this.zoom);
+				 //ctx.strokeRect(0,0,this.width/this.zoom,this.height/this.zoom);
 				 ctx.strokeStyle = ss;			 
 			 } else if (this.backgroundType == "repeat") {
 					 var ss = ctx.strokeStyle;
@@ -1165,19 +742,19 @@ CanvasState.prototype.draw = function() {
 							  ctx.drawImage(this.backgroundImageID,0 + j*this.tilew,0 + i*this.tileh,this.tilew,this.tileh);
 						}	 
 					 }
-					 ctx.strokeRect(0,0,this.width/this.zoom,this.height/this.zoom);
+					 //ctx.strokeRect(0,0,this.width/this.zoom,this.height/this.zoom);
 					 ctx.strokeStyle = ss;		 
 			 } else if (this.backgroundType == "asimage") {
 				 var ss = ctx.strokeStyle;
 				 ctx.strokeStyle = this.line_color;
 				 ctx.drawImage(this.backgroundImageID,0,0,this.width/this.zoom,this.height/this.zoom);	
-				 ctx.strokeRect(0,0,this.width/this.zoom,this.height/this.zoom);
+				 //ctx.strokeRect(0,0,this.width/this.zoom,this.height/this.zoom);
 				 ctx.strokeStyle = ss;				 
 			 }	else if (this.backgroundType == "axis") {
 				 var ss = ctx.strokeStyle;
 				 ctx.strokeStyle = this.line_color;
 				 ctx.drawImage(this.backgroundImageID,0,0,this.width/this.zoom,this.height/this.zoom);	
-				 ctx.strokeRect(0,0,this.width/this.zoom,this.height/this.zoom);
+				 //ctx.strokeRect(0,0,this.width/this.zoom,this.height/this.zoom);
 				 ctx.strokeStyle = ss;	
 			}		 
 		  }
@@ -1188,82 +765,44 @@ CanvasState.prototype.draw = function() {
     for (i = 0; i < this.bgshapes.length; i += 1) {
 		  this.bgshapes[i].draw(ctx);
 	} 
-	 l = shapes.length;
-	for (i = 0; i < l; i += 1) {
+	 l = shapes.length; 
+    for (i = 0; i < l; i += 1) { 
 		  shapes[i].draw(ctx);
-	}     
-    
+		  if(shapes[i].choosen == true) {
+			  var mins;
+			  if (shapes[i].h < 50 || shapes[i].w < 50) {
+			     mins = (shapes[i].h < shapes[i].w ? shapes[i].h : shapes[i].w) * 0.8;
+			     
+			  } else {
+			     mins = 40;
+			  }
+			  ctx.drawImage(document.getElementById("server_v_logo"),shapes[i].x ,shapes[i].y-mins,mins,mins);	
+		  }
+		
+	}  
     // draw selection
     // right now this is just a stroke along the edge of the selected Shape
 	if(this.main) {
 		if (this.selection !== null && this.selection.type!= "line") {
-		   ctx.save();
-		  ctx.strokeStyle = "black";
-		  ctx.lineWidth = 1;
-		  mySel = this.selection;
-		  var fillX = mySel.x - 0.5 * mySel.w;
-		  var fillY = mySel.y - 0.5 * mySel.h;
-		  
-		  if (this.selection.angle != 0) {
-			   
-			   ctx.translate(this.selection.x , this.selection.y );
-			   ctx.rotate(this.selection.angle * Math.PI / 180);
-			   fillX =  - 0.5 * this.selection.w;
-			   fillY = - 0.5 * this.selection.h
-		  }
-		  ctx.globalAlpha = 0.6;
-		  ctx.strokeRect(fillX,fillY,mySel.w,mySel.h);
-		  ctx.strokeStyle = "white";
-		  ctx.strokeRect(fillX+1,fillY+1,mySel.w-2,mySel.h-2);
-		  ctx.globalAlpha = 1;
+		   ctx.save(); 
+		   mySel = this.selection;
+	       var fillX = mySel.x ;
+		   var fillY = mySel.y ;
+		   if (mySel.angle != 0) {
+			   ctx.translate(mySel.x , mySel.y );
+			   ctx.rotate(mySel.angle * Math.PI / 180);
+			   fillX =  0;
+			   fillY = 0;
+			}	 
+			dbRoundRect(ctx,fillX,fillY,mySel.w+10,mySel.h+10,"#4d90fe","white",0,1,2,20);
 		   if (this.selection.angle != 0) {
 			  
 		   }
 		   ctx.restore();
 		}
 		// draw multiple selection
-		if(this.listSelected.length > 1) {
-		   for (var i = 0 ; i < this.listSelected.length ; i ++) {
-				mySel = this.listSelected[i];
-				var fillX = mySel.x ;
-				var fillY = mySel.y ;
-			  ctx.save();
-			  if (mySel.angle != 0) {
-				   
-				   ctx.translate(mySel.x , mySel.y );
-				   ctx.rotate(mySel.angle * Math.PI / 180);
-				   fillX =  0;
-				   fillY = 0;
-				}	 
-				  dbRoundRect(ctx,fillX,fillY,mySel.w+10,mySel.h+10,"#4d90fe","white",0,1,2,20);
-
-			   if (mySel.angle != 0) {
-				
-			   }	
-			   ctx.restore();		   
-		   }
-		}
 		// ** Add stuff you want drawn on top all the time here **
-		//Draw hover
-		if(this.shapeHover!=null) {
-			  mySel = this.shapeHover;
-			  var fillX = mySel.x ;
-			  var fillY = mySel.y ;
-			  ctx.save();
-			  if (mySel.angle != 0) {
-				   
-				   ctx.translate(mySel.x , mySel.y );
-				   ctx.rotate(mySel.angle * Math.PI / 180);
-				   fillX =  0;
-				   fillY = 0;
-				}	 
 
-                  dbRoundRect(ctx,fillX,fillY,mySel.w+10,mySel.h+10,"#00FF99","white",0,1,2,15);
-			   if (mySel.angle != 0) {
-				
-			   }	
-			   ctx.restore();			
-		}
     }
     this.valid = true;
     if (this.drawAll) {
@@ -1304,33 +843,10 @@ CanvasState.prototype.draw = function() {
 CanvasState.prototype.getMouse = function(e) {
   "use strict";
   var element = this.canvas, offsetX = 0, offsetY = 0, mx, my;
-  
-  // Compute the total offset
-  var scrollTop = 0;
-  var scrollLeft = 0;
-  if (element.offsetParent !== undefined) {
-    do {
-	   scrollTop = 0;
-	   scrollLeft = 0;
-	   var leftb = parseInt(getComputedStyle(element,null).getPropertyValue('border-left-width'),10);
-	   var topb = parseInt(getComputedStyle(element,null).getPropertyValue('border-top-width'),10);
-	   if(element.id == "canvas_wrap_not_scroll_conf") {
-	      scrollTop = element.scrollTop;
-		  scrollLeft = element.scrollLeft;
-       }
-      offsetX += element.offsetLeft + leftb - scrollLeft;
-      offsetY += element.offsetTop  + topb - scrollTop;
-      element = element.offsetParent;
-    } while (element);
-  }
+  var parentOffset = $(this.canvas).parent().offset();
 
-  // Add padding and border style widths to offset
-  // Also add the <html> offsets in case there's a position:fixed bar
-  offsetX += this.stylePaddingLeft + this.styleBorderLeft + this.htmlLeft;
-  offsetY += this.stylePaddingTop + this.styleBorderTop + this.htmlTop;
-  //alert(this.stylePaddingLeft);
-  mx = parseInt((e.pageX - offsetX)/this.zoom);
-  my = parseInt((e.pageY - offsetY)/this.zoom);
+  mx = parseInt((e.pageX - parentOffset.left)/this.zoom);
+  my = parseInt((e.pageY -  parentOffset.top)/this.zoom);
 
   // We return a simple javascript object (a hash) with x and y defined
   return {x: mx, y: my , orgx: e.pageX , orgy: e.pageY};
@@ -1508,224 +1024,25 @@ function dbText(ctx,x,y,text,font_bold,font_stle,font_size,font_color,alpha,shad
   ctx.fillText(text, x, y);
   ctx.restore();
 }
-function dbImage(ctx,x,y,w,h,imgID,alpha) {
+function dbImage(ctx,x,y,w,h,imgID,alpha,baw) {
    ctx.globalAlpha = alpha;
    var img_=  document.getElementById(imgID);
-   ctx.drawImage(img_,x-0.5*w,y-0.5*h,w,h);
+
+   if(baw == undefined || baw == false) {
+       ctx.drawImage(img_,x-0.5*w,y-0.5*h,w,h);	 
+	} else {
+	   if(document.getElementById(imgID+"_baw") != null) {
+         img_=  document.getElementById(imgID+"_baw");
+		 ctx.globalAlpha = alpha*0.5;
+	     ctx.drawImage(img_,x-0.5*w,y-0.5*h,w,h);	
+	   } else {
+	     ctx.drawImage(img_,x-0.5*w,y-0.5*h,w,h);
+	   }
+	}
    ctx.globalAlpha = 1;
 }
-function allShapesSpreadHorisontal() {
-  if(canvas_.listSelected.length > 1) {
-      //TBD
-  }
-}
-function allShapesSpreadVertical() {
-  if(canvas_.listSelected.length > 1) {
-      //TBD
-  }
-}
-function allShapesLeft() {
-  if(canvas_.listSelected.length > 1) {
-      var list = canvas_.listSelected;
-	  var mostLeft = 1000000;
-	  var mostLeftShape = null;
-	  var sleft = {};
-	  for (var s = 0 ; s < list.length ; s ++ ) {
-		var shape = list[s];
-		console.log(shape.sid + ":x = " + shape.x);
-		var mostLefts = 1000000;
-		var listxy = shape.getCorners();
-		console.log(listxy);
-		for (var i = 0 ; i < 8; i+=2) {
-		   if(listxy[i]<mostLeft) {
-			mostLeft = listxy[i];
-			mostLeftShape = shape;
-		   }
-		   if(listxy[i]<mostLefts) {
-			  mostLefts = listxy[i];
-			  sleft[shape.sid] = mostLefts;
-		   }
-		} 
-		console.log("Shape left= "+mostLefts);
-	  }
-	  console.log("Most left: "+mostLeft);
-	  for (var s = 0 ; s < list.length ; s ++ ) {
-		 if (list[s] != mostLeftShape) {
-			var shape = list[s];
-			var left = sleft[shape.sid];
-			var diff = left - mostLeft;
-			shape.x -= diff;
-			if (shape.type=="line") {
-			  shape.options.x1 -= diff;
-			  shape.options.x2 -= diff;
-			}
-			shape.state.valid = false;
-		 }
-	  }
-  }
-}
 
-function allShapesRight() {
-  if(canvas_.listSelected.length > 1) {
-      var list = canvas_.listSelected;
-	  var mostRight = -1000000;
-	  var mostRightShape = null;
-	  var sright = {};
-	  for (var s = 0 ; s < list.length ; s ++ ) {
-		var shape = list[s];
-		//console.log(shape.sid + ":x = " + shape.x);
-		var mostRights = -1000000;
-		var listxy = shape.getCorners();
-		//console.log(listxy);
-		for (var i = 0 ; i < 8; i+=2) {
-		   if(listxy[i]>mostRight) {
-			mostRight = listxy[i];
-			mostRightShape = shape;
-		   }
-		   if(listxy[i]>mostRights) {
-			  mostRights = listxy[i];
-			  sright[shape.sid] = mostRights;
-		   }
-		} 
-		//console.log("Shape left= "+mostLefts);
-	  }
-	  //console.log("Most left: "+mostLeft);
-	  for (var s = 0 ; s < list.length ; s ++ ) {
-		 if (list[s] != mostRightShape) {
-			var shape = list[s];
-			var right = sright[shape.sid];
-			var diff = mostRight - right;
-			shape.x += diff;
-			if (shape.type=="line") {
-			  shape.options.x1 += diff;
-			  shape.options.x2 += diff;
-			}
-			shape.state.valid = false;
-		 }
-	  }
-  }
-}
-function allShapesCenter() {
-  if(canvas_.listSelected.length > 1) {
-     var list = canvas_.listSelected;
-     if(canvas_.selection != null) {
-	    var xs = canvas_.selection.x;
-		for (var s = 0 ; s < list.length ; s ++ ) {
-		  var shape = list[s];
-		  if (shape!= canvas_.selection) {
-		    var diff = shape.x - xs;
-		    shape.x = xs;
-		    if (shape.type=="line") {
-			  shape.options.x1 -= diff;
-			  shape.options.x2 -= diff;
-			}
-			canvas_.valid = false;
-		  }
-		}
-	 } 
-  }
-}
-function allShapesBottom() {
-  if(canvas_.listSelected.length > 1) {
-      var list = canvas_.listSelected;
-	  var mostBottom = -1000000;
-	  var mostBottomShape = null;
-	  var sright = {};
-	  for (var s = 0 ; s < list.length ; s ++ ) {
-		var shape = list[s];
-		//console.log(shape.sid + ":x = " + shape.x);
-		var mostBottoms = -1000000;
-		var listxy = shape.getCorners();
-		//console.log(listxy);
-		for (var i = 1 ; i < 8; i+=2) {
-		   if(listxy[i]>mostBottom) {
-			mostBottom = listxy[i];
-			mostBottomShape = shape;
-		   }
-		   if(listxy[i]>mostBottoms) {
-			  mostBottoms = listxy[i];
-			  sright[shape.sid] = mostBottoms;
-		   }
-		} 
-		//console.log("Shape left= "+mostLefts);
-	  }
-	  //console.log("Most left: "+mostLeft);
-	  for (var s = 0 ; s < list.length ; s ++ ) {
-		 if (list[s] != mostBottomShape) {
-			var shape = list[s];
-			var bottom = sright[shape.sid];
-			var diff = mostBottom - bottom;
-			shape.y += diff;
-			if (shape.type=="line") {
-			  shape.options.y1 += diff;
-			  shape.options.y2 += diff;
-			}
-			shape.state.valid = false;
-		 }
-	  }
-  }
-}
 
-function allShapesTop() {
-  if(canvas_.listSelected.length > 1) {
-      var list = canvas_.listSelected;
-	  var mostTop = 1000000;
-	  var mostTopShape = null;
-	  var sright = {};
-	  for (var s = 0 ; s < list.length ; s ++ ) {
-		var shape = list[s];
-		//console.log(shape.sid + ":x = " + shape.x);
-		var mostTops = 1000000;
-		var listxy = shape.getCorners();
-		//console.log(listxy);
-		for (var i = 1 ; i < 8; i+=2) {
-		   if(listxy[i]<mostTop) {
-			mostTop = listxy[i];
-			mostTopShape = shape;
-		   }
-		   if(listxy[i]<mostTops) {
-			  mostTops = listxy[i];
-			  sright[shape.sid] = mostTops;
-		   }
-		} 
-		//console.log("Shape left= "+mostLefts);
-	  }
-	  //console.log("Most left: "+mostLeft);
-	  for (var s = 0 ; s < list.length ; s ++ ) {
-		 if (list[s] != mostTopShape) {
-			var shape = list[s];
-			var top = sright[shape.sid];
-			var diff = top - mostTop;
-			shape.y -= diff;
-			if (shape.type=="line") {
-			  shape.options.y1 -= diff;
-			  shape.options.y2 -= diff;
-			}
-			shape.state.valid = false;
-		 }
-	  }
-  }
-}
-function allShapesMiddle() {
-  if(canvas_.listSelected.length > 1) {
-     var list = canvas_.listSelected;
-     if(canvas_.selection != null) {
-	    var ys = canvas_.selection.y;
-		for (var s = 0 ; s < list.length ; s ++ ) {
-		  var shape = list[s];
-		  if (shape!= canvas_.selection) {
-		    var diff = shape.y - ys;
-		    shape.y = ys;
-		    if (shape.type=="line") {
-			  shape.options.y1 -= diff;
-			  shape.options.y2 -= diff;
-			}
-			canvas_.valid = false;
-		  }
-		}
-	 } 
-  }
-}
 Array.prototype.remove = function(value) {
 var idx = this.indexOf(value);
 if (idx != -1) {

@@ -14,7 +14,7 @@ public class CheckTokenValid {
 		  this.accessToken = (String) session.getAttribute("access_token");
 	}
   public GenericUser getUser() {
-	  
+
 	  GenericUser userData = new GenericUser();
 	  if(this.provider.equals("google")) {
 		  GoogVerifyToken tokenVerifier = new GoogVerifyToken(this.accessToken);

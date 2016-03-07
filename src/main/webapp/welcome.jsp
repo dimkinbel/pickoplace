@@ -173,7 +173,7 @@
 
         <div id="header_td_div" class="main_page_header">
             <div id="header" >
-                <div id="logo_"><img src="img/pplogo.png" id="pplogoo"/></div>
+                <div id="logo_"><img src="img/pplogomarker.png" id="pplogoo"/><div id="logotext">ickoplace</div></div>
                 <div id="search_header" >
                     <div class="left search_header_text">
                         Place search
@@ -353,7 +353,7 @@
                     </div>
 
                     <div id="welcome-load-more" class="welcome_load_more"><div id="load_more-text">LOAD MORE</div>
-                        <img id="welcome_loader" src="img/gif/fr_load.gif" style="position: relative; margin-top: 5px;display:none"/>
+                        <img id="welcome_loader" src="img/gif/fr_load.gif" style="position: relative;display:none"/>
                     </div>
 
                     <div id="search-load-more"  class="welcome_load_more" style="display:none"><div id="search_more-text">LOAD MORE</div>
