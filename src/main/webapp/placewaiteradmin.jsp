@@ -24,8 +24,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" >
     <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
     <link rel="stylesheet" href="css/style2.css" type="text/css" media="screen"/>
-    <link rel="stylesheet" href="js/jquery-ui-1.11.2.custom/jquery-ui.css" type="text/css" media="screen"/>
-    <link rel="stylesheet" href="js/jquery-ui-1.11.4.datepicker-grey/jquery-ui.theme.min.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="/js/lib/jquery-ui-1.11.4/jquery-ui.css" type="text/css" media="screen">
     <link rel="stylesheet" href="ion.rangeSlider-2.0.2/css/ion.rangeSlider.css" type="text/css" media="screen"/>
     <link rel="stylesheet" href="ion.rangeSlider-2.0.2/css/ion.rangeSlider.skinNice.css" type="text/css" media="screen"/>
     <link rel="stylesheet" href="css/perfect-scrollbar.css" type="text/css" media="screen"/>

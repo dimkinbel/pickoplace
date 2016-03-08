@@ -27,8 +27,7 @@
     <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
     <link rel="stylesheet" href="css/draw.css" type="text/css" media="screen"/>
     <link rel="stylesheet" href="css/style2.css" type="text/css" media="screen"/>
-    <link rel="stylesheet" href="js/jquery-ui-1.11.2.custom/jquery-ui.css" type="text/css" media="screen"/>
-    <link rel="stylesheet" href="js/jquery-ui-1.11.4.custom/jquery-ui.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="/js/lib/jquery-ui-1.11.4/jquery-ui.css" type="text/css" media="screen">
     <link rel="stylesheet" href="ion.rangeSlider-2.0.2/css/ion.rangeSlider.css" type="text/css" media="screen"/>
     <link rel="stylesheet" href="ion.rangeSlider-2.0.2/css/ion.rangeSlider.skinNice.css" type="text/css"
           media="screen"/>
@@ -37,8 +36,8 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
     <%-- js --%>
-    <script type="text/javascript" src="js/lib/jquery-1.11.1.min.js"></script>
-    <script type="text/javascript" src="js/lib/jquery-plugins/jquery-migrate-1.2.1.js"></script>
+    <script type="text/javascript" src="/js/lib/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="/js/lib/jquery-plugins/jquery-migrate-1.2.1.js"></script>
     <script type="text/javascript" src="/js/lib/jquery-ui-1.11.4/jquery-ui.js"></script>
     <script type="text/javascript" src="js/loginlogout.js"></script>
     <script type="text/javascript" src="js/lib/jquery-plugins/dropit.js"></script>
@@ -57,12 +56,12 @@
     <script type="text/javascript" src="js/wl_menu_draw.js"></script>
     <script type="text/javascript" src="js/updateData.js"></script>
 
-
     <script type="text/javascript" src="js/updateCanvasData.js"></script>
     <script type="text/javascript" src="js/WindowCanvasEvents.js"></script>
     <script type="text/javascript" src="js/documentEventListeners.js"></script>
 
-	  <script type="text/javascript">
+    <%-- custom js --%>
+    <script type="text/javascript">
 	var defaultHint = "";
 	var defaultHintColor = "black";
 	var tempHintUsed = false;

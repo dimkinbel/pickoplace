@@ -2,7 +2,7 @@
  * jQuery Migrate - v1.2.1 - 2013-05-08
  * https://github.com/jquery/jquery-migrate
  * Copyright 2005, 2013 jQuery Foundation, Inc. and other contributors; Licensed MIT
- * todo(egor-js): remove
+ * todo(egor-js): update to version 1.4.0
  */
 (function( jQuery, window, undefined ) {
 // See http://bugs.jquery.com/ticket/13335

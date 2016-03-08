@@ -22,8 +22,7 @@
     <link rel="stylesheet" href="css/login.css" type="text/css" media="screen" />
     <link rel="stylesheet" href="css/style.css" type="text/css" media="screen" />
     <link rel="stylesheet" href="css/style2.css" type="text/css" media="screen" />
-    <link rel="stylesheet" href="js/jquery-ui-1.11.2.custom/jquery-ui.css" type="text/css" media="screen" />
-    <link rel="stylesheet" href="js/jquery-ui-1.11.4.custom/jquery-ui.css" type="text/css" media="screen" />
+        <link rel="stylesheet" href="/js/lib/jquery-ui-1.11.4/jquery-ui.css" type="text/css" media="screen">
     <link rel="stylesheet" href="ion.rangeSlider-2.0.2/css/ion.rangeSlider.css" type="text/css" media="screen" />
     <link rel="stylesheet" href="ion.rangeSlider-2.0.2/css/ion.rangeSlider.skinModern.css" type="text/css" media="screen" />
     <link rel="stylesheet" href="css/perfect-scrollbar.css" type="text/css" media="screen" />
@@ -32,8 +31,8 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
     <%-- js --%>
-    <script type="text/javascript" src="js/lib/jquery-1.11.1.min.js"></script>
-    <script type="text/javascript" src="js/lib/jquery-plugins/jquery-migrate-1.2.1.js"></script>
+    <script type="text/javascript" src="/js/lib/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="/js/lib/jquery-plugins/jquery-migrate-1.2.1.js"></script>
     <script type="text/javascript" src="/js/lib/jquery-ui-1.11.4/jquery-ui.js"></script>
     <script type="text/javascript" src="js/lib/jquery-plugins/jquery-ui.drag.js"></script>
     <script type="text/javascript" src="js/loginlogout.js"></script>

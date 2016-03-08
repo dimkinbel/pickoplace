@@ -10,8 +10,8 @@
     <link href='https://fonts.googleapis.com/css?family=Roboto|Muli' rel='stylesheet' type='text/css'>
 
     <%-- js --%>
-    <script type="text/javascript" src="../js/lib/jquery-1.11.1.min.js"></script>
-    <script type="text/javascript" src="../js/loginlogout.js"></script>
+    <script type="text/javascript" src="/js/lib/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="/js/loginlogout.js"></script>
 
 
     <%-- custom js --%>
