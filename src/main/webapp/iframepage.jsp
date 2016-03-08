@@ -1,14 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
          pageEncoding="UTF-8"
-         import="com.dimab.pp.dto.*"
-         import="java.util.*" %>
-<%@ page import="com.dimab.pickoplace.utils.JsonUtils" %>
+         import="com.dimab.pickoplace.utils.JsonUtils"
+         import="com.dimab.pp.dto.*" %>
+<%@ page import="java.util.List" %>
 <%@taglib prefix="common" tagdir="/WEB-INF/tags/common" %>
 
 <!DOCTYPE html>
 <%
-
-
+    // todo(egor): push logic to controller
     AJAXImagesJSON responseJSON = (AJAXImagesJSON) request.getAttribute("canvasState");
     String ifid = (String) request.getAttribute("ifid");
     iFrameObj ifresp = (iFrameObj) request.getAttribute("iframedata");
@@ -29,47 +28,44 @@
     String placeLat = responseJSON.getLat();
     String placeLng = responseJSON.getLng();
     double placeUTSoffset = responseJSON.getUTCoffset();
-%>
 
-<% Integer addedHeight = 80;
+    Integer addedHeight = 80;
     if (ifresp.getBooking() == true) {
         addedHeight = 80;
     } else {
         addedHeight = 40;
-    }%>
+    }
+%>
 <html style="overflow:hidden;width:<%=ifresp.getWidth()%>px;height:<%=ifresp.getHeight()+addedHeight%>px;">
 <head>
-    <script type="text/javascript" src="/js/jquery-1.11.1.min.js"></script>
-    <common:baseStyles/>
-    <common:eachPageStyles/>
-    <common:baseSyncScripts/>
-    <common:eachPageScripts/>
-
+    <%-- meta --%>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>IFrame</title>
     <script type="text/javascript">
         var pagetype = 'iframepage';
     </script>
 
-
+    <%-- css --%>
+    <common:baseStyles/>
+    <common:eachPageStyles/>
     <link rel="stylesheet" href="css/perfect-scrollbar.css" type="text/css" media="screen"/>
     <link rel="stylesheet" href="css/CSS_checkbox_full/custom-checkbox.css" type="text/css" media="screen"/>
-
-
-    <script type="text/javascript" src="js/jquery-ui-1.11.2.custom/jquery-ui.js"></script>
-    <script type="text/javascript" src="js/jquery-ui-1.11.4.custom/jquery-ui.js"></script>
-    <script type="text/javascript" src="/js/bootstrap/bootstrap.min.js"></script>
-
     <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
 
-    <script type="text/javascript" src="js/perfect-scrollbar.js"></script>
+    <%-- js --%>
+    <script type="text/javascript" src="/js/lib/jquery-1.11.1.min.js"></script>
+    <common:baseSyncScripts/>
+    <common:eachPageScripts/>
+
+    <script type="text/javascript" src="/js/lib/jquery-ui-1.11.4/jquery-ui.js"></script>
+    <script type="text/javascript" src="/js/bootstrap/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/lib/jquery-plugins/perfect-scrollbar.js"></script>
     <script type="text/javascript" src="js/sitefunctions.js"></script>
-
-
     <script type="text/javascript" src="js/updateData_pc.js"></script>
 
+
     <!-- IFRAME -->
-    <script type="text/javascript" src="js/shapes_fe.js"></script>
+    <script type="text/javascript" src="js/lib/shapes_fe.js"></script>
     <script type="text/javascript" src="js/wl_menu_if.js"></script>
     <script type="text/javascript" src="js/iframe_Controller.js"></script>
     <script type="text/javascript" src="js/iframe_viewService.js"></script>

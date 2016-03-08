@@ -2,28 +2,35 @@
     pageEncoding="UTF-8"
     import="com.dimab.pp.dto.UserAccountData"
     import="com.dimab.pp.dto.UserPlace"
-    import = "java.util.*"%>
+    import = "java.util.List"%>
 <!DOCTYPE html>
 <html >
-<head>  
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<script type="text/javascript">
-		var pagetype = 'user_account';
-	</script>
-	<script type="text/javascript" src="js/jquery-1.11.1.min.js" ></script>
-    <script type="text/javascript" src="js/jquery-migrate-1.2.1.js" ></script>
-    <script type="text/javascript" src="js/loginlogout.js" ></script>
-	<script type="text/javascript" src="js/bootstrap-slider.js" ></script>
-	<script type="text/javascript" src="js/sitefunctions.js" ></script>
-	<script type="text/javascript" src="js/dropit.js" ></script>
-	
-	<link rel="stylesheet" href="css/style.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="css/style2.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="css/login.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="css/perfect-scrollbar.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="css/dropit.css" type="text/css" media="screen" />
-<script type="text/javascript">
+<head>
+    <%-- meta --%>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>PickoPlace</title>
+    <script type="text/javascript">
+        var pagetype = 'user_account';
+    </script>
 
+    <%-- css --%>
+    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="css/style2.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="css/login.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="css/perfect-scrollbar.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="css/dropit.css" type="text/css" media="screen" />
+
+    <%-- js --%>
+    <script type="text/javascript" src="js/lib/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="js/lib/jquery-plugins/jquery-migrate-1.2.1.js"></script>
+    <script type="text/javascript" src="js/loginlogout.js"></script>
+    <script type="text/javascript" src="js/lib/bootstrap-plugins/bootstrap-slider.js"></script>
+    <script type="text/javascript" src="js/sitefunctions.js"></script>
+    <script type="text/javascript" src="js/lib/jquery-plugins/dropit.js"></script>
+
+
+    <%-- custom js --%>
+    <script type="text/javascript">
 function SIDeleteConfirm(){
 	setSessionData(function(result) {
 		   if(result) {
@@ -48,14 +55,17 @@ function iframeEdit(placeID_form) {
 				document.getElementById(placeID_form).submit();
 		   }
    	 });
-  }
+}
+
 function editPlace(placeID_form) {
 	document.getElementById(placeID_form).submit();
 }
+
 function PlaceConfiguration(placeID) {
 	   var formid = placeID + "_config_form";
 	   document.getElementById(formid).submit();
 }
+
 function DeletePlaceConfirm(placeID) {
 	   document.getElementById("delete_place_input").value = placeID;
 	   document.getElementById("delete_place_prompt").style.display = "";
@@ -87,13 +97,13 @@ function DeleteConfirm() {
 	  });
 	 
 }
+
 function DeleteCancel() {
 	   document.getElementById("delete_place_input").value = "";
 	   document.getElementById("delete_place_prompt").style.display = "none";
 }
-
 </script>
-<title>PickoPlace</title>
+
 </head>
 <body style="margin: 0px;" >
    <div  id="delete_place_prompt"  class="save_prompt" style="display:none;">

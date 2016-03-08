@@ -1,3 +1,4 @@
+//todo(egor-js): update to version 2.4.4
 // MarionetteJS (Backbone.Marionette)
 // ----------------------------------
 // v2.4.3

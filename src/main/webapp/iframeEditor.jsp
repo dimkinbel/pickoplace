@@ -1,65 +1,65 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"
+    import = "com.dimab.pickoplace.utils.JsonUtils"
     import = "com.dimab.pp.dto.*"
-    import = "com.google.gson.Gson"
-    import = "com.google.gson.reflect.TypeToken"
-    import = "java.util.*"
-	import ="com.dimab.pickoplace.utils.JsonUtils"
-    import = "java.lang.reflect.Type"%>
-<%@ page import="com.dimab.pickoplace.utils.JsonUtils" %>
+	import ="java.util.List"
+%>
 <!DOCTYPE html>
-
 <html>
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<head>
+	<%-- meta --%>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>IFrame editor</title>
-	  <script type="text/javascript">
-		  var pagetype = 'iframeeditor';
-	  </script>
-	<script type="text/javascript" src="js/jquery-1.11.1.min.js" ></script>
-    <script type="text/javascript" src="js/jquery-migrate-1.2.1.js" ></script>
-	<script type="text/javascript" src="js/jquery-ui-1.11.2.custom/jquery-ui.js"></script>
-	<script type="text/javascript" src="js/jquery-ui-1.11.4.custom/jquery-ui.js"></script>
-	<script type="text/javascript" src="js/jquery-ui.drag.js"></script>
-	
-		<script type="text/javascript" src="js/loginlogout.js" ></script>
-    
-	<script type="text/javascript" src="ion.rangeSlider-2.0.2/js/ion.rangeSlider.js"></script>
-	<script type="text/javascript" src="js/bootstrap-slider.js" ></script>
-	<script type="text/javascript" src="js/colpick.js" ></script>    
-	
-	<script type="text/javascript" src="js/perfect-scrollbar.js"></script>
-    <script type="text/javascript" src="js/jquery.contextmenu.js"></script>
-	<script type="text/javascript" src="js/sitefunctions.js"></script>
-	<script type="text/javascript" src="js/dropit.js" ></script>
-	<script type="text/javascript" src="js/jquery.slimscroll.min.js" ></script>
-	<script type="text/javascript" src="js/moment.min.js"></script>
-	    
-	<script type="text/javascript" src="js/shapes_fe.js"></script>
-	<script type="text/javascript" src="js/shapes_timeline_fe.js"></script>
-	<script type="text/javascript" src="js/printlog_fe.js"></script>
-	<script type="text/javascript" src="js/updateData_fe.js"></script>
-	<script type="text/javascript" src="js/interactiveUpdate_fe.js" ></script>
-	<script type="text/javascript" src="js/wl_menu_fe.js" ></script>
-	<script type="text/javascript" src="js/bookingOptions_fe.js" ></script>
-	
+    <script type="text/javascript">
+        var pagetype = 'iframeeditor';
+    </script>
+
+    <%-- css --%>
     <link rel="stylesheet" href="css/colpick.css" type="text/css"/>
-	<link rel="stylesheet" href="css/slider.css" type="text/css"/>
-	
-	 <link rel="stylesheet" href="css/login.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="css/style.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="css/style2.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="js/jquery-ui-1.11.2.custom/jquery-ui.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="js/jquery-ui-1.11.4.custom/jquery-ui.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="ion.rangeSlider-2.0.2/css/ion.rangeSlider.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="ion.rangeSlider-2.0.2/css/ion.rangeSlider.skinModern.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="css/perfect-scrollbar.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="css/CSS_checkbox_full/custom-checkbox.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="css/dropit.css" type="text/css" media="screen" />
-	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="css/slider.css" type="text/css"/>
+
+    <link rel="stylesheet" href="css/login.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="css/style2.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="js/jquery-ui-1.11.2.custom/jquery-ui.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="js/jquery-ui-1.11.4.custom/jquery-ui.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="ion.rangeSlider-2.0.2/css/ion.rangeSlider.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="ion.rangeSlider-2.0.2/css/ion.rangeSlider.skinModern.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="css/perfect-scrollbar.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="css/CSS_checkbox_full/custom-checkbox.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="css/dropit.css" type="text/css" media="screen" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <%-- js --%>
+    <script type="text/javascript" src="js/lib/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="js/lib/jquery-plugins/jquery-migrate-1.2.1.js"></script>
+    <script type="text/javascript" src="/js/lib/jquery-ui-1.11.4/jquery-ui.js"></script>
+    <script type="text/javascript" src="js/lib/jquery-plugins/jquery-ui.drag.js"></script>
+    <script type="text/javascript" src="js/loginlogout.js"></script>
+    <script type="text/javascript" src="ion.rangeSlider-2.0.2/js/ion.rangeSlider.js"></script>
+    <script type="text/javascript" src="js/lib/bootstrap-plugins/bootstrap-slider.js"></script>
+    <script type="text/javascript" src="js/lib/jquery-plugins/colpick.js"></script>
+
+    <script type="text/javascript" src="js/lib/jquery-plugins/perfect-scrollbar.js"></script>
+    <script type="text/javascript" src="js/lib/jquery-plugins/jquery.contextmenu.js"></script>
+    <script type="text/javascript" src="js/sitefunctions.js"></script>
+    <script type="text/javascript" src="js/lib/jquery-plugins/dropit.js"></script>
+    <script type="text/javascript" src="js/lib/jquery-plugins/jquery.slimscroll.min.js"></script>
+    <script type="text/javascript" src="js/lib/moment/moment.min.js"></script>
+
+    <script type="text/javascript" src="js/lib/shapes_fe.js"></script>
+    <script type="text/javascript" src="js/lib/shapes_timeline_fe.js"></script>
+    <script type="text/javascript" src="js/printlog_fe.js"></script>
+    <script type="text/javascript" src="js/updateData_fe.js"></script>
+    <script type="text/javascript" src="js/interactiveUpdate_fe.js"></script>
+    <script type="text/javascript" src="js/wl_menu_fe.js"></script>
+    <script type="text/javascript" src="js/bookingOptions_fe.js"></script>
 
     <script type="text/javascript" src="js/updateCanvasData.js"></script>
     <script type="text/javascript" src="js/WindowCanvasEvents.js"></script>
+
+
 <script type="text/javascript">
 
 
@@ -94,9 +94,9 @@ $(document).ready(function() {
 		 }
 
 });
-
 </script>
 </head>
+
 <body style="margin: 0px;" >
     <div id="frame_prev_wrap" style="display:none" >
       <div id="frame_prev_wrap_popup_content" >

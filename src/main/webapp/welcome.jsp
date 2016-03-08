@@ -19,18 +19,17 @@
         <link rel="stylesheet" href="css/perfect-scrollbar.css" type="text/css" media="screen" />
         <link rel="stylesheet" href="css/dropit.css" type="text/css" media="screen" />
 
-        <script type="text/javascript" src="js/jquery-migrate-1.2.1.js" ></script>
-        <script type="text/javascript" src="js/jquery-ui-1.11.2.custom/jquery-ui.js"></script>
-        <script type="text/javascript" src="js/jquery-ui-1.11.4.Autocomplete/jquery-ui.js"></script>
+        <script type="text/javascript" src="js/lib/jquery-plugins/jquery-migrate-1.2.1.js" ></script>
+        <script type="text/javascript" src="/js/lib/jquery-ui-1.11.4/jquery-ui.js"></script>
 
         <script type="text/javascript"
                 src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAaX5Ow6oo_axUKMquFxnPpT6Kd-L7D40k&libraries=places&&sensor=FALSE">
         </script>
         <script type="text/javascript" src="ion.rangeSlider-2.0.2/js/ion.rangeSlider.js"></script>
         <script type="text/javascript" src="js/loginlogout.js" ></script>
-        <script type="text/javascript" src="js/bootstrap-slider.js" ></script>
+        <script type="text/javascript" src="js/lib/bootstrap-plugins/bootstrap-slider.js" ></script>
         <script type="text/javascript" src="js/sitefunctions.js" ></script>
-        <script type="text/javascript" src="js/dropit.js" ></script>
+        <script type="text/javascript" src="js/lib/jquery-plugins/dropit.js" ></script>
         <script type="text/javascript" src="js/interactive.js" ></script>
 
         <script type="text/javascript" src="js/mainPageMap.js"></script>

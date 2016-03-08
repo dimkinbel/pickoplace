@@ -1,45 +1,21 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
          pageEncoding="UTF-8"
+         import = "com.dimab.pickoplace.utils.JsonUtils"
          import = "com.dimab.pp.dto.*"
-         import = "com.google.gson.Gson"
-         import = "com.google.gson.reflect.TypeToken"
-         import = "java.util.*"
-         import = "java.lang.reflect.Type"%>
-<%@ page import="com.dimab.pickoplace.utils.JsonUtils" %>
+         import="java.util.List"
+%>
 <!DOCTYPE html>
-
 <html>
+
 <head>
+    <%-- meta --%>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Place Configuration</title>
     <script type="text/javascript">
         var pagetype = 'place_config';
     </script>
-    <script type="text/javascript" src="js/jquery-1.11.1.min.js" ></script>
-    <script type="text/javascript" src="js/jquery-migrate-1.2.1.js" ></script>
-    <script type="text/javascript" src="js/jquery-ui-1.11.2.custom/jquery-ui.js"></script>
-    <script type="text/javascript" src="js/loginlogout.js" ></script>
-    <script type="text/javascript" src="js/dropit.js" ></script>
-    <script type="text/javascript" src="ion.rangeSlider-2.0.2/js/ion.rangeSlider.js"></script>
-    <script type="text/javascript" src="js/bootstrap-slider.js" ></script>
-    <script type="text/javascript" src="js/colpick.js" ></script>
 
-    <script type="text/javascript" src="js/perfect-scrollbar.js"></script>
-    <script type="text/javascript" src="js/jquery.contextmenu.js"></script>
-    <script type="text/javascript" src="js/sitefunctions.js"></script>
-
-    <script type="text/javascript" src="js/moment.min.js"></script>
-    <script type="text/javascript" src="js/moment-timezone.js"></script>
-    <script type="text/javascript" src="js/moment.zones2010-2020.js"></script>
-
-    <script type="text/javascript" src="js/shapes_pc.js"></script>
-    <script type="text/javascript" src="js/printlog_pc.js"></script>
-    <script type="text/javascript" src="js/updateData_pc.js"></script>
-    <script type="text/javascript" src="js/bookingOptions_pc.js"></script>
-    <script type="text/javascript"
-            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAaX5Ow6oo_axUKMquFxnPpT6Kd-L7D40k&libraries=places&&sensor=FALSE">
-    </script>
-
+    <%-- css --%>
     <link rel="stylesheet" href="css/colpick.css" type="text/css"/>
     <link rel="stylesheet" href="css/slider.css" type="text/css"/>
     <link rel="stylesheet" href="css/style.css" type="text/css" media="screen" />
@@ -51,11 +27,38 @@
     <link rel="stylesheet" href="ion.rangeSlider-2.0.2/css/ion.rangeSlider.skinNice.css" type="text/css" media="screen" />
     <link rel="stylesheet" href="css/perfect-scrollbar.css" type="text/css" media="screen" />
     <link rel="stylesheet" href="css/CSS_checkbox_full/custom-checkbox.css" type="text/css" media="screen" />
-    <script type="text/javascript" src="js/maps_google.js"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
+    <%-- js --%>
+    <script type="text/javascript" src="js/lib/jquery-1.11.1.min.js" ></script>
+    <script type="text/javascript" src="js/lib/jquery-plugins/jquery-migrate-1.2.1.js"></script>
+    <script type="text/javascript" src="/js/lib/jquery-ui-1.11.4/jquery-ui.js"></script>
+    <script type="text/javascript" src="js/loginlogout.js" ></script>
+    <script type="text/javascript" src="js/lib/jquery-plugins/dropit.js" ></script>
+    <script type="text/javascript" src="ion.rangeSlider-2.0.2/js/ion.rangeSlider.js"></script>
+    <script type="text/javascript" src="js/lib/bootstrap-plugins/bootstrap-slider.js" ></script>
+    <script type="text/javascript" src="js/lib/jquery-plugins/colpick.js" ></script>
+
+    <script type="text/javascript" src="js/lib/jquery-plugins/perfect-scrollbar.js"></script>
+    <script type="text/javascript" src="js/lib/jquery-plugins/jquery.contextmenu.js"></script>
+    <script type="text/javascript" src="js/sitefunctions.js"></script>
+
+    <script type="text/javascript" src="js/lib/moment/moment.min.js"></script>
+    <script type="text/javascript" src="js/lib/moment/moment-timezone.js"></script>
+    <script type="text/javascript" src="js/lib/moment/moment.zones2010-2020.js"></script>
+
+    <script type="text/javascript" src="js/lib/shapes_pc.js"></script>
+    <script type="text/javascript" src="js/printlog_pc.js"></script>
+    <script type="text/javascript" src="js/updateData_pc.js"></script>
+    <script type="text/javascript" src="js/bookingOptions_pc.js"></script>
+    <script type="text/javascript"
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAaX5Ow6oo_axUKMquFxnPpT6Kd-L7D40k&libraries=places&&sensor=FALSE">
+    </script>
+    <script type="text/javascript" src="js/maps_google.js"></script>
     <script type="text/javascript" src="js/updateCanvasData.js"></script>
     <script type="text/javascript" src="js/documentEventListeners.js"></script>
+
+    <%-- custom js--%>
     <script type="text/javascript">
 
 
@@ -175,9 +178,6 @@
             proceed_to_edit = 0;
             SIsaveState();
         }
-    </script>
-    <script type="text/javascript">
-
     </script>
 </head>
 

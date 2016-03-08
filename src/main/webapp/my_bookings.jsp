@@ -1,42 +1,41 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"
-    import="com.google.appengine.api.users.*"
-    import = "java.util.*"%>
-
+%>
 <!DOCTYPE html >
-<html >
+<html>
+
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<script type="text/javascript">
-		var pagetype = 'my_bookings';
-	</script>
-	<script type="text/javascript" src="js/jquery-1.11.1.min.js" ></script>
-    <script type="text/javascript" src="js/jquery-migrate-1.2.1.js" ></script>
-    <script type="text/javascript" src="js/loginlogout.js" ></script>
-     
-	<script type="text/javascript" src="js/bootstrap-slider.js" ></script>
-	<script type="text/javascript" src="js/sitefunctions.js" ></script>
-	<script type="text/javascript" src="js/jquery.slimscroll.min.js" ></script>
-	<script type="text/javascript" src="js/dropit.js" ></script>
-	<script type="text/javascript" src="js/updateData_sb.js" ></script>
-	
-	<link rel="stylesheet" href="css/style.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="css/style2.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="css/login.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="css/dropit.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="css/perfect-scrollbar.css" type="text/css" media="screen" />
-	
-	<link href="raty/raty.css" media="screen" rel="stylesheet" type="text/css">
-    <script src="raty/raty.js" type="text/javascript"></script>
-    <script type="text/javascript" src="js/rating.js" ></script>
-	<link rel="stylesheet" href="css/rating.css" type="text/css" media="screen" />
-	<script type="text/javascript" src="js/interactive_my_bookings.js" ></script>
-<script type="text/javascript">
+    <%-- meta --%>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>My Bookings</title>
+    <script type="text/javascript">
+        var pagetype = 'my_bookings';
+    </script>
 
+    <%-- css --%>
+    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen">
+    <link rel="stylesheet" href="css/style2.css" type="text/css" media="screen">
+    <link rel="stylesheet" href="css/login.css" type="text/css" media="screen">
+    <link rel="stylesheet" href="css/dropit.css" type="text/css" media="screen">
+    <link rel="stylesheet" href="css/perfect-scrollbar.css" type="text/css" media="screen">
+    <link rel="stylesheet" href="raty/raty.css" type="text/css" media="screen">
+    <link rel="stylesheet" href="css/rating.css" type="text/css" media="screen">
 
-</script>
-<title>My Bookings</title>
+    <%-- js --%>
+    <script type="text/javascript" src="js/lib/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="js/lib/jquery-plugins/jquery-migrate-1.2.1.js"></script>
+    <script type="text/javascript" src="js/loginlogout.js"></script>
+    <script type="text/javascript" src="js/lib/bootstrap-plugins/bootstrap-slider.js"></script>
+    <script type="text/javascript" src="js/sitefunctions.js"></script>
+    <script type="text/javascript" src="js/lib/jquery-plugins/jquery.slimscroll.min.js"></script>
+    <script type="text/javascript" src="js/lib/jquery-plugins/dropit.js"></script>
+    <script type="text/javascript" src="js/updateData_sb.js"></script>
+    <script type="text/javascript" src="/js/lib/jquery-plugins/raty/raty.js"></script>
+    <script type="text/javascript" src="js/rating.js"></script>
+
+    <script type="text/javascript" src="js/interactive_my_bookings.js"></script>
 </head>
+
 <body style="margin: 0px;" >
 	<table id="body_table" cellspacing="0" cellpadding="0"
 		style="width: 100%; height: 100%; border-collapse: collapse">

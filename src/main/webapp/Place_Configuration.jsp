@@ -1,96 +1,73 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-		 pageEncoding="UTF-8"
-		 import = "com.dimab.pp.dto.ConfigurationObject"
-		 import = "com.dimab.pp.dto.PPSubmitObject"
-		 import = "com.dimab.pp.dto.JsonSID_2_imgID"
-		 import = "com.dimab.pp.dto.JsonImageID_2_GCSurl"
-		 import = "com.dimab.pp.dto.CanvasState"
-		 import = "com.dimab.pp.dto.JsonimgID_2_data"
-		 import = "java.util.List"%>
-<%@ page import="com.dimab.pickoplace.utils.JsonUtils" %>
+         pageEncoding="UTF-8"
+         import="com.dimab.pickoplace.utils.JsonUtils"
+         import="com.dimab.pp.dto.*"
+         import="java.util.List"
+%>
 <%@taglib prefix="common" tagdir="/WEB-INF/tags/common" %>
-
-
 <!DOCTYPE html>
-
-<html >
+<html>
 <head>
-	<script type="text/javascript" src="/js/jquery-1.11.1.min.js"></script>
-	<common:baseStyles/>
-	<common:eachPageStyles/>
-	<common:baseSyncScripts/>
-	<common:eachPageScripts/>
+    <%-- meta --%>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Place Configuration</title>
+    <script type="text/javascript">
+        var pagetype = 'place_config';
+    </script>
 
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>Place Configuration</title>
+    <%-- css --%>
+    <common:baseStyles/>
+    <common:eachPageStyles/>
+    <link rel="stylesheet" href="js/bootstrap-toggle-master/css/bootstrap-toggle.min.css">
+    <link rel='stylesheet' href='js/fullcalendar-2.6.0/fullcalendar.min.css' />
+    <link rel='stylesheet' href='js/intl-tel-input-master/build/css/intlTelInput.css' />
+    <link rel="stylesheet" href="css/colpick.css" type="text/css"/>
+    <link rel="stylesheet" href="css/slider.css" type="text/css"/>
+    <link rel="stylesheet" href="ion.rangeSlider-2.0.2/css/ion.rangeSlider.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="ion.rangeSlider-2.0.2/css/ion.rangeSlider.skinNice.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="css/perfect-scrollbar.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="css/CSS_checkbox_full/custom-checkbox.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen" />
+
+    <%-- js --%>
+    <common:baseSyncScripts/>
+    <common:eachPageScripts/>
+    <script type="text/javascript" src="/js/lib/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="/js/bootstrap/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/js/lib/jquery-ui-1.11.4/jquery-ui.js"></script>
+    <script type="text/javascript" src="ion.rangeSlider-2.0.2/js/ion.rangeSlider.js"></script>
+    <script type="text/javascript" src="js/lib/jquery-plugins/colpick.js"></script>
+    <script type="text/javascript" src="js/bootstrap-toggle-master/js/bootstrap-toggle.min.js"></script>
+    <script type="text/javascript" src="js/lib/jquery-plugins/perfect-scrollbar.js"></script>
+    <script type="text/javascript" src="js/sitefunctions.js"></script>
+    <script type="text/javascript" src="js/lib/moment/moment.min.js"></script>
+    <script type="text/javascript" src='js/fullcalendar-2.6.0/fullcalendar.min.js'></script>
+    <script type="text/javascript" src="js/intl-tel-input-master/build/js/intlTelInput.min.js"></script>
+    <script type="text/javascript" src="js/lib/shapes_pc.js"></script>
+    <script type="text/javascript" src="js/pcController.js"></script>
+    <script type="text/javascript" src="js/pcDrawService.js"></script>
+    <script type="text/javascript" src="js/wl_menu_pc.js"></script>
+    <script type="text/javascript" src="js/printlog_pc.js"></script>
+    <script type="text/javascript" src="js/updateData_pc.js"></script>
+    <script type="text/javascript" src="js/bookingOptions_pc.js"></script>
+    <script type="text/javascript" src="js/interactiveUpdate_pc.js"></script>
+    <!-- IFRAME -->
+    <script type="text/javascript" src="js/lib/shapes_fe.js"></script>
+    <script type="text/javascript" src="js/wl_menu_if.js"></script>
+    <script type="text/javascript" src="js/iframe_Controller.js"></script>
+    <script type="text/javascript" src="js/iframe_viewService.js"></script>
+    <script type="text/javascript" src="js/bookingBookingsManger.js"></script>
+    <script type="text/javascript" src="js/interactiveUpdate_if.js"></script>
+    <!-- IFRAME -->
+    <script type="text/javascript"
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAaX5Ow6oo_axUKMquFxnPpT6Kd-L7D40k&libraries=places&&sensor=FALSE">
+    </script>
+    <script type="text/javascript" src="js/maps_google.js"></script>
+    <script type="text/javascript" src="js/updateCanvasData.js"></script>
+    <script type="text/javascript" src="js/documentEventListeners.js"></script>
+
+    <%-- custom js --%>
 	<script type="text/javascript">
-		var pagetype = 'place_config';
-	</script>
-
-	<link rel="stylesheet" href="js/bootstrap-toggle-master/css/bootstrap-toggle.min.css">
-	<link rel='stylesheet' href='js/fullcalendar-2.6.0/fullcalendar.min.css' />
-	<link rel='stylesheet' href='js/intl-tel-input-master/build/css/intlTelInput.css' />
-
-	<link rel="stylesheet" href="css/colpick.css" type="text/css"/>
-	<link rel="stylesheet" href="css/slider.css" type="text/css"/>
-
-	<link rel="stylesheet" href="ion.rangeSlider-2.0.2/css/ion.rangeSlider.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="ion.rangeSlider-2.0.2/css/ion.rangeSlider.skinNice.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="css/perfect-scrollbar.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="css/CSS_checkbox_full/custom-checkbox.css" type="text/css" media="screen" />
-
-
-	<link rel="stylesheet" href="css/style.css" type="text/css" media="screen" />
-
-
-	<script type="text/javascript" src="/js/bootstrap/bootstrap.min.js"></script>
-	<script type="text/javascript" src="js/jquery-ui-1.11.4.date.autoc.slider/jquery-ui.js"></script>
-
-	<!--<script type="text/javascript" src="js/jquery-ui-1.11.4.custom/jquery-ui.js"></script>-->
-	<script type="text/javascript" src="ion.rangeSlider-2.0.2/js/ion.rangeSlider.js"></script>
-	<script type="text/javascript" src="js/colpick.js" ></script>
-	<script src="js/bootstrap-toggle-master/js/bootstrap-toggle.min.js"></script>
-	<script type="text/javascript" src="js/perfect-scrollbar.js"></script>
-	<script type="text/javascript" src="js/sitefunctions.js"></script>
-
-
-
-	<script type="text/javascript" src="js/moment.min.js"></script>
-	<script type="text/javascript" src='js/fullcalendar-2.6.0/fullcalendar.min.js'></script>
-	<script type="text/javascript" src="js/intl-tel-input-master/build/js/intlTelInput.min.js"></script>
-
-
-
-	<script type="text/javascript" src="js/shapes_pc.js"></script>
-	<script type="text/javascript" src="js/pcController.js"></script>
-	<script type="text/javascript" src="js/pcDrawService.js"></script>
-	<script type="text/javascript" src="js/wl_menu_pc.js"></script>
-	<script type="text/javascript" src="js/printlog_pc.js"></script>
-	<script type="text/javascript" src="js/updateData_pc.js"></script>
-	<script type="text/javascript" src="js/bookingOptions_pc.js"></script>
-	<script type="text/javascript" src="js/interactiveUpdate_pc.js"></script>
-
-
-	<!-- IFRAME -->
-	<script type="text/javascript" src="js/shapes_fe.js"></script>
-	<script type="text/javascript" src="js/wl_menu_if.js"></script>
-	<script type="text/javascript" src="js/iframe_Controller.js"></script>
-	<script type="text/javascript" src="js/iframe_viewService.js"></script>
-	<script type="text/javascript" src="js/bookingBookingsManger.js"></script>
-	<script type="text/javascript" src="js/interactiveUpdate_if.js"></script>
-	<!-- IFRAME -->
-
-	<script type="text/javascript"
-			src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAaX5Ow6oo_axUKMquFxnPpT6Kd-L7D40k&libraries=places&&sensor=FALSE">
-	</script>
-	<script type="text/javascript" src="js/maps_google.js"></script>
-
-	<script type="text/javascript" src="js/updateCanvasData.js"></script>
-	<script type="text/javascript" src="js/documentEventListeners.js"></script>
-	<script type="text/javascript">
-
-
-
 		function editPlace(placeID_form) {
 			setSessionData(function(result) {
 				if(result) {
@@ -200,7 +177,7 @@
 	String placeAddress = configuration.getPlaceDetails().getGeneral().getAddress();
 	String placeLat = configuration.getPlaceDetails().getGeneral().getLat();
 	String placeLng = configuration.getPlaceDetails().getGeneral().getLng();
-	double    placeUTSoffset = configuration.getPlaceDetails().getGeneral().getUTCoffset();
+	double placeUTSoffset = configuration.getPlaceDetails().getGeneral().getUTCoffset();
 %>
 <body  style="margin: 0px; ">
 

@@ -1,5 +1,6 @@
 /* Copyright (c) 2012, 2014 Hyunje Alex Jun and other contributors
  * Licensed under the MIT License
+ * https://github.com/noraesae/perfect-scrollbar
  */
 (function (factory) {
   'use strict';

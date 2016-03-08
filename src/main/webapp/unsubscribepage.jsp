@@ -3,10 +3,17 @@
 <!DOCTYPE html >
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <script type="text/javascript" src="js/jquery-1.11.1.min.js" ></script>
-  <link href='https://fonts.googleapis.com/css?family=Roboto|Muli' rel='stylesheet' type='text/css'>
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <%-- meta --%>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <%-- css --%>
+    <link href='https://fonts.googleapis.com/css?family=Roboto|Muli' rel='stylesheet' type='text/css'>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <%-- js --%>
+    <script type="text/javascript" src="js/lib/jquery-1.11.1.min.js" ></script>
+
+    <%-- custom js --%>
   <script type="text/javascript">
  var getUrlParameter = function getUrlParameter(sParam) {
 	    var sPageURL = decodeURIComponent(window.location.search.substring(1)),
@@ -68,12 +75,9 @@
 			});
 		}
 	}
-
-
  </script>
- 
-<title></title>
 </head>
+
 <style>
 
 .cbtn {

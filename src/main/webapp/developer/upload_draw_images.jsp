@@ -1,40 +1,41 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<script type="text/javascript" src="js/jquery-1.11.1.min.js" ></script>
-    <script type="text/javascript" src="js/jquery-migrate-1.2.1.js" ></script>
-    <script type="text/javascript" src="js/jquery-ui-1.11.4.Autocomplete/jquery-ui.js"></script>
+    <%-- meta --%>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>PPdev-Upload Images</title>
+
+    <%-- css --%>
+    <link rel="stylesheet" href="css/login.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="ion.rangeSlider-2.0.2/css/ion.rangeSlider.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="ion.rangeSlider-2.0.2/css/ion.rangeSlider.skinNice.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="js/jquery-ui-1.11.4.Autocomplete/jquery-ui.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="css/perfect-scrollbar.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="css/dropit.css" type="text/css" media="screen" />
+    <link href="raty/raty.css" media="screen" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <%-- js --%>
+    <script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="js/jquery-migrate-1.2.1.js"></script>
+    <script type="text/javascript" src="/js/lib/jquery-ui-1.11.4/jquery-ui.js"></script>
     <script type="text/javascript"
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAaX5Ow6oo_axUKMquFxnPpT6Kd-L7D40k&libraries=places&&sensor=FALSE">
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAaX5Ow6oo_axUKMquFxnPpT6Kd-L7D40k&libraries=places&&sensor=FALSE">
     </script>
     <script type="text/javascript" src="ion.rangeSlider-2.0.2/js/ion.rangeSlider.js"></script>
-    <script type="text/javascript" src="js/loginlogout.js" ></script>
-	<script type="text/javascript" src="js/bootstrap-slider.js" ></script>
-	<script type="text/javascript" src="js/sitefunctions.js" ></script>
-	<script type="text/javascript" src="js/dropit.js" ></script>
-	<script type="text/javascript" src="js/interactive_admin_upload.js" ></script>
-	
-
-    <script type="text/javascript" src="js/mainPageMap.js"></script>   
-	<script type="text/javascript" src="js/search.js" ></script>
-	
-
-	<link rel="stylesheet" href="css/login.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="css/style.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="ion.rangeSlider-2.0.2/css/ion.rangeSlider.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="ion.rangeSlider-2.0.2/css/ion.rangeSlider.skinNice.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="js/jquery-ui-1.11.4.Autocomplete/jquery-ui.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="css/perfect-scrollbar.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="css/dropit.css" type="text/css" media="screen" />
-	
-	
-	<link href="raty/raty.css" media="screen" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="js/loginlogout.js"></script>
+    <script type="text/javascript" src="js/bootstrap-slider.js"></script>
+    <script type="text/javascript" src="js/sitefunctions.js"></script>
+    <script type="text/javascript" src="js/dropit.js"></script>
+    <script type="text/javascript" src="js/interactive_admin_upload.js"></script>
+    <script type="text/javascript" src="js/mainPageMap.js"></script>
+    <script type="text/javascript" src="js/search.js"></script>
     <script src="raty/raty.js" type="text/javascript"></script>
-    
-	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <%-- custom js --%>
 <script type="text/javascript">
 var geocoder;
 
@@ -44,7 +45,6 @@ $(document).ready(function() {
 		location.href = "/developer/upload_draw_images.jsp";
 	});
 });
-
 
 //LOGIN SUCCESS UPDATE
 function updatePageView() {
@@ -101,11 +101,11 @@ $(document).on("click",".stopclick", function (event) {
 		  $("#page_login_prompt").hide();
 		}
 });
- ///
 </script>
-<title>PPdev-Upload Images</title>
 </head>
-  <body style="margin: 0px;">
+
+
+<body style="margin: 0px;">
 
      <div id="page_login_prompt" class="login_prompt stopclick" style="display:none;">
 		<div id="login_prompt_wrap" class="stopclick">
@@ -209,7 +209,7 @@ $(document).on("click",".stopclick", function (event) {
 	    <div class="adm_display_images_wrap">
 	       <div class="adm_display_images" id="uploaded_combo">
 	       
-	       </div>	      
+	       </div>
 	    </div>
 	  </td>
 	</tr>
@@ -222,7 +222,7 @@ $(document).on("click",".stopclick", function (event) {
 	    <div class="adm_display_images_wrap">
 	       <div class="adm_display_images" id="uploaded_bg">
 	       
-	       </div>	      
+	       </div>
 	    </div>
 	  </td>
 	</tr>

@@ -3,10 +3,18 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <script type="text/javascript" src="../js/jquery-1.11.1.min.js" ></script>
-  <script type="text/javascript" src="../js/loginlogout.js" ></script>
-  <link href='https://fonts.googleapis.com/css?family=Roboto|Muli' rel='stylesheet' type='text/css'>
+    <%-- meta --%>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <%-- css --%>
+    <link href='https://fonts.googleapis.com/css?family=Roboto|Muli' rel='stylesheet' type='text/css'>
+
+    <%-- js --%>
+    <script type="text/javascript" src="../js/lib/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/loginlogout.js"></script>
+
+
+    <%-- custom js --%>
   <script type="text/javascript">
  var getUrlParameter = function getUrlParameter(sParam) {
 	    var sPageURL = decodeURIComponent(window.location.search.substring(1)),
@@ -49,9 +57,6 @@
 		  }
 	}
  </script>
- 
-<title></title>
-</head>
 <style>
 
 .cbtn {
@@ -154,6 +159,8 @@ width: 245px;
     display: flex;
 }
 </style>
+</head>
+
 <body>
 <div id="flowpagewrap" style="width:100%;height:100%">
   <div id="ppwelcomeflow">PickoPlace authorization request</div>

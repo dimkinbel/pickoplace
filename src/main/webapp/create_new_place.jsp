@@ -1,28 +1,40 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"
-    import="com.google.appengine.api.users.*"%>
+%>
 <!DOCTYPE html >
 <html>
+
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<script type="text/javascript">
-		var pagetype = 'create_new_place';
-	</script>
-	<script type="text/javascript" src="js/jquery-1.11.1.min.js" ></script>
-    <script type="text/javascript" src="js/jquery-migrate-1.2.1.js" ></script>
-    <script type="text/javascript" src="js/loginlogout.js" ></script>
-    <script type="text/javascript" src="js/dropit.js" ></script>
-	<script type="text/javascript" src="js/bootstrap-slider.js" ></script>
-	<script type="text/javascript" src="js/sitefunctions.js" ></script>
-	<script type="text/javascript"
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAaX5Ow6oo_axUKMquFxnPpT6Kd-L7D40k&libraries=places&&sensor=FALSE">
+    <!-- meta -->
+    <title>PickoPlace</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <script type="text/javascript">
+        var pagetype = 'create_new_place';
     </script>
-	<link rel="stylesheet" href="css/style.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="css/style2.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="css/login.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="css/dropit.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="css/browserWrap.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="css/perfect-scrollbar.css" type="text/css" media="screen" />
+
+    <!-- css -->
+    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="css/style2.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="css/login.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="css/dropit.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="css/browserWrap.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="css/perfect-scrollbar.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="css/style2.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="css/login.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="css/dropit.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="css/browserWrap.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="css/perfect-scrollbar.css" type="text/css" media="screen" />
+
+    <!-- js -->
+    <script type="text/javascript" src="js/lib/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="js/lib/jquery-plugins/jquery-migrate-1.2.1.js"></script>
+    <script type="text/javascript" src="js/loginlogout.js"></script>
+    <script type="text/javascript" src="js/lib/jquery-plugins/dropit.js"></script>
+    <script type="text/javascript" src="js/lib/bootstrap-plugins/bootstrap-slider.js"></script>
+    <script type="text/javascript" src="js/sitefunctions.js"></script>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAaX5Ow6oo_axUKMquFxnPpT6Kd-L7D40k&libraries=places&&sensor=FALSE"></script>
+
 <script type="text/javascript">
 
 function openMoreOptions() {
@@ -87,7 +99,6 @@ function BuisnessNameNext(debug) {
 	}
 }
 
-
 //LOGIN SUCCESS UPDATE
 
 $(document).ready(function () { 
@@ -97,12 +108,9 @@ $(document).ready(function () {
   });
 
 });
-
-///
-
 </script>
-<title>PickoPlace</title>
 </head>
+
 <body style="margin: 0px;">
    <div id="page_login_prompt" class="login_prompt stopclick" style="display:none;">
 		<div id="login_prompt_wrap" class="stopclick">

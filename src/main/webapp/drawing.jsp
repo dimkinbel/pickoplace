@@ -1,124 +1,126 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"
-    import = "com.dimab.pp.dto.UserPlace"
-    import = "com.dimab.pp.dto.WelcomePageData"
-    import = "java.util.*"%>
-
+%>
 <!DOCTYPE html>
-  
 <html>
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<link>
+    <!-- meta -->
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>Draw Tool</title>
-	  <script type="text/javascript">
-		  var pagetype = 'drawing';
-	  </script>
-	<script type="text/javascript" src="js/jquery-1.11.1.min.js" ></script>
-    <script type="text/javascript" src="js/jquery-migrate-1.2.1.js" ></script>
-	<script type="text/javascript" src="js/jquery-ui-1.11.2.custom/jquery-ui.js"></script>
-	<script type="text/javascript" src="js/jquery-ui-1.11.4.custom/jquery-ui.js"></script>
-	 <script type="text/javascript" src="js/loginlogout.js" ></script>
-    <script type="text/javascript" src="js/dropit.js" ></script>
-	<script type="text/javascript" src="js/jquery.slimscroll.min.js" ></script>
-	<script type="text/javascript" src="js/interactive_draw.js" ></script>
-    
-	<script type="text/javascript" src="ion.rangeSlider-2.0.2/js/ion.rangeSlider.js"></script>
-	<script type="text/javascript" src="js/colpick.js" ></script>
-    <script type="text/javascript" src="js/shapes.js"></script>
-	<script type="text/javascript" src="js/shapes_Canvas_draw.js"></script>
-	<script type="text/javascript" src="js/printlog.js"></script>
-	<script type="text/javascript" src="js/perfect-scrollbar.js"></script>
-    <script type="text/javascript" src="js/jquery.contextmenu.js"></script>
-	<script type="text/javascript" src="js/sitefunctions.js"></script>
-	<script type="text/javascript" src="js/bookingOptions.js"></script>
-	<script type="text/javascript" src="js/cmenu2.js"></script>
-	<script type="text/javascript" src="js/wl_menu_draw.js"></script>
-	
-    <link rel="stylesheet" href="css/browserWrap.css" type="text/css" media="screen" />
-    <link rel="stylesheet" href="css/login.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="css/dropit.css" type="text/css" media="screen" />
-    <link rel="stylesheet" href="css/colpick.css" type="text/css"/>
-	<link rel="stylesheet" href="css/slider.css" type="text/css"/>
-	<link rel="stylesheet" href="css/style.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="css/draw.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="css/style2.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="js/jquery-ui-1.11.2.custom/jquery-ui.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="js/jquery-ui-1.11.4.custom/jquery-ui.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="ion.rangeSlider-2.0.2/css/ion.rangeSlider.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="ion.rangeSlider-2.0.2/css/ion.rangeSlider.skinNice.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="css/perfect-scrollbar.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="css/CSS_checkbox_full/custom-checkbox.css" type="text/css" media="screen" />
-	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script type="text/javascript">
+        var pagetype = 'drawing';
+    </script>
 
-	 <script type="text/javascript" src="js/WindowCanvasEvents.js"></script>
-	 <script type="text/javascript" src="js/documentEventListeners.js"></script>
+    <!-- css -->
+    <link rel="stylesheet" href="css/browserWrap.css" type="text/css" media="screen">
+    <link rel="stylesheet" href="css/login.css" type="text/css" media="screen">
+    <link rel="stylesheet" href="css/dropit.css" type="text/css" media="screen">
+    <link rel="stylesheet" href="css/colpick.css" type="text/css">
+    <link rel="stylesheet" href="css/slider.css" type="text/css">
+    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen">
+    <link rel="stylesheet" href="css/draw.css" type="text/css" media="screen">
+    <link rel="stylesheet" href="css/style2.css" type="text/css" media="screen">
+    <link rel="stylesheet" href="js/jquery-ui-1.11.2.custom/jquery-ui.css" type="text/css" media="screen">
+    <link rel="stylesheet" href="js/jquery-ui-1.11.4.custom/jquery-ui.css" type="text/css" media="screen">
+    <link rel="stylesheet" href="ion.rangeSlider-2.0.2/css/ion.rangeSlider.css" type="text/css" media="screen">
+    <link rel="stylesheet" href="ion.rangeSlider-2.0.2/css/ion.rangeSlider.skinNice.css" type="text/css" media="screen">
+    <link rel="stylesheet" href="css/perfect-scrollbar.css" type="text/css" media="screen">
+    <link rel="stylesheet" href="css/CSS_checkbox_full/custom-checkbox.css" type="text/css" media="screen">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-	<script type="text/javascript">
-	var defaultHint = "";
-	var defaultHintColor = "black";
-	var tempHintUsed = false;
-	var globalShowHint = true;
+    <!-- js -->
+    <script type="text/javascript">
+        var pagetype = 'drawing';
+    </script>
+    <script type="text/javascript" src="js/lib/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="js/lib/jquery-plugins/jquery-migrate-1.2.1.js"></script>
+
+    <script type="text/javascript" src="/js/lib/jquery-ui-1.11.4/jquery-ui.js"></script>
+    <script type="text/javascript" src="js/loginlogout.js"></script>
+    <script type="text/javascript" src="js/lib/jquery-plugins/dropit.js"></script>
+    <script type="text/javascript" src="js/lib/jquery-plugins/jquery.slimscroll.min.js"></script>
+    <script type="text/javascript" src="js/interactive_draw.js"></script>
+
+    <script type="text/javascript" src="ion.rangeSlider-2.0.2/js/ion.rangeSlider.js"></script>
+    <script type="text/javascript" src="js/lib/jquery-plugins/colpick.js"></script>
+    <script type="text/javascript" src="js/lib/shapes.js"></script>
+    <script type="text/javascript" src="js/lib/shapes_Canvas_draw.js"></script>
+    <script type="text/javascript" src="js/printlog.js"></script>
+    <script type="text/javascript" src="js/lib/jquery-plugins/perfect-scrollbar.js"></script>
+    <script type="text/javascript" src="js/lib/jquery-plugins/jquery.contextmenu.js"></script>
+    <script type="text/javascript" src="js/sitefunctions.js"></script>
+    <script type="text/javascript" src="js/bookingOptions.js"></script>
+    <script type="text/javascript" src="js/cmenu2.js"></script>
+    <script type="text/javascript" src="js/wl_menu_draw.js"></script>
+
+    <script type="text/javascript" src="js/WindowCanvasEvents.js"></script>
+    <script type="text/javascript" src="js/documentEventListeners.js"></script>
+
+    <script type="text/javascript">
+        var defaultHint = "";
+        var defaultHintColor = "black";
+        var tempHintUsed = false;
+        var globalShowHint = true;
 
 
-	function SIcreateSaveObjectPre() {
-		$("#drawingSaveButton").hide(); 
-		$("#savingPH").show();
-		setSessionData(function(result) {
-			   if(result) {
-				   createSaveObjectPre();
-			   } else {
-				   updatePageView();
-			   }
-	     });		
-	}
-	function SIPlaceConfiguration(placeID) {
-		var plidi = placeID;
-		setSessionData(function(result) {
-			   if(result) {
-				   PlaceConfiguration(plidi);
-			   } else {
-				   updatePageView();
-			   }
-	     });
-	}
-	function PlaceConfiguration(placeID) {
-	 	   var formid = placeID + "_config_form";
-	 	   document.getElementById(formid).submit();
-	}
+        function SIcreateSaveObjectPre() {
+            $("#drawingSaveButton").hide();
+            $("#savingPH").show();
+            setSessionData(function (result) {
+                if (result) {
+                    createSaveObjectPre();
+                } else {
+                    updatePageView();
+                }
+            });
+        }
+        function SIPlaceConfiguration(placeID) {
+            var plidi = placeID;
+            setSessionData(function (result) {
+                if (result) {
+                    PlaceConfiguration(plidi);
+                } else {
+                    updatePageView();
+                }
+            });
+        }
+        function PlaceConfiguration(placeID) {
+            var formid = placeID + "_config_form";
+            document.getElementById(formid).submit();
+        }
 
-	   var gcanvas ;
-	   var floorCanvases = [];
-	   var floorNames = {};
-       function init() {
-    	   "use strict";
-    	   canvas_ = new CanvasState(document.getElementById('canvas1'));
-		   canvas_.mode("bg");
-		   gcanvas = new CanvasState(document.getElementById('group_shapes_canvas'));
-		   canvas_.main = true;
-		   canvas_.mainfloor = true;
-		   canvas_.floor_name = "Floor-1";
-		   floorCanvases.push(canvas_);
-		   floorNames["Floor-1"] = canvas_;
-		   
-    	   	$("#rotate_slider").slider({
-    	 	   tooltip: 'hide',
-    	 	   formatter: function(value) {
-    	 	    if (canvas_.selection != null) {
-    	           canvas_.rotateSelection(value);
-    	 		}
-    	 		return  value;
-    	 	}
-    	     }).on('slideStop', function(ev){
+        var gcanvas;
+        var floorCanvases = [];
+        var floorNames = {};
+        function init() {
+            "use strict";
+            canvas_ = new CanvasState(document.getElementById('canvas1'));
+            canvas_.mode("bg");
+            gcanvas = new CanvasState(document.getElementById('group_shapes_canvas'));
+            canvas_.main = true;
+            canvas_.mainfloor = true;
+            canvas_.floor_name = "Floor-1";
+            floorCanvases.push(canvas_);
+            floorNames["Floor-1"] = canvas_;
 
-    	     });;
-            $("#width_c_input").val($("#"+canvas_.canvas.id).width());
-	        $("#height_c_input").val($("#"+canvas_.canvas.id).height());
-	
-    	 }
+            $("#rotate_slider").slider({
+                tooltip: 'hide',
+                formatter: function (value) {
+                    if (canvas_.selection != null) {
+                        canvas_.rotateSelection(value);
+                    }
+                    return value;
+                }
+            }).on('slideStop', function (ev) {
 
-	</script>
-  </head>
-  	
+            });
+            $("#width_c_input").val($("#" + canvas_.canvas.id).width());
+            $("#height_c_input").val($("#" + canvas_.canvas.id).height());
+        }
+    </script>
+</head>
+
   <body onload="init()" style="margin: 0px;">
   		    <div id="message_popup_wrap" style="display:none">
 			    <div id="remove_floor_confirmation"  style="display:none">

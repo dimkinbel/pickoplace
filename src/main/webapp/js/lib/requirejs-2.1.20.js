@@ -1,3 +1,4 @@
+//todo(egor-js): update to version 2.1.22
 /*
  RequireJS 2.1.20 Copyright (c) 2010-2015, The Dojo Foundation All Rights Reserved.
  Available via the MIT or new BSD license.

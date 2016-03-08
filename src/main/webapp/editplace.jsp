@@ -1,59 +1,67 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"
-    import = "com.dimab.pp.dto.*"
-    import = "java.util.*"
-    import = "java.lang.reflect.Type"%>
-<%@ page import="com.dimab.pickoplace.utils.JsonUtils" %>
+    import = "com.dimab.pickoplace.utils.JsonUtils"
+    import = "com.dimab.pp.dto.AJAXImagesJSON"
+    import = "com.dimab.pp.dto.JsonImageID_2_GCSurl"%>
+<%@ page import="com.dimab.pp.dto.JsonSID_2_imgID" %>
+<%@ page import="com.dimab.pp.dto.PPSubmitObject" %>
+<%@ page import="java.util.List" %>
 
 <!DOCTYPE html>
   
 <html>
   <head>
+    <%-- meta --%>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>PickoPlace-Edit</title>
-	  <script type="text/javascript">
-		  var pagetype = 'editplace';
-	  </script>
-	<script type="text/javascript" src="js/jquery-1.11.1.min.js" ></script>
-    <script type="text/javascript" src="js/jquery-migrate-1.2.1.js" ></script>
-	<script type="text/javascript" src="js/jquery-ui-1.11.2.custom/jquery-ui.js"></script>
-	<script type="text/javascript" src="js/jquery-ui-1.11.4.custom/jquery-ui.js"></script>
-	 <script type="text/javascript" src="js/loginlogout.js" ></script>
-    <script type="text/javascript" src="js/dropit.js" ></script>
-	<script type="text/javascript" src="js/jquery.slimscroll.min.js" ></script>
-    
-	<script type="text/javascript" src="ion.rangeSlider-2.0.2/js/ion.rangeSlider.js"></script>
-	<script type="text/javascript" src="js/colpick.js" ></script>
-    <script type="text/javascript" src="js/shapes.js"></script>
-	<script type="text/javascript" src="js/shapes_Canvas_draw.js"></script>
-	<script type="text/javascript" src="js/printlog.js"></script>
-	<script type="text/javascript" src="js/perfect-scrollbar.js"></script>
-    <script type="text/javascript" src="js/jquery.contextmenu.js"></script>
-	<script type="text/javascript" src="js/sitefunctions.js"></script>
-	<script type="text/javascript" src="js/bookingOptions.js"></script>
-	<script type="text/javascript" src="js/cmenu2.js"></script>
-	<script type="text/javascript" src="js/wl_menu_draw.js"></script>	
-    <script type="text/javascript" src="js/updateData.js"></script>
-	
-     <link rel="stylesheet" href="css/browserWrap.css" type="text/css" media="screen" />
-     <link rel="stylesheet" href="css/login.css" type="text/css" media="screen" />
-	 <link rel="stylesheet" href="css/dropit.css" type="text/css" media="screen" />
-     <link rel="stylesheet" href="css/colpick.css" type="text/css"/>
-	 <link rel="stylesheet" href="css/slider.css" type="text/css"/>
-	 <link rel="stylesheet" href="css/style.css" type="text/css" media="screen" />
-	 <link rel="stylesheet" href="css/draw.css" type="text/css" media="screen" />
-	 <link rel="stylesheet" href="css/style2.css" type="text/css" media="screen" />
-	 <link rel="stylesheet" href="js/jquery-ui-1.11.2.custom/jquery-ui.css" type="text/css" media="screen" />
-	 <link rel="stylesheet" href="js/jquery-ui-1.11.4.custom/jquery-ui.css" type="text/css" media="screen" />
-	 <link rel="stylesheet" href="ion.rangeSlider-2.0.2/css/ion.rangeSlider.css" type="text/css" media="screen" />
-	 <link rel="stylesheet" href="ion.rangeSlider-2.0.2/css/ion.rangeSlider.skinNice.css" type="text/css" media="screen" />
-	 <link rel="stylesheet" href="css/perfect-scrollbar.css" type="text/css" media="screen" />
-	 <link rel="stylesheet" href="css/CSS_checkbox_full/custom-checkbox.css" type="text/css" media="screen" />
-	 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script type="text/javascript">
+        var pagetype = 'editplace';
+    </script>
 
-	  <script type="text/javascript" src="js/updateCanvasData.js"></script>
-	  <script type="text/javascript" src="js/WindowCanvasEvents.js"></script>
-	  <script type="text/javascript" src="js/documentEventListeners.js"></script>
+    <%--css--%>
+    <link rel="stylesheet" href="css/browserWrap.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="css/login.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="css/dropit.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="css/colpick.css" type="text/css"/>
+    <link rel="stylesheet" href="css/slider.css" type="text/css"/>
+    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="css/draw.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="css/style2.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="js/jquery-ui-1.11.2.custom/jquery-ui.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="js/jquery-ui-1.11.4.custom/jquery-ui.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="ion.rangeSlider-2.0.2/css/ion.rangeSlider.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="ion.rangeSlider-2.0.2/css/ion.rangeSlider.skinNice.css" type="text/css"
+          media="screen"/>
+    <link rel="stylesheet" href="css/perfect-scrollbar.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="css/CSS_checkbox_full/custom-checkbox.css" type="text/css" media="screen"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <%-- js --%>
+    <script type="text/javascript" src="js/lib/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="js/lib/jquery-plugins/jquery-migrate-1.2.1.js"></script>
+    <script type="text/javascript" src="/js/lib/jquery-ui-1.11.4/jquery-ui.js"></script>
+    <script type="text/javascript" src="js/loginlogout.js"></script>
+    <script type="text/javascript" src="js/lib/jquery-plugins/dropit.js"></script>
+    <script type="text/javascript" src="js/lib/jquery-plugins/jquery.slimscroll.min.js"></script>
+
+    <script type="text/javascript" src="ion.rangeSlider-2.0.2/js/ion.rangeSlider.js"></script>
+    <script type="text/javascript" src="js/lib/jquery-plugins/colpick.js"></script>
+    <script type="text/javascript" src="js/lib/shapes.js"></script>
+    <script type="text/javascript" src="js/lib/shapes_Canvas_draw.js"></script>
+    <script type="text/javascript" src="js/printlog.js"></script>
+    <script type="text/javascript" src="js/lib/jquery-plugins/perfect-scrollbar.js"></script>
+    <script type="text/javascript" src="js/lib/jquery-plugins/jquery.contextmenu.js"></script>
+    <script type="text/javascript" src="js/sitefunctions.js"></script>
+    <script type="text/javascript" src="js/bookingOptions.js"></script>
+    <script type="text/javascript" src="js/cmenu2.js"></script>
+    <script type="text/javascript" src="js/wl_menu_draw.js"></script>
+    <script type="text/javascript" src="js/updateData.js"></script>
+
+
+    <script type="text/javascript" src="js/updateCanvasData.js"></script>
+    <script type="text/javascript" src="js/WindowCanvasEvents.js"></script>
+    <script type="text/javascript" src="js/documentEventListeners.js"></script>
+
 	  <script type="text/javascript">
 	var defaultHint = "";
 	var defaultHintColor = "black";

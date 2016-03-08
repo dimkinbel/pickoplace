@@ -1,27 +1,24 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
          pageEncoding="UTF-8"
+         import="com.dimab.pickoplace.utils.JsonUtils"
          import="com.dimab.pp.dto.*"
-         import="com.google.gson.Gson"
-         import="java.util.*" %>
-<%@ page import="com.dimab.pickoplace.utils.JsonUtils" %>
+         import="java.util.List"
+%>
 <%@taglib prefix="common" tagdir="/WEB-INF/tags/common" %>
 <!DOCTYPE html>
 <html style="height:100%">
+
 <head>
-    <common:baseStyles/>
-    <common:eachPageStyles/>
-    <common:baseScripts/>
-    <common:baseSyncScripts/>
-    <common:eachPageScripts/>
-
-
+    <%-- meta --%>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>Pickoplace:Booking</title>
     <script type="text/javascript">
         var pagetype = 'place_booking';
     </script>
 
-
+    <%-- css --%>
+    <common:baseStyles/>
+    <common:eachPageStyles/>
     <link rel="stylesheet" href="css/slider.css" type="text/css"/>
     <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
     <link rel="stylesheet" href="css/book_approval.css" type="text/css" media="screen"/>
@@ -31,40 +28,38 @@
           media="screen"/>
     <link rel="stylesheet" href="css/perfect-scrollbar.css" type="text/css" media="screen"/>
 
+    <%-- js --%>
+    <common:baseScripts/>
+    <common:baseSyncScripts/>
+    <common:eachPageScripts/>
     <script type="text/javascript" src="ion.rangeSlider-2.0.2/js/ion.rangeSlider.js"></script>
-    <script type="text/javascript" src="js/perfect-scrollbar.js"></script>
-    <script type="text/javascript" src="js/moment.min.js"></script>
-
-
-    <script type="text/javascript" src="js/myUtils/netConnection.js"></script><!---->
-    <script type="text/javascript" src="js/bookingBookingsManger.js"></script><!---->
-    <script type="text/javascript" src="js/shapes_ub.js"></script><!---->
-    <script type="text/javascript" src="js/shapes_timeline.js"></script><!---->
-    <script type="text/javascript" src="js/printlog_ub.js"></script><!---->
-    <script type="text/javascript" src="js/sitefunctions.js"></script><!---->
-    <script type="text/javascript" src="js/updateData_ub.js"></script><!---->
-    <script type="text/javascript" src="js/bookingOptions_ub.js"></script><!---->
-    <script type="text/javascript" src="js/wl_menu_ub.js"></script><!---->
-    <script type="text/javascript" src="js/interactive_ub.js"></script><!---->
-    <script type="text/javascript" src="js/userBooking.js"></script><!---->
-    <script type="text/javascript" src="js/bookController.js"></script><!---->
-    <script type="text/javascript" src="js/bookViewService.js"></script><!---->
-    <script type="text/javascript" src="js/shapes_timeline_new.js"></script><!---->
-
-
+    <script type="text/javascript" src="js/lib/jquery-plugins/perfect-scrollbar.js"></script>
+    <script type="text/javascript" src="js/lib/moment/moment.min.js"></script>
+    <script type="text/javascript" src="js/myUtils/netConnection.js"></script>
+    <script type="text/javascript" src="js/bookingBookingsManger.js"></script>
+    <script type="text/javascript" src="js/lib/shapes_ub.js"></script>
+    <script type="text/javascript" src="js/lib/shapes_timeline.js"></script>
+    <script type="text/javascript" src="js/printlog_ub.js"></script>
+    <script type="text/javascript" src="js/sitefunctions.js"></script>
+    <script type="text/javascript" src="js/updateData_ub.js"></script>
+    <script type="text/javascript" src="js/bookingOptions_ub.js"></script>
+    <script type="text/javascript" src="js/wl_menu_ub.js"></script>
+    <script type="text/javascript" src="js/interactive_ub.js"></script>
+    <script type="text/javascript" src="js/userBooking.js"></script>
+    <script type="text/javascript" src="js/bookController.js"></script>
+    <script type="text/javascript" src="js/bookViewService.js"></script>
+    <script type="text/javascript" src="js/lib/shapes_timeline_new.js"></script>
     <script src="raty/raty.js" type="text/javascript"></script>
     <script type="text/javascript" src="js/rating.js"></script>
-
-
+    <%-- todo(egor): move to settings--%>
     <script type="text/javascript"
-            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAaX5Ow6oo_axUKMquFxnPpT6Kd-L7D40k&libraries=places&&sensor=FALSE">
-
-    </script> <!-- TODO: Global variable replace  -->
-
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAaX5Ow6oo_axUKMquFxnPpT6Kd-L7D40k&libraries=places&&sensor=FALSE"></script>
     <script type="text/javascript" src="js/maps_google.js"></script>
     <script type="text/javascript" src="js/updateCanvasData.js"></script>
     <script type="text/javascript" src="js/WindowCanvasEvents.js"></script>
     <script type="text/javascript" src="js/documentEventListeners.js"></script>
+
+    <%-- custom js--%>
     <script type="text/javascript">
 
         var canvast = [];
@@ -150,11 +145,9 @@
                 $("#page_login_prompt").hide();
             }
         });
-
-
-        ///
     </script>
 </head>
+
 <body class="back_whitesmoke">
 <div id="canvas_popover_hidden" class="hidden">
     <div id="canvas_popover_wrap" style="position:relative; width:400px;min-height:100px; background-color:white;">

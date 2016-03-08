@@ -4,6 +4,7 @@
  * ========================================================================
  * Copyright 2014 Min Hur, The New York Times Company
  * Licensed under MIT
+ * todo(egor-js): review `http://www.bootstrap-switch.org/`
  * ======================================================================== */
 
 

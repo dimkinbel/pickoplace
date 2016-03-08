@@ -1,21 +1,21 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<script type="text/javascript" src="js/jquery-1.11.1.min.js" ></script>
-    <script type="text/javascript" src="js/jquery-migrate-1.2.1.js" ></script>
-<script type="text/javascript">
-function generateMainPickoPlace() {
-	document.getElementById("welcome_page").submit();
-}
-$(document).ready(function() {
-	generateMainPickoPlace();
-});
-</script>
+    <!-- meta -->
+    <title>Welcome transitive</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
-<title>Welcome transitive</title>
+    <!-- js -->
+    <script type="text/javascript" src="/js/lib/jquery-1.11.1.min.js" ></script>
+
+    <!-- custom js-->
+    <script type="text/javascript">
+        $(document).ready(function () {
+            document.getElementById("welcome_page").submit();
+        });
+    </script>
 </head>
 <body>
- <form id="welcome_page" action="welcomeUpdate" method="post"></form>
+<form id="welcome_page" action="welcomeUpdate" method="post"></form>
 </body>
 </html>
