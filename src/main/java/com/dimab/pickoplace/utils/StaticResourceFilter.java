@@ -77,11 +77,14 @@ public class StaticResourceFilter implements Filter {
 
             httpServletResponse.setStatus(HttpServletResponse.SC_OK);
             httpServletResponse.setHeader("X-Powered-By", "StaticResourcesFilter");
-            OutputStream outputStream = httpServletResponse.getOutputStream();
+
             File file = new File(new File(staticResourcePath), requestUri);
             if (!file.exists()) {
                 chain.doFilter(request, response);
+                return;
             }
+
+            OutputStream outputStream = httpServletResponse.getOutputStream();
             InputStream in = new FileInputStream(file);
             ByteStreams.copy(in, outputStream);
         } else {
