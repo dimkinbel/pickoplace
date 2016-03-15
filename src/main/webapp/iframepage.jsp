@@ -59,25 +59,25 @@
 
     <script type="text/javascript" src="/js/lib/jquery-ui-1.11.4/jquery-ui.js"></script>
     <script type="text/javascript" src="/js/bootstrap/bootstrap.min.js"></script>
-    <script type="text/javascript" src="js/lib/jquery-plugins/perfect-scrollbar.js"></script>
-    <script type="text/javascript" src="js/sitefunctions.js"></script>
-    <script type="text/javascript" src="js/updateData_pc.js"></script>
+    <script type="text/javascript" src="/js/lib/jquery-plugins/perfect-scrollbar.js"></script>
+    <script type="text/javascript" src="/js/sitefunctions.js"></script>
+    <script type="text/javascript" src="/js/updateData_pc.js"></script>
 
 
     <!-- IFRAME -->
-    <script type="text/javascript" src="js/lib/shapes_fe.js"></script>
-    <script type="text/javascript" src="js/wl_menu_if.js"></script>
-    <script type="text/javascript" src="js/iframe_Controller.js"></script>
-    <script type="text/javascript" src="js/iframe_viewService.js"></script>
+    <script type="text/javascript" src="/js/lib/shapes_fe.js"></script>
+    <script type="text/javascript" src="/js/wl_menu_if.js"></script>
+    <script type="text/javascript" src="/js/iframe_Controller.js"></script>
+    <script type="text/javascript" src="/js/iframe_viewService.js"></script>
 
     <%if (ifresp.getBooking() == true) { %>
-    <script type="text/javascript" src="js/bookingBookingsManger.js"></script>
-    <script type="text/javascript" src="js/interactiveUpdate_if.js"></script>
+    <script type="text/javascript" src="/js/bookingBookingsManger.js"></script>
+    <script type="text/javascript" src="/js/interactiveUpdate_if.js"></script>
     <%}%>
     <!-- IFRAME -->
 
-    <script type="text/javascript" src="js/updateCanvasData.js"></script>
-    <script type="text/javascript" src="js/WindowCanvasEvents.js"></script>
+    <script type="text/javascript" src="/js/updateCanvasData.js"></script>
+    <script type="text/javascript" src="/js/WindowCanvasEvents.js"></script>
     <script type="text/javascript">
 
         var tl_canvas = {};
@@ -107,9 +107,6 @@
             updateCanvasDataForIFrame(true);
             ApplyFloorsToIframe();
         });
-
-    </script>
-    <script type="text/javascript">
 
         $(document).on("click", ".stopclick", function (event) {
             if (event.target.id == "page_login_prompt") {

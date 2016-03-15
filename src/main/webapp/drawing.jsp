@@ -22,10 +22,10 @@
     <link rel="stylesheet" href="css/draw.css" type="text/css" media="screen">
     <link rel="stylesheet" href="css/style2.css" type="text/css" media="screen">
     <link rel="stylesheet" href="/js/lib/jquery-ui-1.11.4/jquery-ui.css" type="text/css" media="screen">
-    <link rel="stylesheet" href="ion.rangeSlider-2.0.2/css/ion.rangeSlider.css" type="text/css" media="screen">
-    <link rel="stylesheet" href="ion.rangeSlider-2.0.2/css/ion.rangeSlider.skinNice.css" type="text/css" media="screen">
-    <link rel="stylesheet" href="css/perfect-scrollbar.css" type="text/css" media="screen">
-    <link rel="stylesheet" href="css/CSS_checkbox_full/custom-checkbox.css" type="text/css" media="screen">
+    <link rel="stylesheet" href="/js/lib/ion.rangeSlider-2.0.2/css/ion.rangeSlider.css" type="text/css" media="screen">
+    <link rel="stylesheet" href="/js/lib/ion.rangeSlider-2.0.2/css/ion.rangeSlider.skinNice.css" type="text/css" media="screen">
+    <link rel="stylesheet" href="/css/perfect-scrollbar.css" type="text/css" media="screen">
+    <link rel="stylesheet" href="/css/CSS_checkbox_full/custom-checkbox.css" type="text/css" media="screen">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
     <%-- js --%>
@@ -33,25 +33,25 @@
     <script type="text/javascript" src="/js/lib/jquery-plugins/jquery-migrate-1.2.1.js"></script>
 
     <script type="text/javascript" src="/js/lib/jquery-ui-1.11.4/jquery-ui.js"></script>
-    <script type="text/javascript" src="js/loginlogout.js"></script>
-    <script type="text/javascript" src="js/lib/jquery-plugins/dropit.js"></script>
-    <script type="text/javascript" src="js/lib/jquery-plugins/jquery.slimscroll.min.js"></script>
-    <script type="text/javascript" src="js/interactive_draw.js"></script>
+    <script type="text/javascript" src="/js/loginlogout.js"></script>
+    <script type="text/javascript" src="/js/lib/jquery-plugins/dropit.js"></script>
+    <script type="text/javascript" src="/js/lib/jquery-plugins/jquery.slimscroll.min.js"></script>
+    <script type="text/javascript" src="/js/interactive_draw.js"></script>
 
-    <script type="text/javascript" src="ion.rangeSlider-2.0.2/js/ion.rangeSlider.js"></script>
-    <script type="text/javascript" src="js/lib/jquery-plugins/colpick.js"></script>
-    <script type="text/javascript" src="js/lib/shapes.js"></script>
-    <script type="text/javascript" src="js/lib/shapes_Canvas_draw.js"></script>
-    <script type="text/javascript" src="js/printlog.js"></script>
-    <script type="text/javascript" src="js/lib/jquery-plugins/perfect-scrollbar.js"></script>
-    <script type="text/javascript" src="js/lib/jquery-plugins/jquery.contextmenu.js"></script>
-    <script type="text/javascript" src="js/sitefunctions.js"></script>
-    <script type="text/javascript" src="js/bookingOptions.js"></script>
-    <script type="text/javascript" src="js/cmenu2.js"></script>
-    <script type="text/javascript" src="js/wl_menu_draw.js"></script>
+    <script type="text/javascript" src="/js/lib/ion.rangeSlider-2.0.2/js/ion.rangeSlider.js"></script>
+    <script type="text/javascript" src="/js/lib/jquery-plugins/colpick.js"></script>
+    <script type="text/javascript" src="/js/lib/shapes.js"></script>
+    <script type="text/javascript" src="/js/lib/shapes_Canvas_draw.js"></script>
+    <script type="text/javascript" src="/js/printlog.js"></script>
+    <script type="text/javascript" src="/js/lib/jquery-plugins/perfect-scrollbar.js"></script>
+    <script type="text/javascript" src="/js/lib/jquery-plugins/jquery.contextmenu.js"></script>
+    <script type="text/javascript" src="/js/sitefunctions.js"></script>
+    <script type="text/javascript" src="/js/bookingOptions.js"></script>
+    <script type="text/javascript" src="/js/cmenu2.js"></script>
+    <script type="text/javascript" src="/js/wl_menu_draw.js"></script>
 
-    <script type="text/javascript" src="js/WindowCanvasEvents.js"></script>
-    <script type="text/javascript" src="js/documentEventListeners.js"></script>
+    <script type="text/javascript" src="/js/WindowCanvasEvents.js"></script>
+    <script type="text/javascript" src="/js/documentEventListeners.js"></script> <!-- todo(egor-js): can't find js -->
 
     <script type="text/javascript">
         var defaultHint = "";

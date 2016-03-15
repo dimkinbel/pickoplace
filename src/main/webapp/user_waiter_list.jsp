@@ -12,23 +12,23 @@
     </script>
 
     <%-- css --%>
-    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen" />
-    <link rel="stylesheet" href="css/style2.css" type="text/css" media="screen" />
-    <link rel="stylesheet" href="css/login.css" type="text/css" media="screen" />
-    <link rel="stylesheet" href="css/dropit.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="/css/style2.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="/css/login.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="/css/dropit.css" type="text/css" media="screen" />
     <link rel="stylesheet" href="/js/lib/jquery-ui-1.11.4/jquery-ui.css" type="text/css" media="screen">
 
     <%-- js --%>
     <script type="text/javascript" src="/js/lib/jquery-1.11.1.min.js"></script>
     <script type="text/javascript" src="/js/lib/jquery-plugins/jquery-migrate-1.2.1.js"></script>
-    <script type="text/javascript" src="js/loginlogout.js"></script>
-    <script type="text/javascript" src="js/lib/bootstrap-plugins/bootstrap-slider.js"></script>
-    <script type="text/javascript" src="js/sitefunctions.js"></script>
+    <script type="text/javascript" src="/js/loginlogout.js"></script>
+    <script type="text/javascript" src="/js/lib/bootstrap-plugins/bootstrap-slider.js"></script>
+    <script type="text/javascript" src="/js/sitefunctions.js"></script>
 
-    <script type="text/javascript" src="js/lib/jquery-plugins/jquery.slimscroll.min.js"></script>
-    <script type="text/javascript" src="js/lib/jquery-plugins/dropit.js"></script>
-    <script type="text/javascript" src="js/updateData_wl.js"></script>
-    <script type="text/javascript" src="js/lib/moment/moment.min.js"></script>
+    <script type="text/javascript" src="/js/lib/jquery-plugins/jquery.slimscroll.min.js"></script>
+    <script type="text/javascript" src="/js/lib/jquery-plugins/dropit.js"></script>
+    <script type="text/javascript" src="/js/updateData_wl.js"></script>
+    <script type="text/javascript" src="/js/lib/moment/moment.min.js"></script>
     <script type="text/javascript" src="/js/lib/jquery-ui-1.11.4/jquery-ui.js"></script>
 
     <%-- custom js--%>

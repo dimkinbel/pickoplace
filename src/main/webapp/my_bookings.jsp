@@ -13,27 +13,27 @@
     </script>
 
     <%-- css --%>
-    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen">
-    <link rel="stylesheet" href="css/style2.css" type="text/css" media="screen">
-    <link rel="stylesheet" href="css/login.css" type="text/css" media="screen">
-    <link rel="stylesheet" href="css/dropit.css" type="text/css" media="screen">
-    <link rel="stylesheet" href="css/perfect-scrollbar.css" type="text/css" media="screen">
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen">
+    <link rel="stylesheet" href="/css/style2.css" type="text/css" media="screen">
+    <link rel="stylesheet" href="/css/login.css" type="text/css" media="screen">
+    <link rel="stylesheet" href="/css/dropit.css" type="text/css" media="screen">
+    <link rel="stylesheet" href="/css/perfect-scrollbar.css" type="text/css" media="screen">
     <link rel="stylesheet" href="/js/lib/jquery-plugins/raty/raty.css" type="text/css" media="screen">
-    <link rel="stylesheet" href="css/rating.css" type="text/css" media="screen">
+    <link rel="stylesheet" href="/css/rating.css" type="text/css" media="screen">
 
     <%-- js --%>
     <script type="text/javascript" src="/js/lib/jquery-1.11.1.min.js"></script>
     <script type="text/javascript" src="/js/lib/jquery-plugins/jquery-migrate-1.2.1.js"></script>
-    <script type="text/javascript" src="js/loginlogout.js"></script>
-    <script type="text/javascript" src="js/lib/bootstrap-plugins/bootstrap-slider.js"></script>
-    <script type="text/javascript" src="js/sitefunctions.js"></script>
-    <script type="text/javascript" src="js/lib/jquery-plugins/jquery.slimscroll.min.js"></script>
-    <script type="text/javascript" src="js/lib/jquery-plugins/dropit.js"></script>
-    <script type="text/javascript" src="js/updateData_sb.js"></script>
+    <script type="text/javascript" src="/js/loginlogout.js"></script>
+    <script type="text/javascript" src="/js/lib/bootstrap-plugins/bootstrap-slider.js"></script>
+    <script type="text/javascript" src="/js/sitefunctions.js"></script>
+    <script type="text/javascript" src="/js/lib/jquery-plugins/jquery.slimscroll.min.js"></script>
+    <script type="text/javascript" src="/js/lib/jquery-plugins/dropit.js"></script>
+    <script type="text/javascript" src="/js/updateData_sb.js"></script>
     <script type="text/javascript" src="/js/lib/jquery-plugins/raty/raty.js"></script>
-    <script type="text/javascript" src="js/rating.js"></script>
+    <script type="text/javascript" src="/js/rating.js"></script>
 
-    <script type="text/javascript" src="js/interactive_my_bookings.js"></script>
+    <script type="text/javascript" src="/js/interactive_my_bookings.js"></script>
 </head>
 
 <body style="margin: 0px;" >
@@ -83,8 +83,7 @@
 								  </div>
 								</td>
 							 </tr>
-					   	</table>									 
-					   				
+					   	</table>
 				</div>
 				</div>
 			</td>

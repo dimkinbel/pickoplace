@@ -18,16 +18,16 @@
     <%-- css --%>
     <common:baseStyles/>
     <common:eachPageStyles/>
-    <link rel="stylesheet" href="js/bootstrap-toggle-master/css/bootstrap-toggle.min.css">
-    <link rel='stylesheet' href='js/fullcalendar-2.6.0/fullcalendar.min.css' />
-    <link rel='stylesheet' href='js/intl-tel-input-master/build/css/intlTelInput.css' />
-    <link rel="stylesheet" href="css/colpick.css" type="text/css"/>
-    <link rel="stylesheet" href="css/slider.css" type="text/css"/>
-    <link rel="stylesheet" href="ion.rangeSlider-2.0.2/css/ion.rangeSlider.css" type="text/css" media="screen" />
-    <link rel="stylesheet" href="ion.rangeSlider-2.0.2/css/ion.rangeSlider.skinNice.css" type="text/css" media="screen" />
-    <link rel="stylesheet" href="css/perfect-scrollbar.css" type="text/css" media="screen" />
-    <link rel="stylesheet" href="css/CSS_checkbox_full/custom-checkbox.css" type="text/css" media="screen" />
-    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="/js/bootstrap-toggle-master/css/bootstrap-toggle.min.css">
+    <link rel='stylesheet' href='/js/fullcalendar-2.6.0/fullcalendar.min.css' />
+    <link rel='stylesheet' href='/js/intl-tel-input-master/build/css/intlTelInput.css' />
+    <link rel="stylesheet" href="/css/colpick.css" type="text/css"/>
+    <link rel="stylesheet" href="/css/slider.css" type="text/css"/>
+    <link rel="stylesheet" href="/js/lib/ion.rangeSlider-2.0.2/css/ion.rangeSlider.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="/js/lib/ion.rangeSlider-2.0.2/css/ion.rangeSlider.skinNice.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="/css/perfect-scrollbar.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="/css/CSS_checkbox_full/custom-checkbox.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
 
     <%-- js --%>
     <common:baseSyncScripts/>
@@ -35,36 +35,36 @@
     <script type="text/javascript" src="/js/lib/jquery-1.11.1.min.js"></script>
     <script type="text/javascript" src="/js/bootstrap/bootstrap.min.js"></script>
     <script type="text/javascript" src="/js/lib/jquery-ui-1.11.4/jquery-ui.js"></script>
-    <script type="text/javascript" src="ion.rangeSlider-2.0.2/js/ion.rangeSlider.js"></script>
-    <script type="text/javascript" src="js/lib/jquery-plugins/colpick.js"></script>
-    <script type="text/javascript" src="js/bootstrap-toggle-master/js/bootstrap-toggle.min.js"></script>
-    <script type="text/javascript" src="js/lib/jquery-plugins/perfect-scrollbar.js"></script>
-    <script type="text/javascript" src="js/sitefunctions.js"></script>
-    <script type="text/javascript" src="js/lib/moment/moment.min.js"></script>
-    <script type="text/javascript" src='js/fullcalendar-2.6.0/fullcalendar.min.js'></script>
-    <script type="text/javascript" src="js/intl-tel-input-master/build/js/intlTelInput.min.js"></script>
-    <script type="text/javascript" src="js/lib/shapes_pc.js"></script>
-    <script type="text/javascript" src="js/pcController.js"></script>
-    <script type="text/javascript" src="js/pcDrawService.js"></script>
-    <script type="text/javascript" src="js/wl_menu_pc.js"></script>
-    <script type="text/javascript" src="js/printlog_pc.js"></script>
-    <script type="text/javascript" src="js/updateData_pc.js"></script>
-    <script type="text/javascript" src="js/bookingOptions_pc.js"></script>
-    <script type="text/javascript" src="js/interactiveUpdate_pc.js"></script>
+    <script type="text/javascript" src="/js/lib/ion.rangeSlider-2.0.2/js/ion.rangeSlider.js"></script>
+    <script type="text/javascript" src="/js/lib/jquery-plugins/colpick.js"></script>
+    <script type="text/javascript" src="/js/bootstrap-toggle-master/js/bootstrap-toggle.min.js"></script>
+    <script type="text/javascript" src="/js/lib/jquery-plugins/perfect-scrollbar.js"></script>
+    <script type="text/javascript" src="/js/sitefunctions.js"></script>
+    <script type="text/javascript" src="/js/lib/moment/moment.min.js"></script>
+    <script type="text/javascript" src='/js/fullcalendar-2.6.0/fullcalendar.min.js'></script>
+    <script type="text/javascript" src="/js/intl-tel-input-master/build/js/intlTelInput.min.js"></script>
+    <script type="text/javascript" src="/js/lib/shapes_pc.js"></script>
+    <script type="text/javascript" src="/js/pcController.js"></script>
+    <script type="text/javascript" src="/js/pcDrawService.js"></script>
+    <script type="text/javascript" src="/js/wl_menu_pc.js"></script>
+    <script type="text/javascript" src="/js/printlog_pc.js"></script>
+    <script type="text/javascript" src="/js/updateData_pc.js"></script>
+    <script type="text/javascript" src="/js/bookingOptions_pc.js"></script>
+    <script type="text/javascript" src="/js/interactiveUpdate_pc.js"></script>
     <!-- IFRAME -->
-    <script type="text/javascript" src="js/lib/shapes_fe.js"></script>
-    <script type="text/javascript" src="js/wl_menu_if.js"></script>
-    <script type="text/javascript" src="js/iframe_Controller.js"></script>
-    <script type="text/javascript" src="js/iframe_viewService.js"></script>
-    <script type="text/javascript" src="js/bookingBookingsManger.js"></script>
-    <script type="text/javascript" src="js/interactiveUpdate_if.js"></script>
+    <script type="text/javascript" src="/js/lib/shapes_fe.js"></script>
+    <script type="text/javascript" src="/js/wl_menu_if.js"></script>
+    <script type="text/javascript" src="/js/iframe_Controller.js"></script>
+    <script type="text/javascript" src="/js/iframe_viewService.js"></script>
+    <script type="text/javascript" src="/js/bookingBookingsManger.js"></script>
+    <script type="text/javascript" src="/js/interactiveUpdate_if.js"></script>
     <!-- IFRAME -->
     <script type="text/javascript"
             src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAaX5Ow6oo_axUKMquFxnPpT6Kd-L7D40k&libraries=places&&sensor=FALSE">
     </script>
-    <script type="text/javascript" src="js/maps_google.js"></script>
-    <script type="text/javascript" src="js/updateCanvasData.js"></script>
-    <script type="text/javascript" src="js/documentEventListeners.js"></script>
+    <script type="text/javascript" src="/js/maps_google.js"></script>
+    <script type="text/javascript" src="/js/updateCanvasData.js"></script>
+    <script type="text/javascript" src="/js/documentEventListeners.js"></script>
 
     <%-- custom js --%>
 	<script type="text/javascript">

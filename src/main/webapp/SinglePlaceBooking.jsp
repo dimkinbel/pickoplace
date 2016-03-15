@@ -19,45 +19,45 @@
     <%-- css --%>
     <common:baseStyles/>
     <common:eachPageStyles/>
-    <link rel="stylesheet" href="css/slider.css" type="text/css"/>
-    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
-    <link rel="stylesheet" href="css/book_approval.css" type="text/css" media="screen"/>
-    <link rel="stylesheet" href="css/rating.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="/css/slider.css" type="text/css"/>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="/css/book_approval.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="/css/rating.css" type="text/css" media="screen"/>
     <link rel="stylesheet" href="/js/lib/jquery-plugins/raty/raty.css" type="text/css" media="screen">
-    <link rel="stylesheet" href="ion.rangeSlider-2.0.2/css/ion.rangeSlider.skinModern.css" type="text/css"
+    <link rel="stylesheet" href="/ion.rangeSlider-2.0.2/css/ion.rangeSlider.skinModern.css" type="text/css"
           media="screen"/>
-    <link rel="stylesheet" href="css/perfect-scrollbar.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="/css/perfect-scrollbar.css" type="text/css" media="screen"/>
 
     <%-- js --%>
     <common:baseScripts/>
     <common:baseSyncScripts/>
     <common:eachPageScripts/>
-    <script type="text/javascript" src="ion.rangeSlider-2.0.2/js/ion.rangeSlider.js"></script>
-    <script type="text/javascript" src="js/lib/jquery-plugins/perfect-scrollbar.js"></script>
-    <script type="text/javascript" src="js/lib/moment/moment.min.js"></script>
-    <script type="text/javascript" src="js/myUtils/netConnection.js"></script>
-    <script type="text/javascript" src="js/bookingBookingsManger.js"></script>
-    <script type="text/javascript" src="js/lib/shapes_ub.js"></script>
-    <script type="text/javascript" src="js/lib/shapes_timeline.js"></script>
-    <script type="text/javascript" src="js/printlog_ub.js"></script>
-    <script type="text/javascript" src="js/sitefunctions.js"></script>
-    <script type="text/javascript" src="js/updateData_ub.js"></script>
-    <script type="text/javascript" src="js/bookingOptions_ub.js"></script>
-    <script type="text/javascript" src="js/wl_menu_ub.js"></script>
-    <script type="text/javascript" src="js/interactive_ub.js"></script>
-    <script type="text/javascript" src="js/userBooking.js"></script>
-    <script type="text/javascript" src="js/bookController.js"></script>
-    <script type="text/javascript" src="js/bookViewService.js"></script>
-    <script type="text/javascript" src="js/lib/shapes_timeline_new.js"></script>
+    <script type="text/javascript" src="/js/lib/ion.rangeSlider-2.0.2/js/ion.rangeSlider.js"></script>
+    <script type="text/javascript" src="/js/lib/jquery-plugins/perfect-scrollbar.js"></script>
+    <script type="text/javascript" src="/js/lib/moment/moment.min.js"></script>
+    <script type="text/javascript" src="/js/myUtils/netConnection.js"></script>
+    <script type="text/javascript" src="/js/bookingBookingsManger.js"></script>
+    <script type="text/javascript" src="/js/lib/shapes_ub.js"></script>
+    <script type="text/javascript" src="/js/lib/shapes_timeline.js"></script>
+    <script type="text/javascript" src="/js/printlog_ub.js"></script>
+    <script type="text/javascript" src="/js/sitefunctions.js"></script>
+    <script type="text/javascript" src="/js/updateData_ub.js"></script>
+    <script type="text/javascript" src="/js/bookingOptions_ub.js"></script>
+    <script type="text/javascript" src="/js/wl_menu_ub.js"></script>
+    <script type="text/javascript" src="/js/interactive_ub.js"></script>
+    <script type="text/javascript" src="/js/userBooking.js"></script>
+    <script type="text/javascript" src="/js/bookController.js"></script>
+    <script type="text/javascript" src="/js/bookViewService.js"></script>
+    <script type="text/javascript" src="/js/lib/shapes_timeline_new.js"></script>
     <script type="text/javascript" src="/js/lib/jquery-plugins/raty/raty.js"></script>
-    <script type="text/javascript" src="js/rating.js"></script>
+    <script type="text/javascript" src="/js/rating.js"></script>
     <%-- todo(egor): move to settings--%>
     <script type="text/javascript"
             src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAaX5Ow6oo_axUKMquFxnPpT6Kd-L7D40k&libraries=places&&sensor=FALSE"></script>
-    <script type="text/javascript" src="js/maps_google.js"></script>
-    <script type="text/javascript" src="js/updateCanvasData.js"></script>
-    <script type="text/javascript" src="js/WindowCanvasEvents.js"></script>
-    <script type="text/javascript" src="js/documentEventListeners.js"></script>
+    <script type="text/javascript" src="/js/maps_google.js"></script>
+    <script type="text/javascript" src="/js/updateCanvasData.js"></script>
+    <script type="text/javascript" src="/js/WindowCanvasEvents.js"></script>
+    <script type="text/javascript" src="/js/documentEventListeners.js"></script>
 
     <%-- custom js--%>
     <script type="text/javascript">

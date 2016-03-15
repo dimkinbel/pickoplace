@@ -16,47 +16,47 @@
     </script>
 
     <%-- css --%>
-    <link rel="stylesheet" href="css/colpick.css" type="text/css"/>
-    <link rel="stylesheet" href="css/slider.css" type="text/css"/>
+    <link rel="stylesheet" href="/css/colpick.css" type="text/css"/>
+    <link rel="stylesheet" href="/css/slider.css" type="text/css"/>
 
-    <link rel="stylesheet" href="css/login.css" type="text/css" media="screen" />
-    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen" />
-    <link rel="stylesheet" href="css/style2.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="/css/login.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="/css/style2.css" type="text/css" media="screen" />
         <link rel="stylesheet" href="/js/lib/jquery-ui-1.11.4/jquery-ui.css" type="text/css" media="screen">
-    <link rel="stylesheet" href="ion.rangeSlider-2.0.2/css/ion.rangeSlider.css" type="text/css" media="screen" />
-    <link rel="stylesheet" href="ion.rangeSlider-2.0.2/css/ion.rangeSlider.skinModern.css" type="text/css" media="screen" />
-    <link rel="stylesheet" href="css/perfect-scrollbar.css" type="text/css" media="screen" />
-    <link rel="stylesheet" href="css/CSS_checkbox_full/custom-checkbox.css" type="text/css" media="screen" />
-    <link rel="stylesheet" href="css/dropit.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="/js/lib/ion.rangeSlider-2.0.2/css/ion.rangeSlider.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="/js/lib/ion.rangeSlider-2.0.2/css/ion.rangeSlider.skinModern.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="/css/perfect-scrollbar.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="/css/CSS_checkbox_full/custom-checkbox.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="/css/dropit.css" type="text/css" media="screen" />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
     <%-- js --%>
     <script type="text/javascript" src="/js/lib/jquery-1.11.1.min.js"></script>
     <script type="text/javascript" src="/js/lib/jquery-plugins/jquery-migrate-1.2.1.js"></script>
     <script type="text/javascript" src="/js/lib/jquery-ui-1.11.4/jquery-ui.js"></script>
-    <script type="text/javascript" src="js/lib/jquery-plugins/jquery-ui.drag.js"></script>
-    <script type="text/javascript" src="js/loginlogout.js"></script>
+    <script type="text/javascript" src="/js/lib/jquery-plugins/jquery-ui.drag.js"></script>
+    <script type="text/javascript" src="/js/loginlogout.js"></script>
     <script type="text/javascript" src="ion.rangeSlider-2.0.2/js/ion.rangeSlider.js"></script>
-    <script type="text/javascript" src="js/lib/bootstrap-plugins/bootstrap-slider.js"></script>
-    <script type="text/javascript" src="js/lib/jquery-plugins/colpick.js"></script>
+    <script type="text/javascript" src="/js/lib/bootstrap-plugins/bootstrap-slider.js"></script>
+    <script type="text/javascript" src="/js/lib/jquery-plugins/colpick.js"></script>
 
-    <script type="text/javascript" src="js/lib/jquery-plugins/perfect-scrollbar.js"></script>
-    <script type="text/javascript" src="js/lib/jquery-plugins/jquery.contextmenu.js"></script>
-    <script type="text/javascript" src="js/sitefunctions.js"></script>
-    <script type="text/javascript" src="js/lib/jquery-plugins/dropit.js"></script>
-    <script type="text/javascript" src="js/lib/jquery-plugins/jquery.slimscroll.min.js"></script>
-    <script type="text/javascript" src="js/lib/moment/moment.min.js"></script>
+    <script type="text/javascript" src="/js/lib/jquery-plugins/perfect-scrollbar.js"></script>
+    <script type="text/javascript" src="/js/lib/jquery-plugins/jquery.contextmenu.js"></script>
+    <script type="text/javascript" src="/js/sitefunctions.js"></script>
+    <script type="text/javascript" src="/js/lib/jquery-plugins/dropit.js"></script>
+    <script type="text/javascript" src="/js/lib/jquery-plugins/jquery.slimscroll.min.js"></script>
+    <script type="text/javascript" src="/js/lib/moment/moment.min.js"></script>
 
-    <script type="text/javascript" src="js/lib/shapes_fe.js"></script>
-    <script type="text/javascript" src="js/lib/shapes_timeline_fe.js"></script>
-    <script type="text/javascript" src="js/printlog_fe.js"></script>
-    <script type="text/javascript" src="js/updateData_fe.js"></script>
-    <script type="text/javascript" src="js/interactiveUpdate_fe.js"></script>
-    <script type="text/javascript" src="js/wl_menu_fe.js"></script>
-    <script type="text/javascript" src="js/bookingOptions_fe.js"></script>
+    <script type="text/javascript" src="/js/lib/shapes_fe.js"></script>
+    <script type="text/javascript" src="/js/lib/shapes_timeline_fe.js"></script>
+    <script type="text/javascript" src="/js/printlog_fe.js"></script>
+    <script type="text/javascript" src="/js/updateData_fe.js"></script>
+    <script type="text/javascript" src="/js/interactiveUpdate_fe.js"></script>
+    <script type="text/javascript" src="/js/wl_menu_fe.js"></script>
+    <script type="text/javascript" src="/js/bookingOptions_fe.js"></script>
 
-    <script type="text/javascript" src="js/updateCanvasData.js"></script>
-    <script type="text/javascript" src="js/WindowCanvasEvents.js"></script>
+    <script type="text/javascript" src="/js/updateCanvasData.js"></script>
+    <script type="text/javascript" src="/js/WindowCanvasEvents.js"></script>
 
 
 <script type="text/javascript">
@@ -83,7 +83,7 @@ $(document).ready(function() {
 
 	     updateCanvasData();
 
-		 ApplyInitialPositionFE()
+		 ApplyInitialPositionFE();
 		 ApplySelectors();
 		
 		 tcanvas_= new  TCanvasState(document.getElementById("tcanvas"));

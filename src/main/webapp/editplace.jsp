@@ -19,17 +19,17 @@
     </script>
 
     <%--css--%>
-    <link rel="stylesheet" href="css/browserWrap.css" type="text/css" media="screen"/>
-    <link rel="stylesheet" href="css/login.css" type="text/css" media="screen"/>
-    <link rel="stylesheet" href="css/dropit.css" type="text/css" media="screen"/>
-    <link rel="stylesheet" href="css/colpick.css" type="text/css"/>
-    <link rel="stylesheet" href="css/slider.css" type="text/css"/>
-    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
-    <link rel="stylesheet" href="css/draw.css" type="text/css" media="screen"/>
-    <link rel="stylesheet" href="css/style2.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="/css/browserWrap.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="/css/login.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="/css/dropit.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="/css/colpick.css" type="text/css"/>
+    <link rel="stylesheet" href="/css/slider.css" type="text/css"/>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="/css/draw.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="/css/style2.css" type="text/css" media="screen"/>
     <link rel="stylesheet" href="/js/lib/jquery-ui-1.11.4/jquery-ui.css" type="text/css" media="screen">
-    <link rel="stylesheet" href="ion.rangeSlider-2.0.2/css/ion.rangeSlider.css" type="text/css" media="screen"/>
-    <link rel="stylesheet" href="ion.rangeSlider-2.0.2/css/ion.rangeSlider.skinNice.css" type="text/css"
+    <link rel="stylesheet" href="/js/lib/ion.rangeSlider-2.0.2/css/ion.rangeSlider.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="/js/lib/ion.rangeSlider-2.0.2/css/ion.rangeSlider.skinNice.css" type="text/css"
           media="screen"/>
     <link rel="stylesheet" href="css/perfect-scrollbar.css" type="text/css" media="screen"/>
     <link rel="stylesheet" href="css/CSS_checkbox_full/custom-checkbox.css" type="text/css" media="screen"/>
@@ -38,27 +38,28 @@
     <%-- js --%>
     <script type="text/javascript" src="/js/lib/jquery-1.11.1.min.js"></script>
     <script type="text/javascript" src="/js/lib/jquery-plugins/jquery-migrate-1.2.1.js"></script>
+
     <script type="text/javascript" src="/js/lib/jquery-ui-1.11.4/jquery-ui.js"></script>
-    <script type="text/javascript" src="js/loginlogout.js"></script>
-    <script type="text/javascript" src="js/lib/jquery-plugins/dropit.js"></script>
-    <script type="text/javascript" src="js/lib/jquery-plugins/jquery.slimscroll.min.js"></script>
+    <script type="text/javascript" src="/js/loginlogout.js"></script>
+    <script type="text/javascript" src="/js/lib/jquery-plugins/dropit.js"></script>
+    <script type="text/javascript" src="/js/lib/jquery-plugins/jquery.slimscroll.min.js"></script>
 
-    <script type="text/javascript" src="ion.rangeSlider-2.0.2/js/ion.rangeSlider.js"></script>
-    <script type="text/javascript" src="js/lib/jquery-plugins/colpick.js"></script>
-    <script type="text/javascript" src="js/lib/shapes.js"></script>
-    <script type="text/javascript" src="js/lib/shapes_Canvas_draw.js"></script>
-    <script type="text/javascript" src="js/printlog.js"></script>
-    <script type="text/javascript" src="js/lib/jquery-plugins/perfect-scrollbar.js"></script>
-    <script type="text/javascript" src="js/lib/jquery-plugins/jquery.contextmenu.js"></script>
-    <script type="text/javascript" src="js/sitefunctions.js"></script>
-    <script type="text/javascript" src="js/bookingOptions.js"></script>
-    <script type="text/javascript" src="js/cmenu2.js"></script>
-    <script type="text/javascript" src="js/wl_menu_draw.js"></script>
-    <script type="text/javascript" src="js/updateData.js"></script>
+    <script type="text/javascript" src="/js/lib/ion.rangeSlider-2.0.2/js/ion.rangeSlider.js"></script>
+    <script type="text/javascript" src="/js/lib/jquery-plugins/colpick.js"></script>
+    <script type="text/javascript" src="/js/lib/shapes.js"></script>
+    <script type="text/javascript" src="/js/lib/shapes_Canvas_draw.js"></script>
+    <script type="text/javascript" src="/js/printlog.js"></script>
+    <script type="text/javascript" src="/js/lib/jquery-plugins/perfect-scrollbar.js"></script>
+    <script type="text/javascript" src="/js/lib/jquery-plugins/jquery.contextmenu.js"></script>
+    <script type="text/javascript" src="/js/sitefunctions.js"></script>
+    <script type="text/javascript" src="/js/bookingOptions.js"></script>
+    <script type="text/javascript" src="/js/cmenu2.js"></script>
+    <script type="text/javascript" src="/js/wl_menu_draw.js"></script>
+    <script type="text/javascript" src="/js/updateData.js"></script>
 
-    <script type="text/javascript" src="js/updateCanvasData.js"></script>
-    <script type="text/javascript" src="js/WindowCanvasEvents.js"></script>
-    <script type="text/javascript" src="js/documentEventListeners.js"></script>
+    <script type="text/javascript" src="/js/updateCanvasData.js"></script>
+    <script type="text/javascript" src="/js/WindowCanvasEvents.js"></script>
+    <script type="text/javascript" src="/js/documentEventListeners.js"></script>
 
     <%-- custom js --%>
     <script type="text/javascript">
@@ -112,7 +113,7 @@
     	 	}
     	     }).on('slideStop', function(ev){
 
-    	     });;
+    	     });
 		   updateCanvasData();
        });
        function update_place_cancel() {
@@ -129,7 +130,7 @@
 	</script>
 
   </head>
-  	
+
   <body   style="margin: 0px;">
     <div id="updateExistingWarning" style="display:none;">
 	  <div id="updateExistingWarningInner" >
@@ -151,7 +152,7 @@
 			    <div id="remove_floor_confirmation"  style="display:none">
 				   <div class="popup_message_main_text">Are you sure you want to remove next floor ?</div>
 				   <div id="popup_message_floor_name"></div>
-				   <div class="popup_buttons_">				         
+				   <div class="popup_buttons_">
 				         <div class="ppb" id="ppup_delete" onclick="DeleteFloor()">DELETE</div>
 						 <div class="ppb" id="ppup_cancel" onclick="PopupCancel('floor_delete')">CANCEL</div>
 				   </div>
@@ -181,9 +182,6 @@
 		</div>
    </div>
 
-
-		  
-		  
 			<div id="header_drawing">
 				<div id="header">
 					<div id="logo_"><img src="img/pplogomarker.png" id="pplogoo"/><div id="logotext">ickoplace</div></div>
@@ -236,7 +234,8 @@
 					   	</table>				
 				    </div>
 				</div>
-			</div>	
+			</div>
+
 <div id="hiden_values_from_edit" style="display:none">
    <%
    AJAXImagesJSON responseJSON = (AJAXImagesJSON)request.getAttribute("canvasEditPlace");
@@ -1488,5 +1487,5 @@
 	  </div>
    </div>
 </div> 
-    </body>
+</body>
 </html>
