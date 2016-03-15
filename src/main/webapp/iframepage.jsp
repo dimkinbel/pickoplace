@@ -10,6 +10,7 @@
 
 
     AJAXImagesJSON responseJSON = (AJAXImagesJSON) request.getAttribute("canvasState");
+    ConfigBookingProperties BookProperties = (ConfigBookingProperties)request.getAttribute("bookProperties");
     String ifid = (String) request.getAttribute("ifid");
     iFrameObj ifresp = (iFrameObj) request.getAttribute("iframedata");
     boolean showonly = (boolean) request.getAttribute("showonly");
@@ -35,7 +36,7 @@
     if (ifresp.getBooking() == true) {
         addedHeight = 80;
     } else {
-        addedHeight = 40;
+        addedHeight = 80;
     }%>
 <html style="overflow:hidden;width:<%=ifresp.getWidth()%>px;height:<%=ifresp.getHeight()+addedHeight%>px;">
 <head>
@@ -74,7 +75,7 @@
     <script type="text/javascript" src="js/iframe_Controller.js"></script>
     <script type="text/javascript" src="js/iframe_viewService.js"></script>
 
-    <%if (ifresp.getBooking() == true) { %>
+    <%if (BookProperties.isBookingAvailable() == true && ifresp.getBooking() == true) { %>
     <script type="text/javascript" src="js/bookingBookingsManger.js"></script>
     <script type="text/javascript" src="js/interactiveUpdate_if.js"></script>
     <%}%>
@@ -495,7 +496,18 @@
     </div>
 
     <div id="pc_iframe_wrap" style="width:<%=ifresp.getWidth()%>px">
-        <% if (ifresp.getBooking() == true) {%>
+        <% if(BookProperties.isBookingAvailable()==false || ifresp.getBooking() == false) { %>
+        <div id="pc_iframe_top_not_bookable" >
+            <% if(responseJSON.getLogosrc() == null || responseJSON.getLogosrc().isEmpty()) {%>
+             <a href="http://www.pickoplace.com"><img id="top_iframe_logo "  src="img/pplogomarker.png"  /></a>
+            <%} else {%>
+             <img id="top_iframe_logo"  src="<%=responseJSON.getLogosrc()%>"  >
+            <%}%>
+            <div id="iframe_top_place_name" ><%=placeName%>,<%=placeBranchName%></div>
+            <div class="nootext"></div>
+        </div>
+
+        <%} else if (ifresp.getBooking() == true) {%>
         <div id="pc_iframe_top">
             <div id="please_select_date_">
                 <div class="material-icons">content_paste</div>

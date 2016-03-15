@@ -162,33 +162,27 @@ public class ConfigurationEditRequest extends HttpServlet {
 
 			// Get canvas Data
 			CanvasStateEdit = csFactory.getBaseData(userCanvasState, datastore);
-
+			//System.out.println(JsonUtils.serialize(CanvasStateEdit));
 			Type  collectionType = new TypeToken<List<String>>(){}.getType();
 	  	    List<String> photosList = JsonUtils.deserialize((String)userCanvasState.getProperty("photos"),collectionType);
 	  	    if(photosList!= null) {
 		  	    for (String imgID : photosList) {
-		  	    	String bucket = "pp_images"; 
-					String photoFileName = usernameRandom +"/" +placeID+"/"+"main"+"/photos/"+imgID+".png";
-					GcsFilename gcsFilename = new GcsFilename(bucket, photoFileName);
-					ImagesService is = ImagesServiceFactory.getImagesService(); 
-					String filename = String.format("/gs/%s/%s", gcsFilename.getBucketName(), gcsFilename.getObjectName());
-			  	    GcsFileMetadata meta = gcsService.getMetadata(gcsFilename);
-			  	    Integer width  = Integer.valueOf(meta.getOptions().getUserMetadata().get("width"));
-			  	    Integer height = Integer.valueOf(meta.getOptions().getUserMetadata().get("height"));
-			  	    String imgUrl = is.getServingUrl(ServingUrlOptions.Builder.withGoogleStorageFileName(filename));
-			  	    if(width > height) {
-			  	    	Double relation = (double) (width / height);
-			  	    	Long new_width = Math.round(relation * 300);
-			  	    	imgUrl = imgUrl + "=s" + new_width;
-			  	    } else {
-			  	        imgUrl = imgUrl + "=s300" ;
-			  	    }
-			  	  JsonimgID_2_data imgID2byte64 = new JsonimgID_2_data();
-	              imgID2byte64.setData64(imgUrl);
-	              imgID2byte64.setImageID(imgID);
-	              imgID2byte64.setHeight(height);
-	              imgID2byte64.setWidth(width);
-	              CanvasStateEdit.getPlacePhotos().add(imgID2byte64);              
+					if(!imgID.isEmpty()) {
+						String bucket = "pp_images";
+						String photoFileName = usernameRandom + "/" + placeID + "/" + "main" + "/photos/" + imgID;
+						GcsFilename gcsFilename = new GcsFilename(bucket, photoFileName);
+						ImagesService is = ImagesServiceFactory.getImagesService();
+						String filename = String.format("/gs/%s/%s", gcsFilename.getBucketName(), gcsFilename.getObjectName());
+						GcsFileMetadata meta = gcsService.getMetadata(gcsFilename);
+						//String width  = (String)meta.getOptions().getUserMetadata().get("extension");
+						String imgUrl = is.getServingUrl(ServingUrlOptions.Builder.withGoogleStorageFileName(filename));
+
+						imgUrl = imgUrl + "=s300";
+						JsonimgID_2_data imgID2byte64 = new JsonimgID_2_data();
+						imgID2byte64.setData64(imgUrl);
+						imgID2byte64.setImageID(imgID.replace(".png", "").replace(".jpg", ""));
+						CanvasStateEdit.getPlacePhotos().add(imgID2byte64);
+					}
 		  	    } 
 	  	    } 
   		}
@@ -205,7 +199,7 @@ public class ConfigurationEditRequest extends HttpServlet {
 		configuration.getAdministration().setAdmins(admins);
 		configuration.getAdministration().setAdminUsername(Admin_username);
 		configuration.getAdministration().setAdminPassword(Admin_password);
-
+		System.out.println(JsonUtils.serialize(configuration.getBookingProperties()));
   		request.setAttribute("configuration", configuration);
 		RequestDispatcher dispathser  = request.getRequestDispatcher("/Place_Configuration.jsp");
 		response.addHeader("Access-Control-Allow-Origin", "*");

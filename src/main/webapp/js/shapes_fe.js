@@ -666,12 +666,12 @@ function iFzoomResetWrap(canvas_ref_,dividwrap,scrolled_id) {
   var totalZoom = state.zoom; // current zoom
   var resetZoom = required_zoom / totalZoom; // relative zoom
  
-  document.getElementById(state.canvas.id).width = state.origWidth * required_zoom;
-  document.getElementById(state.canvas.id).height = state.origHeight * required_zoom;
+  document.getElementById(state.canvas.id).width = Math.ceil(state.origWidth * required_zoom);
+  document.getElementById(state.canvas.id).height = Math.ceil(state.origHeight * required_zoom);
   state.ctx.scale(required_zoom,required_zoom);
   state.zoom = required_zoom ;
-  var newWidth = state.origWidth * required_zoom;
-  var newHeight = state.origHeight * required_zoom;
+  var newWidth = Math.ceil(state.origWidth * required_zoom);
+  var newHeight = Math.ceil(state.origHeight * required_zoom);
   state.width = newWidth;
   state.height = newHeight;
   

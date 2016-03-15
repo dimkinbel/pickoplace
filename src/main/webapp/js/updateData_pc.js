@@ -53,6 +53,7 @@ function updateCanvasShapes(canvas,canvasStateJSON,iframe) {
 			    Sshape = new ifShape(canvas, shape.x , shape.y , shape.w, shape.h, "rectangle" , options );
 			 } else {
 			    Sshape = new Shape(canvas, shape.x , shape.y , shape.w, shape.h, "rectangle" , options );
+				 sid2shape[shape.sid] = Sshape;
 			 }
 			 Sshape.rotate = shape.rotate;
 			 Sshape.angle = shape.angle;
@@ -61,7 +62,7 @@ function updateCanvasShapes(canvas,canvasStateJSON,iframe) {
 					booking_options	 = JSON.parse(JSON.stringify(shape.booking_options));	
 					Sshape.booking_options = booking_options;
 			 }
-			 sid2shape[shape.sid] = Sshape;
+
 			 canvas.addShape(Sshape);
 		     canvas.valid = false;
 		  } else if (shape.type == "round") {
@@ -71,6 +72,7 @@ function updateCanvasShapes(canvas,canvasStateJSON,iframe) {
 			    Sshape = new ifShape(canvas, shape.x , shape.y , shape.w, shape.h, "round" , options);
 			 } else {
 			    Sshape  = new Shape(canvas, shape.x , shape.y , shape.w, shape.h, "round" , options );
+				 sid2shape[shape.sid] = Sshape;
 			 }
 		      Sshape.rotate = shape.rotate;
 		      Sshape.angle = shape.angle;
@@ -79,7 +81,7 @@ function updateCanvasShapes(canvas,canvasStateJSON,iframe) {
 						booking_options	 = JSON.parse(JSON.stringify(shape.booking_options));	
 						Sshape.booking_options = booking_options;
 				 }
-				 sid2shape[shape.sid] = Sshape;
+
 		      canvas.addShape(Sshape);
 		      canvas.valid = false;
 		  } else  if (shape.type == "circle") {
@@ -89,6 +91,7 @@ function updateCanvasShapes(canvas,canvasStateJSON,iframe) {
 			    Sshape = new ifShape(canvas, shape.x , shape.y , shape.w, shape.h, "circle" , options);
 			 } else {
 			    Sshape  = new Shape(canvas, shape.x , shape.y , shape.w, shape.h, "circle" , options );
+				 sid2shape[shape.sid] = Sshape;
 				}
 		      Sshape.rotate = shape.rotate;
 		      Sshape.angle = shape.angle;
@@ -98,7 +101,7 @@ function updateCanvasShapes(canvas,canvasStateJSON,iframe) {
 						Sshape.booking_options = booking_options;
 				 }
 		      canvas.addShape(Sshape);
-			  sid2shape[shape.sid] = Sshape;
+
 		      canvas.valid = false;
 		  } else  if (shape.type == "trapex") {
 			  var options = JSON.parse(JSON.stringify(shape.options));
@@ -107,6 +110,7 @@ function updateCanvasShapes(canvas,canvasStateJSON,iframe) {
 			    Sshape = new ifShape(canvas, shape.x , shape.y , shape.w, shape.h, "trapex" , options);
 			  } else {
 			    Sshape = new Shape(canvas, shape.x , shape.y , shape.w, shape.h, "trapex" , options );
+				  sid2shape[shape.sid] = Sshape;
 			  }
 		      Sshape.rotate = shape.rotate;
 		      Sshape.angle = shape.angle;
@@ -116,7 +120,7 @@ function updateCanvasShapes(canvas,canvasStateJSON,iframe) {
 						Sshape.booking_options = booking_options;
 				 }
 		      canvas.addShape(Sshape);
-			  sid2shape[shape.sid] = Sshape;
+
 		      canvas.valid = false;
 		  }  else  if (shape.type == "text") {
 			  var options = JSON.parse(JSON.stringify(shape.options));
@@ -125,6 +129,7 @@ function updateCanvasShapes(canvas,canvasStateJSON,iframe) {
 			    Sshape = new ifShape(canvas, shape.x , shape.y , shape.w, shape.h, "text" , options);
 			  } else {
 			    Sshape  = new Shape(canvas, shape.x , shape.y , shape.w, shape.h, "text" , options );
+				  sid2shape[shape.sid] = Sshape;
 			  }
 		      Sshape.rotate = shape.rotate;
 		      Sshape.angle = shape.angle;
@@ -134,7 +139,7 @@ function updateCanvasShapes(canvas,canvasStateJSON,iframe) {
 						Sshape.booking_options = booking_options;
 				 }
 		      canvas.addShape(Sshape);
-			  sid2shape[shape.sid] = Sshape;
+
 		      canvas.valid = false;
 		  }  else  if (shape.type == "line") {
 			  var options = JSON.parse(JSON.stringify(shape.options));
@@ -143,6 +148,7 @@ function updateCanvasShapes(canvas,canvasStateJSON,iframe) {
 			    Sshape = new ifShape(canvas, shape.x , shape.y , shape.w, shape.h, "line" , options);
 			  } else {
 			    Sshape  = new Shape(canvas, shape.x , shape.y , shape.w, shape.h, "line" , options );
+				  sid2shape[shape.sid] = Sshape;
 				}
 		      Sshape.rotate = shape.rotate;
 		      Sshape.angle = shape.angle;
@@ -152,7 +158,7 @@ function updateCanvasShapes(canvas,canvasStateJSON,iframe) {
 						Sshape.booking_options = booking_options;
 				 }
 		      canvas.addShape(Sshape);
-			  sid2shape[shape.sid] = Sshape;
+
 		      canvas.valid = false;
 		  }  else  if (shape.type == "image") {
 			  var options = JSON.parse(JSON.stringify(shape.options));
@@ -178,6 +184,7 @@ function updateCanvasShapes(canvas,canvasStateJSON,iframe) {
 			    Sshape = new ifShape(canvas, shape.x , shape.y , shape.w, shape.h, "image" , options);
 			  } else {
 			    Sshape  = new Shape(canvas, shape.x , shape.y , shape.w, shape.h, "image" , options );
+				  sid2shape[shape.sid] = Sshape;
 			  }
 		      Sshape.rotate = shape.rotate;
 		      Sshape.angle = shape.angle;
@@ -187,7 +194,7 @@ function updateCanvasShapes(canvas,canvasStateJSON,iframe) {
 						Sshape.booking_options = booking_options;
 				 }
 		      canvas.addShape(Sshape);
-			  sid2shape[shape.sid] = Sshape;
+
 		      canvas.valid = false;
 		  }
 	}

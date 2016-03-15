@@ -202,12 +202,14 @@ $(document).ready(function() {
 	$('#iframe_bookable').change(function () { 
 			if ($(this).is(':checked')) {
 			   // Daily
+			   $("#pc_iframe_top_not_bookable").hide();
 			   $("#pc_iframe_top").show(); 
 			   currentIframeSettings.booking = true;
 			   updateCloseShapes();
 			} else {
 			   // Hourly
-			   $("#pc_iframe_top").hide(); 
+			    $("#pc_iframe_top").hide();
+				$("#pc_iframe_top_not_bookable").show();
 			   currentIframeSettings.booking = false;
 			   updateCloseShapes();
 			}
@@ -221,7 +223,7 @@ $(document).ready(function() {
 	      $("#pc_iframe_wrap").width(ui.value);
 	      $("#pc_iframe_floors_wrap").width(ui.value);
 		  $("#pc_iframe_floors_wrap").height(Math.round(ui.value / width2height));
-		  $("#iframe_width").val(ui.value+"x"+Math.round(ui.value / width2height));
+		  $("#iframe_width").val(ui.value+"x"+Math.round(ui.value / width2height + 80));
 		  
 		  
 		  iFfloorAppend("pc_iframe_floors_wrap",false);
@@ -230,7 +232,7 @@ $(document).ready(function() {
 	      $("#pc_iframe_wrap").width(ui.value);
 	      $("#pc_iframe_floors_wrap").width(ui.value);
 		  $("#pc_iframe_floors_wrap").height(Math.round(ui.value / width2height));
-		  $("#iframe_width").val(ui.value+"x"+Math.round(ui.value / width2height));
+		  $("#iframe_width").val(ui.value+"x"+Math.round(ui.value / width2height + 80));
 		  currentIframeSettings.width = ui.value;
 		  currentIframeSettings.height = Math.round(ui.value / width2height);
 	      
@@ -243,7 +245,7 @@ $(document).ready(function() {
 			  $("#pc_iframe_wrap").width(width);
 			  $("#pc_iframe_floors_wrap").width(width);
 			  $("#pc_iframe_floors_wrap").height(Math.round(width / width2height));
-			  $("#iframe_width").val(width+"x"+Math.round(width / width2height));
+			  $("#iframe_width").val(width+"x"+Math.round(width / width2height + 80));
               $('#iframe_width_slider').slider('value', width);	
 			  currentIframeSettings.width = width;
 		      currentIframeSettings.height = Math.round(width / width2height);
@@ -257,7 +259,7 @@ $(document).ready(function() {
 			  $("#pc_iframe_wrap").width(width);
 			  $("#pc_iframe_floors_wrap").width(width);
 			  $("#pc_iframe_floors_wrap").height(Math.round(width / width2height));
-			  $("#iframe_width").val(width+"x"+Math.round(width / width2height));
+			  $("#iframe_width").val(width+"x"+Math.round(width / width2height + 80));
               $('#iframe_width_slider').slider('value', width);	
 			  currentIframeSettings.width = width;
 		      currentIframeSettings.height = Math.round(width / width2height);
@@ -544,7 +546,7 @@ $(document).ready(function() {
 		//console.log($(this));
     });
 	
-	$('.pc_order_type_toggle,#pc_max_tables').bootstrapToggle({
+	$('#pc_order_type_,#pc_max_tables,#pc_placeBookable').bootstrapToggle({
 	});
 	$('#pc_max_tables').change(function () { 
 			if ($(this).is(':checked')) {
@@ -567,7 +569,7 @@ $(document).ready(function() {
 		  $(this).val(1);
 		}
 	});
-	$('.pc_order_type_toggle').change(function () {
+	$('#pc_order_type_').change(function () {
 	        $(".order_type_text").hide();
 			if ($(this).is(':checked')) {
 			   // Daily
@@ -580,6 +582,26 @@ $(document).ready(function() {
 				$("#daily_options_content").hide(); 
 			    $("#hourly_options_content").show(); 
 			}
+	});
+	$('#pc_placeBookable').change(function () {
+		if ($(this).is(':checked')) {
+			// Place Bookable
+			$("#placeBookingAvailable").show();
+			$("#placeBookingNotAvailable").hide();
+			$("#placeBookingOptions").show();
+			$('#iframe_bookable').bootstrapToggle('enable');
+			currentIframeSettings.booking = true;
+			updateCloseShapes();
+		} else {
+			// Not Bookable
+			$("#placeBookingAvailable").hide();
+			$("#placeBookingNotAvailable").show();
+			$("#placeBookingOptions").hide();
+			$('#iframe_bookable').bootstrapToggle('off')
+			$('#iframe_bookable').bootstrapToggle('disable');
+			currentIframeSettings.booking = false;
+			updateCloseShapes();
+		}
 	});
 	$("#waiter_username_change_input").keydown(function() {
 	    var temp_val = $(this).val();
@@ -641,10 +663,13 @@ $(document).ready(function() {
 	});
 	$('#pc_auto_confirm').change(function () {
 			if ($(this).is(':checked')) {
-			   $("#manual_approval_contacts_form").hide(); 
-			   $("#manual_approval_contacts_exists").hide(); 
+			    $("#manual_approval_contacts_form").hide();
+			    $("#manual_approval_contacts_exists").hide();
+				$("#auto_approval_contacts_form").show();
+				$("#auto_approval_contacts_exists").show();
 			} else {
-			   
+				 $("#auto_approval_contacts_form").hide();
+				 $("#auto_approval_contacts_exists").hide();
 			     $("#manual_approval_contacts_form").show(); 
 				 $("#manual_approval_contacts_exists").show();
 			}
@@ -762,6 +787,7 @@ $(document).ready(function() {
 						mirror.height = 100+"px";
 						var dataURL = c.toDataURL('image/png');
 						mirror.src = dataURL;
+						  $("#top_iframe_logo").attr("src",mirror.src);
 					   }
     	            };
     	        } 
@@ -836,9 +862,41 @@ $(document).ready(function() {
 			$("#confirm_mail_button-1").addClass("confirm_contact_button_inactive");
 		}
 	});
+	$("#auto_email-1").keyup(function() {
+		var temp_val = $(this).val();
+		if(isEmail(temp_val)==true) {
+			$("#confirm_auto_mail_button-1").removeClass("confirm_contact_button_inactive");
+		} else {
+			$("#confirm_auto_mail_button-1").addClass("confirm_contact_button_inactive");
+		}
+	});
+	$("#contact_man_phone-1").keyup(function() {
+		var valid = true; // TODO (Dima) check mobile validation
+		var temp_val = $(this).val();
+		if(temp_val.length > 0 && temp_val!="") {
+			$("#confirm_phone_button-1").removeClass("confirm_contact_button_inactive");
+		} else {
+			$("#confirm_phone_button-1").addClass("confirm_contact_button_inactive");
+		}
+	});
 
  });
-   
+function OpenSaveModal(type) {
+	var appendToSaveAndGo = "";
+	var appendNoSaveAndGo = "";
+	switch (type) {
+		case "edit":
+			appendNoSaveAndGo='<div class="save_modal_btn" id="modal_no_save" onclick="editPlace(\'form_editform\');"><span>לא</span></div>';
+			appendToSaveAndGo='<div class="save_modal_btn" id="modal_save" onclick="SaveConfigAndGo(\'edit\');"><span>שמור</span></div>';
+
+			break;
+		case "some":
+			break;
+	}
+	$("#modal_save_and_go").html(appendToSaveAndGo);
+	$("#modal_no_save_and_go").html(appendNoSaveAndGo);
+	$("#save_modal").modal('show');
+}
 
  function showCalendarPopover(x,y,event) {
       // update BID information
@@ -900,12 +958,19 @@ function addAdminEmail() {
 function testManualEmail() {
 	var mail = $("#manual_email-1").val();
 	if(isEmail(mail)==true) {
-		checkLoginAndSendEmail(mail,true);//interactiveUpdae_pc.js
+		checkLoginAndSendEmail(mail,true,'manual');//interactiveUpdae_pc.js
 	} else {
 
 	}
 }
+function testAutoEmail() {
+	var mail = $("#auto_email-1").val();
+	if(isEmail(mail)==true) {
+		checkLoginAndSendEmail(mail,true,'auto');//interactiveUpdae_pc.js
+	} else {
 
+	}
+}
 function closeIframe() {
 	$("#frame_prev_wrap").hide();
 	$("#frame-canvas").html("");

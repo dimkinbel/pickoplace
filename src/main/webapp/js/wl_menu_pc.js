@@ -69,7 +69,7 @@ function floorAppend(appendTo_,singleBoth,singleFloorID,temp) {
 			if(document.getElementById("canvas_appended_wrapper-both") != null) {
 				$("#"+appendTo_).append($("#canvas_appended_wrapper-both"));
 			} else {
-				var appendData ="<div id='canvas_appended_wrapper-both' class='canvas_shown_wrapper'></div>";
+				var appendData ="<div id='canvas_appended_wrapper-both' class='canvas_shown_wrapper pc_appended_canvas_wrapper'></div>";
 				$("#"+appendTo_).append(appendData);
 
 				appendData ='<div class="zoom_options_book">';
@@ -154,7 +154,10 @@ function ApplyFinalPosition() {
 }
 
 function InitialIframeSettings() {
-     $('#iframe_width_slider').slider('value', $("#pc_iframe_floors_wrap").width());
+	var iframeWidth = parseInt($("#pc_iframe_floors_wrap").width());
+	var iframeHeight  = parseInt($("#pc_iframe_floors_wrap").height()) + 80
+     $('#iframe_width_slider').slider('value', iframeWidth );
+	 $("#iframe_width").val(iframeWidth+"x"+iframeHeight);
 }
 	//var currentPosition.timeline = "id"
 	//var currentPosition.floorid{fid} = "id";

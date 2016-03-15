@@ -50,6 +50,7 @@ public class EditIFrame extends HttpServlet {
 			String returnurl = "/welcome.jsp";
 			response.addHeader("Access-Control-Allow-Origin", "*");
 			response.sendRedirect(returnurl);
+			return;
 		}
 		if(genuser==null) {
 			String returnurl = "/welcome.jsp";

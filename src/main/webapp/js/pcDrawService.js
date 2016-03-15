@@ -485,7 +485,7 @@ function updateIFlist(data,append) {
 			appendData+='	<div class="col-sm-1" >'+date_+'</div>';
 			appendData+='	<div class="col-sm-1" >'+iframe.booking+'</div>';
 			appendData+='	<div class="col-sm-1" >'+iframe.theme+'</div>';
-			appendData+='	<div class="col-sm-7 ef_url">&lt;iframe src="https://'+hostName+'/getiframe?pid='+pid+'&ifid='+ifid+'"  width="'+iframe.width+'" height="'+iframe.height+'" style="border:none"&gt;&lt;/iframe&gt;</div>';
+			appendData+='	<div class="col-sm-7 ef_url">&lt;iframe src="https://'+hostName+'/getiframe?pid='+pid+'&ifid='+ifid+'"  width="'+iframe.width+'" height="'+parseInt(iframe.height+80)+'" style="border:none"&gt;&lt;/iframe&gt;</div>';
 			appendData+='	<div class="col-sm-2 ef_buttons">';
 			appendData+='	   <div class="material-icons iframe_list_mat ef_edit" id="if_edit-'+ifid+'"  style="display:none"   data-toggle="tooltip"   data-placement="top" title="עריכה">mode_edit</div>';
 			appendData+='	   <div class="material-icons iframe_list_mat ef_show"   id="if_show-'+ifid+'" style="display:none"  data-toggle="tooltip"   data-placement="top" title="הצג">slideshow</div>';
@@ -515,8 +515,11 @@ function appendNewAdmin(data) {
 function removeAdminLine(mail_coded) {
 	$("#single_admin_contact-"+mail_coded).remove();
 }
-function removeConfirmationLine(mail_coded){
-	$("#single_mail_contact-"+mail_coded).remove();
+function removeConfirmationLine(mail_coded,type){
+	$("#single_"+type+"_mail_contact-"+mail_coded).remove();
+}
+function removeConfirmationPhoneLine(phone){
+	$("#single_phone_contact-"+phone).remove();
 }
 function updateIframeSelectors(iframe) {
 	if(iframe.booking == true) {
@@ -541,11 +544,19 @@ function updateIframeSelectors(iframe) {
 	currentIframeSettings.height = Math.round(iframe.width / width2height);
 
 }
-function appendNewConfirmationAdmin(mail) {
+function appendNewConfirmationAdmin(mail,type) {
 	var appendData = '';
-	appendData+='<div class="single_mail_contact" id="single_mail_contact-'+mail.replace(/\@/,"_").replace(/\./,"_")+'">';
-	appendData+='   <div name="single_mail_contact" id="single_mail_value-'+mail.replace(/\@/,"_").replace(/\./,"_")+'" class="single_phone_contact_val">'+mail+'</div>';
-	appendData+='   <div class="remove_single_mail_contact material-icons" onclick="removeMailConfirmationContact(\''+mail.replace(/\@/,"_").replace(/\./,"_")+'\')" id="remove_single_mail-'+mail.replace(/\@/,"_").replace(/\./,"_")+'">clear</div>';
+	appendData+='<div class="single_'+type+'_mail_contact" id="single_'+type+'_mail_contact-'+mail.replace(/\@/,"_").replace(/\./,"_")+'">';
+	appendData+='   <div name="single_'+type+'_mail_contact" id="single_'+type+'_mail_value-'+mail.replace(/\@/,"_").replace(/\./,"_")+'" class="single_phone_contact_val">'+mail+'</div>';
+	appendData+='   <div class="remove_single_mail_contact material-icons" onclick="removeMailConfirmationContact(\''+mail.replace(/\@/,"_").replace(/\./,"_")+'\',\''+type+'\')" id="remove_single_'+type+'_mail-'+mail.replace(/\@/,"_").replace(/\./,"_")+'">clear</div>';
 	appendData+='</div>';
-	$("#manual_mails_column").append(appendData);
+	$("#"+type+"_mails_column").append(appendData);
+}
+function appendNewConfirmationAdminPhone(phone) {
+	var appendData = '';
+	appendData+='<div class="single_phone_contact" id="single_phone_contact-'+phone.replace(/\+/,"_")+'">';
+	appendData+='   <div name="single_phone_contact" id="single_phone_value-'+phone.replace(/\+/,"_")+'" class="single_phone_contact_val">'+phone+'</div>';
+	appendData+='   <div class="remove_single_phone_contact material-icons" onclick="removePhoneConfirmationContact(\''+phone.replace(/\+/,"_")+'\')" id="remove_single_phone-'+phone.replace(/\+/,"_")+'">clear</div>';
+	appendData+='</div>';
+	$("#manual_phones_column_append").append(appendData);
 }

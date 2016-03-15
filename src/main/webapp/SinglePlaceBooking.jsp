@@ -313,7 +313,7 @@
     <div id="map_wrapper" style="display:none;">
         <div id="map_popup_content">
             <div id="map-canvas"></div>
-            <img id="close_map_icon" src="img/icon-close35.png" onclick="closeMap()"/>
+            <img class="close_map_icon" src="img/icon-close35.png" onclick="closeMap()"/>
         </div>
     </div>
     <div id="book_confirm_wrap" class="booking_prompt_booking" style="display:none;">

@@ -91,13 +91,7 @@
 
 
 
-		function editPlace(placeID_form) {
-			setSessionData(function(result) {
-				if(result) {
-					document.getElementById(placeID_form).submit();
-				}
-			});
-		}
+
 		var mainOverviewID;
 		var gcanvas ;
 
@@ -146,38 +140,6 @@
 			document.getElementById("map_wrapper").style.display="none";
 		}
 
-
-
-		function editPlaceAndSave(placeID_form) {
-
-			document.getElementById("config_save_prompt").style.display="";
-		}
-		function SaveAndIFrame(placeID_form) {
-
-			document.getElementById("config_save_prompt_iframe").style.display="";
-		}
-
-		function promptCancel(id) {
-			document.getElementById(id).style.display="none";
-		}
-		function editPlaceWithoutSave() {
-			var pid = document.getElementById("placeIDvalue").value;
-			editPlace(pid+"_editform");
-		}
-		function IFrameWithoutSave() {
-			var pid = document.getElementById("placeIDvalue").value;
-			editPlace(pid+"_iframeform");
-		}
-		function saveBeforeEdit() {
-			proceed_to_edit = 1;
-			proceed_to_iframe = 0;
-			SIsaveState();
-		}
-		function saveBeforeIFrame() {
-			proceed_to_iframe = 1;
-			proceed_to_edit = 0;
-			SIsaveState();
-		}
 	</script>
 	<script type="text/javascript">
 
@@ -203,7 +165,28 @@
 	double    placeUTSoffset = configuration.getPlaceDetails().getGeneral().getUTCoffset();
 %>
 <body  style="margin: 0px; ">
+<div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" id="save_modal">
+	<div class="modal-dialog modal-sm">
+		<div class="modal-content" >
+			<div class="modal-header" id="save_header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="save_header_txt">האם לשמור קונפיגורציה</h4>
+			</div>
+			<div class="modal-footer" id="save_footer">
+				<div class="container-fluid">
+					<div class="row">
+						<div class="col-sm-6 left_c_mod" id="modal_no_save_and_go">
 
+						</div>
+						<div class="col-sm-6 right_c_mod" id="modal_save_and_go">
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
 <div id="frame_prev_wrap" style="display:none" >
 	<div id="frame_prev_wrap_popup_content" >
 		<table id="iframe_loader" cellspacing="0" cellpadding="0" style="width: 100%; height: 100%; border-collapse: collapse;display:none"><tr><td><img  style="width: 100px;" src="img/gif/ajaxSpinner.gif" /></td></tr></table>
@@ -386,7 +369,9 @@
 	<input type="text" id="server_closeDates" value='<%=JsonUtils.serialize(configuration.getWorkinghours().getCloseDates())%>'/>
 	<input type="text" id="server_logosrc" value='<%=configuration.getPlaceDetails().getPhotos().getLogosrc()%>'/>
 
-
+	<form id="form_editform"  action="editplacefromAccount" method="post" style="display:none">
+		<input name="placeIDvalue" id="placeIDvalue" value="<%=placeID%>">
+	</form>
 	<%for ( JsonimgID_2_data imgID2byte64 : configuration.getPlaceDetails().getPhotos().getPlacePhotos()) {
 		String imgID = imgID2byte64.getImageID();
 	%>
@@ -570,8 +555,9 @@
 	</div>
 	<div id="page_content">
 		<div id="pc_buttons">
+			<img id="config_save_btn_ajax" src="img/gif/ajax-loader-round.gif" style="display: none">
 			<div id="save_pc" class="material-icons" data-toggle="tooltip"   data-placement="bottom" title="שמור הגדרות"  onclick="SIsaveState()">save</div>
-			<div id="go_to_edit_pc" class="material-icons"  data-toggle="tooltip"   data-placement="bottom" title="צייר">create</div>
+			<div id="go_to_edit_pc" class="material-icons"  data-toggle="tooltip"   data-placement="bottom" title="צייר" onclick="OpenSaveModal('edit')">create</div>
 		</div>
 		<div id="pc_menu_column">
 			<div id="pc_menu_header">
@@ -650,11 +636,11 @@
 								</div>
 								<div class="row input_pc_row">
 									<div class="col-md-3 col-md-push-9 pc_var_name"><span class="necessarily_star">&nbsp;*</span><div class="pc_param_name pc_param_heb">טלפון</div></div>
-									<div class="col-md-3 col-md-push-3 pc_var_val"><input id="config_phone" class="conf_param_input"  value="<%=placePhone%>"/></div>
+									<div class="col-md-3 col-md-push-3 pc_var_val"><input id="config_phone" type="number" class="conf_param_input"  value="<%=placePhone%>"/></div>
 								</div>
 								<div class="row input_pc_row">
 									<div class="col-md-3 col-md-push-9 pc_var_name"> <div class="pc_param_name pc_param_heb">פקס</div></div>
-									<div class="col-md-3 col-md-push-3 pc_var_val"><input id="config_fax" class="conf_param_input" value="<%=placeFax%>" /></div>
+									<div class="col-md-3 col-md-push-3 pc_var_val"><input id="config_fax"  type="number" class="conf_param_input" value="<%=placeFax%>" /></div>
 								</div>
 								<div class="row input_pc_row">
 									<div class="col-md-3 col-md-push-9 pc_var_name"><span class="necessarily_star">&nbsp;*</span><div class="pc_param_name pc_param_heb">דואר אלקטרוני</div></div>
@@ -876,10 +862,34 @@
 								</div>
 								<div class="row pc_option_row">
 									<div class="col-sm-3 col-sm-push-9 pco_text">
+										<div class=" pco_heb">ניתן להזמין</div>
+									</div>
+									<div class="col-sm-9 col-sm-pull-3">
+										<div class="pc_order_type_wrap">
+											<%  String bookingAvailable = "";
+												String canBeBooked = "display:none";
+                                                String cannotBeBooked = "";
+												if(configuration.getBookingProperties().isBookingAvailable()) {
+													 bookingAvailable = "checked";
+                                                     canBeBooked = "";
+                                                     cannotBeBooked = "display:none";
+												}
+											%>
+											<input type="checkbox" id="pc_placeBookable" class="pc_order_type_toggle"  name="week_checkbox_place" data-toggle="toggle"  data-onstyle="success" data-offstyle="danger"  data-size="small"  data-on="כן" data-off="לא" data-width="75" <%=bookingAvailable%>>
+										</div>
+										<div class="order_explain_wrap">
+											<span class="order_type_text " id="placeBookingAvailable" style="<%=canBeBooked%>">ניתן להזמין דרך האתר</span>
+											<span class="order_type_text"  id="placeBookingNotAvailable" style="<%=cannotBeBooked%>">לא קיימת אופציה להזמין מקום. רק מבט מלמלה</span>
+										</div>
+									</div>
+								</div>
+                                <div id="placeBookingOptions" style="<%=canBeBooked%>">
+								<div class="row pc_option_row pc_option_row_top">
+									<div class="col-sm-3 col-sm-push-9 pco_text">
 										<div class=" pco_heb">אופן ההזמנה</div>
 									</div>
 									<div class="col-sm-9 col-sm-pull-3">
-										<div id="pc_order_type_wrap">
+										<div class="pc_order_type_wrap">
 											<% String allDay = "";
 												if(configuration.getBookingProperties().getAllDay()) {
 													allDay = "checked";
@@ -1001,8 +1011,15 @@
 									<div class="col-sm-9 col-sm-pull-3" style=" height: 60px;    line-height: 60px;">
 										<div id="pc_auto_confirm_wrap">
 											<%  String checked = "";
+												String displayAuto = "";
+												String displayManual = "";
 												if(configuration.getBookingProperties().getAutomatic()) {
 													checked = "checked";
+													displayAuto = "";
+													displayManual = "display:none";
+												} else {
+													displayAuto = "display:none";
+													displayManual = "";
 												}
 											%>
 											<input type="checkbox" id="pc_auto_confirm" class="pc_auto_confirm_toggle"
@@ -1013,7 +1030,92 @@
 										</div>
 									</div>
 								</div>
-								<div class="row   " id="manual_approval_contacts_form" style="display:none">
+								<div class="row   " id="auto_approval_contacts_form" style="<%=displayAuto%>">
+									<div class="col-sm-3 col-sm-push-9">
+										<div class="heb_explain_text">
+											במקרה והאישור מותנה בצורה אוטומטי, באפשרותך לבחור כתובות מייל אליהם יישלח הודעה ברגע ההזמנה
+											<br/><div class="warnexplain">
+											כתובות מייל ומספרי טלפון יירשמו במערכת רק לאחר בדיקת אימות
+										</div>
+										</div>
+									</div>
+									<div class="col-sm-9 col-md-pull-3" >
+										<div class="container-fluid">
+											<div class="row contacts_head_row_"  >
+												<div class="col-sm-6">
+												</div>
+												<div class="col-sm-6">
+													<div class="material-icons cont_mat">mail_outline</div>
+													<div class="cont_head_text">לאחר הזנת כתובת מייל , יש ללחוץ על הכפתור בדיקה- מייל אימות יישלח לכתובת המבוקשת</div>
+												</div>
+											</div>
+											<div class="row contact_row_"  >
+												<div class="col-sm-6" >
+
+												</div>
+												<div class="col-sm-6"  >
+
+													<div class="contact_phone_manual_wrap">
+														<table cellspacing="0" cellpadding="0" style="border-collapse:collapse;width:100%;" class="contact_phone_manual_table">
+															<tr>
+																<td>
+																	<div class="input-group">
+																		<span class="input-group-addon" id="basic-addon7">@</span>
+																		<input type="text" id="auto_email-1" class="form-control" placeholder="eMail-1" aria-describedby="basic-addon7">
+																	</div>
+																</td>
+																<td>
+																	<div class="confirm_contact_button confirm_contact_button_inactive" id="confirm_auto_mail_button-1" onclick="testAutoEmail()">שלח מייל</div>
+																</td>
+															</tr>
+															<tr id="auto_mail_test_tr1" style="display:none"><td colspan="2" class="test_code_text">
+																הזן קוד שקיבלת במייל
+															</td>
+															</tr>
+															<tr id="auto_mail_provided_tr"  style="display:none">
+																<td colspan="2">
+																	<div id="auto_mail_provided"></div>
+																</td>
+															</tr>
+															<tr id="auto_mail_test_tr2"  style="display:none">
+																<td>
+																	<input type="number" id="verification_auto_mail">
+																</td>
+																<td>
+																	<button type="button" id="verification_admin_auto_order_code_button" onclick="VerifyMailCode('auto')" class="btn btn-success">בדוק</button>
+																</td>
+															</tr>
+														</table>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row  " id="auto_approval_contacts_exists" style="<%=displayAuto%>">
+									<div class="col-sm-3 col-sm-push-9 pco_text pco_text_normal">
+										<div class=" pco_heb">אנשי קשר קיימים </div>
+									</div>
+									<div class="col-sm-9 col-sm-pull-3"  >
+										<div class="container-fluid">
+											<div class="row" class="contact_row_">
+												<div class="col-sm-6" >
+												</div>
+												<div class="col-sm-6" >
+													<div id="auto_mails_column">
+														<% for(String mail : configuration.getBookingProperties().getApprovalMails()) {%>
+														<div class="single_auto_mail_contact" id="single_auto_mail_contact-<%=mail.replace("@","_").replace(".","_")%>">
+															<div name="single_auto_mail_contact" id="single_auto_mail_value-<%=mail.replace("@","_").replace(".","_")%>" class="single_phone_contact_val"><%=mail%></div>
+															<div class="remove_single_mail_contact material-icons"  onclick="removeMailConfirmationContact('<%=mail.replace("@","_").replace(".","_")%>','auto')" id="remove_single_auto_mail-<%=mail.replace("@","_").replace(".","_")%>">clear</div>
+														</div>
+														<%}%>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row   " id="manual_approval_contacts_form" style="<%=displayManual%>">
 									<div class="col-sm-3 col-sm-push-9">
 										<div class="heb_explain_text">
 											במקרה והאישור מותנה ידנית , יש להזין כתובות מייל או מספרי טלפון אליהם יישלח בקשת הזמנה לצורך אישור סופי. לאחר האישור , הודעה תישלח ללקוח
@@ -1024,7 +1126,7 @@
 									</div>
 									<div class="col-sm-9 col-md-pull-3" >
 										<div class="container-fluid">
-											<div class="row" id="contacts_head_row_">
+											<div class="row contacts_head_row_" >
 												<div class="col-sm-6">
 													<div class="material-icons cont_mat">phone</div>
 													<div class="cont_head_text">לאחר הזנת מספר טלפון , יש ללחוץ על הכפתור בדיקה  - קוד אימות יישלח  בסמס</div>
@@ -1043,19 +1145,24 @@
 																	<input id="contact_man_phone-1" class="mobile-number" type="tel" autocomplete="off" placeholder="050-123-4567">
 																</td>
 																<td>
-																	<div class="confirm_contact_button confirm_contact_button_inactive" id="confirm_phone_button-1" onclick="testManualPhone(this)">שלח סמס</div>
+																	<div class="confirm_contact_button confirm_contact_button_inactive" id="confirm_phone_button-1" onclick="sendSMSVerification()">שלח סמס</div>
 																</td>
 															</tr>
 															<tr id="test_code_test_tr1"  style="display:none"><td colspan="2" class="test_code_text">
 																הזן קוד שהתקבל בסמס
 															</td>
 															</tr>
+															<tr id="manual_sms_provided_tr"  style="display:none">
+																<td colspan="2">
+																	<div id="manual_sms_provided"></div>
+																</td>
+															</tr>
 															<tr id="test_code_test_tr2" style="display:none">
 																<td>
 																	<input type="number" id="verification_admin_contact_sms">
 																</td>
 																<td>
-																	<button type="button" id="verification_admin_contact_button" class="btn btn-success">בדוק</button>
+																	<button type="button" id="verification_admin_contact_button" onclick="VerifySMSCode()" class="btn btn-success">בדוק</button>
 																</td>
 															</tr>
 														</table>
@@ -1076,21 +1183,21 @@
 																	<div class="confirm_contact_button confirm_contact_button_inactive" id="confirm_mail_button-1" onclick="testManualEmail()">שלח מייל</div>
 																</td>
 															</tr>
-															<tr id="test_mail_test_tr1" style="display:none"><td colspan="2" class="test_code_text">
+															<tr id="manual_mail_test_tr1" style="display:none"><td colspan="2" class="test_code_text">
 																הזן קוד שקיבלת במייל
 															</td>
 															</tr>
-															<tr id="manual_mail_provided_tr">
+															<tr id="manual_mail_provided_tr"  style="display:none">
 																<td colspan="2">
 																	<div id="manual_mail_provided"></div>
 																</td>
 															</tr>
-															<tr id="test_mail_test_tr2"  style="display:none">
+															<tr id="manual_mail_test_tr2"  style="display:none">
 																<td>
-																	<input type="number" id="verification_admin_mail_sms">
+																	<input type="number" id="verification_manual_mail">
 																</td>
 																<td>
-																	<button type="button" id="verification_admin_mail_button" onclick="VerifyMailCode()" class="btn btn-success">בדוק</button>
+																	<button type="button" id="verification_admin_mail_button" onclick="VerifyMailCode('manual')" class="btn btn-success">בדוק</button>
 																</td>
 															</tr>
 														</table>
@@ -1100,7 +1207,7 @@
 										</div>
 									</div>
 								</div>
-								<div class="row  " id="manual_approval_contacts_exists" style="display:none">
+								<div class="row  " id="manual_approval_contacts_exists" style="<%=displayManual%>">
 									<div class="col-sm-3 col-sm-push-9 pco_text pco_text_normal">
 										<div class=" pco_heb">אנשי קשר קיימים </div>
 									</div>
@@ -1110,9 +1217,9 @@
 												<div class="col-sm-6" >
 													<div id="manual_phones_column_append">
 														<% for(String phone : configuration.getBookingProperties().getApprovalPhones()) {%>
-														<div class="single_phone_contact" id="single_phone_contact-<%=phone%>">
-															<div name="single_phone_contact"   class="single_phone_contact_val"><%=phone%></div>
-															<div class="remove_single_phone_contact material-icons" id="remove_single_phone-<%=phone%>">clear</div>
+														<div class="single_phone_contact" id="single_phone_contact-<%=phone.replace("+","_")%>">
+															<div name="single_phone_contact"  id="single_phone_value-<%=phone.replace("+","_")%>"  class="single_phone_contact_val"><%=phone%></div>
+															<div class="remove_single_phone_contact material-icons" onclick="removePhoneConfirmationContact('<%=phone.replace("+","_")%>')"  id="remove_single_phone-<%=phone.replace("+","_")%>">clear</div>
 														</div>
 														<%}%>
 													</div>
@@ -1120,9 +1227,9 @@
 												<div class="col-sm-6" >
 													<div id="manual_mails_column">
 														<% for(String mail : configuration.getBookingProperties().getApprovalMails()) {%>
-														<div class="single_mail_contact" id="single_mail_contact-<%=mail.replace("@","_").replace(".","_")%>">
-															<div name="single_mail_contact" id="single_mail_value-<%=mail.replace("@","_").replace(".","_")%>" class="single_phone_contact_val"><%=mail%></div>
-															<div class="remove_single_mail_contact material-icons"  onclick="removeMailConfirmationContact('<%=mail.replace("@","_").replace(".","_")%>')" id="remove_single_mail-<%=mail.replace("@","_").replace(".","_")%>">clear</div>
+														<div class="single_manual_mail_contact" id="single_manual_mail_contact-<%=mail.replace("@","_").replace(".","_")%>">
+															<div name="single_manual_mail_contact" id="single_manual_mail_value-<%=mail.replace("@","_").replace(".","_")%>" class="single_phone_contact_val"><%=mail%></div>
+															<div class="remove_single_mail_contact material-icons"  onclick="removeMailConfirmationContact('<%=mail.replace("@","_").replace(".","_")%>','manual')" id="remove_single_manual_mail-<%=mail.replace("@","_").replace(".","_")%>">clear</div>
 														</div>
 														<%}%>
 													</div>
@@ -1137,20 +1244,26 @@
 									</div>
 									<div class="col-sm-9 col-sm-pull-3" style=" height: 60px;    line-height: 60px;">
 										<div id="pc_max_tables_toggle_wrap">
-											<% if(configuration.getBookingProperties().getSidUnlimited()) {%>
+											<%   String  numDisplay = "";
+												if(configuration.getBookingProperties().getSidUnlimited()) {
+													numDisplay = "display:none";
+											%>
 											<input type="checkbox" id="pc_max_tables" class="pc_max_tables_toggle"  name="week_checkbox_place" data-toggle="toggle"  data-onstyle="success" data-offstyle="default"  data-size="small"  data-on="בלי הגבלה" data-off="מוגבל ל" data-width="100" checked>
-										   <% } else { %>
+										   <% } else {
+
+										   %>
 											<input type="checkbox" id="pc_max_tables" class="pc_max_tables_toggle"  name="week_checkbox_place" data-toggle="toggle"  data-onstyle="success" data-offstyle="default"  data-size="small"  data-on="בלי הגבלה" data-off="מוגבל ל" data-width="100" >
 											<%}%>
 										</div>
-										<div id="pc_max_tables_input_wrap" style="display:none">
+										<div id="pc_max_tables_input_wrap" style="<%=numDisplay%>">
 
 											<input id="pc_max_tables_input" type="number" value="<%=configuration.getBookingProperties().getMaxSids()%>"/>
 											<div class="order_type_text_not_hide ">הזן מספר מקסימלי</div>
 										</div>
 									</div>
 								</div>
-							</div>
+							  </div>
+                            </div>
 						</div>
 					</div>
 				</div>
@@ -1284,7 +1397,17 @@
 											</tr>
 											<tr  id="iframe_settings_table_content">
 												<td>
-													<input type="checkbox" id="iframe_bookable" class="pc_auto_confirm_toggle"  name="week_checkbox_place" data-toggle="toggle"  data-onstyle="success" data-offstyle="default"  data-size="small"  data-on="כולל" data-off="ללא" data-width="100" checked>
+													<%  String iframeTopDisplay = "";
+														String iframeTopNoBookingDisplay = "display:none";
+														if(configuration.getBookingProperties().isBookingAvailable()) { %>
+														<input type="checkbox" id="iframe_bookable" class="pc_auto_confirm_toggle"  name="week_checkbox_place" data-toggle="toggle"  data-onstyle="success" data-offstyle="default"  data-size="small"  data-on="כולל" data-off="ללא" data-width="100" checked>
+													<%} else {
+														iframeTopDisplay = "display:none";
+														iframeTopNoBookingDisplay = "";
+
+													%>
+														<input type="checkbox" id="iframe_bookable" disabled class="pc_auto_confirm_toggle"  name="week_checkbox_place" data-toggle="toggle"  data-onstyle="success" data-offstyle="default"  data-size="small"  data-on="כולל" data-off="ללא" data-width="100" >
+												    <%}%>
 												</td>
 												<td>
 													<table id="iframe_width_table"  cellspacing="0" cellpadding="0" style="width:100%; border-collapse:collapse;">
@@ -1325,7 +1448,16 @@
 								</div>
 								<div class="row">
 									<div id="pc_iframe_wrap" style="width:700px">
-										<div id="pc_iframe_top">
+										<div id="pc_iframe_top_not_bookable" style="<%=iframeTopNoBookingDisplay%>">
+											<% if(configuration.getPlaceDetails().getPhotos().getLogosrc() == null || configuration.getPlaceDetails().getPhotos().getLogosrc().isEmpty()) {%>
+											    <a href="http://www.pickoplace.com"><img id="top_iframe_logo"  src="img/pplogomarker.png"  ></a>
+											<%}else {%>
+										    	<img id="top_iframe_logo"  src="<%=configuration.getPlaceDetails().getPhotos().getLogosrc()%>"  >
+											<%}%>
+											  <div id="iframe_top_place_name" ><%=configuration.getPlaceDetails().getGeneral().getPlaceName()%>,<%=configuration.getPlaceDetails().getGeneral().getBranchName()%></div>
+											  <div class="nootext"></div>
+										</div>
+										<div id="pc_iframe_top" style="<%=iframeTopDisplay%>">
 											<div id="please_select_date_">
 												<div class="material-icons">content_paste</div>
 												<div id="please_select_date_text">נא לבחור תאריך ההזמנה</div>

@@ -1,4 +1,5 @@
-var transactionCode = "0";
+var transactionCode = {};
+var transactionSMSCode = "0";
 function updateWaiterPassword() {
 	var pid = document.getElementById("server_placeID").value;
 	var waiterusername = $("#waiter_username_change_input").val();
@@ -48,10 +49,9 @@ function updateWaiterPassword() {
 		alert("Username & Password should not be empty")
 	}
 }
-function removeMailConfirmationContact(admin_mail){
-	var mail = $("#single_mail_value-"+admin_mail).html();
+function removePhoneConfirmationContact(phone_){
+	var phone = $("#single_phone_value-"+phone_).html();
 
-	console.log("#single_mail_value-"+admin_mail)
 	isOrigin(function(resultOrigin) {
 		if(resultOrigin) {
 			// server connection
@@ -64,18 +64,70 @@ function removeMailConfirmationContact(admin_mail){
 					} else if(gconnected == true) {
 						userMail = gudata.emails[0].value;
 					}
-					console.log(JSON.stringify({pid:pid,user:userMail,newAdmin:mail}))
+					$.ajax({
+						url : "/configurationUpdate/removeConfirmationPhone",
+						headers: {
+							'Accept': 'application/json',
+							'Content-Type': 'application/json'
+						},
+						data: JSON.stringify({pid:pid,user:userMail,phone:phone}),//
+						success : function(data){
+							console.log(data);
+							if(data.valid == true) {
+								removeConfirmationPhoneLine(phone_);
+							} else {
+								console.log(data.reason)
+							}
+						},
+						error:function (){
+							alert("Server Error. Please try later")
+						},
+						dataType : "JSON",
+						type : "post"
+					});
+				} else {
+
+				}
+			});
+		} else {
+
+		}
+	});
+}
+function removeMailConfirmationContact(admin_mail,type){
+	var mail = $("#single_"+type+"_mail_value-"+admin_mail).html();
+
+	console.log("#single_"+type+"_mail_value-"+admin_mail)
+	isOrigin(function(resultOrigin) {
+		if(resultOrigin) {
+			// server connection
+			setSessionData(function (result) {
+				if (result) {
+					var pid = document.getElementById("server_placeID").value;
+					var userMail ;
+					if (fconnected == true) {
+						userMail = fudata.email;
+					} else if(gconnected == true) {
+						userMail = gudata.emails[0].value;
+					}
+					var manual_;
+					if(type=="manual") {
+						manual_ = true;
+					} else {
+						manual_ = false;
+					}
+					console.log(JSON.stringify({pid:pid,user:userMail,newAdmin:mail,manual:manual_}))
 					$.ajax({
 						url : "/configurationUpdate/removeConfirmationMail",
 						headers: {
 							'Accept': 'application/json',
 							'Content-Type': 'application/json'
 						},
-						data: JSON.stringify({pid:pid,user:userMail,newAdmin:mail}),//
+						data: JSON.stringify({pid:pid,user:userMail,newAdmin:mail,manual:manual_}),//
 						success : function(data){
 							console.log(data);
 							if(data.valid == true) {
-								removeConfirmationLine(admin_mail);
+								removeConfirmationLine(admin_mail,type);
 							} else {
 								console.log(data.reason)
 							}
@@ -139,16 +191,23 @@ function removeSiteAdmin(admin_mail) {
 		}
 	});
 }
-function VerifyMailCode() {
+function VerifyMailCode(type) {
 	isOrigin(function(resultOrigin) {
 		if(resultOrigin) {
 			// server connection
 			setSessionData(function(result) {
 				if (result) {
 					var pid =  document.getElementById("server_placeID").value;
-					var token  = transactionCode;
-					var code = $("#verification_admin_mail_sms").val();
-					var adminMail = $("#manual_mail_provided").html();
+					var token  = transactionCode[type];
+					var code , adminMail;
+					var manual_;
+					code = $("#verification_"+type+"_mail").val();
+					adminMail = $("#"+type+"_mail_provided").html();
+					if(type == "manual") {
+						  manual_ = true;
+					} else {
+						  manual_ = false;
+					}
 					var userMail ;
 					if (fconnected == true) {
 						userMail = fudata.email;
@@ -161,65 +220,67 @@ function VerifyMailCode() {
 								'Accept': 'application/json',
 								'Content-Type': 'application/json'
 							},
-							data: JSON.stringify({pid:pid,user:userMail,token:token,code:code,newAdmin:adminMail}),//
+							data: JSON.stringify({pid:pid,user:userMail,token:token,code:code,newAdmin:adminMail,manual:manual_}),//
 							success : function(data){
 								console.log(data);
-								if(data.valid == true) {
-									var mail__ = data.admin;
-									$("#manual_mail_provided").html("");
-									transactionCode = "0";
-									$("#test_mail_test_tr1").hide();
-									$("#manual_mail_provided").hide();
-									$("#test_mail_test_tr2").hide();
-									appendNewConfirmationAdmin(mail__);
-								} else {
-									console.log(data.reason);
-									switch(data.reason) {
-										case "admin_exists":
-											alert("This admin has already been registered")	;
-											$("#manual_mail_provided").html("");
-											transactionCode = "0";
-											$("#test_mail_test_tr1").hide();
-											$("#manual_mail_provided").hide();
-											$("#test_mail_test_tr2").hide();
-											break;
-										case "wrong_code":
-											alert("Wrong verification code.Please re-try")
-											break;
-										case "time_pass":
-											alert("10 Minutes passed, Please re-submit eMail");
-											$("#manual_mail_provided").html("");
-											transactionCode = "0";
-											$("#test_mail_test_tr1").hide();
-											$("#manual_mail_provided").hide();
-											$("#test_mail_test_tr2").hide();
-										break;
-										case "no_stored_request":
-											alert("No eMail request exists. PLease re-send");
-											$("#manual_mail_provided").html("");
-											transactionCode = "0";
-											$("#test_mail_test_tr1").hide();
-											$("#manual_mail_provided").hide();
-											$("#test_mail_test_tr2").hide();
-											break;
-										case "Not allowed user":
-											alert("Unfortunately you not allowed to edit those settings");
-											$("#manual_mail_provided").html("");
-											transactionCode = "0";
-											$("#test_mail_test_tr1").hide();
-											$("#manual_mail_provided").hide();
-											$("#test_mail_test_tr2").hide();
-											break;
-										case "No PID Exists":
-											alert("Server Error - Please try again later");
-											$("#manual_mail_provided").html("");
-											transactionCode = "0";
-											$("#test_mail_test_tr1").hide();
-											$("#manual_mail_provided").hide();
-											$("#test_mail_test_tr2").hide();
-											break;
+									$("#verification_"+type+"_mail").val("");
+									if (data.valid == true) {
+										var mail__ = data.admin;
+										$("#"+type+"_mail_provided").html("");
+										transactionCode[type] = 0;
+										$("#"+type+"_mail_test_tr1").hide();
+										$("#"+type+"_mail_provided").hide();
+										$("#"+type+"_mail_test_tr2").hide();
+										appendNewConfirmationAdmin(mail__,type);
+									} else {
+										console.log(data.reason);
+										switch (data.reason) {
+											case "admin_exists":
+												alert("This admin has already been registered");
+
+												$("#"+type+"_mail_provided").html("");
+												transactionCode[type] = 0;
+												$("#"+type+"_mail_test_tr1").hide();
+												$("#"+type+"_mail_provided_tr").hide();
+												$("#"+type+"_mail_test_tr2").hide();
+												break;
+											case "wrong_code":
+												alert("Wrong verification code.Please re-try")
+												break;
+											case "time_pass":
+												alert("10 Minutes passed, Please re-submit eMail");
+												$("#"+type+"_mail_provided").html("");
+												transactionCode[type] = 0;
+												$("#"+type+"_mail_test_tr1").hide();
+												$("#"+type+"_mail_provided_tr").hide();
+												$("#"+type+"_mail_test_tr2").hide();
+												break;
+											case "no_stored_request":
+												alert("No eMail request exists. PLease re-send");
+												$("#"+type+"_mail_provided").html("");
+												transactionCode[type] = 0;
+												$("#"+type+"_mail_test_tr1").hide();
+												$("#"+type+"_mail_provided_tr").hide();
+												$("#"+type+"_mail_test_tr2").hide();
+												break;
+											case "Not allowed user":
+												alert("Unfortunately you not allowed to edit those settings");
+												$("#"+type+"_mail_provided").html("");
+												transactionCode[type] = 0;
+												$("#"+type+"_mail_test_tr1").hide();
+												$("#"+type+"_mail_provided_tr").hide();
+												$("#"+type+"_mail_test_tr2").hide();
+												break;
+											case "No PID Exists":
+												alert("Server Error - Please try again later");
+												$("#"+type+"_mail_provided").html("");
+												transactionCode[type] = 0;
+												$("#"+type+"_mail_test_tr1").hide();
+												$("#"+type+"_mail_provided_tr").hide();
+												$("#"+type+"_mail_test_tr2").hide();
+												break;
+										}
 									}
-								}
 							},
 							error:function (){
 								alert("Server Error. Please try later")
@@ -239,7 +300,200 @@ function VerifyMailCode() {
 		}
 	});
 }
-function checkLoginAndSendEmail(email,code) {
+function VerifySMSCode() {
+	isOrigin(function(resultOrigin) {
+		if(resultOrigin) {
+			// server connection
+			setSessionData(function(result) {
+				if (result) {
+					var pid =  document.getElementById("server_placeID").value;
+					var token  = transactionSMSCode;
+					var code = $("#verification_admin_contact_sms").val();
+					var phone = $("#manual_sms_provided").html();
+					var userMail ;
+					if (fconnected == true) {
+						userMail = fudata.email;
+					} else if(gconnected == true) {
+						userMail = gudata.emails[0].value;
+					}
+					$.ajax({
+						url : "/configurationUpdate/verifySMSCode",
+						headers: {
+							'Accept': 'application/json',
+							'Content-Type': 'application/json'
+						},
+						data: JSON.stringify({pid:pid,user:userMail,token:token,code:code,phone:phone}),//
+						success : function(data){
+							console.log(data);
+							$("#verification_admin_contact_sms").val("");
+							if(data.valid == true) {
+								var phone = data.phone;
+								transactionSMSCode = "0";
+								$("#manual_sms_provided").html("");
+								$("#manual_sms_provided_tr").hide();
+								$("#test_code_test_tr1").hide();
+								$("#test_code_test_tr2").hide();
+								appendNewConfirmationAdminPhone(phone);
+							} else {
+								console.log(data.reason);
+								switch(data.reason) {
+									case "admin_exists":
+										alert("This phone has already been registered")	;
+										transactionSMSCode = "0";
+										$("#manual_sms_provided").html("");
+										$("#manual_sms_provided_tr").hide();
+										$("#test_code_test_tr1").hide();
+										$("#test_code_test_tr2").hide();
+										break;
+									case "wrong_code":
+										alert("Wrong verification code.Please re-try")
+										break;
+									case "time_pass":
+										alert("1 hour passed, Please re-submit eMail");
+										transactionSMSCode = "0";
+										$("#manual_sms_provided").html("");
+										$("#manual_sms_provided_tr").hide();
+										$("#test_code_test_tr1").hide();
+										$("#test_code_test_tr2").hide();
+										break;
+									case "no_stored_request":
+										alert("No eMail request exists. PLease re-send");
+										transactionSMSCode = "0";
+										$("#manual_sms_provided").html("");
+										$("#manual_sms_provided_tr").hide();
+										$("#test_code_test_tr1").hide();
+										$("#test_code_test_tr2").hide();
+										break;
+									case "Not allowed user":
+										alert("Unfortunately you not allowed to edit those settings");
+										transactionSMSCode = "0";
+										$("#manual_sms_provided").html("");
+										$("#manual_sms_provided_tr").hide();
+										$("#test_code_test_tr1").hide();
+										$("#test_code_test_tr2").hide();
+										break;
+									case "No PID Exists":
+										alert("Server Error - Please try again later");
+										transactionSMSCode = "0";
+										$("#manual_sms_provided").html("");
+										$("#manual_sms_provided_tr").hide();
+										$("#test_code_test_tr1").hide();
+										$("#test_code_test_tr2").hide();
+										break;
+								}
+							}
+						},
+						error:function (){
+							alert("Server Error. Please try later")
+						},
+						dataType : "JSON",
+						type : "post"
+					});
+
+
+				} else {
+					alert("Not allowed")
+				}
+
+			});
+		} else {
+
+		}
+	});
+}
+function sendSMSVerification() {
+	var number = $("#contact_man_phone-1").intlTelInput("getNumber");
+	var countryData = $("#contact_man_phone-1").intlTelInput("getSelectedCountryData");
+	var smsrequest = {};
+	smsrequest.number = number;
+	smsrequest.countryData = countryData;
+	isOrigin(function(resultOrigin) {
+		if(resultOrigin) {
+			// server connection
+			setSessionData(function (result) {
+				if (result) {
+					var pid =  document.getElementById("server_placeID").value;
+					var userMail ;
+					if (fconnected == true) {
+						userMail = fudata.email;
+					} else if(gconnected == true) {
+						userMail = gudata.emails[0].value;
+					}
+					$.ajax({
+						url : "/configurationUpdate/requestAdminCodeBySMS",
+						headers: {
+							'Accept': 'application/json',
+							'Content-Type': 'application/json'
+						},
+						data: JSON.stringify({pid:pid,user:userMail,smsrequest:JSON.stringify(smsrequest)}),//
+						success : function(data){
+							console.log(data);
+							if(data.valid == true) {
+
+								transactionSMSCode = data.token;
+								$("#manual_sms_provided").html(data.phone);
+								$("#manual_sms_provided_tr").show();
+								$("#test_code_test_tr1").show();
+								$("#test_code_test_tr2").show();
+								if(data.max5 == true) {
+									alert("Same number can be verified maximum 3 times in one hour.Please use last code sent");
+								}
+							} else {
+								console.log(data.reason)
+								switch(data.reason) {
+									case "exists":
+										alert("Such phone number already exists in database");
+										break;
+									case "datastore_error":
+										alert("Datastore Error. Please try again later");
+										$("#manual_sms_provided").html("");
+										transactionSMSCode = "0";
+										$("#test_code_test_tr1").hide();
+										$("#manual_sms_provided_tr").hide();
+										$("#test_code_test_tr2").hide();
+										break;
+									case "max_5_phones_not_approved":
+										alert("Maximum amount of unapproved phones is 5. Please verify previous numbers or contact Pickoplace")
+										$("#manual_sms_provided").html("");
+										transactionSMSCode = "0";
+										$("#test_code_test_tr1").hide();
+										$("#manual_sms_provided_tr").hide();
+										$("#test_code_test_tr2").hide();
+										break;
+									case "sms_error_null":
+										alert("SMS Error occured. Please try again")
+										$("#manual_sms_provided").html("");
+										transactionSMSCode = "0";
+										$("#test_code_test_tr1").hide();
+										$("#manual_sms_provided_tr").hide();
+										$("#test_code_test_tr2").hide();
+										break;
+									case "sms_error_null":
+										alert("SMS Error occured. Please try again")
+										$("#manual_sms_provided").html("");
+										transactionSMSCode = "0";
+										$("#test_code_test_tr1").hide();
+										$("#manual_sms_provided_tr").hide();
+										$("#test_code_test_tr2").hide();
+										break;
+								}
+							}
+						},
+						error:function (){
+							alert("Server Error. Please try later")
+						},
+						dataType : "JSON",
+						type : "post"
+					});
+				} else {
+
+				}
+			});
+		} else {
+		}
+	});
+}
+function checkLoginAndSendEmail(email,code,type) {
 	isOrigin(function(resultOrigin) {
 		if(resultOrigin) {
 			// server connection
@@ -252,6 +506,12 @@ function checkLoginAndSendEmail(email,code) {
 					} else if(gconnected == true) {
 						userMail = gudata.emails[0].value;
 					}
+					var manual_ = false;
+					if(type == "manual") {
+						manual_ = true;
+					} else {
+						manual_ = false;
+					}
 					if(code != undefined && code == true) {
 						$.ajax({
 							url : "/configurationUpdate/requestAdminCodeByMail",
@@ -259,18 +519,21 @@ function checkLoginAndSendEmail(email,code) {
 								'Accept': 'application/json',
 								'Content-Type': 'application/json'
 							},
-							data: JSON.stringify({pid:pid,user:userMail,newAdmin:email}),//
+							data: JSON.stringify({pid:pid,user:userMail,newAdmin:email,manual:manual_}),//
 							success : function(data){
 								console.log(data);
-								if(data.valid == true) {
-									$("#manual_mail_provided").html(data.admin);
-									transactionCode = data.token;
-									$("#test_mail_test_tr1").show();
-									$("#manual_mail_provided").show();
-									$("#test_mail_test_tr2").show();
-								} else {
-									console.log(data.reason)
-								}
+									if(data.valid == true) {
+										$("#"+type+"_mail_provided").html(data.admin);
+										transactionCode[type] = data.token;
+										$("#"+type+"_mail_test_tr1").show();
+										$("#"+type+"_mail_provided_tr").show();
+										$("#"+type+"_mail_test_tr2").show();
+									} else {
+										if(data.reason == "exists") {
+											alert("Such confirmation eMail already exists.");
+										}
+										console.log(data.reason)
+									}
 							},
 							error:function (){
 								alert("Server Error. Please try later")
@@ -440,7 +703,7 @@ $(document).ready(function() {
 		var height_  = document.getElementById("height_fe_-"+ifid).value;
 		var pid_  = document.getElementById("pid_fe_-"+ifid).value;
         var iframe_json = JSON.parse($("#iframe_json-"+ifid).val());
-		var add_height = 40;
+		var add_height = 80;
 		if(iframe_json.booking == true) {
 			add_height = 80;
 		}
@@ -551,21 +814,26 @@ $(document).ready(function() {
 		   }
 		 });	
 	}
-	function SIsaveState() {
+	function SIsaveState(goto) {
+		$("#save_pc").hide();
+		$("#config_save_btn_ajax").show();
 	    isOrigin(function(resultOrigin) {
 		    if(resultOrigin) {
 			   // server connection
 				setSessionData(function(result) {
 					if(result) {
-						saveState();
+						saveState(goto);
+						$("#save_pc").show();
+						$("#config_save_btn_ajax").hide();
 					}
 				});
 			} else {
-			
+				$("#save_pc").show();
+				$("#config_save_btn_ajax").hide();
 			}
-			});
+		});
      }
-	 function saveState() {
+	 function saveState(goto) {
             var address = document.getElementById('config_address').value;
             geocoder.geocode( { 'address': address}, function(results, status) {
                 if (status == google.maps.GeocoderStatus.OK) {
@@ -584,7 +852,7 @@ $(document).ready(function() {
                         document.getElementById("UTCoffcet_hidden").setAttribute("value",offset);
                         // console.log(c.format());
                         console.log(response.rawOffset/3600 + "  " + response.dstOffset/3600 + "= " + offset);
-                        createSaveObject();
+                        createSaveObject(goto);
                     });
                 } else {
                     alert("Address not valid") ;
@@ -592,7 +860,7 @@ $(document).ready(function() {
             });
         }
 var SaveObject = {};
-function createSaveObject() {
+function createSaveObject(goto) {
    
      SaveObject = {};
 	 globalFloorCounter = 0;
@@ -673,11 +941,7 @@ function createSaveObject() {
 		CloseDatesList.push(utcSeconds);
 	 }
 	 SaveObject.workinghours.closeDates = CloseDatesList;
-	 
-	
- 
-	 
- 
+
 	 var JSONbyte64files=[]; // { "imageID" : data64 }
      var JSONSIDlinks = [];  // { "sid" : "ImageID" }
      var ImageMirrorUsed = {};  
@@ -800,6 +1064,11 @@ function createSaveObject() {
   
   
   SaveObject.bookingProperties = {};
+  if($("#pc_placeBookable").attr("checked") == "checked") {
+	  SaveObject.BookingAvailable = true;
+  } else {
+	  SaveObject.BookingAvailable = false;
+  }
   if($("#pc_order_type_").attr("checked") != "checked") {
      SaveObject.bookingProperties.allDay = false;
 	 SaveObject.bookingProperties.bookLength = [];
@@ -807,23 +1076,24 @@ function createSaveObject() {
      for(var x=0; x < allLeng.length; x++) { 
 		if(document.getElementById(allLeng[x].id).checked == true) {
 			   var Minutes = parseInt($("#"+allLeng[x].id).val());
-			   var Seconds = Minutes*60;
+			   var Seconds = Minutes ;
 			   SaveObject.bookingProperties.bookLength.push(Seconds);
 		 }
 	 }
-	 SaveObject.bookingProperties.bookStartStep = parseInt($('input[name=start_steps]:checked').val())*60;
-	 SaveObject.bookingProperties.bookStartWait = parseInt($('input[name=start_wait]:checked').val())*60;
+	 SaveObject.bookingProperties.bookStartStep = parseInt($('input[name=start_steps]:checked').val()) ;
+	 SaveObject.bookingProperties.bookStartWait = parseInt($('input[name=start_wait]:checked').val()) ;
   } else {
      SaveObject.bookingProperties.allDay = true;
 	 SaveObject.bookingProperties.bookLength = [];
-	 SaveObject.bookingProperties.bookStartStep = 15*60;
+	 SaveObject.bookingProperties.bookStartStep = 15 ;
 	 SaveObject.bookingProperties.bookStartWait = 0;
   }
   SaveObject.bookingProperties.automatic = document.getElementById("pc_auto_confirm").checked;
   SaveObject.bookingProperties.approvalPhones = [];
   SaveObject.bookingProperties.approvalMails = [];  
       $( ".single_phone_contact" ).each(function() {
-		  var phone = $( this ).attr( "id" ).replace(/single_phone_contact-/,"");
+		  var phone_coded =  $( this ).attr( "id" ).replace(/single_phone_contact-/,"");
+		  var phone = $("#single_phone_value-"+phone_coded).html();
 		   SaveObject.bookingProperties.approvalPhones.push(phone);
 		});	
        $( ".single_mail_contact" ).each(function() {
@@ -853,7 +1123,39 @@ function createSaveObject() {
   
   console.log(SaveObject);
   var postImagesData = {jsonObject:JSON.stringify(SaveObject)};
-  //sendAJAX(postImagesData,"uploadCanvasImages");
+  sendAJAX(postImagesData,"saveConfiguration",goto);
   
-}	 
+}
+function sendAJAX(JSON_,url_,goto) {
+	$.ajax({
+		url : url_,
+		data: JSON_,
+		success : function(data){
+			if(goto!=undefined) {
+				console.log(goto)
+				switch (goto) {
+					case "edit":
+						editPlace('form_editform');
+						break;
+				}
+			}
+		},
+		dataType : "json",
+		type : "post"
+	});
+}
+function SaveConfigAndGo(goto) {
+	$("#go_to_edit_pc").hide();
+	$("#save_pc").hide();
+
+	SIsaveState(goto);
+	$("#save_modal").modal('hide');
+}
+function editPlace(placeID_form) {
+	setSessionData(function(result) {
+		if(result) {
+			document.getElementById(placeID_form).submit();
+		}
+	});
+}
 	

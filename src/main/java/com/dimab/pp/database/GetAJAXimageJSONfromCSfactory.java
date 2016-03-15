@@ -190,21 +190,21 @@ public class GetAJAXimageJSONfromCSfactory {
 		}
 		String placeFax;
 		if (csEntity.getProperty("placeFax")!= null) {
-			placeFax   = "";
-		} else {
 			placeFax   = (String)csEntity.getProperty("placeFax");
+		} else {
+			placeFax   = "";
 		}
 		String placeMail ;
 		if (csEntity.getProperty("placeMail") != null) {
-			placeMail  = "";
-		} else {
 			placeMail  = (String)csEntity.getProperty("placeMail");
+		} else {
+			placeMail  = "";
 		}
 		String placeURL ;
 		if (csEntity.getProperty("placeURL") != null) {
-			placeURL   = "";
-		} else {
 			placeURL   = (String)csEntity.getProperty("placeURL");
+		} else {
+			placeURL   = "";
 		}
 		String placeDescription  = "";
 		if (csEntity.getProperty("placeDescription") != null) {
@@ -214,24 +214,7 @@ public class GetAJAXimageJSONfromCSfactory {
 		if (csEntity.getProperty("automatic_approval") != null) {
 			automatic_approval = (boolean)csEntity.getProperty("automatic_approval");
 		}
-		List<String> automaticApprovalList = new ArrayList<String>();			
-		if (csEntity.getProperty("automaticApprovalList") != null) {
-			String automaticApprovalListJSON = (String)csEntity.getProperty("automaticApprovalList");
-			collectionType = new TypeToken<List<String>>(){}.getType();
-			automaticApprovalList = JsonUtils.deserialize(automaticApprovalListJSON, collectionType);				
-		}
-		List<String> adminApprovalList = new ArrayList<String>();
-		if(csEntity.getProperty("adminApprovalList")!=null) {
-			String adminApprovalListJSON = (String)csEntity.getProperty("adminApprovalList");
-			collectionType = new TypeToken<List<String>>(){}.getType();
-			adminApprovalList = JsonUtils.deserialize(adminApprovalListJSON, collectionType);
-		}
-		List<AdminUser> placeEditList = new ArrayList<AdminUser>();
-		if(csEntity.getProperty("placeEditList")!=null) {
-			String placeEditListJSON = (String)csEntity.getProperty("placeEditList");
-			collectionType = new TypeToken<List<AdminUser>>(){}.getType();
-			placeEditList = JsonUtils.deserialize(placeEditListJSON, collectionType);
-		}
+
 		List<Integer> closeDates =  new ArrayList<Integer>();
 		if (csEntity.getProperty("closeDates")!=null) {
 			String closeDatesJSON = (String)csEntity.getProperty("closeDates");
@@ -256,9 +239,6 @@ public class GetAJAXimageJSONfromCSfactory {
 		CanvasStateEdit.setPlaceURL(placeURL);
 		CanvasStateEdit.setPlaceDescription(placeDescription);
 		CanvasStateEdit.setAutomatic_approval(automatic_approval);
-		CanvasStateEdit.setAutomaticApprovalList(automaticApprovalList);
-		CanvasStateEdit.setAdminApprovalList(adminApprovalList);
-		CanvasStateEdit.setPlaceEditList(placeEditList);
 		CanvasStateEdit.setCloseDates(closeDates);
 		CanvasStateEdit.setWorkinghours(workinghours);
 		
@@ -266,7 +246,7 @@ public class GetAJAXimageJSONfromCSfactory {
 		String logoUrl = "";
 		if (csEntity.getProperty("logo")!= null && !((String)csEntity.getProperty("logo")).isEmpty() && (String)csEntity.getProperty("logo")!= ""){
 			String bucket = "pp_images"; 
-			String logoFileName = usernameRandom +"/" +placeID+"/"+"main"+"/logo.png";
+			String logoFileName  = (String)csEntity.getProperty("logo");
 	  	    GcsFilename gcsFilename = new GcsFilename(bucket, logoFileName);
 	  	    System.out.println("LOGO Upload:" + gcsFilename);
 	  	    ImagesService is = ImagesServiceFactory.getImagesService(); 

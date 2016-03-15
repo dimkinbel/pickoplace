@@ -4,6 +4,7 @@ package com.dimab.pp.dto;
  * Created by dima on 02-Mar-16.
  */
 public class iFrameObj {
+    Boolean placeBooking;
     Integer width;
     Integer height;
     Boolean booking;
@@ -13,6 +14,14 @@ public class iFrameObj {
     Long   time;
     String user;
     String date;
+
+    public Boolean getPlaceBooking() {
+        return placeBooking;
+    }
+
+    public void setPlaceBooking(Boolean placeBooking) {
+        this.placeBooking = placeBooking;
+    }
 
     public String getDate() {
         return date;

@@ -2,8 +2,8 @@
 
 function floorAppend(appendTo_,singleBoth,singleFloorID,temp) {
 
-	var appendToWidth = $("#"+appendTo_).width() ;
-	var appendToHeight = $("#"+appendTo_).height() ;
+	var appendToWidth = Math.round( $("#"+appendTo_).width()) ;
+	var appendToHeight =Math.round( $("#"+appendTo_).height());
 	var temp_ = false;
 	if(temp!= undefined && temp == true) {
 		temp_ = true;
@@ -187,8 +187,7 @@ $(window).resize(function () {
 		waitForFinalEvent(function(){
 			// applyPosition() ;
 			updateFloorWrapDimentions();		
-			ApplyFinalPosition()
-			bookingFullWidth();
+			ApplyFinalPosition() ;
 			//...
 		}, 500, "some unique string");
 	});

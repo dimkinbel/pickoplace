@@ -17,7 +17,7 @@ function updateIframePopover(popover_hidden_wrap_id,shape) {
 		appendData+= '			</div>';
 		appendData+= '		</div>';
 		appendData+= '		<div class="row iframe_place_popover_content"   data-toggle="tooltip"   data-placement="top" title="כמות אורחים אפשריים">';
-		appendData+= '			<div class="col-md-6 iframe_popover_val">';
+		appendData+= '			<div class="col-xs-6 iframe_popover_val">';
 		
 		if(bookingsManager != undefined && shape.isAvailable==true) {
 		    appendData+= '		    <div class="iframe_popup_bs_selector_wrap">';
@@ -41,7 +41,7 @@ function updateIframePopover(popover_hidden_wrap_id,shape) {
 			}
 		}
 		appendData+= '			</div> ';
-		appendData+= '			<div class="col-md-6 iframe_popover_text">';
+		appendData+= '			<div class="col-xs-6 iframe_popover_text">';
 		appendData+= '			   <div class="material-icons">people</div>';
 		appendData+= '			</div> ';
 		appendData+= '		</div>';

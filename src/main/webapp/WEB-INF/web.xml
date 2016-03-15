@@ -171,12 +171,12 @@
 
   
  	<servlet>
-       <servlet-name>uploadCanvasImages</servlet-name>
-       <servlet-class>com.dimab.pp.JSON.AJAXImageImport</servlet-class>
+       <servlet-name>saveConfiguration</servlet-name>
+       <servlet-class>com.dimab.pp.JSON.SaveConfiguration</servlet-class>
     </servlet>
     <servlet-mapping>
-       <servlet-name>uploadCanvasImages</servlet-name>
-       <url-pattern>/uploadCanvasImages</url-pattern>
+       <servlet-name>saveConfiguration</servlet-name>
+       <url-pattern>/saveConfiguration</url-pattern>
     </servlet-mapping>
 
  
@@ -297,15 +297,6 @@
        <servlet-name>deletePlace</servlet-name>
        <url-pattern>/deletePlace</url-pattern>
     </servlet-mapping>
-      
-     <servlet>
-       <servlet-name>userLoginFacebook</servlet-name>
-       <servlet-class>com.dimab.pp.server.UserLoginLogoutFacebook</servlet-class>
-    </servlet>
-    <servlet-mapping>
-       <servlet-name>userLoginFacebook</servlet-name>
-       <url-pattern>/userLoginFacebook</url-pattern>
-    </servlet-mapping>
 
 	<servlet>
 		<servlet-name>ppunsubscribe</servlet-name>
@@ -418,7 +409,15 @@
        <servlet-name>checkPlaceUpdate</servlet-name>
        <url-pattern>/checkPlaceUpdate</url-pattern>
     </servlet-mapping>
-    
+    <servlet>
+        <servlet-name>uploadCanvasImages</servlet-name>
+        <servlet-class>com.dimab.pp.JSON.AJAXImageImport</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>uploadCanvasImages</servlet-name>
+        <url-pattern>/uploadCanvasImages</url-pattern>
+    </servlet-mapping>
+
   
     
    <servlet>

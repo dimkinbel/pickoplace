@@ -7,11 +7,13 @@ import java.util.List;
  * Created by dima on 02-Mar-16.
  */
 public class ConfigBookingProperties {
+    Boolean BookingAvailable = false;
     Boolean allDay = false;
     List<Integer> bookLength = new ArrayList<Integer>();
     Integer bookStartStep = 15;
     Integer bookStartWait = 0;
     Boolean automatic = true;
+    List<String> automaticMails = new ArrayList<String>();
     List<String> approvalPhones = new ArrayList<String>();
     List<String> approvalMails = new ArrayList<String>();
     Boolean SidUnlimited = true;
@@ -23,6 +25,22 @@ public class ConfigBookingProperties {
         this.bookLength.add(60 );
         this.bookLength.add(90 );
         this.bookLength.add(120 );
+    }
+
+    public Boolean isBookingAvailable() {
+        return BookingAvailable;
+    }
+
+    public void setBookingAvailable(Boolean bookingAvailable) {
+        BookingAvailable = bookingAvailable;
+    }
+
+    public List<String> getAutomaticMails() {
+        return automaticMails;
+    }
+
+    public void setAutomaticMails(List<String> automaticMails) {
+        this.automaticMails = automaticMails;
     }
 
     public Boolean getAllDay() {

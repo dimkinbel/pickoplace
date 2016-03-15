@@ -195,8 +195,8 @@ $(document).ready(function () {
 					                   <input  type="text" name="branchName" id="branchName" class="setValInp"/>
 					                </td>
 					              </tr>
-					              <tr id="buisnessNameTr" class="settingBuisnessVal">
-					                <td class="settingPhrase">Buisness Address:</td>
+					              <tr id="buisnessAddressTr" class="settingBuisnessVal">
+					                <td class="settingPhrase">Buisness Address<span class="required_star">*</span>:</td>
 					                <td class="settingValue">
 					                   <input  type="text" name="buisnessAddress" id="buisnessAddress" class="setValInp"/>
 					                    <input  id="address_hidden_lat" name="address_hidden_lat" style="display: none;"> 

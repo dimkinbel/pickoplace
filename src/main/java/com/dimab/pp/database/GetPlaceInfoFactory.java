@@ -109,7 +109,7 @@ public PlaceInfo getPlaceInfo (DatastoreService datastore , Entity csEntity , in
 		// Update logo and images
 		String logoUrl = "";
 		if (csEntity.getProperty("logo")!= null && !((String)csEntity.getProperty("logo")).isEmpty() && (String)csEntity.getProperty("logo")!= ""){ 
-			String logoFileName = userRnd +"/" +placeID+"/"+"main"+"/logo.png";
+			String logoFileName = (String)csEntity.getProperty("logo");
 		    gcsFilename = new GcsFilename(bucket, logoFileName);
 		    System.out.println("LOGO Upload:" + gcsFilename);
 		    is = ImagesServiceFactory.getImagesService(); 
@@ -126,7 +126,7 @@ public PlaceInfo getPlaceInfo (DatastoreService datastore , Entity csEntity , in
 			if (photosList != null) {
 				for (String imgID : photosList) {
 					bucket = "pp_images";
-					String photoFileName = userRnd + "/" +  placeID + "/" + "main" + "/photos/" + imgID + ".png";
+					String photoFileName = userRnd + "/" +  placeID + "/" + "main" + "/photos/" + imgID;
 					gcsFilename = new GcsFilename(bucket, photoFileName);
 					is = ImagesServiceFactory.getImagesService();
 					filename = String.format("/gs/%s/%s", gcsFilename.getBucketName(), gcsFilename.getObjectName());

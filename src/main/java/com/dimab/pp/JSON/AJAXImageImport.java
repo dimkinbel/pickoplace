@@ -366,7 +366,8 @@ public class AJAXImageImport extends HttpServlet {
 
                 List<String> admins = new ArrayList<String>();
                 admins.add(username_email);
-
+                canvasState.setProperty("username", username_email);
+                canvasState.setProperty("usernameRandom", userRandom);
                 canvasState.setUnindexedProperty("DateCreated", date.toString());
                 canvasState.setUnindexedProperty("DateCreatedSec", date.getTime() / 1000);
                 canvasState.setUnindexedProperty("logo", "");
@@ -376,8 +377,6 @@ public class AJAXImageImport extends HttpServlet {
                 canvasState.setUnindexedProperty("placeURL", SaveObject.getPlaceURL());
                 canvasState.setUnindexedProperty("placeDescription", SaveObject.getPlaceDescription());
                 canvasState.setUnindexedProperty("automatic_approval", SaveObject.isAutomatic_approval());
-                canvasState.setUnindexedProperty("automaticApprovalList", JsonUtils.serialize(SaveObject.getAutomaticApprovalList()));
-                canvasState.setUnindexedProperty("adminApprovalList", JsonUtils.serialize(SaveObject.getAdminApprovalList()));
                 canvasState.setUnindexedProperty("placeEditList", JsonUtils.serialize(adminList));
                 canvasState.setUnindexedProperty("closeDates", JsonUtils.serialize(SaveObject.getCloseDates()));
                 canvasState.setUnindexedProperty("workinghours", JsonUtils.serialize(SaveObject.getWorkinghours()));
@@ -398,8 +397,7 @@ public class AJAXImageImport extends HttpServlet {
                 canvasState.setProperty("PlaceSubType", SubTypeList);
             }
 
-            canvasState.setProperty("username", username_email);
-            canvasState.setProperty("usernameRandom", userRandom);
+
             canvasState.setProperty("placeName", place);
             canvasState.setProperty("placeBranchName", snif);
             canvasState.setProperty("UserPlaceDBKey", userPlaceEntity.getKey());
@@ -410,8 +408,9 @@ public class AJAXImageImport extends HttpServlet {
             canvasState.setProperty("DateUpdatedSec", date.getTime() / 1000);
             canvasState.setUnindexedProperty("UTCoffcet", (double) userPlaceEntity.getProperty("UTCoffcet"));
             canvasState.setProperty("mainFloorID", mainFloorID);
-            userPlaceEntity.setProperty("mainFloorID", mainFloorID);
 
+            userPlaceEntity.setProperty("mainFloorID", mainFloorID);
+            userPlaceEntity.setProperty("usernameRandom", userRandom);
 
             // Configuration section
 
@@ -419,155 +418,7 @@ public class AJAXImageImport extends HttpServlet {
             canvasState.setUnindexedProperty("lat", SaveObject.getLat());
             canvasState.setUnindexedProperty("lng", SaveObject.getLng());
             canvasState.setProperty("location", center);
-            if (stage.equals("Configuration")) {
 
-                canvasState.setUnindexedProperty("placePhone", SaveObject.getPlacePhone());
-                canvasState.setUnindexedProperty("placeFax", SaveObject.getPlaceFax());
-                canvasState.setUnindexedProperty("placeMail", SaveObject.getPlaceMail());
-                canvasState.setUnindexedProperty("placeURL", SaveObject.getPlaceURL());
-                canvasState.setUnindexedProperty("placeDescription", SaveObject.getPlaceDescription());
-                canvasState.setUnindexedProperty("automatic_approval", SaveObject.isAutomatic_approval());
-                canvasState.setUnindexedProperty("automaticApprovalList", JsonUtils.serialize(SaveObject.getAutomaticApprovalList()));
-                canvasState.setUnindexedProperty("adminApprovalList", JsonUtils.serialize(SaveObject.getAdminApprovalList()));
-                canvasState.setUnindexedProperty("placeEditList", JsonUtils.serialize(SaveObject.getPlaceEditList()));
-                canvasState.setUnindexedProperty("closeDates", JsonUtils.serialize(SaveObject.getCloseDates()));
-                canvasState.setUnindexedProperty("workinghours", JsonUtils.serialize(SaveObject.getWorkinghours()));
-                canvasState.setUnindexedProperty("UTCoffcet", SaveObject.getUTCoffset());
-
-
-                List<AdminUser> placeEditList = SaveObject.getPlaceEditList();
-                for (AdminUser auser : placeEditList) {
-                    Filter UserExists__ = new FilterPredicate("username", FilterOperator.EQUAL, auser.getMail());
-                    Query q__ = new Query("Users").setFilter(UserExists__);
-                    PreparedQuery pq__ = datastore.prepare(q__);
-                    Entity result__ = pq__.asSingleEntity();
-                    if (result__ != null) {
-                        if (auser.isFull_access()) {
-                            List<String> fa_list__ = new ArrayList<String>();
-                            if (result__.getProperty("PID_full_access") != null) {
-                                fa_list__ = JsonUtils.deserialize(((Text) result__.getProperty("PID_full_access")).getValue(), collectionType);
-
-                            }
-                            if (!fa_list__.contains(placeID)) {
-                                fa_list__.add(placeID);
-                                result__.setUnindexedProperty("PID_full_access", new Text(JsonUtils.serialize(fa_list__)));
-                            }
-                        }
-                        if (auser.isEdit_place()) {
-                            List<String> ep_list__ = new ArrayList<String>();
-                            if (result__.getProperty("PID_edit_place") != null) {
-                                ep_list__ = JsonUtils.deserialize(((Text) result__.getProperty("PID_edit_place")).getValue(), collectionType);
-
-                            }
-                            if (!ep_list__.contains(placeID)) {
-                                ep_list__.add(placeID);
-                                result__.setUnindexedProperty("PID_edit_place", new Text(JsonUtils.serialize(ep_list__)));
-                            }
-                        }
-                        if (auser.isMove_only()) {
-                            List<String> mo_list__ = new ArrayList<String>();
-                            if (result__.getProperty("PID_move_only") != null) {
-                                mo_list__ = JsonUtils.deserialize(((Text) result__.getProperty("PID_move_only")).getValue(), collectionType);
-
-                            }
-                            if (!mo_list__.contains(placeID)) {
-                                mo_list__.add(placeID);
-                                result__.setUnindexedProperty("PID_move_only", new Text(JsonUtils.serialize(mo_list__)));
-                            }
-                        }
-                        if (auser.isBook_admin()) {
-                            List<String> ba_list__ = new ArrayList<String>();
-                            if (result__.getProperty("PID_book_admin") != null) {
-                                ba_list__ = JsonUtils.deserialize(((Text) result__.getProperty("PID_book_admin")).getValue(), collectionType);
-
-                            }
-                            if (!ba_list__.contains(placeID)) {
-                                ba_list__.add(placeID);
-                                result__.setUnindexedProperty("PID_book_admin", new Text(JsonUtils.serialize(ba_list__)));
-                            }
-                        }
-                        datastore.put(result__);
-
-                    } else {
-                        System.out.println("Admin User account doesnt exists:" + auser.getMail());
-                    }
-
-                }
-                userPlaceEntity.setProperty("placeName", place);
-                userPlaceEntity.setProperty("placeBranchName", snif);
-                userPlaceEntity.setProperty("placeAddress", SaveObject.getAddress());
-                userPlaceEntity.setUnindexedProperty("UTCoffcet", SaveObject.getUTCoffset());
-                userPlaceEntity.setProperty("placeLat", Double.parseDouble(SaveObject.getLat()));
-                userPlaceEntity.setProperty("placeLng", Double.parseDouble(SaveObject.getLng()));
-                userPlaceEntity.setUnindexedProperty("placePhone", SaveObject.getPlacePhone());
-                userPlaceEntity.setUnindexedProperty("placeFax", SaveObject.getPlaceFax());
-                userPlaceEntity.setProperty("location", center);
-            }
-            if (stage.equals("Configuration")) {
-                // Update Logo And photos
-                String logo = "logo";
-                String data64 = SaveObject.getLogosrc();
-                if (data64 == null || data64.isEmpty() || data64 == "") {
-                    canvasState.setUnindexedProperty("logo", "");
-                } else {
-                    String fileName = userRandom + "/" + placeID + "/" + "main" + "/" + logo + ".png";
-                    System.out.println("Saving Logo:" + fileName);
-                    String[] SimageInfo = data64.split(",");
-                    GcsFilename Sname = new GcsFilename("pp_images", fileName);
-                    optionsBuilder.mimeType("image/png");
-                    outputChannel = gcsService.createOrReplace(Sname, optionsBuilder.build());
-                    copy(decodeBytes(SimageInfo[1]), Channels.newOutputStream(outputChannel));
-                    canvasState.setUnindexedProperty("logo", fileName);
-                }
-            }
-
-            List<String> prevPhotosList = new ArrayList<String>();
-            List<String> photosList = new ArrayList<String>();
-
-            if (stage.equals("Configuration")) {
-                if (canvasState.getProperty("photos") != null) {
-                    collectionType = new TypeToken<List<String>>() {
-                    }.getType();
-                    prevPhotosList = JsonUtils.deserialize((String) canvasState.getProperty("photos"), collectionType);
-                }
-
-
-                for (JsonimgID_2_data imgID2byte64 : SaveObject.getPlacePhotos()) {
-                    // Save Photos
-                    String imgID = imgID2byte64.getImageID();
-                    Integer width = imgID2byte64.getWidth();
-                    Integer height = imgID2byte64.getHeight();
-                    if (prevPhotosList.indexOf(imgID) == -1) {
-                        // New image ID - considered as new image
-                        String data64 = imgID2byte64.getData64();
-                        String fileName = userRandom + "/" + placeID + "/" + "main" + "/photos/" + imgID + ".png";
-                        System.out.println("Saving Place Photo:" + fileName);
-                        String[] SimageInfo = data64.split(",");
-                        GcsFilename Sname = new GcsFilename("pp_images", fileName);
-                        optionsBuilder = new GcsFileOptions.Builder();
-                        if (SimageInfo[0].contains("image/png")) {
-                            optionsBuilder.mimeType("image/png");
-                        } else if (SimageInfo[0].contains("image/jpeg")) {
-                            optionsBuilder.mimeType("image/jpeg");
-                        }
-                        optionsBuilder.addUserMetadata("width", width.toString());
-                        optionsBuilder.addUserMetadata("height", height.toString());
-                        outputChannel = gcsService.createOrReplace(Sname, optionsBuilder.build());
-                        copy(decodeBytes(SimageInfo[1]), Channels.newOutputStream(outputChannel));
-                    }
-                    photosList.add(imgID);
-                }
-                for (String imgID : prevPhotosList) {
-                    // Run on old photo ID's
-                    int idx = photosList.indexOf(imgID);
-                    if (idx == -1) {
-                        // If ID not exists anymore , the image should be removed from the Cloud Storage
-                        String fileName = userRandom + "/" + placeID + "/" + "main" + "/photos/" + imgID + ".png";
-                        gcsService.delete(new GcsFilename("pp_images", fileName));
-                    }
-                }
-                canvasState.setUnindexedProperty("photos", JsonUtils.serialize(photosList));
-            }
 
             SearchFabric searchIndexFabrix = new SearchFabric();
             searchIndexFabrix.CreatePlaceDocument(canvasState);
@@ -591,7 +442,6 @@ public class AJAXImageImport extends HttpServlet {
                     if (shapeBooking == null) {
                         shapeBooking = new Entity("Shapes", userPlaceEntity.getKey());
                     }
-
 
                     shapeBooking.setProperty("CanvasStateKey", canvasStateKey);
                     shapeBooking.setProperty("floor_id", floor_id);

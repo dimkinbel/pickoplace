@@ -12,10 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.dimab.pickoplace.utils.JsonUtils;
 import com.dimab.pp.database.GetAJAXimageJSONfromCSfactory;
-import com.dimab.pp.dto.AJAXImagesJSON;
-import com.dimab.pp.dto.IFresponse;
-import com.dimab.pp.dto.IFsave;
-import com.dimab.pp.dto.iFrameObj;
+import com.dimab.pp.dto.*;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -49,11 +46,12 @@ public class ShowIframe extends HttpServlet {
 		Query q = new Query("CanvasState").setFilter(placeIdFilter);
 		PreparedQuery pq = datastore.prepare(q);		
   		Entity userCanvasState = pq.asSingleEntity();
-  		
+		ConfigBookingProperties BookProperties = new ConfigBookingProperties();
   		
   		if (userCanvasState != null) {
-  			CanvasStateEdit = csFactory.getBaseData(userCanvasState, datastore);	
-		
+  			CanvasStateEdit = csFactory.getBaseData(userCanvasState, datastore);
+
+			 BookProperties = JsonUtils.deserialize((String) userCanvasState.getProperty("bookingProperties"), ConfigBookingProperties.class);
 			Filter ifidfilter = new  FilterPredicate("ifid",FilterOperator.EQUAL,ifid);
 			Filter pidfilter = new  FilterPredicate("pid",FilterOperator.EQUAL,pid);
 			Filter ifpidfilter =  CompositeFilterOperator.and(ifidfilter, pidfilter);
@@ -89,6 +87,7 @@ public class ShowIframe extends HttpServlet {
   		request.setAttribute("ifid", ifid);
   		request.setAttribute("iframedata", ifresp);
   		request.setAttribute("canvasState", CanvasStateEdit);
+		request.setAttribute("bookProperties", BookProperties);
   		request.setAttribute("showonly", showonlyResponse);
 	    RequestDispatcher dispathser  = request.getRequestDispatcher("/iframepage.jsp");
 	    response.addHeader("Access-Control-Allow-Origin", "*");

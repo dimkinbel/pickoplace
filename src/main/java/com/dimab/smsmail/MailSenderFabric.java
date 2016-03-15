@@ -47,8 +47,14 @@ public class MailSenderFabric {
 			case "SendVerificationCode":
 				message = mailGenerator.VerificationCodeEmail(placeInfo,VerificationCode);
 				break;
+			case "SendVerificationCodeForAutomatic":
+				message = mailGenerator.VerificationCodeEmailAuto(placeInfo,VerificationCode);
+				break;
 			case "RemoveConfirmationEmail":
 				message = mailGenerator.RemoveConfirmationEmail(placeInfo);
+				break;
+			case "RemoveAutoNotificationEmail":
+				message = mailGenerator.RemoveNotificationEmail(placeInfo);
 				break;
 			case "BBBBAa": break;
 			case "BBBBBB": break;
@@ -78,6 +84,16 @@ public class MailSenderFabric {
 				case "RemoveConfirmationEmail":
 					msg.setSubject("Pickoplace: Confirmation mail removed");
 					break;
+				case "SendVerificationCode":
+					msg.setSubject("Pickoplace: One time passcode");
+					break;
+				case "SendVerificationCodeForAutomatic":
+					msg.setSubject("Pickoplace: One time passcode");
+					break;
+				case "RemoveAutoNotificationEmail":
+					msg.setSubject("Pickoplace: Notification eMail removal");
+					break;
+
 			}
 
 			System.out.println(message);
