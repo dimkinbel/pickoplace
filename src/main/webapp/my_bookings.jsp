@@ -18,7 +18,7 @@
     <link rel="stylesheet" href="css/login.css" type="text/css" media="screen">
     <link rel="stylesheet" href="css/dropit.css" type="text/css" media="screen">
     <link rel="stylesheet" href="css/perfect-scrollbar.css" type="text/css" media="screen">
-    <link rel="stylesheet" href="raty/raty.css" type="text/css" media="screen">
+    <link rel="stylesheet" href="/js/lib/jquery-plugins/raty/raty.css" type="text/css" media="screen">
     <link rel="stylesheet" href="css/rating.css" type="text/css" media="screen">
 
     <%-- js --%>

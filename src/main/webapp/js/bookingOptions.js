@@ -142,12 +142,10 @@ $(document).ready(function () {
             if ( daysList[i] == weekDay ) {
 			  canvas_.selection.booking_options.weekDays[daysList[i]] = checked_;
 			}
-        }		
+        }
 	});
-
-
-	
 });
+
 function updateBookingOptions() {
    if(canvas_.bgmode == false && canvas_.selection != null && canvas_.listSelected.length == 1 && canvas_.selection.bookableShape) {
         $("#booking_options_wrap_").show();

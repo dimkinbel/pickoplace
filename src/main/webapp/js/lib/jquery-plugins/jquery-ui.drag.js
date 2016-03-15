@@ -1,4 +1,5 @@
 /*! jQuery UI - v1.11.4 - 2015-07-29
+ todo(egor-js): remove?
 * http://jqueryui.com
 * Includes: core.js, widget.js, mouse.js, draggable.js
 * Copyright 2015 jQuery Foundation and other contributors; Licensed MIT */

@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="/js/lib/jquery-ui-1.11.4/jquery-ui.css" type="text/css" media="screen">
     <link rel="stylesheet" href="css/perfect-scrollbar.css" type="text/css" media="screen" />
     <link rel="stylesheet" href="css/dropit.css" type="text/css" media="screen" />
-    <link href="raty/raty.css" media="screen" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="/js/lib/jquery-plugins/raty/raty.css" type="text/css" media="screen">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
     <%-- js --%>
@@ -33,7 +33,7 @@
     <script type="text/javascript" src="js/interactive_admin_upload.js"></script>
     <script type="text/javascript" src="js/mainPageMap.js"></script>
     <script type="text/javascript" src="js/search.js"></script>
-    <script src="raty/raty.js" type="text/javascript"></script>
+    <script type="text/javascript" src="/js/lib/jquery-plugins/raty/raty.js"></script>
 
     <%-- custom js --%>
 <script type="text/javascript">
@@ -51,7 +51,7 @@ function updatePageView() {
 	  if(fconnected==true) {
 		  //Connected To Facebook
 		  $("#page_login_prompt").hide();
-		  $("#login_prop").hide();		  
+		  $("#login_prop").hide();
 		  $("#account_drop").show();
 		  
 		  $("#login_info_resp_d").empty();

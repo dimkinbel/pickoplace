@@ -35,8 +35,7 @@
 
 
     <%-- js --%>
-    <!-- todo(egor-js): review all code for external resources -->
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script type="text/javascript" src="/js/lib/jquery-1.11.1.min.js"></script>
     <script type="text/javascript" src="js/lib/jquery-plugins/jquery-migrate-1.2.1.js"></script>
     <script type="text/javascript" src="/js/lib/jquery-ui-1.11.4/jquery-ui.js"></script>
     <script type="text/javascript" src="ion.rangeSlider-2.0.2/js/ion.rangeSlider.js"></script>

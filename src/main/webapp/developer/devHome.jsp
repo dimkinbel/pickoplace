@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="/js/lib/jquery-ui-1.11.4/jquery-ui.css" type="text/css" media="screen">
     <link rel="stylesheet" href="css/perfect-scrollbar.css" type="text/css" media="screen" />
     <link rel="stylesheet" href="css/dropit.css" type="text/css" media="screen" />
-    <link rel="stylesheet" href="raty/raty.css" media="screen"  type="text/css">
+    <link rel="stylesheet" href="/js/lib/jquery-plugins/raty/raty.css" type="text/css" media="screen">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" >
 
     <%-- js --%>
@@ -33,7 +33,7 @@
     <script type="text/javascript" src="js/interactive_admin.js"></script>
     <script type="text/javascript" src="js/mainPageMap.js"></script>
     <script type="text/javascript" src="js/search.js"></script>
-    <script src="raty/raty.js" type="text/javascript"></script>
+    <script type="text/javascript" src="/js/lib/jquery-plugins/raty/raty.js"></script>
     
     <%-- custom js --%>
 <script type="text/javascript">

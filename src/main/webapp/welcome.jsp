@@ -19,7 +19,7 @@
         <link rel="stylesheet" href="ion.rangeSlider-2.0.2/css/ion.rangeSlider.skinNice.css" type="text/css" media="screen" />
         <link rel="stylesheet" href="css/perfect-scrollbar.css" type="text/css" media="screen" />
         <link rel="stylesheet" href="css/dropit.css" type="text/css" media="screen" />
-        <link href="raty/raty.css" media="screen" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="js/lib/jquery-plugins/raty/raty.css" type="text/css" media="screen">
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
         <%-- js --%>
@@ -40,7 +40,7 @@
         <script type="text/javascript" src="js/search.js" ></script>
         <script type="text/javascript" src="js/upDownSpinner.js" ></script>
         <script type="text/javascript" src="js/searchWizard.js" ></script>
-        <script type="text/javascript" src="raty/raty.js"></script>
+        <script type="text/javascript" src="/js/lib/jquery-plugins/raty/raty.js"></script>
 
         <%-- custom js--%>
         <script type="text/javascript">

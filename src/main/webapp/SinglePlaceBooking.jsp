@@ -23,7 +23,7 @@
     <link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
     <link rel="stylesheet" href="css/book_approval.css" type="text/css" media="screen"/>
     <link rel="stylesheet" href="css/rating.css" type="text/css" media="screen"/>
-    <link rel="stylesheet" href="raty/raty.css" media="screen" type="text/css">
+    <link rel="stylesheet" href="/js/lib/jquery-plugins/raty/raty.css" type="text/css" media="screen">
     <link rel="stylesheet" href="ion.rangeSlider-2.0.2/css/ion.rangeSlider.skinModern.css" type="text/css"
           media="screen"/>
     <link rel="stylesheet" href="css/perfect-scrollbar.css" type="text/css" media="screen"/>
@@ -49,7 +49,7 @@
     <script type="text/javascript" src="js/bookController.js"></script>
     <script type="text/javascript" src="js/bookViewService.js"></script>
     <script type="text/javascript" src="js/lib/shapes_timeline_new.js"></script>
-    <script src="raty/raty.js" type="text/javascript"></script>
+    <script type="text/javascript" src="/js/lib/jquery-plugins/raty/raty.js"></script>
     <script type="text/javascript" src="js/rating.js"></script>
     <%-- todo(egor): move to settings--%>
     <script type="text/javascript"
