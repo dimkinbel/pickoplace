@@ -115,7 +115,7 @@ public class ConnectUser extends HttpServlet {
 		HttpServletRequest req_ = (HttpServletRequest) request;
 		HttpSession session = req_.getSession();
 		String Sprovider = (String) session.getAttribute("provider");
-		String Stoken = (String) session.getAttribute("access_token");
+		String Stoken = (String) session.getAttribute(SetSessionTokenProvider.ACCESS_TOKEN_SESSION_KEY);
 		
 	    if(provider.equals("google")) {
 	        GoogleTokenResponse tokenResponse =
@@ -127,7 +127,7 @@ public class ConnectUser extends HttpServlet {
 	    	GoogVerifyToken tokenVerifier = new GoogVerifyToken(accessToken);
 			 if(tokenVerifier.isValid()) {
 				 request.getSession().setAttribute("provider", provider);
-				 request.getSession().setAttribute("access_token", accessToken);
+				 request.getSession().setAttribute(SetSessionTokenProvider.ACCESS_TOKEN_SESSION_KEY, accessToken);
 				 request.getSession().setAttribute("userEmail", tokenVerifier.getData().getEmail());
 				 
 				 GOOGmeResponseJSON userData = tokenVerifier.getData();
@@ -208,7 +208,7 @@ public class ConnectUser extends HttpServlet {
 			 
 			 if(tokenFactory.isValid()) {			 
 		    	 request.getSession().setAttribute("provider", provider);
-				 request.getSession().setAttribute("access_token", accessToken);
+				 request.getSession().setAttribute(SetSessionTokenProvider.ACCESS_TOKEN_SESSION_KEY, accessToken);
 
 				 if(Sprovider != null && Sprovider.equals("google") && Stoken != null) {
 						System.out.println("Disonnecting GOOGLE token:"+Stoken);

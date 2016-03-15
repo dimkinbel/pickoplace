@@ -1,4 +1,4 @@
-
+// todo(egor-js): remove?
 var auth2 = auth2 || {};
 var gcode = {};
 var fudata = {};

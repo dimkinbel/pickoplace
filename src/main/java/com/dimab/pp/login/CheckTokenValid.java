@@ -11,7 +11,7 @@ public class CheckTokenValid {
 		  HttpSession session = req_.getSession();
 		 
 		  this.provider = (String) session.getAttribute("provider");
-		  this.accessToken = (String) session.getAttribute("access_token");
+		  this.accessToken = (String) session.getAttribute(SetSessionTokenProvider.ACCESS_TOKEN_SESSION_KEY);
 	}
   public GenericUser getUser() {
 

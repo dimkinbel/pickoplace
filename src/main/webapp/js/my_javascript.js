@@ -1,3 +1,4 @@
+// todo(egor-js): remove?
 var rectangles = {};
 var rect2div = {};
 

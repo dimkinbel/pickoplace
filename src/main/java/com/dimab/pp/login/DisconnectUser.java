@@ -98,7 +98,7 @@ public class DisconnectUser extends HttpServlet {
  		  HttpServletRequest req_ = (HttpServletRequest) request;
  		  HttpSession session = req_.getSession();
  		  String Sprovider = (String) session.getAttribute("provider");
- 		  String Stoken = (String) session.getAttribute("access_token");
+ 		  String Stoken = (String) session.getAttribute(SetSessionTokenProvider.ACCESS_TOKEN_SESSION_KEY);
  		
  	    if(provider.equals("google")) {        
 			System.out.println("Disonnecting GOOGLE token:"+Stoken);
@@ -133,7 +133,7 @@ public class DisconnectUser extends HttpServlet {
     	}
 
  	   
- 	    request.getSession().removeAttribute("access_token");
+ 	    request.getSession().removeAttribute(SetSessionTokenProvider.ACCESS_TOKEN_SESSION_KEY);
    	    request.getSession().removeAttribute("provider");
    	    
 		response.setContentType("application/json");

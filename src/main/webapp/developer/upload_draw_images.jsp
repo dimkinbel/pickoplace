@@ -8,13 +8,13 @@
     <title>PPdev-Upload Images</title>
 
     <%-- css --%>
-    <link rel="stylesheet" href="css/login.css" type="text/css" media="screen" />
-    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen" />
-    <link rel="stylesheet" href="ion.rangeSlider-2.0.2/css/ion.rangeSlider.css" type="text/css" media="screen" />
-    <link rel="stylesheet" href="ion.rangeSlider-2.0.2/css/ion.rangeSlider.skinNice.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="/css/login.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="/js/lib/ion.rangeSlider-2.0.2/css/ion.rangeSlider.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="/js/lib/ion.rangeSlider-2.0.2/css/ion.rangeSlider.skinNice.css" type="text/css" media="screen" />
     <link rel="stylesheet" href="/js/lib/jquery-ui-1.11.4/jquery-ui.css" type="text/css" media="screen">
-    <link rel="stylesheet" href="css/perfect-scrollbar.css" type="text/css" media="screen" />
-    <link rel="stylesheet" href="css/dropit.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="/css/perfect-scrollbar.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="/css/dropit.css" type="text/css" media="screen" />
     <link rel="stylesheet" href="/js/lib/jquery-plugins/raty/raty.css" type="text/css" media="screen">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
@@ -25,14 +25,14 @@
     <script type="text/javascript"
             src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAaX5Ow6oo_axUKMquFxnPpT6Kd-L7D40k&libraries=places&&sensor=FALSE">
     </script>
-    <script type="text/javascript" src="ion.rangeSlider-2.0.2/js/ion.rangeSlider.js"></script>
-    <script type="text/javascript" src="js/loginlogout.js"></script>
-    <script type="text/javascript" src="js/bootstrap-slider.js"></script>
-    <script type="text/javascript" src="js/sitefunctions.js"></script>
-    <script type="text/javascript" src="js/dropit.js"></script>
-    <script type="text/javascript" src="js/interactive_admin_upload.js"></script>
-    <script type="text/javascript" src="js/mainPageMap.js"></script>
-    <script type="text/javascript" src="js/search.js"></script>
+    <script type="text/javascript" src="/js/lib/ion.rangeSlider-2.0.2/js/ion.rangeSlider.js"></script>
+    <script type="text/javascript" src="/js/loginlogout.js"></script>
+    <script type="text/javascript" src="/js/bootstrap-slider.js"></script>
+    <script type="text/javascript" src="/js/sitefunctions.js"></script>
+    <script type="text/javascript" src="/js/dropit.js"></script>
+    <script type="text/javascript" src="/js/interactive_admin_upload.js"></script>
+    <script type="text/javascript" src="/js/mainPageMap.js"></script>
+    <script type="text/javascript" src="/js/search.js"></script>
     <script type="text/javascript" src="/js/lib/jquery-plugins/raty/raty.js"></script>
 
     <%-- custom js --%>

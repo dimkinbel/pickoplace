@@ -12,11 +12,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse; 
 
 public class SetSessionTokenProvider extends HttpServlet {
-	private static final long serialVersionUID = 1L;
-       
+
+    public static String ACCESS_TOKEN_SESSION_KEY = "access_token";
+    public static String PROVIDER_SESSION_KEY = "provider";
+
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String accessToken = request.getParameter("access_token");
+		String accessToken = request.getParameter(ACCESS_TOKEN_SESSION_KEY);
         String provider = request.getParameter("provider");
         
         response.setContentType("application/json");
