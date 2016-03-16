@@ -608,6 +608,7 @@ $(document).ready(function() {
 			                	 console.log("iFrame updated:" + data.ifid);
 								 $("#existing_iframe-"+ifid).remove();
 			                 }
+							  document.getElementById("server_iFrameID").value = "";
 							  updateIFlist(data,true);
 							  // local testing
 							  $("#iframe_save_btn_disabled").hide();

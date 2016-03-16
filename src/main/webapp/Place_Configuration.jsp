@@ -1425,6 +1425,7 @@
 													<div class="dropdown" id="iframe_theme_dropdown" >
 														<div class="dropdown-toggle" id="iframe_theme_dropdown_toggle" data-toggle="dropdown"
 															 aria-haspopup="true" aria-expanded="true">
+															<div class="material-icons" id="ifset_drop_ar">arrow_drop_down</div>
 															<div id="iframe_theme_dropdown_val" class="book_top_period_if">לבן</div>
 														</div>
 														<ul class="dropdown-menu " id="iframe_theme_dropdown_ul"
@@ -1433,8 +1434,9 @@
 														</ul>
 													</div>
 												</td>
-												<td>
+												<td style="border-right: 1px solid #F3F3F3;">
 													<div id="iframe_save_btn">
+														<div class="material-icons" id="if_save_mat">save</div>
 														<div class="md_heb notice_text">iFrame שמור</div>
 													</div>
 													<div id="iframe_save_btn_disabled" style="display:none">
@@ -1565,13 +1567,6 @@
 							<div class="container-fluid" >
 								<div class="row">
 									<div class="data_content_header" >שמורים<span class="ltr_text_in_rtl">&nbsp;iFrames&nbsp;</span>רשימה של </div>
-								</div>
-								<div class="row ef_single_line_head">
-									<div class="col-sm-1" >Date</div>
-									<div class="col-sm-1" >Book</div>
-									<div class="col-sm-1" >Theme</div>
-									<div class="col-sm-7" >Code</div>
-									<div class="col-sm-2" >Actions</div>
 								</div>
 								<div  id="existing_iframes_append">
 

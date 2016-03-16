@@ -480,22 +480,32 @@ function updateIFlist(data,append) {
 			 var date_  = iframe.date; 
 	         var appendData = '';
 			 var hostName = window.location.host;
-			 
-			appendData+='<div class="row ef_single_line" id="existing_iframe-'+ifid+'" name="existing_iframes">'; 
-			appendData+='	<div class="col-sm-1" >'+date_+'</div>';
-			appendData+='	<div class="col-sm-1" >'+iframe.booking+'</div>';
-			appendData+='	<div class="col-sm-1" >'+iframe.theme+'</div>';
-			appendData+='	<div class="col-sm-7 ef_url">&lt;iframe src="https://'+hostName+'/getiframe?pid='+pid+'&ifid='+ifid+'"  width="'+iframe.width+'" height="'+parseInt(iframe.height+80)+'" style="border:none"&gt;&lt;/iframe&gt;</div>';
-			appendData+='	<div class="col-sm-2 ef_buttons">';
-			appendData+='	   <div class="material-icons iframe_list_mat ef_edit" id="if_edit-'+ifid+'"  style="display:none"   data-toggle="tooltip"   data-placement="top" title="עריכה">mode_edit</div>';
-			appendData+='	   <div class="material-icons iframe_list_mat ef_show"   id="if_show-'+ifid+'" style="display:none"  data-toggle="tooltip"   data-placement="top" title="הצג">slideshow</div>';
-			appendData+='	   <div class="material-icons iframe_list_mat ef_remove"  id="if_delete-'+ifid+'" style="display:none"  data-toggle="tooltip"   data-placement="top" title="מחק">close</div>';
-			appendData+='	</div>		';	
-            appendData+='  <input type="text" style="display:none" id="width_fe_-'+ifid+'" value="'+iframe.width+'"/>';
-	        appendData+='  <input type="text" style="display:none" id="height_fe_-'+ifid+'" value="'+iframe.height+'">';
-	        appendData+='  <input type="text" style="display:none" id="pid_fe_-'+ifid+'" value="'+pid+'">';		
-            appendData+='  <input type="text" name="iframe_json" id="iframe_json-'+ifid+'" style="display:none"   value=\''+JSON.stringify(iframe)+'\'>';				
-			appendData+=' </div>';
+			 appendData+='<div class="ef_single_line" id="existing_iframe-'+ifid+'" name="existing_iframes"  >';
+			 appendData+=' <ul class="list-group " >';
+			 appendData+='  <li class="list-group-item if_list_head">';
+			 appendData+='    <div class="row if_list_head_row" >';
+			 appendData+='    	<div class="col-sm-2 if_list_date" >'+date_+'</div>';
+			 if(iframe.booking == true) {
+				 appendData += '    	<div class="col-sm-8" ><span class="if_book_text">Include booking</span>,<div class="if_theme_text_' + iframe.theme + '">' + iframe.theme + '</div></div>';
+			 } else {
+				 appendData += '    	<div class="col-sm-8" ><span class="if_no_book_text">Not include booking</span>,<div class="if_theme_text_' + iframe.theme + '">' + iframe.theme + '</div></div>';
+			 }
+			 appendData+='    	<div class="col-sm-2 ef_buttons">';
+			 appendData+='    	   <div class="material-icons iframe_list_mat ef_remove"  id="if_delete-'+ifid+'" style="display:none"  data-toggle="tooltip"   data-placement="top" title="מחק">close</div>';
+			 appendData+='    	   <div class="material-icons iframe_list_mat ef_show"   id="if_show-'+ifid+'" style="display:none"  data-toggle="tooltip"   data-placement="top" title="הצג">slideshow</div>';
+			 appendData+='     	   <div class="material-icons iframe_list_mat ef_edit" id="if_edit-'+ifid+'"  style="display:none"   data-toggle="tooltip"   data-placement="top" title="עריכה">mode_edit</div>';
+			 appendData+='    	</div>	';
+			 appendData+='    </div >' +
+					     '  </li>' +
+					     '  <li class="list-group-item if_list_bottom">';
+			 appendData+='    	<div class="ef_url">&lt;iframe src="https://'+hostName+'/getiframe?pid='+pid+'&ifid='+ifid+'"  width="'+iframe.width+'" height="'+parseInt(iframe.height+80)+'" style="border:none"&gt;&lt;/iframe&gt;</div>' +
+					     '  </li>' +
+					     ' </ul>';
+             appendData+='    <input type="text" style="display:none" id="width_fe_-'+ifid+'" value="'+iframe.width+'"/>';
+	         appendData+='    <input type="text" style="display:none" id="height_fe_-'+ifid+'" value="'+iframe.height+'">';
+	         appendData+='    <input type="text" style="display:none" id="pid_fe_-'+ifid+'" value="'+pid+'">';
+             appendData+='    <input type="text" name="iframe_json" id="iframe_json-'+ifid+'" style="display:none"   value=\''+JSON.stringify(iframe)+'\'>';
+			 appendData+='   </div>';
 			 
  
 	         

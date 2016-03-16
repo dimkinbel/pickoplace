@@ -499,7 +499,7 @@
         <% if(BookProperties.isBookingAvailable()==false || ifresp.getBooking() == false) { %>
         <div id="pc_iframe_top_not_bookable" >
             <% if(responseJSON.getLogosrc() == null || responseJSON.getLogosrc().isEmpty()) {%>
-             <a href="http://www.pickoplace.com"><img id="top_iframe_logo "  src="img/pplogomarker.png"  /></a>
+             <a href="http://www.pickoplace.com"><img id="top_iframe_logo"  src="img/pplogomarker.png"  /></a>
             <%} else {%>
              <img id="top_iframe_logo"  src="<%=responseJSON.getLogosrc()%>"  >
             <%}%>
