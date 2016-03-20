@@ -75,7 +75,7 @@ function Booking_addToOrder(sid,iframe_) {
 	     $("#hazmana_iframe_button_empty").hide();
 		 $("#hazmana_iframe_button").show();
 	  } else {
-		 $("#hz_text_o").html('בצע הזמנה');
+		 $("#hz_text_o").html('הזמנה');
 		 $("#booking_top_button").removeClass("disabled");  
 	 }
   }

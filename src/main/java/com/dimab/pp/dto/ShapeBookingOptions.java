@@ -10,8 +10,6 @@ public class ShapeBookingOptions {
 	String givenName = new String();
 	int minPersons = 1;
 	int maxPersons = 1;
-	WeekDays weekDays = new WeekDays();
-	List<SingleTimeRange> timeRange = new ArrayList<SingleTimeRange>();
 	String description;
 	
 	
@@ -57,18 +55,6 @@ public class ShapeBookingOptions {
 	}
 	public void setMaxPersons(int maxPersons) {
 		this.maxPersons = maxPersons;
-	}
-	public WeekDays getWeekDays() {
-		return weekDays;
-	}
-	public void setWeekDays(WeekDays weekDays) {
-		this.weekDays = weekDays;
-	}
-	public List<SingleTimeRange> getTimeRange() {
-		return timeRange;
-	}
-	public void setTimeRange(List<SingleTimeRange> timeRange) {
-		this.timeRange = timeRange;
 	}
 	
 }

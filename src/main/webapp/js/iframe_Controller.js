@@ -91,9 +91,10 @@ var minPeriodSeconds = 15*60;
 		$( "#datepicker_ub" ).datepicker("setDate", DatepickerSetDate);
 		 
  $("#dropdown_start_floors").on('click', 'li a', function(){
-   $("#book_top_start").text($(this).text()); 
-   $("#book_start_val_").val($(this).attr("data-period"));
-   updateCloseShapes();
+     $("#book_top_start").text($(this).text());
+     $("#book_start_val_").val($(this).attr("data-period"));
+	 updateAvailableEndPeriods([],true);
+     updateCloseShapes();
  });
  $("#dropdown_period_floors").on('click', 'li a', function(){
    $("#book_top_period").text($(this).text()); 

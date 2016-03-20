@@ -1,9 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
          pageEncoding="UTF-8"
          import="com.dimab.pp.dto.*"
-         import="com.google.gson.Gson"
-         import="java.util.*" %>
+          %>
 <%@ page import="com.dimab.pickoplace.utils.JsonUtils" %>
+<%@ page import="java.util.List" %>
 <%@taglib prefix="common" tagdir="/WEB-INF/tags/common" %>
 <!DOCTYPE html>
 <html style="height:100%">
@@ -86,6 +86,7 @@
 
             updateFloorWrapDimentions();
             ApplyFinalPosition();
+
             updatePlaceInfo();
             initialTCanvas();
 
@@ -177,7 +178,7 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="booking_order_modal">
+<div class="modal " id="booking_order_modal">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header hazmana_mh">
@@ -509,7 +510,7 @@
         <div class="container-fluid booking_page_container">
             <div id="temp_appends" style="height:400px;width:400px;position:absolute;left:-2000px;top:-300px;"></div>
             <div class="row wsa_header_row">
-                <div class="col-sm-12 ">
+                <div class="col-sm-12 padding_horiz_none">
                     <div class="container-fluid header_nav_row">
                         <div class="row ">
                             <div class="col-sm-12 ">
@@ -593,7 +594,7 @@
                             <div class="col-md-7 col-sm-12 booking_top_nav">
                                 <div class="row booking_top_nav_innner">
                                     <div class="col-sm-2 floors_col_sel top_boot_but" data-toggle="tooltip"
-                                         data-container="body" data-placement="top" title="יום">
+                                         data-container="body" data-placement="top" title="תאריך">
                                         <div class="material-icons mat_book_top">event</div>
                                         <div id="main_book_calendar_tab">
                                             <input id="datepicker_ub" class="datepicker_ub" type="text"/>
@@ -616,7 +617,7 @@
 
                                     </div>
                                     <div class="col-sm-2 padding_0 top_boot_but" data-toggle="tooltip"
-                                         data-container="body" data-placement="top" title="זמן התחלה">
+                                         data-container="body" data-placement="top" title="התחלה">
                                         <div class="material-icons mat_book_top">access_time</div>
                                         <div class="dropdown">
                                             <div class="dropdown-toggle" id="floorsTimeDropDown" data-toggle="dropdown"
@@ -630,16 +631,16 @@
                                         </div>
                                     </div>
                                     <div class="col-sm-2 padding_0 top_boot_but" data-toggle="tooltip"
-                                         data-container="body" data-placement="top" title="שהות במקום">
+                                         data-container="body" data-placement="top" title="סיום">
                                         <div class="material-icons mat_book_top">timelapse</div>
                                         <div class="dropdown">
                                             <div class="dropdown-toggle" id="floorsPeriodDropDown"
                                                  data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                                <div id="book_top_period" class="book_top_period_ub">שעתיים</div>
+                                                <div id="book_top_period" class="book_top_period_ub"></div>
                                                 <input type="text" id="book_period_val_" style="display:none"
                                                        value="7200"/>
                                             </div>
-                                            <ul class="dropdown-menu  dropdown_start_floors" id="dropdown_period_floors"
+                                            <ul class="dropdown-menu   " id="dropdown_period_floors"
                                                 aria-labelledby="floorsPeriodDropDown">
                                                 <li><a href="#" data-period="1800">חצי-שעה</a></li>
                                                 <li><a href="#" data-period="3600">שעה</a></li>
@@ -648,24 +649,21 @@
                                         </div>
                                     </div>
                                     <div class="col-sm-1 padding_0 top_boot_but" data-toggle="tooltip"
-                                         data-container="body" data-placement="top" title="כמות אנשים">
+                                         data-container="body" data-placement="top" title="מספר אורחים">
                                         <div class="material-icons mat_book_top">person_outline</div>
                                         <div class="dropdown">
                                             <div class="dropdown-toggle" id="floorsPersonsDropDown"
                                                  data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                                <div id="book_top_persons" class="book_top_persons_ub">2</div>
+                                                <div id="book_top_persons" class="book_top_persons_ub"><%=responseJSON.getPlaceMinimumPersons()%></div>
                                                 <input type="text" id="book_persons_val_" style="display:none"
-                                                       value="2"/>
+                                                       value="<%=responseJSON.getPlaceMinimumPersons()%>"/>
                                             </div>
 
-                                            <ul class="dropdown-menu  dropdown_start_floors"
+                                            <ul class="dropdown-menu   "
                                                 id="dropdown_persons_floors" aria-labelledby="floorsPersonsDropDown">
-                                                <li><a href="#" data-period="1">1</a></li>
-                                                <li><a href="#" data-period="2">2</a></li>
-                                                <li><a href="#" data-period="3">3</a></li>
-                                                <li><a href="#" data-period="4">4</a></li>
-                                                <li><a href="#" data-period="5">5</a></li>
-                                                <li><a href="#" data-period="6">6</a></li>
+                                                <%for(Integer persons : responseJSON.getPersonsList()) {%>
+                                                <li><a href="#" data-period="<%=persons%>"><%=persons%></a></li>
+                                                <%}%>
                                             </ul>
                                         </div>
                                     </div>
@@ -675,7 +673,7 @@
                                     <div class="col-sm-2 padding_0">
                                         <div id="booking_top_button" class="btn btn-success disabled">
                                             <div id="book_bnt_count" style="display:none;">0</div>
-                                            <div class="book_heb_text" id="hz_text_o">הזמנה ריקה</div>
+                                            <div class="book_heb_text" id="hz_text_o">הזמנה</div>
                                         </div>
                                     </div>
                                 </div>
@@ -686,7 +684,7 @@
                 </div>
             </div>
             <div class="row content content_bottom">
-                <div class="col-sm-12 ">
+                <div class="col-sm-12 padding_horiz_none">
                     <div class="container-fluid content_bottom_inner">
                         <div class="row ">
                             <div class="col-md-1  col-sm-0 padding_0">
@@ -730,61 +728,177 @@
                                 </div>
                             </div>
                             <div class="col-md-4  col-sm-12" id="right_row_md_bottom_sm">
-                                <div class="place_info_ub_i" id="place_info_block">
-                                    <div class="place_info_block_head_i">Place info</div>
-                                    <div class="place_info_block_content_i">
-                                        <div class="pvwrap">
-                                            <div class="pv_name">Place name</div>
-                                            <div class="pv_value"
-                                                 id="pv_value_name"><%=placeInfo.getUserPlace().getPlace()%>
-                                                ,<%=placeInfo.getUserPlace().getBranch() %>
+                                <div id="contact_nav_form">
+                                    <ul class="nav nav-pills"  >
+                                        <li   class="contact_nav_li active"  ><a href="#pil_place_name" ><i class="material-icons contact_nav_mat">home</i></a></li>
+                                        <li class="contact_nav_li " ><a href="#pil_place_address"  ><i class="material-icons contact_nav_mat">place</i></a></li>
+                                        <li class="contact_nav_li " ><a href="#pil_place_contact"  ><i class="material-icons contact_nav_mat">local_phone</i></a></li>
+                                        <li  class="contact_nav_li "><a href="#pil_place_working"  ><i class="material-icons contact_nav_mat">access_time</i></a></li>
+                                    </ul>
+
+                                    <!-- Tab panes -->
+                                    <div class="tab-content">
+                                        <div   class="tab-pane active" id="pil_place_name">
+                                            <div class="container-fluid">
+                                                <div class="row contact_form_top_row">
+                                                     <%=placeInfo.getUserPlace().getPlace()%>&nbsp;,&nbsp;<%=placeInfo.getUserPlace().getBranch() %>
+                                                </div>
+                                                <div class="row contact_form_split_row">
+                                                </div>
+                                                <div class="row contact_form_content_row">
+                                                    <table class="contact_for_table" cellspacing="0" cellpadding="0" style=" border-collapse: collapse">
+                                                        <tr class="contact_form_nav_tr">
+                                                            <td class="cft-mat">דירוג</td>
+                                                            <td class="cft-val_text"><div class="donerating" name="donerating" id="donerating"></div>
+                                                                <input id="ratingVal" type="text"
+                                                                       value="<%=placeInfo.getRating().getAverage()%>"
+                                                                       style="display:none"/>
+                                                            </td>
+                                                        </tr>
+                                                        <tr  class="contact_form_nav_tr">
+                                                            <td class="cft-mat">אולמות</td>
+                                                            <td class="cft-val_text"><%=placeInfo.getUserPlace().getFloors()%></td>
+                                                        </tr >
+                                                        <tr  class="contact_form_nav_tr">
+                                                            <td class="cft-mat"> אורחים</td>
+                                                            <td class="cft-val_text"><%=responseJSON.getPlaceMaxPersons()%></td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="pvwrap">
-                                            <div class="pv_name">Address</div>
-                                            <div class="pv_value"
-                                                 id="pv_value_address"><%=placeInfo.getUserPlace().getAddress()%>
+                                        <div   class="tab-pane" id="pil_place_address">
+                                            <div class="container-fluid">
+                                                <div class="row contact_form_top_row">כתובת</div>
+                                                <div class="row contact_form_split_row">
+                                                </div>
+                                                <div class="row contact_form_content_row">
+                                                    <div class="single_for_text open_map_link" onclick="openMap()"><%=placeInfo.getUserPlace().getAddress()%></div>
+                                                </div>
                                             </div>
                                         </div>
-                                        <%if (placeInfo.getRating() != null) { %>
-                                        <div class="pvwrap">
-                                            <div class="pv_name">Rating</div>
-                                            <div class="pv_value" id="pv_value_rating">
-                                                <div class="donerating" name="donerating" id="donerating"></div>
-                                                <input id="ratingVal" type="text"
-                                                       value="<%=placeInfo.getRating().getAverage()%>"
-                                                       style="display:none"/>
+                                        <div   class="tab-pane" id="pil_place_contact">
+                                            <div class="container-fluid">
+                                                <div class="row contact_form_top_row">יצירת קשר</div>
+                                                <div class="row contact_form_split_row">
+                                                </div>
+                                                <div class="row contact_form_content_row">
+                                                    <% Integer emptyRows = 0;
+                                                    %>
+                                                    <table class="contact_for_table cf_mid" cellspacing="0" cellpadding="0" style=" border-collapse: collapse">
+                                                        <% if (placeInfo.getPlacePhone() == null || placeInfo.getPlacePhone().isEmpty()) {
+                                                              emptyRows+=1;
+                                                           } else { %>
+                                                        <tr class="contact_form_nav_tr">
+                                                            <td class="cft-mat">טלפון</td>
+                                                            <td class="cft-val_text"><%=placeInfo.getPlacePhone()%></td>
+                                                        </tr>
+                                                        <%}%>
+                                                        <% if (placeInfo.getPlaceFax() == null || placeInfo.getPlaceFax().isEmpty()) {
+                                                            emptyRows+=1;
+                                                        } else { %>
+                                                        <tr  class="contact_form_nav_tr">
+                                                            <td class="cft-mat">פקס</td>
+                                                            <td class="cft-val_text"><%=placeInfo.getPlaceFax()%></td>
+                                                        </tr >
+                                                        <%}%>
+                                                        <% if (placeInfo.getPlaceMail() == null || placeInfo.getPlaceMail().isEmpty()) {
+                                                            emptyRows+=1;
+                                                        } else { %>
+                                                        <tr  class="contact_form_nav_tr">
+                                                            <td class="cft-mat">מייל</td>
+                                                            <td class="cft-val_text"><%=placeInfo.getPlaceMail()%></td>
+                                                        </tr>
+                                                        <%}%>
+                                                        <% if (placeInfo.getPlaceSiteURL() == null || placeInfo.getPlaceSiteURL().isEmpty()) {
+                                                            emptyRows+=1;
+                                                        } else { %>
+                                                        <tr  class="contact_form_nav_tr">
+                                                            <td class="cft-mat">אתר</td>
+                                                            <td class="cft-val_text"><%=placeInfo.getPlaceSiteURL()%></td>
+                                                        </tr>
+                                                        <%}%>
+                                                        <% for(Integer i = 0 ; i < emptyRows ; i++) {%>
+                                                            <tr  class="contact_form_nav_tr">
+                                                                <td class="cft-mat"></td>
+                                                                <td class="cft-val_text"></td>
+                                                            </tr>
+                                                        <%}%>
+                                                    </table>
+                                                </div>
                                             </div>
                                         </div>
-                                        <%} %>
-                                        <div class="pvwrap">
-                                            <div class="pv_name">Floors</div>
-                                            <div class="pv_value"
-                                                 id="pv_value_floors"><%=placeInfo.getUserPlace().getFloors()%>
+                                        <div   class="tab-pane" id="pil_place_working">
+                                            <div class="container-fluid">
+                                                <div class="row contact_form_top_row cf_small">שעות פעילות </div>
+                                                <div class="row contact_form_split_row">
+                                                </div>
+                                                <div class="row contact_form_content_row">
+                                                    <%WorkingWeek week = placeInfo.getWeekdaysObject();%>
+                                                    <table class="contact_for_table cf_small" cellspacing="0" cellpadding="0" style=" border-collapse: collapse">
+                                                        <tr class="contact_form_nav_tr">
+                                                            <td class="cft-mat cf_small">ראשון</td>
+                                                            <% if(week.getWeekDayOpenClose(0).isOpen()) { %>
+                                                            <td class="cft-val_text cf_small"><%=week.getWeekDayOpenClose(0).getFromString()%>&nbsp;-&nbsp;<%=week.getWeekDayOpenClose(0).getToString()%></td>
+                                                            <% } else {%>
+                                                            <td class="cft-val_text cf_small_closed">סגור</td>
+                                                            <%}%>
+                                                        </tr>
+                                                        <tr  class="contact_form_nav_tr">
+                                                            <td class="cft-mat cf_small">שני</td>
+                                                            <% if(week.getWeekDayOpenClose(1).isOpen()) { %>
+                                                            <td class="cft-val_text cf_small"><%=week.getWeekDayOpenClose(1).getFromString()%>&nbsp;-&nbsp;<%=week.getWeekDayOpenClose(1).getToString()%></td>
+                                                            <% } else {%>
+                                                            <td class="cft-val_text cf_small_closed">סגור</td>
+                                                            <%}%>
+                                                        </tr >
+                                                        <tr  class="contact_form_nav_tr">
+                                                            <td class="cft-mat cf_small">שלישי</td>
+                                                            <% if(week.getWeekDayOpenClose(2).isOpen()) { %>
+                                                            <td class="cft-val_text cf_small"><%=week.getWeekDayOpenClose(2).getFromString()%>&nbsp;-&nbsp;<%=week.getWeekDayOpenClose(2).getToString()%></td>
+                                                            <% } else {%>
+                                                            <td class="cft-val_text cf_small_closed">סגור</td>
+                                                            <%}%>
+                                                        </tr>
+                                                        <tr  class="contact_form_nav_tr">
+                                                            <td class="cft-mat cf_small">רביעי</td>
+                                                            <% if(week.getWeekDayOpenClose(3).isOpen()) { %>
+                                                            <td class="cft-val_text cf_small"><%=week.getWeekDayOpenClose(3).getFromString()%>&nbsp;-&nbsp;<%=week.getWeekDayOpenClose(3).getToString()%></td>
+                                                            <% } else {%>
+                                                            <td class="cft-val_text cf_small_closed">סגור</td>
+                                                            <%}%>
+                                                        </tr>
+                                                        <tr  class="contact_form_nav_tr">
+                                                            <td class="cft-mat cf_small">חמישי</td>
+                                                            <% if(week.getWeekDayOpenClose(4).isOpen()) { %>
+                                                            <td class="cft-val_text cf_small"><%=week.getWeekDayOpenClose(4).getFromString()%>&nbsp;-&nbsp;<%=week.getWeekDayOpenClose(4).getToString()%></td>
+                                                            <% } else {%>
+                                                            <td class="cft-val_text cf_small_closed">סגור</td>
+                                                            <%}%>
+                                                        </tr>
+                                                        <tr  class="contact_form_nav_tr">
+                                                            <td class="cft-mat cf_small">שישי</td>
+                                                            <% if(week.getWeekDayOpenClose(5).isOpen()) { %>
+                                                            <td class="cft-val_text cf_small"><%=week.getWeekDayOpenClose(5).getFromString()%>&nbsp;-&nbsp;<%=week.getWeekDayOpenClose(5).getToString()%></td>
+                                                            <% } else {%>
+                                                            <td class="cft-val_text cf_small_closed">סגור</td>
+                                                            <%}%>
+                                                        </tr>
+                                                        <tr  class="contact_form_nav_tr">
+                                                            <td class="cft-mat cf_small">שבת</td>
+                                                            <% if(week.getWeekDayOpenClose(6).isOpen()) { %>
+                                                            <td class="cft-val_text cf_small"><%=week.getWeekDayOpenClose(6).getFromString()%>&nbsp;-&nbsp;<%=week.getWeekDayOpenClose(6).getToString()%></td>
+                                                            <% } else {%>
+                                                            <td class="cft-val_text cf_small_closed">סגור</td>
+                                                            <%}%>
+                                                        </tr>
+                                                    </table>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="pvwrap">
-                                            <div class="pv_name">Bookable places</div>
-                                            <div class="pv_value"
-                                                 id="pv_value_places"><%=placeInfo.getUserPlace().getShapesCount()%>
-                                            </div>
-                                        </div>
-                                        <%if (placeInfo.getPlacePhone() != null && !placeInfo.getPlacePhone().isEmpty()) {%>
-                                        <div class="pvwrap">
-                                            <div class="pv_name">Phone</div>
-                                            <div class="pv_value" id="pv_value_phone"><%=placeInfo.getPlacePhone()%>
-                                            </div>
-                                        </div>
-                                        <%} %>
-                                        <%if (placeInfo.getPlaceSiteURL() != null && !placeInfo.getPlaceSiteURL().isEmpty()) {%>
-                                        <div class="pvwrap">
-                                            <div class="pv_name">Site</div>
-                                            <div class="pv_value" id="pv_value_site"><%=placeInfo.getPlaceSiteURL()%>
-                                            </div>
-                                        </div>
-                                        <%} %>
                                     </div>
                                 </div>
+
                                 <%if (placeInfo.getPlaceImageThumbnails().size() > 0) { %>
                                 <div class="place_info_ub" id="place_images_block">
                                     <div class="place_info_block_head">Images</div>

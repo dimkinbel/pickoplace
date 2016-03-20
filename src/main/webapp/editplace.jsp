@@ -21,6 +21,7 @@
 	 <script type="text/javascript" src="js/loginlogout.js" ></script>
     <script type="text/javascript" src="js/dropit.js" ></script>
 	<script type="text/javascript" src="js/jquery.slimscroll.min.js" ></script>
+	  <script type="text/javascript" src="js/interactive_draw.js" ></script>
     
 	<script type="text/javascript" src="ion.rangeSlider-2.0.2/js/ion.rangeSlider.js"></script>
 	<script type="text/javascript" src="js/colpick.js" ></script>
@@ -303,7 +304,44 @@
 		   </div>
 		</div>
 		<div id="other_top">
-		  <input type="checkbox" id="addbgshape" style="display:none" />
+			<div id="floor_options" style="z-index:1000">
+				<span class="floor_options_text">Floor options:</span>
+				<table id="floor_options_table" cellspacing="0" cellpadding="0" style="border-collapse:collapse">
+					<tr >
+						<td id="floor_selector_td">
+							<select    id="floor__selector">
+							</select>
+						</td>
+						<td id="add_floor_td">
+							<div id="add_floor_div_btn"><div class="material-icons floors_material_buttons"  onclick="AddFloor()">add</div></div>
+						</td>
+						<td id="rename_floor_btn_td">
+							<div id="rename_floor_div_cbtn"  ><div class="material-icons floors_material_buttons floors_material_buttons_tf"  onclick="RenameFloor()">text_format</div></div>
+						</td>
+						<td class="rename_floor_input_td" style="display:none">
+							<input id="rename_floor_input"/>
+						</td>
+						<td class="rename_floor_input_td" style="display:none">
+							<div id="rename_floor_div_done" onclick="RenameFloorDone()">Done</div>
+						</td>
+						<td class="add_floor_input_td" style="display:none">
+							<input id="add_floor_input"/>
+						</td>
+						<td class="add_floor_input_td" style="display:none">
+							<div id="add_floor_div_done"  onclick="AddFloorAdd()">Add</div>
+						</td>
+						<td id="cancel_floor_td" style="display:none">
+							<div id="cancel_floor"  onclick="CancelFloor()">Cancel</div>
+						</td>
+						<td id="remove_floor_td"  style="display:none">
+							<div id="clear_floor_div_cbtn"><div class="material-icons floors_material_buttons floors_material_buttons_clear"  onclick="DeleteFloorPre()">clear</div></div>
+						</td>
+					</tr>
+				</table>
+			</div>
+
+
+			<input type="checkbox" id="addbgshape" style="display:none" />
 		  <input type="checkbox" id="bookingopacity"  style="display:none"  />
 		  <div id="save_buttons_wrap">
 		     <div id="drawingSaveButton" class="save_buttons" onclick="SIcreateSaveObjectPre()"> 
@@ -386,10 +424,14 @@
 						<div class="bg_fill_submenus" id="bg_fill_image_sm" style="display:none">
 							<div class="picker_table" name="picker_table" id="background_picker_w" >
 								<div class="internal_picker " id="background_picker">
-								  <img class="bg_pick_image left bg_pick_image_selectable"  src="img/background/pick/b_p_1_60.png" id="b_p_1" onclick="selectedBackground(this,'b_p_1_actual');"/>
-					              <img class="bg_pick_image left bg_pick_image_selectable" src="img/background/pick/b_p_2_60.png" id="b_p_2" onclick="selectedBackground(this,'b_p_2_actual');"/>
-					              <img class="bg_pick_image left bg_pick_image_selectable" src="img/background/pick/b_p_3_60.png" id="b_p_3" onclick="selectedBackground(this,'b_p_3_actual');"/>
-					              <img class="bg_pick_image left bg_pick_image_selectable" src="img/background/pick/b_p_4_60.png" id="b_p_4" onclick="selectedBackground(this,'b_p_4_actual');"/> 
+									<div id="background_picker_append">
+
+									</div>
+									<div class="pick_load_more" id="bg_load_more">
+										<img src="img/gif/fr_load.gif" style="display:none" class="more_pick_load_ajax"/>
+										<i class="material-icons more_pick_load_mat">more_horiz</i>
+										<div class="load_more_pic_text">LOAD MORE</div>
+									</div>
 								</div>
 							  </div>
 							  <div style="display:none">
@@ -964,23 +1006,19 @@
 					  </div>
 					  <div class="picker_table" name="picker_table" id="table_picker_w" >
 						<div class="internal_picker " id="table_picker">
-				   	      <img class="bg_pick_image left" src="img/tables/pick/t_p_1_60.png" id="t_p_1" onclick="imgPicker(this,'show_table_image','table');" >
-					      <img class="bg_pick_image left" src="img/tables/pick/t_p_2_60.png" id="t_p_2" onclick="imgPicker(this,'show_table_image','table');" > 
-					      <img class="bg_pick_image left" src="img/tables/pick/t_p_3_60.png" id="t_p_3" onclick="imgPicker(this,'show_table_image','table');" > 
-					      <img class="bg_pick_image left" src="img/tables/pick/t_p_4_60.png" id="t_p_4" onclick="imgPicker(this,'show_table_image','table');" >
-					      <img class="bg_pick_image left" src="img/tables/pick/t_p_5_60.png" id="t_p_5" onclick="imgPicker(this,'show_table_image','table');" >
-					      <img class="bg_pick_image left" src="img/tables/pick/t_p_6_60.png" id="t_p_6" onclick="imgPicker(this,'show_table_image','table');" >
+							<div id="table_picker_append">
+
+							</div>
+							<div class="pick_load_more" id="table_load_more">
+								<img src="img/gif/fr_load.gif" style="display:none" class="more_pick_load_ajax"/>
+								<i class="material-icons more_pick_load_mat">more_horiz</i>
+								<div class="load_more_pic_text">LOAD MORE</div>
+							</div>
 						</div>
 					  </div>	
                       <div id="actual_uploads_table" style="display:none">
                         <div id="actual_uploads_table_server">
-					     <img  src="img/tables/t_p_1_200.png" id="t_p_1_actual"  >
-					     <img  src="img/tables/t_p_2_188.png" id="t_p_2_actual"  >
-					     <img  src="img/tables/t_p_3_175.png" id="t_p_3_actual"  >
-					     <img  src="img/tables/t_p_4_200.png" id="t_p_4_actual"  >
-					     <img  src="img/tables/t_p_5_200.png" id="t_p_5_actual"  >
-					     <img  src="img/tables/t_p_6_200.png" id="t_p_6_actual"  >					 
-						</div>
+					      </div>
                       </div>	
                     				  
 				  </div>
@@ -1012,22 +1050,19 @@
 					  </div>
 					  <div class="picker_table" name="picker_table" id="chair_picker_w" >
 						<div class="internal_picker " id="chair_picker">
-						  <img class="bg_pick_image left" src="img/chairs/pick/c_p_1_60.png" id="c_p_1" onclick="imgPicker(this,'show_chair_image','chair');">
-						  <img class="bg_pick_image left" src="img/chairs/pick/c_p_2_60.png" id="c_p_2" onclick="imgPicker(this,'show_chair_image','chair');" >
-						  <img class="bg_pick_image left" src="img/chairs/pick/c_p_3_60.png" id="c_p_3" onclick="imgPicker(this,'show_chair_image','chair');" >
-						  <img class="bg_pick_image left" src="img/chairs/pick/c_p_4_60.png" id="c_p_4" onclick="imgPicker(this,'show_chair_image','chair');" >
-						  <img class="bg_pick_image left" src="img/chairs/pick/c_p_5_60.png" id="c_p_5" onclick="imgPicker(this,'show_chair_image','chair');" >
-						  <img class="bg_pick_image left" src="img/chairs/pick/c_p_6_60.png" id="c_p_6" onclick="imgPicker(this,'show_chair_image','chair');" >
+							<div id="chair_picker_append">
+
+							</div>
+							<div class="pick_load_more" id="chair_load_more">
+								<img src="img/gif/fr_load.gif" style="display:none" class="more_pick_load_ajax"/>
+								<i class="material-icons more_pick_load_mat">more_horiz</i>
+								<div class="load_more_pic_text">LOAD MORE</div>
+							</div>
 						</div>
 					  </div>	
                       <div id="actual_uploads_chair" style="display:none">
                         <div id="actual_uploads_chair_server">	
-                         <img  src="img/chairs/c_p_1_60.png" id="c_p_1_actual" >
-					     <img  src="img/chairs/c_p_2_60.png" id="c_p_2_actual" >
-					     <img  src="img/chairs/c_p_3_60.png" id="c_p_3_actual" >
-					     <img  src="img/chairs/c_p_4_60.png" id="c_p_4_actual" >
-					     <img  src="img/chairs/c_p_5_60.png" id="c_p_5_actual" >
-					     <img  src="img/chairs/c_p_6_60.png" id="c_p_6_actual" >						 
+
 						</div>
                       </div>					  
 				  </div>
@@ -1058,23 +1093,20 @@
 						  </div>
 					  </div>
 					  <div class="picker_table" name="picker_table" id="combo_picker_w" >
-						<div class="internal_picker " id="combo_picker">						
-						 <img class="bg_pick_image left" src="img/combo/pick/com_p_1_100.png" id="com_p_1"  onclick="imgPicker(this,'show_combo_image','combo');">
-					     <img class="bg_pick_image left" src="img/combo/pick/com_p_2_100.png" id="com_p_2"  onclick="imgPicker(this,'show_combo_image','combo');">
-					     <img class="bg_pick_image left" src="img/combo/pick/com_p_3_100.png" id="com_p_3"  onclick="imgPicker(this,'show_combo_image','combo');">
-					     <img class="bg_pick_image left " src="img/combo/pick/com_p_4_100.png" id="com_p_4" onclick="imgPicker(this,'show_combo_image','combo');">
-					     <img class="bg_pick_image left" src="img/combo/pick/com_p_5_100.png" id="com_p_5"  onclick="imgPicker(this,'show_combo_image','combo');">
-					     <img class="bg_pick_image left" src="img/combo/pick/com_p_6_100.png" id="com_p_6"  onclick="imgPicker(this,'show_combo_image','combo');">
+						<div class="internal_picker " id="combo_picker">
+							<div id="combo_picker_append">
+
+							</div>
+							<div class="pick_load_more" id="combo_load_more">
+								<img src="img/gif/fr_load.gif" style="display:none" class="more_pick_load_ajax"/>
+								<i class="material-icons more_pick_load_mat">more_horiz</i>
+								<div class="load_more_pic_text">LOAD MORE</div>
+							</div>
 						</div>
 					  </div>	
                       <div id="actual_uploads_combo" style="display:none">
                         <div id="actual_uploads_combo_server">	
-                         <img  src="img/combo/com_p_1_200.png" id="com_p_1_actual"  style="display:none">
-					     <img  src="img/combo/com_p_2_200.png" id="com_p_2_actual"  style="display:none">
-					     <img  src="img/combo/com_p_3_200.png" id="com_p_3_actual"  style="display:none">
-					     <img  src="img/combo/com_p_4_200.png" id="com_p_4_actual"  style="display:none">
-					     <img  src="img/combo/com_p_5_200.png" id="com_p_5_actual"  style="display:none">
-					      <img  src="img/combo/com_p_6_200.png" id="com_p_6_actual"  style="display:none">						 
+
 						</div>
                       </div>									  
 				  </div>
@@ -1126,42 +1158,8 @@
 		  <div id="dr_center_column_wrap">
 		   <div id="canvas_td">
 
-		   	<div id="floor_options" style="z-index:1000">
-			<span class="floor_options_text">Floor options:</span>
-		    <table id="floor_options_table" cellspacing="0" cellpadding="0" style="border-collapse:collapse">
-			  <tr >
-			    <td id="floor_selector_td">
-				  <select    id="floor__selector">
-				  </select>												 
-				</td>
-				<td id="add_floor_td">
-				  <div id="add_floor_div_btn"><div class="material-icons floors_material_buttons"  onclick="AddFloor()">add</div></div>
-				</td>
-				<td id="rename_floor_btn_td">
-				  <div id="rename_floor_div_cbtn"  ><div class="material-icons floors_material_buttons floors_material_buttons_tf"  onclick="RenameFloor()">text_format</div></div>
-				</td>
-				<td class="rename_floor_input_td" style="display:none">
-				  <input id="rename_floor_input"/>
-				</td>
-				<td class="rename_floor_input_td" style="display:none">
-				  <div id="rename_floor_div_done" onclick="RenameFloorDone()">Done</div>
-				</td>
-				<td class="add_floor_input_td" style="display:none">
-				  <input id="add_floor_input"/>
-				</td>
-				<td class="add_floor_input_td" style="display:none">
-				  <div id="add_floor_div_done"  onclick="AddFloorAdd()">Add</div>
-				</td>
-				<td id="cancel_floor_td" style="display:none">
-				  <div id="cancel_floor"  onclick="CancelFloor()">Cancel</div>
-				</td>
-				<td id="remove_floor_td"  style="display:none">
-				  <div id="clear_floor_div_cbtn"><div class="material-icons floors_material_buttons floors_material_buttons_clear"  onclick="DeleteFloorPre()">clear</div></div>
-				</td>
-			  </tr>
-			</table>
-		  </div>	
-		  <div id="mso_relative_div" style="display:none">
+
+		    <div id="mso_relative_div" style="display:none">
 			  <div id="multiple_selection_options" >
 				<table id="multiple_selection_options_table" cellspacing="0" cellpadding="0" style="border-collapse:collapse">
 				   <tr >
@@ -1193,7 +1191,7 @@
     	   String display="none";
     	   if(floor.isMainfloor()) {display="";}
     	   %>
-			  <canvas id="canvas_<%=floorid%>" style="display:<%=display%>"width="400" height="400"  tabindex='1' class="cmenu2 main_canvas" >
+			  <canvas id="canvas_<%=floorid%>" style="display:<%=display%>" width="600" height="500"  tabindex='1' class="cmenu2 main_canvas" >
 				This text is displayed if your browser does not support HTML5 Canvas.
 			  </canvas>
    <%} %>	

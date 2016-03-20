@@ -70,7 +70,7 @@ function updateBookingSidPopover(popover_hidden_wrap_id,sid_shape) {
 		} else {
 			appendData+= '	   <div   id="remove_to_booking_popup-'+sid+'" class="remove_from_booking_popup" onclick="Booking_removeFromOrder(\''+sid+'\')">';
 			appendData+= '	      <div class="heb_btn_mat_clear material-icons ">clear</div>';	
-			appendData+= '	      <div class="heb_btn_text heb_btn_text_clear">מחק מהזמנה</div>	';	     	       
+			appendData+= '	      <div class="heb_btn_text heb_btn_text_clear">הסר מהזמנה</div>	';
 			appendData+= '	   </div>';
 		
 		}
@@ -140,7 +140,7 @@ function updateSelectOptions(selid,type,datepickerId,minPeriodSeconds) {
 	  if(type == "select") {
 	    $("#"+selid).append('<option selected disabled>Closed</option>');
 	  } else if(type=="dropdown") {
-	    selectedTime = "CLOSED";
+	    selectedTime = "סגור";
 		$("#book_top_start").html(selectedTime);
 		$("#book_top_start").parent().removeClass("dropdown-toggle");
 		$("#book_top_start").parent().removeAttr("data-toggle");
@@ -208,7 +208,71 @@ function updateSelectOptions(selid,type,datepickerId,minPeriodSeconds) {
 			 }	
 	      
 	 }
+	updateAvailableEndPeriods(openStepList,false);
 	// -----------------
+}
+function updateAvailableEndPeriods(openStepList,onStartSelect) {
+	if(onStartSelect == true) {
+		openStepList = bookingsManager.getOpenSecondsByDate($("#datepicker_ub").datepicker( "getDate" ).getTime()/1000,minPeriodSeconds);
+	}
+	var StartVal = parseInt($("#book_start_val_").val());
+	if(StartVal == -1) {
+		$("#book_top_period").parent().removeClass("dropdown-toggle");
+		$("#book_top_period").parent().removeAttr("data-toggle");
+		$("#book_top_period").parent().removeAttr("aria-haspopup");
+		$("#book_top_period").parent().removeAttr("aria-expanded");
+		$("#book_top_period").addClass('dropdown_disabled');
+	} else {
+		var periodSelected = parseInt($("#book_period_val_").val());
+		var bookLengthListInner = bookLengthList;
+
+		if (bookLengthListInner.length == 1) {
+
+			var EndVal = StartVal + bookLengthListInner[0];
+			var hours = getLeadingZero(((EndVal - (EndVal % 3600)) % (3600 * 24)) / 3600);
+			var minutes = getLeadingZero((EndVal % 3600) / 60);
+			$("#book_top_period").html(hours + ":" + minutes);
+			$("#book_period_val_").val(bookLengthListInner[0]);
+
+
+			$("#book_top_period").parent().removeClass("dropdown-toggle");
+			$("#book_top_period").parent().removeAttr("data-toggle");
+			$("#book_top_period").parent().removeAttr("aria-haspopup");
+			$("#book_top_period").parent().removeAttr("aria-expanded");
+			$("#book_top_period").addClass('dropdown_disabled');
+
+		} else {
+			$("#book_top_period").parent().addClass("dropdown-toggle");
+			$("#book_top_period").removeClass('dropdown_disabled');
+			$("#dropdown_period_floors").html("");
+			var addedPeriods = 0;
+			var lastVal = 0;
+			var hours;
+			var minutes;
+			for (var e = 0; e < bookLengthListInner.length; e++) {
+
+				var EndVal = StartVal + bookLengthListInner[e];
+				if (EndVal <= openStepList[openStepList.length - 1] + bookLengthListInner[0]) {
+					addedPeriods += 1;
+					lastVal = bookLengthListInner[e];
+					hours = getLeadingZero(((EndVal - (EndVal % 3600)) % (3600 * 24)) / 3600);
+					minutes = getLeadingZero((EndVal % 3600) / 60);
+					$("#dropdown_period_floors").append('<li  ><a href="#" data-period="' + bookLengthListInner[e] + '">' + hours + ':' + minutes + '</a></li>');
+					if (bookLengthListInner[e] == periodSelected) {
+						$("#book_top_period").html(hours + ":" + minutes);
+					}
+				}
+			}
+			if(lastVal != periodSelected) {
+				$("#book_top_period").html(hours + ":" + minutes);
+				$("#book_period_val_").val(lastVal);
+			}
+			$("#book_top_period").parent().attr("data-toggle", "dropdown");
+			$("#book_top_period").parent().attr("aria-haspopup", "true");
+			$("#book_top_period").parent().attr("aria-expanded", "true");
+
+		}
+	}
 }
 function UpdateModal() {
         $("#modal_sid_lines").html('');
@@ -237,6 +301,7 @@ function UpdateModal() {
 				$("#modal_sid_lines").append(appendData);
 			 }
 			 $("#booking_order_modal").modal('show');
+	updatePageView();
 }
 function updateShowDateDatepickerFe() {
     var date_ub = $("#datepicker_ub").datepicker( "getDate" );

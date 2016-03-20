@@ -47,8 +47,6 @@ function Shape(state, x, y, w, h,type,options,angle_) {
   this.booking_options.minPersons = 1;
   this.booking_options.maxPersons = 1;
   this.booking_options.description = null;
-  this.booking_options.weekDays = {"sun":true,"mon":true,"tue":true,"wed":true,"thu":true,"fri":true,"sat":true};
-  this.booking_options.timeRange = [{"from":"08:00","to":"18:00"}];
   
   if (type == "line" || type == "text") {
     this.booking_options.bookable = false;

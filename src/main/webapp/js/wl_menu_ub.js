@@ -155,10 +155,12 @@ function updateFloorWrapDimentions () {
 		 }
 	  }
    }
+
 }
 
 function ApplyFinalPosition() {
-	       floorAppend("canvas_append_wrap_ub",false);
+	floorAppend("canvas_append_wrap_ub",false);
+	$("#floor_bottom_buttons").width($("#canvas_wrap_not_scroll_conf-both").width());
 }
 
 	//var currentPosition.timeline = "id"

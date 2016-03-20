@@ -253,7 +253,44 @@
 		   </div>
 		</div>
 		<div id="other_top">
-		  <input type="checkbox" id="addbgshape" style="display:none" />
+			<div id="floor_options" style="z-index:1000">
+				<span class="floor_options_text">Floor options:</span>
+				<table id="floor_options_table" cellspacing="0" cellpadding="0" style="border-collapse:collapse">
+					<tr >
+						<td id="floor_selector_td">
+							<select    id="floor__selector">
+								<option value="Floor-1" selected>Floor-1</option>
+							</select>
+						</td>
+						<td id="add_floor_td">
+							<div id="add_floor_div_btn"><div class="material-icons floors_material_buttons"  onclick="AddFloor()">add</div></div>
+						</td>
+						<td id="rename_floor_btn_td">
+							<div id="rename_floor_div_cbtn"  ><div class="material-icons floors_material_buttons floors_material_buttons_tf"  onclick="RenameFloor()">text_format</div></div>
+						</td>
+						<td class="rename_floor_input_td" style="display:none">
+							<input id="rename_floor_input"/>
+						</td>
+						<td class="rename_floor_input_td" style="display:none">
+							<div id="rename_floor_div_done" onclick="RenameFloorDone()">Done</div>
+						</td>
+						<td class="add_floor_input_td" style="display:none">
+							<input id="add_floor_input"/>
+						</td>
+						<td class="add_floor_input_td" style="display:none">
+							<div id="add_floor_div_done"  onclick="AddFloorAdd()">Add</div>
+						</td>
+						<td id="cancel_floor_td" style="display:none">
+							<div id="cancel_floor"  onclick="CancelFloor()">Cancel</div>
+						</td>
+						<td id="remove_floor_td"  style="display:none">
+							<div id="clear_floor_div_cbtn"><div class="material-icons floors_material_buttons floors_material_buttons_clear"  onclick="DeleteFloorPre()">clear</div></div>
+						</td>
+					</tr>
+				</table>
+			</div>
+
+			<input type="checkbox" id="addbgshape" style="display:none" />
 		  <input type="checkbox" id="bookingopacity"  style="display:none"  />
 		  <div id="save_buttons_wrap">
 		     <div id="drawingSaveButton" class="save_buttons" onclick="SIcreateSaveObjectPre()"> 
@@ -335,7 +372,16 @@
 						</div>
 						<div class="bg_fill_submenus" id="bg_fill_image_sm" style="display:none">
 							  <div class="picker_table" name="picker_table" id="background_picker_w" >
-								<div class="internal_picker " id="background_picker"></div>
+								<div class="internal_picker " id="background_picker">
+									<div id="background_picker_append">
+
+									</div>
+									<div class="pick_load_more" id="bg_load_more">
+										<img src="img/gif/fr_load.gif" style="display:none" class="more_pick_load_ajax"/>
+										<i class="material-icons more_pick_load_mat">more_horiz</i>
+										<div class="load_more_pic_text">LOAD MORE</div>
+									</div>
+								</div>
 							  </div>
 							  <div style="display:none" id="background_actual_append"></div>
 						</div>
@@ -905,7 +951,16 @@
 						  </div>
 					  </div>
 					  <div class="picker_table" name="picker_table" id="table_picker_w" >
-						<div class="internal_picker " id="table_picker"></div>
+						<div class="internal_picker " id="table_picker">
+							<div id="table_picker_append">
+
+							</div>
+							<div class="pick_load_more" id="table_load_more">
+								<img src="img/gif/fr_load.gif" style="display:none" class="more_pick_load_ajax"/>
+								<i class="material-icons more_pick_load_mat">more_horiz</i>
+								<div class="load_more_pic_text">LOAD MORE</div>
+							</div>
+						</div>
 					  </div>	
                       <div id="actual_uploads_table" style="display:none">
                         <div id="actual_uploads_table_server"> </div>
@@ -939,7 +994,16 @@
 					  </div>
 					  </div>
 					  <div class="picker_table" name="picker_table" id="chair_picker_w" >
-						<div class="internal_picker " id="chair_picker"> </div>
+						<div class="internal_picker " id="chair_picker">
+							<div id="chair_picker_append">
+
+							</div>
+							<div class="pick_load_more" id="chair_load_more">
+								<img src="img/gif/fr_load.gif" style="display:none" class="more_pick_load_ajax"/>
+								<i class="material-icons more_pick_load_mat">more_horiz</i>
+								<div class="load_more_pic_text">LOAD MORE</div>
+							</div>
+						</div>
 					  </div>	
                       <div id="actual_uploads_chair" style="display:none">
                         <div id="actual_uploads_chair_server"> </div>
@@ -972,7 +1036,16 @@
 						  </div>
 					  </div>
 					  <div class="picker_table" name="picker_table" id="combo_picker_w" >
-						<div class="internal_picker " id="combo_picker"></div>
+						<div class="internal_picker " id="combo_picker">
+							<div id="combo_picker_append">
+
+							</div>
+							<div class="pick_load_more" id="combo_load_more">
+								<img src="img/gif/fr_load.gif" style="display:none" class="more_pick_load_ajax"/>
+								<i class="material-icons more_pick_load_mat">more_horiz</i>
+								<div class="load_more_pic_text">LOAD MORE</div>
+							</div>
+						</div>
 					  </div>	
                       <div id="actual_uploads_combo" style="display:none">
                         <div id="actual_uploads_combo_server"> </div>
@@ -1013,7 +1086,7 @@
 						  </div>
 						<div class="picker_table" name="picker_table" id="user_picker_w" >
 						   <div class="internal_picker " id="user_picker">
-						   
+
 						   </div>
 						</div>
 					  </div>
@@ -1026,43 +1099,8 @@
 		  <div id="dr_center_column_wrap">
 		   <div id="canvas_td">
 
-		   	<div id="floor_options" style="z-index:1000">
-			<span class="floor_options_text">Floor options:</span>
-		    <table id="floor_options_table" cellspacing="0" cellpadding="0" style="border-collapse:collapse">
-			  <tr >
-			    <td id="floor_selector_td">
-				  <select    id="floor__selector">
-					 <option value="Floor-1" selected>Floor-1</option>
-				  </select>												 
-				</td>
-				<td id="add_floor_td">
-				  <div id="add_floor_div_btn"><div class="material-icons floors_material_buttons"  onclick="AddFloor()">add</div></div>
-				</td>
-				<td id="rename_floor_btn_td">
-				  <div id="rename_floor_div_cbtn"  ><div class="material-icons floors_material_buttons floors_material_buttons_tf"  onclick="RenameFloor()">text_format</div></div>
-				</td>
-				<td class="rename_floor_input_td" style="display:none">
-				  <input id="rename_floor_input"/>
-				</td>
-				<td class="rename_floor_input_td" style="display:none">
-				  <div id="rename_floor_div_done" onclick="RenameFloorDone()">Done</div>
-				</td>
-				<td class="add_floor_input_td" style="display:none">
-				  <input id="add_floor_input"/>
-				</td>
-				<td class="add_floor_input_td" style="display:none">
-				  <div id="add_floor_div_done"  onclick="AddFloorAdd()">Add</div>
-				</td>
-				<td id="cancel_floor_td" style="display:none">
-				  <div id="cancel_floor"  onclick="CancelFloor()">Cancel</div>
-				</td>
-				<td id="remove_floor_td"  style="display:none">
-				  <div id="clear_floor_div_cbtn"><div class="material-icons floors_material_buttons floors_material_buttons_clear"  onclick="DeleteFloorPre()">clear</div></div>
-				</td>
-			  </tr>
-			</table>
-		  </div>	
-		  <div id="mso_relative_div" style="display:none">
+
+		  	  <div id="mso_relative_div" style="display:none">
 			  <div id="multiple_selection_options" >
 				<table id="multiple_selection_options_table" cellspacing="0" cellpadding="0" style="border-collapse:collapse">
 				   <tr >
@@ -1087,7 +1125,7 @@
 			  </div>
 		   <div id="canvas_wrapper" name="canvas_not_scroll" class="canvas_floor_wrap"> 
 	         <div class="canvas_floor_wrap" id="canvas_append">
-			  <canvas id="canvas1" width="400" height="400"  tabindex='1' class="cmenu2 main_canvas" >
+			  <canvas id="canvas1" width="600" height="500"  tabindex='1' class="cmenu2 main_canvas" >
 				This text is displayed if your browser does not support HTML5 Canvas.
 			  </canvas>
 		     </div>

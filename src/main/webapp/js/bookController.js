@@ -3,6 +3,7 @@ var floorPopoverOpening = false;
 var leftMouseDown = 0;  
 var rightMouseDown = 0; 
 var minPeriodSeconds = 30*60;// Set by configuration
+var bookLengthList = [1800,3600,5400,7200];
 $(document).ready(function() {
    $('[data-toggle="tooltip"]').tooltip()
    $('#canvas_popover').on('shown.bs.popover', function () {
@@ -10,7 +11,9 @@ $(document).ready(function() {
 			floorPopoverOpening = false;
 			
 	});
-
+	$(".nav-pills a").click(function(){
+		$(this).tab('show');
+	});
 placeUTCOffsetGlobal = document.getElementById("server_placeUTC").value;
 var d = new Date();
 var utc = d.getTime() + (d.getTimezoneOffset() * 60000);
@@ -28,9 +31,10 @@ if (d.getDate() != nd.getDate()) {
    $("#dd_floor_name").text($(this).text()); 
  });
  $("#dropdown_start_floors").on('click', 'li a', function(){
-   $("#book_top_start").text($(this).text()); 
-   $("#book_start_val_").val($(this).attr("data-period"));
-   updateCloseShapes();
+     $("#book_top_start").text($(this).text());
+     $("#book_start_val_").val($(this).attr("data-period"));
+	 updateAvailableEndPeriods([],true);
+     updateCloseShapes();
  });
  $("#dropdown_period_floors").on('click', 'li a', function(){
    $("#book_top_period").text($(this).text()); 

@@ -1,8 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
          pageEncoding="UTF-8"
          import="com.dimab.pp.dto.*"
-         import="java.util.*" %>
+          %>
 <%@ page import="com.dimab.pickoplace.utils.JsonUtils" %>
+<%@ page import="java.util.List" %>
 <%@taglib prefix="common" tagdir="/WEB-INF/tags/common" %>
 
 <!DOCTYPE html>
@@ -510,7 +511,6 @@
         <%} else if (ifresp.getBooking() == true) {%>
         <div id="pc_iframe_top">
             <div id="please_select_date_">
-                <div class="material-icons">content_paste</div>
                 <div id="please_select_date_text">נא לבחור תאריך ההזמנה</div>
                 <div id="iframe_date_selection" style="display:none">
 
@@ -521,7 +521,7 @@
                     </div>
 
                     <div class="modal_value_column">
-                        <div class="iframe_top_value_mat material-icons">schedule</div>
+                        <div class="iframe_top_value_mat material-icons material-icons-text">התחלה</div>
                         <div class="dropdown" data-toggle="tooltip" data-placement="right" title="שעת הזמנה">
                             <div class="dropdown-toggle" id="select_time_modal_start" data-toggle="dropdown"
                                  aria-haspopup="true" aria-expanded="true">
@@ -537,15 +537,15 @@
                     </div>
 
                     <div class="modal_value_column">
-                        <div class="iframe_top_value_mat material-icons">timelapse</div>
-                        <div class="dropdown" data-toggle="tooltip" data-placement="right" title="משך ההזמנה">
+                        <div class="iframe_top_value_mat material-icons  material-icons-text">סיום</div>
+                        <div class="dropdown" data-toggle="tooltip" data-placement="right" title="סיום הזמנה">
                             <div class="dropdown-toggle" id="select_time_modal_period" data-toggle="dropdown"
                                  aria-haspopup="true" aria-expanded="true">
                                 <div id="book_top_period" class="book_top_period_if">שעתיים</div>
                                 <input type="text" id="book_period_val_" style="display:none"
                                        value="7200"/>
                             </div>
-                            <ul class="dropdown-menu select_time_dropdown" id="dropdown_period_floors"
+                            <ul class="dropdown-menu " id="dropdown_period_floors"
                                 aria-labelledby="select_time_modal_period">
                                 <li><a href="#" data-period="1800">חצי-שעה</a></li>
                                 <li><a href="#" data-period="3600">שעה</a></li>
@@ -559,19 +559,16 @@
                         <div class="dropdown" data-toggle="tooltip" data-placement="right" title="מספר אורחים">
                             <div class="dropdown-toggle" id="select_time_modal_persons"
                                  data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                <div id="book_top_persons" class="book_top_persons_if">2</div>
+                                <div id="book_top_persons" class="book_top_persons_if"><%=responseJSON.getPlaceMinimumPersons()%></div>
                                 <input type="text" id="book_persons_val_" style="display:none"
-                                       value="2"/>
+                                       value="<%=responseJSON.getPlaceMinimumPersons()%>"/>
                             </div>
 
-                            <ul class="dropdown-menu  select_time_dropdown"
+                            <ul class="dropdown-menu  "
                                 id="dropdown_persons_floors" aria-labelledby="select_time_modal_persons">
-                                <li><a href="#" data-period="1">1</a></li>
-                                <li><a href="#" data-period="2">2</a></li>
-                                <li><a href="#" data-period="3">3</a></li>
-                                <li><a href="#" data-period="4">4</a></li>
-                                <li><a href="#" data-period="5">5</a></li>
-                                <li><a href="#" data-period="6">6</a></li>
+                                <%for(Integer persons : responseJSON.getPersonsList()) {%>
+                                <li><a href="#" data-period="<%=persons%>"><%=persons%></a></li>
+                                <%}%>
                             </ul>
                         </div>
                     </div>

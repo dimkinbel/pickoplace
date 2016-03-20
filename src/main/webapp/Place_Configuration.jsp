@@ -6,8 +6,10 @@
 		 import = "com.dimab.pp.dto.JsonImageID_2_GCSurl"
 		 import = "com.dimab.pp.dto.CanvasState"
 		 import = "com.dimab.pp.dto.JsonimgID_2_data"
-		 import = "java.util.List"%>
+		 import = "java.util.List"
+		 import = "java.util.TreeSet"%>
 <%@ page import="com.dimab.pickoplace.utils.JsonUtils" %>
+<%@ page import="java.util.Set" %>
 <%@taglib prefix="common" tagdir="/WEB-INF/tags/common" %>
 
 
@@ -147,6 +149,8 @@
 </head>
 <%
 	ConfigurationObject configuration = (ConfigurationObject)request.getAttribute("configuration");
+	Integer minPersons = (Integer)request.getAttribute("minPersonsForDropdown");
+	Set<Integer> personsList = (Set<Integer>) request.getAttribute("personsListForDropdown");
 	List<PPSubmitObject> canvasStateList = configuration.getFloors();
 	List<JsonSID_2_imgID> sid2imgID = configuration.getJSONSIDlinks();
 	List<JsonImageID_2_GCSurl> imgID2URL = configuration.getJSONimageID2url();
@@ -636,11 +640,11 @@
 								</div>
 								<div class="row input_pc_row">
 									<div class="col-md-3 col-md-push-9 pc_var_name"><span class="necessarily_star">&nbsp;*</span><div class="pc_param_name pc_param_heb">טלפון</div></div>
-									<div class="col-md-3 col-md-push-3 pc_var_val"><input id="config_phone" type="number" class="conf_param_input"  value="<%=placePhone%>"/></div>
+									<div class="col-md-3 col-md-push-3 pc_var_val"><input id="config_phone" type="text" class="conf_param_input"  value="<%=placePhone%>"/></div>
 								</div>
 								<div class="row input_pc_row">
 									<div class="col-md-3 col-md-push-9 pc_var_name"> <div class="pc_param_name pc_param_heb">פקס</div></div>
-									<div class="col-md-3 col-md-push-3 pc_var_val"><input id="config_fax"  type="number" class="conf_param_input" value="<%=placeFax%>" /></div>
+									<div class="col-md-3 col-md-push-3 pc_var_val"><input id="config_fax"  type="text" class="conf_param_input" value="<%=placeFax%>" /></div>
 								</div>
 								<div class="row input_pc_row">
 									<div class="col-md-3 col-md-push-9 pc_var_name"><span class="necessarily_star">&nbsp;*</span><div class="pc_param_name pc_param_heb">דואר אלקטרוני</div></div>
@@ -1461,7 +1465,6 @@
 										</div>
 										<div id="pc_iframe_top" style="<%=iframeTopDisplay%>">
 											<div id="please_select_date_">
-												<div class="material-icons">content_paste</div>
 												<div id="please_select_date_text">נא לבחור תאריך ההזמנה</div>
 												<div id="iframe_date_selection" style="display:none">
 
@@ -1471,7 +1474,7 @@
 													</div>
 
 													<div class="modal_value_column" >
-														<div class="iframe_top_value_mat material-icons">schedule</div>
+														<div class="iframe_top_value_mat material-icons material-icons-text">התחלה</div>
 														<div class="dropdown" data-toggle="tooltip"   data-placement="right" title="שעת הזמנה">
 															<div class="dropdown-toggle" id="select_time_modal_start" data-toggle="dropdown"
 																 aria-haspopup="true" aria-expanded="true">
@@ -1485,7 +1488,7 @@
 													</div>
 
 													<div class="modal_value_column" >
-														<div class="iframe_top_value_mat material-icons">timelapse</div>
+														<div class="iframe_top_value_mat material-icons  material-icons-text">סיום</div>
 														<div class="dropdown" data-toggle="tooltip"   data-placement="right" title="משך ההזמנה">
 															<div class="dropdown-toggle" id="select_time_modal_period" data-toggle="dropdown"
 																 aria-haspopup="true" aria-expanded="true">
@@ -1493,7 +1496,7 @@
 																<input type="text" id="book_period_val_" style="display:none"
 																	   value="7200"/>
 															</div>
-															<ul class="dropdown-menu select_time_dropdown" id="dropdown_period_floors"
+															<ul class="dropdown-menu  " id="dropdown_period_floors"
 																aria-labelledby="select_time_modal_period">
 																<li><a href="#" data-period="1800">חצי-שעה</a></li>
 																<li><a href="#" data-period="3600">שעה</a></li>
@@ -1507,19 +1510,16 @@
 														<div class="dropdown"  data-toggle="tooltip"   data-placement="right" title="מספר אורחים">
 															<div class="dropdown-toggle" id="select_time_modal_persons"
 																 data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-																<div id="book_top_persons" class="book_top_persons_if">2</div>
+																<div id="book_top_persons" class="book_top_persons_if"><%=minPersons%></div>
 																<input type="text" id="book_persons_val_" style="display:none"
-																	   value="2"/>
+																	   value="<%=minPersons%>"/>
 															</div>
 
-															<ul class="dropdown-menu  select_time_dropdown"
+															<ul class="dropdown-menu   "
 																id="dropdown_persons_floors" aria-labelledby="select_time_modal_persons">
-																<li><a href="#" data-period="1">1</a></li>
-																<li><a href="#" data-period="2">2</a></li>
-																<li><a href="#" data-period="3">3</a></li>
-																<li><a href="#" data-period="4">4</a></li>
-																<li><a href="#" data-period="5">5</a></li>
-																<li><a href="#" data-period="6">6</a></li>
+																<%for(Integer persons : personsList) {%>
+																<li><a href="#" data-period="<%=persons%>"><%=persons%></a></li>
+																<%}%>
 															</ul>
 														</div>
 													</div>

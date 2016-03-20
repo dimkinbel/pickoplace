@@ -1554,40 +1554,15 @@ BCanvasState.prototype.drawSshape = function(p,shape) {
 BCanvasState.prototype.getMouse = function(e) {
     "use strict";
     var element = this.canvas, offsetX = 0, offsetY = 0, mx, my;
+    var parentOffset = $(this.canvas).parent().offset();
 
-    // Compute the total offset
-    var scrollTop = 0;
-    var scrollLeft = 0;
-    if (element.offsetParent !== undefined) {
-        do {
-            scrollTop = 0;
-            scrollLeft = 0;
-            var leftb = parseInt(getComputedStyle(element,null).getPropertyValue('border-left-width'),10);
-            var topb = parseInt(getComputedStyle(element,null).getPropertyValue('border-top-width'),10);
+    mx = parseInt((e.pageX - parentOffset.left)/this.zoom);
+    my = parseInt((e.pageY -  parentOffset.top)/this.zoom);
 
-            offsetX += element.offsetLeft + leftb - scrollLeft;
-            offsetY += element.offsetTop  + topb - scrollTop;
-            element = element.offsetParent;
-        } while (element);
-    }
-    offsetX -=  document.getElementById(this.scrollID).scrollLeft;
-    offsetY -=  document.getElementById(this.scrollID).scrollTop;
-    // Add padding and border style widths to offset
-    // Also add the <html> offsets in case there's a position:fixed bar
-    offsetX += this.stylePaddingLeft + this.styleBorderLeft + this.htmlLeft;
-    offsetY += this.stylePaddingTop + this.styleBorderTop + this.htmlTop;
-    //alert(this.stylePaddingLeft);
-    mx = parseInt((e.pageX - offsetX)/this.zoom);
-    my = parseInt((e.pageY - offsetY)/this.zoom);
-
-    if(mx < 0) { mx = 0 };
-    if(mx > this.origWidth) { mx = this.origWidth };
-    if(my < 0) { my = 0 };
-    if(my > this.origHeight) { my = this.origHeight };
     // We return a simple javascript object (a hash) with x and y defined
+    console.log(mx+" "+my)
     return {x: mx, y: my , orgx: e.pageX , orgy: e.pageY};
 };
-
 // If you dont want to use <body onLoad='init()'>
 // You could uncomment this init() reference and place the script reference inside the body tag
 //init();

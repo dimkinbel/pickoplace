@@ -8,6 +8,8 @@ var calendarOpenDaysObject = {};
 var tempNames = {};
 var current_username_value;
 var current_password_value;
+var current_place_phone_value;
+var current_place_fax_value;
 
 var currentIframeSettings = {};
 currentIframeSettings.booking = true;
@@ -488,6 +490,29 @@ $(document).ready(function() {
 	$(document).on('focusin', '#admin_email-1', function(e){
 		$("#admin_email-1").removeClass("admin_email_warn");
 	});
+
+	$(document).on('focusin', '.pc_text_val_sid_pop', function(e){
+		var sid = $(this).attr("id").replace(/pop_booking_shape_name_/,"");
+		$(this).removeClass("pc_text_val_sid_red_border");
+		tempNames[sid] = $(this).val();
+
+	});
+	$(document).on('focusout', '.pc_text_val_sid_pop', function(e){
+		var sid = $(this).attr("id").replace(/pop_booking_shape_name_/,"");
+		var newName = $(this).val();
+		for(var f = 0 ; f < floorCanvases.length ; f++) {
+			for (var s = 0 ; s<floorCanvases[f].shapes.length ; s++) {
+				if(floorCanvases[f].shapes[s].sid != sid ) {
+					if(newName == floorCanvases[f].shapes[s].booking_options.givenName) {
+						$(this).addClass("pc_text_val_sid_red_border");
+						$(this).val(tempNames[sid]);
+						return;
+					}
+				}
+			}
+		}
+		sid2shape[sid].booking_options.givenName = newName;
+	});
    $(document).on('focusin', '.pc_text_val_sid', function(e){
        var sid = $(this).attr("id").replace(/sc_booking_shape_name_/,"");
 	   $(this).removeClass("pc_text_val_sid_red_border");
@@ -508,7 +533,7 @@ $(document).ready(function() {
 		   }
 		 }
 	   }
-	   sid2shape[SID].booking_options.givenName = newName;
+	   sid2shape[sid].booking_options.givenName = newName;
    });
    $(document).on('focusout', '.free_text_pc_sid', function(e){
       var sid = $(this).attr("id").replace(/free_text_pc_sid-/,"");
@@ -601,6 +626,37 @@ $(document).ready(function() {
 			$('#iframe_bookable').bootstrapToggle('disable');
 			currentIframeSettings.booking = false;
 			updateCloseShapes();
+		}
+	});
+
+	$("#config_phone").keydown(function() {
+		var temp_val = $(this).val();
+		if(/^[0-9\-\+]*$/.test(temp_val) == true) {
+			current_place_phone_value = $(this).val();
+		}
+	});
+	$("#config_phone").keyup(function() {
+		var temp_val = $(this).val();
+		if(/^[0-9\-\+]*$/.test(temp_val) == false) {
+			$(this).val(current_place_phone_value);
+		}
+	});
+	$("#config_fax").keydown(function() {
+		var temp_val = $(this).val();
+		if(/^[0-9\-\+]*$/.test(temp_val) == true) {
+			current_place_fax_value = $(this).val();
+		}
+	});
+	$("#config_fax").keyup(function() {
+		var temp_val = $(this).val();
+		if(/^[0-9\-\+]*$/.test(temp_val) == false) {
+			$(this).val(current_place_fax_value);
+		}
+	});
+	$("#waiter_username_change_input").keyup(function() {
+		var temp_val = $(this).val();
+		if(/^[a-zA-Z0-9\_\-]*$/.test(temp_val) == false) {
+			$(this).val(current_username_value);
 		}
 	});
 	$("#waiter_username_change_input").keydown(function() {
@@ -914,9 +970,9 @@ function OpenSaveModal(type) {
 }
 function showFloorPositionPopover(sid,x,y) {
      updateSidLocationPopover('canvas_popover_hidden',sid);// waiterViewService.js
-      $("#list_popover").css({'position':'absolute','top':y-10,'left':x}).popover({
+      $("#list_popover").css({'position':'absolute','top':y+5,'left':x+5}).popover({
             trigger: 'click',
-            placement:'top',
+            placement:'auto',
 			container: 'body',
 			template:'<div class="popover canvas_popover_template_list"   role="tooltip"><div class="arrow"></div><h3 class="popover-title"></h3><div class="popover-content"></div></div>',
 			html: true, 

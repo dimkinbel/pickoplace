@@ -438,7 +438,7 @@ BookingListManager.prototype.DrawToNext = function(bid) {
 	appendData +='							<div class="col-sm-2"  >';
 	appendData +='							</div>';
 	appendData +='							<div class="col-sm-2"  >';
-	appendData +='							<i class="material-icons mat_bl_hid  hover_black" data-toggle="tooltip" data-container="body" data-placement="top" title="Change places" onclick="SingleBookingButton(\'change_place\',\''+bshape.bidsid+'\')">repeat</i></div>';
+	appendData +='							<i class="material-icons mat_bl_hid  hover_black" data-toggle="tooltip" data-container="body" data-placement="top" title="Change places" onclick="SingleBookingButton(\'change_place\',\''+bshape.bid+'\')">repeat</i></div>';
 	appendData +='							<div class="col-sm-2"  >';
 	appendData +='							<i class="material-icons mat_bl_hid  hover_red"  data-toggle="tooltip" data-container="body" data-placement="top" title="Cancel reservation"  onclick="SingleBookingButton(\'cancel\',\''+bshape.bid+'\')">cancel</i></div>';
 	appendData +='						  </div>';

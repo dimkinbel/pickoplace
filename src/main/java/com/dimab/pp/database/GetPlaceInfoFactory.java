@@ -42,7 +42,8 @@ public PlaceInfo getPlaceInfo (DatastoreService datastore , Entity csEntity , in
 		String Address = (String) csEntity.getProperty("address");
 		String mail = new String();
 		String phone = new String();
-		
+	    String placeURL = new String();
+	     String placeFax = new String();
 		if(csEntity.getProperty("placeMail") != null) {
 			mail = (String) csEntity.getProperty("placeMail");
 		}
@@ -52,7 +53,9 @@ public PlaceInfo getPlaceInfo (DatastoreService datastore , Entity csEntity , in
 		if(csEntity.getProperty("placeDescription") != null) {
 			placeInfo.setDescription((String)csEntity.getProperty("placeDescription"));			
 		}
-  	    String placeURL ;
+	    if (csEntity.getProperty("placeFax")!= null) {
+		  placeFax   = (String)csEntity.getProperty("placeFax");
+	    }
 		if (csEntity.getProperty("placeURL") == null) {
 			placeURL   = "";
 		} else {
@@ -132,7 +135,7 @@ public PlaceInfo getPlaceInfo (DatastoreService datastore , Entity csEntity , in
 					filename = String.format("/gs/%s/%s", gcsFilename.getBucketName(), gcsFilename.getObjectName());
 					System.out.println("FILENAME=" + filename);
 					String imgUrl = is.getServingUrl(ServingUrlOptions.Builder.withGoogleStorageFileName(filename));
-					imgUrl = imgUrl + "=s50";
+					imgUrl = imgUrl + "=s150";
 
 					JsonimgID_2_data imgID2byte64 = new JsonimgID_2_data();
 					imgID2byte64.setData64(imgUrl);
@@ -195,6 +198,7 @@ public PlaceInfo getPlaceInfo (DatastoreService datastore , Entity csEntity , in
         placeInfo.setMainFloorName(mainFloorName);
         placeInfo.setPlaceMail(mail);
         placeInfo.setPlacePhone(phone);
+	    placeInfo.setPlaceFax(placeFax);
 
 	  return placeInfo;
   }

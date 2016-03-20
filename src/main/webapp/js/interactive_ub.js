@@ -238,10 +238,11 @@ function applyBooking() {
 		      beforeSend: function () {
 		      },
 		      success : function(data){
-
+				  $("#make_booking").show();
 				  $("#loading_text_w").hide();
-
+				  $('#booking_order_modal').modal('hide');
 			    	  if(data.added==true) {
+
 			    		  $("#bookingAcceptedModal_header").removeClass("book_modal_fail").addClass("book_modal_success");
 						  $("#bookingAcceptedModal_body").removeClass("book_modal_fail").addClass("book_modal_success");
 						  $("#bookingAcceptedModal_body").html("הזמנתך התקבלה בהצלחה");

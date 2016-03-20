@@ -49,41 +49,61 @@ $(document).ready(function () {
   		};
     var place_search = document.getElementById('buisnessAddress');
     var autocomplete = new google.maps.places.Autocomplete(place_search, options);
+	$("#buisnessName,#branchName").keyup(function() {
+		validateName();
+	});
 });
+function validateName() {
+	var name = $("#buisnessName").val();
+	var branch = $("#branchName").val();
+	if(name != "" && branch != "") {
+		$("#bstartNext").removeClass("disabled_next_button");
+		$("#bstartNext").addClass("tourButton");
+		$("#bstartNext").attr("onclick","ContinueToEdit();");
+		return true;
+	} else {
+		$("#bstartNext").removeClass("tourButton");
+		$("#bstartNext").addClass("disabled_next_button");
+		$("#bstartNext").removeAttr("onclick");
+		return false;
+	}
+}
 var ongoingCreation = false;
-function BuisnessNameNext(debug) {
-	if(ongoingCreation==false) {
-		ongoingCreation = true;
-	setSessionData(function(result) {
-		   if(result) {
-			 var address = document.getElementById('buisnessAddress').value;
-		     geocoder.geocode( { 'address': address}, function(results, status) {
-		         if (status == google.maps.GeocoderStatus.OK) {
-		
-		        	    var lat = results[0].geometry.location.lat();
-		        	    var lng = results[0].geometry.location.lng();
-		               	document.getElementById("address_hidden_lat").setAttribute("value",lat);
-		             	document.getElementById("address_hidden_lng").setAttribute("value",lng);             	
-		             	$.ajax({
-		             	   url:"https://maps.googleapis.com/maps/api/timezone/json?location="+lat+","+lng+"&timestamp="+(Math.round((new Date().getTime())/1000)).toString()+"&sensor=false&key=AIzaSyAaX5Ow6oo_axUKMquFxnPpT6Kd-L7D40k",
-		             	}).done(function(response){
-		             		 //alert(response.rawOffset);
-		             		  var offset = response.rawOffset/3600 + response.dstOffset/3600;
-		                 	 document.getElementById("UTCoffcet_hidden").setAttribute("value",offset);
-		                 	 document.getElementById("timeZoneId").setAttribute("value",response.timeZoneId);
-		                     document.getElementById("createPlaceInfo").submit();
-		             	});
-		         } else {
-		           //alert('Geocode was not successful for the following reason: ' + status);
-		   		   //   $('#address_validate_message').html('Please enter valid Address');
-		 		  //    $('#address_validate_message').slideDown(500);	
-		      
-		         }
-		       }); 
-		   } else {
-			   updatePageView();
-		   }
-    });
+function ContinueToEdit() {
+	if(validateName() == true) {
+		if (ongoingCreation == false) {
+			ongoingCreation = true;
+			setSessionData(function (result) {
+				if (result) {
+					var address = document.getElementById('buisnessAddress').value;
+					geocoder.geocode({'address': address}, function (results, status) {
+						if (status == google.maps.GeocoderStatus.OK) {
+
+							var lat = results[0].geometry.location.lat();
+							var lng = results[0].geometry.location.lng();
+							document.getElementById("address_hidden_lat").setAttribute("value", lat);
+							document.getElementById("address_hidden_lng").setAttribute("value", lng);
+							$.ajax({
+								url: "https://maps.googleapis.com/maps/api/timezone/json?location=" + lat + "," + lng + "&timestamp=" + (Math.round((new Date().getTime()) / 1000)).toString() + "&sensor=false&key=AIzaSyAaX5Ow6oo_axUKMquFxnPpT6Kd-L7D40k",
+							}).done(function (response) {
+								//alert(response.rawOffset);
+								var offset = response.rawOffset / 3600 + response.dstOffset / 3600;
+								document.getElementById("UTCoffcet_hidden").setAttribute("value", offset);
+								document.getElementById("timeZoneId").setAttribute("value", response.timeZoneId);
+								document.getElementById("createPlaceInfo").submit();
+							});
+						} else {
+							//alert('Geocode was not successful for the following reason: ' + status);
+							//   $('#address_validate_message').html('Please enter valid Address');
+							//    $('#address_validate_message').slideDown(500);
+
+						}
+					});
+				} else {
+					updatePageView();
+				}
+			});
+		}
 	}
 }
 
@@ -219,18 +239,13 @@ $(document).ready(function () {
 					                   <input  type="text" name="buisnessFax" id="buisnessFax" class="setValInp"/>
 					                </td>				                
 					              </tr>
-					              <tr id="bsMoreOptions" >
-					                <td colspan="2">
-					                  <div id="moreOptionsSetButton" onclick="openMoreOptions()" style="display:">More Options</div>
-					                  <div id="moreOptionsSetButton_close" onclick="closeMoreOptions()" style="display:none">Close Options</div>
-					                </td>
-					              </tr>
 					             </table>
 					          </div>					        
 					        </td>
 					      </tr>
 					      <tr><td>
-					         <div id="bstartNext" class="tourButton" onclick="BuisnessNameNext('true')" style="display:none">Next ...</div>
+
+					         <div id="bstartNext" class=" disabled_next_button"  style="display:none">Next ...</div>
 					         <div class="tourButton" id="openLoginPromptIn"  style="display:none">Please Log in</div>
 					       </td>
 					       </tr>

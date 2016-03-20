@@ -30,8 +30,8 @@ import com.google.appengine.tools.cloudstorage.GcsFilename;
 import com.google.gson.reflect.TypeToken;
 
 public class GetAJAXimageJSONfromCSfactory {
-  public AJAXImagesJSON getBaseData(Entity csEntity , DatastoreService datastore) {
-	  AJAXImagesJSON CanvasStateEdit = new AJAXImagesJSON();
+  public AJAXImagesJSON getBaseData(Entity csEntity , DatastoreService datastore ) {
+	    AJAXImagesJSON CanvasStateEdit = new AJAXImagesJSON();
 		String shapesJSON =  ((Text) csEntity.getProperty("shapesJSON")).getValue();
 		String sid2ImageIDJSON =  ((Text) csEntity.getProperty("sid2ImageIDJSON")).getValue();
 		String placeID = (String) csEntity.getProperty("placeUniqID");
@@ -49,27 +49,18 @@ public class GetAJAXimageJSONfromCSfactory {
 		Type CanvasListcollectionType = new TypeToken<List<PPSubmitObject>>(){}.getType();
 		List<PPSubmitObject> floors = JsonUtils.deserialize(shapesJSON, CanvasListcollectionType);
 		// Restore shapes booking options
+	    Integer maxPersons = 0;
+	    Integer minPersons_ = 10000;
 		for (PPSubmitObject floor : floors) {
-			for (CanvasShape shape : floor.getShapes()) {
-				String ShapeSID = shape.getSid();
-				Filter sidFilter = new  FilterPredicate("sid",FilterOperator.EQUAL,ShapeSID);
-				Query sq = new Query("Shapes").setFilter(sidFilter);
-				PreparedQuery psq = datastore.prepare(sq);
-		  		Entity shapeEntity = psq.asSingleEntity();
-		  		if (shapeEntity != null) {
-		  			String name = (String) shapeEntity.getProperty("name");
-		  			int minP = (int)(long) shapeEntity.getProperty("minP");
-		  			int maxP = (int)(long) shapeEntity.getProperty("maxP");
-		  			String description = (String) shapeEntity.getProperty("description");
-		  			
-		  			
-		  			shape.getBooking_options().setGivenName(name);
-		  			shape.getBooking_options().setMaxPersons(maxP);
-		  			shape.getBooking_options().setMinPersons(minP);
-		  			shape.getBooking_options().setDescription(description);;
-		  		}
+			for(CanvasShape shape : floor.getShapes()) {
+				maxPersons+= shape.getBooking_options().getMaxPersons();
+				if(minPersons_ > shape.getBooking_options().getMinPersons()) {
+					minPersons_ = shape.getBooking_options().getMinPersons();
+				}
+				for(Integer i = shape.getBooking_options().getMinPersons() ; i <= shape.getBooking_options().getMaxPersons() ; i++) {
+					CanvasStateEdit.getPersonsList().add(i);
+				}
 			}
-
 			String floorID=floor.getFloorid();
 
 			if (!floor.getState().getBackgroundType().contains("color")) {
@@ -133,7 +124,8 @@ public class GetAJAXimageJSONfromCSfactory {
 		CanvasStateEdit.setUsernameRandom(usernameRandom);
 		CanvasStateEdit.setPlaceID(placeID);
 		CanvasStateEdit.setUTCoffset(UTCoffcet);
-		
+		CanvasStateEdit.setPlaceMaxPersons(maxPersons);
+	    CanvasStateEdit.setPlaceMinimumPersons(minPersons_);
 	  //CanvasStateEdit.setBackground(servingUrl);
 	  //CanvasStateEdit.getJSONimageID2url().add(imgID2url);
 		

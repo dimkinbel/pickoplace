@@ -215,7 +215,6 @@ function DeleteCancel() {
 				    	                        <tr>
                                                   <td><div class="editPlaceButtonUA" style="color:black" onclick="editPlace('<%=PlaceID%>_editform')">Edit Place</div>
                                                   <div class="editPlaceButtonUA" style="color:black"  onclick="SIPlaceConfiguration('<%=PlaceID%>')">Configuration</div>
-                                                  <div class="editPlaceButtonUA" style="color:black"  onclick="iframeEdit('<%=PlaceID%>_iframeform')">iFrame Editor</div>
                                                   <div class="editPlaceButtonUA" style="color:red"  onclick="DeletePlaceConfirm('<%=PlaceID%>')">Delete Place</div></td>
                                                 </tr>
 				    	                       </table>

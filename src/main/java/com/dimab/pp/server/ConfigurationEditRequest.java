@@ -201,6 +201,8 @@ public class ConfigurationEditRequest extends HttpServlet {
 		configuration.getAdministration().setAdminPassword(Admin_password);
 		System.out.println(JsonUtils.serialize(configuration.getBookingProperties()));
   		request.setAttribute("configuration", configuration);
+		request.setAttribute("minPersonsForDropdown", CanvasStateEdit.getPlaceMinimumPersons());
+		request.setAttribute("personsListForDropdown", CanvasStateEdit.getPersonsList());
 		RequestDispatcher dispathser  = request.getRequestDispatcher("/Place_Configuration.jsp");
 		response.addHeader("Access-Control-Allow-Origin", "*");
 		dispathser.forward(request, response);		

@@ -47,8 +47,6 @@ function Shape(state, x, y, w, h,type,options,angle_) {
   this.booking_options.minPersons = 1;
   this.booking_options.maxPersons = 1;
   this.booking_options.description = null;
-  this.booking_options.weekDays = {"sun":true,"mon":true,"tue":true,"wed":true,"thu":true,"fri":true,"sat":true};
-  this.booking_options.timeRange = [{"from":"08:00","to":"18:00"}];
   
   if (type == "line" || type == "text") {
     this.booking_options.bookable = false;
@@ -656,8 +654,8 @@ function zoomResetWrap(canvas_ref_,dividwrap,scrolled_id) {
    }
 
   
-  var ww = document.getElementById(scrolled_id).offsetWidth ;
-  var wh = document.getElementById(scrolled_id).offsetHeight ;
+  var ww = document.getElementById(scrolled_id).offsetWidth - 10 ;
+  var wh = document.getElementById(scrolled_id).offsetHeight - 10 ;
   
 
   var required_zoom;
@@ -850,6 +848,7 @@ CanvasState.prototype.getMouse = function(e) {
   my = parseInt((e.pageY -  parentOffset.top)/this.zoom);
 
   // We return a simple javascript object (a hash) with x and y defined
+    console.log(mx+" "+my)
   return {x: mx, y: my , orgx: e.pageX , orgy: e.pageY};
 };
 

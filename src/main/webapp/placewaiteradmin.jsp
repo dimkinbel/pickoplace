@@ -466,7 +466,7 @@
 </div>
 </div>
 <!-- <div style="position:fixed;background-color:red;width:100px;height:100px;pointer-events:none"></div> -->
-<table id="body_table" cellspacing="0" cellpadding="0" style="width: 100%;  border-collapse: collapse">
+<table id="body_table" class="no_user_select" cellspacing="0" cellpadding="0" style="width: 100%;  border-collapse: collapse">
 	<tr id="header_tr" style="display:none">
 		<td id="header_td" colspan="2">
 			<div id="header">

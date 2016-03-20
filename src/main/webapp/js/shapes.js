@@ -51,8 +51,6 @@ function Shape(state, x, y, w, h,type,options,angle_,sid_) {
   this.booking_options.minPersons = 1;
   this.booking_options.maxPersons = 1;
   this.booking_options.description = "";
-  this.booking_options.weekDays = {"sun":true,"mon":true,"tue":true,"wed":true,"thu":true,"fri":true,"sat":true};
-  this.booking_options.timeRange = [{"from":"08:00","to":"18:00"}];
   // Line angle
    if (type == "line") {
     state.ctx.save();
@@ -1684,7 +1682,9 @@ CanvasState.prototype.copyShape = function(shape) {
   "use strict";
   var newShape = JSON.parse(JSON.stringify(shape,["x","y","w","h","rotate","angle","type","options","prevMX","prevMY","sid"]));
   var shapeOptions = JSON.parse(JSON.stringify(shape.options));
+  var bookingOptions = JSON.parse(JSON.stringify(shape.booking_options))
   newShape.options = shapeOptions;
+  newShape.booking_options = bookingOptions;
 
   if (newShape.type != "line") {
   newShape.x = 10; //default
@@ -1919,45 +1919,19 @@ function zoomReset(state_) {
 
 // Creates an object with x and y defined, set to the mouse position relative to the state's canvas
 // If you wanna be super-correct this can be tricky, we have to worry about padding and borders
+
 CanvasState.prototype.getMouse = function(e) {
-  "use strict";
-  var element = this.canvas, offsetX = 0, offsetY = 0, mx, my;
-  
-  // Compute the total offset
-  var scrollTop = 0;
-  var scrollLeft = 0;
-  if (element.offsetParent !== undefined) {
-    do {
-	   scrollTop = 0;
-	   scrollLeft = 0;
-	   var leftb = parseInt(getComputedStyle(element,null).getPropertyValue('border-left-width'),10);
-	   var topb = parseInt(getComputedStyle(element,null).getPropertyValue('border-top-width'),10);
-	   if(element.id == "canvas_wrapper") {
-	      scrollTop = element.scrollTop;
-		  scrollLeft = element.scrollLeft;
-       }
-      offsetX += element.offsetLeft + leftb - scrollLeft;
-      offsetY += element.offsetTop  + topb - scrollTop;
-      element = element.offsetParent;
-    } while (element);
-  }
+        "use strict";
+        var element = this.canvas, offsetX = 0, offsetY = 0, mx, my;
+        var parentOffset = $(this.canvas).parent().offset();
 
-  // Add padding and border style widths to offset
-  // Also add the <html> offsets in case there's a position:fixed bar
-  offsetX += this.stylePaddingLeft + this.styleBorderLeft + this.htmlLeft;
-  offsetY += this.stylePaddingTop + this.styleBorderTop + this.htmlTop;
-  //alert(this.stylePaddingLeft);
-  mx = parseInt((e.pageX - offsetX)/this.zoom);
-  my = parseInt((e.pageY - offsetY)/this.zoom);
+        mx = parseInt((e.pageX - parentOffset.left)/this.zoom);
+        my = parseInt((e.pageY -  parentOffset.top)/this.zoom);
 
-  // We return a simple javascript object (a hash) with x and y defined
-  if(mx < 0) { mx = 0 };
-  if(mx > this.origWidth) { mx = this.origWidth };
-  if(my < 0) { my = 0 };
-  if(my > this.origHeight) { my = this.origHeight };
-  return {x: mx, y: my , orgx: e.pageX , orgy: e.pageY};
-};
-
+        // We return a simple javascript object (a hash) with x and y defined
+        console.log(mx+" "+my)
+        return {x: mx, y: my , orgx: e.pageX , orgy: e.pageY};
+    };
 // If you dont want to use <body onLoad='init()'>
 // You could uncomment this init() reference and place the script reference inside the body tag
 //init();
