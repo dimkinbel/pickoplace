@@ -155,16 +155,7 @@
                 $("#book_confirm_wrap").hide();
             }
         }
-        function SIapplyBooking() {
-            setSessionData(function (result) {
-                if (result) {
-                    applyBooking();
-                    $("#page_login_prompt").hide();
-                } else {
-                    updatePageView();
-                }
-            });
-        }
+
     </script>
 </head>
 
@@ -193,11 +184,11 @@
                         <div class="col-md-12">מקומות שנבחרו</div>
                     </div>
                     <div class="row" id="hz_mt_top">
-                        <div class="col-md-2"></div>
-                        <div class="col-md-3">קומה</div>
-                        <div class="col-md-3">אנשים</div>
-                        <div class="col-md-3">מקום</div>
-                        <div class="col-md-1"></div>
+                        <div class="col-xs-2"></div>
+                        <div class="col-xs-3">קומה</div>
+                        <div class="col-xs-3">אנשים</div>
+                        <div class="col-xs-3">מקום</div>
+                        <div class="col-xs-1"></div>
                     </div>
                     <div id="modal_sid_lines">
 
@@ -223,7 +214,7 @@
                         Dmitry
                     </div>
                 </div>
-                <div id="make_booking" class="make_booking" onclick="makeBooking();" style="display:none">
+                <div id="make_booking" class="make_booking" onclick="SIapplyBooking();" style="display:none">
                     <div class="heb_btn_mat material-icons ">done</div>
                     <div class="heb_btn_text">הזמן</div>
                 </div>
@@ -249,6 +240,9 @@
 
 </div>
 <div id="hiden_values_from_edit" style="display:none">
+    <%if (BookProperties.isBookingAvailable() == false || ifresp.getBooking() == false) { %>
+    <div id="iframehasbooking"></div>
+    <%}%>
     <canvas id="filtered_canvas"></canvas>
     <img id="filtered_img"/>
 

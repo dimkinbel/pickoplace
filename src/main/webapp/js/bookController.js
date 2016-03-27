@@ -98,31 +98,32 @@ updateBookingSlider();
 			floorPopoverOpening = false;
 			$('[data-toggle="tooltip"]').tooltip();
 			$('#canvas_popover_hidden').children().html('');// remove same block copied to the popover
-			var CalendarStartDay = $("#datepicker_ub").datepicker( "getDate" );
-			var CalendarStartSeconds = CalendarStartDay.getTime()/1000;
-			var StartPeriod = parseInt($("#book_start_val_").val());
-			var Period = parseInt($("#book_period_val_").val());
-			var Persons  = parseInt($("#book_persons_val_").val());
-			
- 
-			var day = CalendarStartDay.getDate();
-			var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun","Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-			var mon = monthNames[CalendarStartDay.getMonth()];
-			$("#pop_date").html(CalendarStartDay.getDate()+" "+mon+" , "); 
-			var fromDate = getBookDate(CalendarStartSeconds,StartPeriod,document.getElementById("server_placeUTC").value); 
-		    var toDate = getBookDate(CalendarStartSeconds,parseInt(StartPeriod+Period),document.getElementById("server_placeUTC").value);
-			$("#pop_range").html(getLeadingZero(fromDate.getHours())+':'+getLeadingZero(fromDate.getMinutes())+' - '+getLeadingZero(toDate.getHours())+':'+getLeadingZero(toDate.getMinutes()));
-			
-            // Update booking data on popover
-            var sid = currentSelection.sid;
-            updateShapeTimeline("tp_canvas_"+sid,canvas_.selection,CalendarStartSeconds + StartPeriod - 2*3600, CalendarStartSeconds + StartPeriod + 4*3600);
-			currentSingleTimeCanvas.zoomReset(CalendarStartSeconds + StartPeriod - 2*3600,
-					                          CalendarStartSeconds + StartPeriod + 4*3600);
-			timelines[currentSingleTimeCanvas.canvas.id] =  new TimelineDiv(currentSingleTimeCanvas,"canvas_popup_timing_"+sid,0); 
-			timelines[currentSingleTimeCanvas.canvas.id].redraw();
-			currentSingleTimeCanvas.setAdminSelectionMiddle(CalendarStartSeconds + StartPeriod , CalendarStartSeconds + StartPeriod + Period);
-			currentSingleTimeCanvas.organizeShapes(); 
-			
+			if(document.getElementById("bookingavailable") != null) {
+				var CalendarStartDay = $("#datepicker_ub").datepicker( "getDate" );
+				var CalendarStartSeconds = CalendarStartDay.getTime()/1000;
+				var StartPeriod = parseInt($("#book_start_val_").val());
+				var Period = parseInt($("#book_period_val_").val());
+				var Persons  = parseInt($("#book_persons_val_").val());
+
+
+				var day = CalendarStartDay.getDate();
+				var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun","Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+				var mon = monthNames[CalendarStartDay.getMonth()];
+				$("#pop_date").html(CalendarStartDay.getDate()+" "+mon+" , ");
+				var fromDate = getBookDate(CalendarStartSeconds,StartPeriod,document.getElementById("server_placeUTC").value);
+				var toDate = getBookDate(CalendarStartSeconds,parseInt(StartPeriod+Period),document.getElementById("server_placeUTC").value);
+				$("#pop_range").html(getLeadingZero(fromDate.getHours())+':'+getLeadingZero(fromDate.getMinutes())+' - '+getLeadingZero(toDate.getHours())+':'+getLeadingZero(toDate.getMinutes()));
+
+				// Update booking data on popover
+				var sid = currentSelection.sid;
+				updateShapeTimeline("tp_canvas_"+sid,canvas_.selection,CalendarStartSeconds + StartPeriod - 2*3600, CalendarStartSeconds + StartPeriod + 4*3600);
+				currentSingleTimeCanvas.zoomReset(CalendarStartSeconds + StartPeriod - 2*3600,
+						CalendarStartSeconds + StartPeriod + 4*3600);
+				timelines[currentSingleTimeCanvas.canvas.id] =  new TimelineDiv(currentSingleTimeCanvas,"canvas_popup_timing_"+sid,0);
+				timelines[currentSingleTimeCanvas.canvas.id].redraw();
+				currentSingleTimeCanvas.setAdminSelectionMiddle(CalendarStartSeconds + StartPeriod , CalendarStartSeconds + StartPeriod + Period);
+				currentSingleTimeCanvas.organizeShapes();
+			}
 		})
 		$('#canvas_popover').on('hidden.bs.popover', function () {
 			floorPopoverOpened = false;
@@ -223,20 +224,26 @@ function updateCloseShapes() {
 	return;
   }
   for (var f = 0 ;f < floorCanvases.length ; f++) {
-     var openObject = bookingsManager.getAvailableSids(floorCanvases[f],DateSeconds + StartSeconds,DateSeconds + StartSeconds + PeriodSeconds ,minPeriodSeconds);
+     var openObject = bookingsManager.getAvailableSids(floorCanvases[f],DateSeconds + StartSeconds,DateSeconds + StartSeconds + PeriodSeconds );
 	 console.log("openObject");
 	 console.log(openObject.open)
 	 if(openObject.open == true && openObject.passed == false) {
 	   for(var s=0; s <floorCanvases[f].shapes.length ;s++) {
-	     floorCanvases[f].shapes[s].isAvailable = true;
+	       floorCanvases[f].shapes[s].isAvailable = true;
+		   floorCanvases[f].shapes[s].ordered = false;
+		   floorCanvases[f].shapes[s].placeClosed = false;
 	     if(openObject.sidList[floorCanvases[f].shapes[s].sid] == undefined) {
 		   floorCanvases[f].shapes[s].isAvailable = false;
+			 if(openObject.orderedList[floorCanvases[f].shapes[s].sid] != undefined) {
+				 floorCanvases[f].shapes[s].ordered = true;
+			 }
 		 }
 	   }
 	 
 	 } else {
 	    for(var s=0; s <floorCanvases[f].shapes.length ;s++) {
-	     floorCanvases[f].shapes[s].isAvailable = false;
+	      floorCanvases[f].shapes[s].isAvailable = false;
+			floorCanvases[f].shapes[s].placeClosed = true;
 	   }
 	 }
 	 floorCanvases[f].valid = false;

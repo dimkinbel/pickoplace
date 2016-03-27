@@ -3,10 +3,7 @@ package com.dimab.pp.accountRest;
 import com.dimab.pickoplace.utils.JsonUtils;
 import com.dimab.pp.adminRest.WaiterDeleteBooking;
 import com.dimab.pp.database.GetPlaceInfoFactory;
-import com.dimab.pp.dto.BookingRequestWrap;
-import com.dimab.pp.dto.ConfigBookingProperties;
-import com.dimab.pp.dto.PlaceInfo;
-import com.dimab.pp.dto.PlivoSMSRequestJSON;
+import com.dimab.pp.dto.*;
 import com.dimab.pp.functions.RandomStringGenerator;
 import com.dimab.pp.login.CheckTokenValid;
 import com.dimab.pp.login.GenericUser;
@@ -59,10 +56,20 @@ public class ConfigurationRest {
             }
             if (allowedUser) {
                 ConfigBookingProperties bookProperties = JsonUtils.deserialize((String)userCanvasState.getProperty("bookingProperties"),ConfigBookingProperties.class);
-                List<String> existingPhones = bookProperties.getApprovalPhones();
-                if(existingPhones.contains(param.getPhone())) {
-                    bookProperties.getApprovalPhones().remove(param.getPhone());
-                    if(existingPhones.size() > 0 || bookProperties.getApprovalMails().size() > 0) {
+                List<String> existingPlivoPhones = bookProperties.getApprovalPhones();
+                Boolean phoneExists = false;
+                PlivoSMSRequestJSON foundPhone = new PlivoSMSRequestJSON();
+                for(String plivoData : existingPlivoPhones) {
+                    PlivoSMSRequestJSON smsRequestObject = JsonUtils.deserialize(plivoData,PlivoSMSRequestJSON.class);
+                    if(smsRequestObject.getNumber().equals(param.getPhone())) {
+                        phoneExists = true;
+                        foundPhone = smsRequestObject;
+                    }
+
+                }
+                if(phoneExists) {
+                    bookProperties.getApprovalPhones().remove(foundPhone);
+                    if(bookProperties.getApprovalPhones().size() > 0 || bookProperties.getApprovalMails().size() > 0) {
                         bookProperties.setAutomatic(false);
                         map.put("automatic", false);
                     } else {
@@ -76,8 +83,11 @@ public class ConfigurationRest {
                     PlivoSendSMS plivoFabric = new PlivoSendSMS();
                     MessageResponse msgResponse;
                     String message = "Pickoplace.\nYour phone has been removed from Database";
-                    msgResponse = plivoFabric.sendSMSPlivio("+972526775065", param.getPhone(), message);
-
+                    if (foundPhone.getCountryData().getIso2().equals("us")) {
+                        msgResponse = plivoFabric.sendSMSPlivio("+972526775065", param.getPhone(), message);
+                    } else {
+                        msgResponse = plivoFabric.sendSMSPlivio("Pickoplace", param.getPhone(), message);
+                    }
                     map.put("valid", true);
                 } else {
                     map.put("reason", "No_such_confirmation_exists");
@@ -150,7 +160,12 @@ public class ConfigurationRest {
                     GetPlaceInfoFactory placeFactory = new GetPlaceInfoFactory();
                     PlaceInfo placeInfo = placeFactory.getPlaceInfoNoImage(datastore, userCanvasState);
                     MailSenderFabric mailFabric  = new MailSenderFabric();
-                    mailFabric.SendEmail(messageType,"pickoplace@appspot.gserviceaccount.com", param.getNewAdmin(),new BookingRequestWrap(), placeInfo,"");
+
+                    MailModel mmodel = new MailModel();
+                    mmodel.setType(messageType);
+                    mmodel.setPlaceInfo(placeInfo);
+                    mmodel.setTo(param.getNewAdmin());
+                    mailFabric.SendEmail(mmodel);
 
                     map.put("valid", true);
                 } else {
@@ -309,12 +324,17 @@ public class ConfigurationRest {
                     GetPlaceInfoFactory placeFactory = new GetPlaceInfoFactory();
                     PlaceInfo placeInfo = placeFactory.getPlaceInfoNoImage(datastore, userCanvasState);
                     MailSenderFabric mailFabric = new MailSenderFabric();
+                    MailModel mmodel = new MailModel();
 
-
+                    mmodel.setPlaceInfo(placeInfo);
+                    mmodel.setTo(param.getNewAdmin());
+                    mmodel.setVerificationCode(verificationCode);
                     if(param.getManual()) {
-                        mailFabric.SendEmail("SendVerificationCode", "pickoplace@appspot.gserviceaccount.com", param.getNewAdmin(), new BookingRequestWrap(), placeInfo, verificationCode);
+                        mmodel.setType("SendVerificationCode");
+                        mailFabric.SendEmail(mmodel);
                     } else {
-                        mailFabric.SendEmail("SendVerificationCodeForAutomatic", "pickoplace@appspot.gserviceaccount.com", param.getNewAdmin(), new BookingRequestWrap(), placeInfo, verificationCode);
+                        mmodel.setType("SendVerificationCodeForAutomatic");
+                        mailFabric.SendEmail(mmodel);
                     }
                     datastore.put(waitingApproval);
                     txn.commit();
@@ -373,10 +393,18 @@ public class ConfigurationRest {
                         String savedCode = (String) verificationEntity.getProperty("code");
                         if(savedCode.equals(param.getCode())) {
                             ConfigBookingProperties bookProperties = JsonUtils.deserialize((String)userCanvasState.getProperty("bookingProperties"),ConfigBookingProperties.class);
-                            List<String> existingPhones = bookProperties.getApprovalPhones();
-                            if(!existingPhones.contains(param.getPhone())) {
-                                existingPhones.add(param.getPhone());
-                                bookProperties.setApprovalPhones(existingPhones);
+                            List<String> existingPlivoPhones = bookProperties.getApprovalPhones();
+                            Boolean phoneExists = false;
+                            for(String plivoData : existingPlivoPhones) {
+                                PlivoSMSRequestJSON smsRequestObject = JsonUtils.deserialize(plivoData,PlivoSMSRequestJSON.class);
+                                if(smsRequestObject.getNumber().equals(param.getPhone())) {
+                                    phoneExists = true;
+                                }
+
+                            }
+                            if(!phoneExists) {
+                                existingPlivoPhones.add((String)verificationEntity.getProperty("smsRequest"));
+                                bookProperties.setApprovalPhones(existingPlivoPhones);
                                 userCanvasState.setUnindexedProperty("bookingProperties", JsonUtils.serialize(bookProperties));
                                 datastore.put(userCanvasState);
                                 datastore.delete(verificationEntity.getKey());
@@ -431,7 +459,15 @@ public class ConfigurationRest {
         if (userCanvasState != null) {
             ConfigBookingProperties bookProperties = JsonUtils.deserialize((String) userCanvasState.getProperty("bookingProperties"), ConfigBookingProperties.class);
             List<String> existingPhones = bookProperties.getApprovalPhones();
-            if (existingPhones.contains(param.getPhone())) {
+            Boolean phoneExists = false;
+            for(String plivoData : existingPhones) {
+                PlivoSMSRequestJSON smsRequestJSON = JsonUtils.deserialize(plivoData,PlivoSMSRequestJSON.class);
+                if(smsRequestJSON.getNumber().equals(smsRequestObject.getNumber())) {
+                    phoneExists = true;
+                }
+
+            }
+            if (phoneExists) {
                 map.put("valid", false);
                 map.put("reason", "exists");
             } else {
@@ -513,7 +549,7 @@ public class ConfigurationRest {
                         waitingApproval.setProperty("pid", param.getPid());
                         waitingApproval.setProperty("type", "sms");
                         waitingApproval.setProperty("phone", smsRequestObject.getNumber());
-                        waitingApproval.setProperty("countryData", JsonUtils.serialize(smsRequestObject.getCountryData()));
+                        waitingApproval.setProperty("smsRequest", JsonUtils.serialize(smsRequestObject));
                         if (cnt == 1) {
                             waitingApproval.setProperty("date", date);
                         }
@@ -609,7 +645,12 @@ public class ConfigurationRest {
                 GetPlaceInfoFactory placeFactory = new GetPlaceInfoFactory();
                 PlaceInfo placeInfo = placeFactory.getPlaceInfoNoImage(datastore, userCanvasState);
                 MailSenderFabric mailFabric  = new MailSenderFabric();
-                mailFabric.SendEmail("NewAdminNotification","pickoplace@appspot.gserviceaccount.com", param.getNewAdmin(),new BookingRequestWrap(), placeInfo,"");
+                MailModel mmodel = new MailModel();
+
+                mmodel.setPlaceInfo(placeInfo);
+                mmodel.setTo(param.getNewAdmin());
+                mmodel.setType("NewAdminNotification");
+                mailFabric.SendEmail(mmodel);
                 datastore.put(userCanvasState);
                 txn.commit();
 
@@ -662,7 +703,12 @@ public class ConfigurationRest {
                         GetPlaceInfoFactory placeFactory = new GetPlaceInfoFactory();
                         PlaceInfo placeInfo = placeFactory.getPlaceInfoNoImage(datastore, userCanvasState);
                         MailSenderFabric mailFabric  = new MailSenderFabric();
-                        mailFabric.SendEmail("RemoveAdminNotification","pickoplace@appspot.gserviceaccount.com", param.getNewAdmin(),new BookingRequestWrap(), placeInfo,"");
+                        MailModel mmodel = new MailModel();
+
+                        mmodel.setPlaceInfo(placeInfo);
+                        mmodel.setTo(param.getNewAdmin());
+                        mmodel.setType("RemoveAdminNotification");
+                        mailFabric.SendEmail(mmodel);
                         datastore.put(userCanvasState);
                         txn.commit();
                     } else {

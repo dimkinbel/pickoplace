@@ -563,7 +563,7 @@ CanvasState.prototype.mouseMoveEvent = function(e) {
 //   }
         myState.prevCmx = mox ;
         myState.prevCmy = moy ;
-        myState.valid = false;
+      //  myState.valid = false;
     }
     if (myState.dragging){
         if (myState.mousemoveclicked != null &&  myState.selection == null) {

@@ -16,6 +16,15 @@ public class OrderedResponse {
     List<BookingSingleShapeList> shapesBooked = new ArrayList<BookingSingleShapeList>();
     Map<Integer, WeekDay> weekObject = new HashMap<Integer, WeekDay>();
     List<Integer> closeDays = new ArrayList<>();
+    ConfigBookingProperties bookProperties  = new ConfigBookingProperties();
+
+    public ConfigBookingProperties getBookProperties() {
+        return bookProperties;
+    }
+
+    public void setBookProperties(ConfigBookingProperties bookProperties) {
+        this.bookProperties = bookProperties;
+    }
 
     public Integer getMinPeriod() {
         return minPeriod;

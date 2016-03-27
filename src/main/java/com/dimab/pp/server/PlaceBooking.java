@@ -18,13 +18,7 @@ import com.dimab.pickoplace.utils.JsonUtils;
 import com.dimab.pp.database.GetAJAXimageJSONfromCSfactory;
 import com.dimab.pp.database.GetPlaceInfoFactory;
 import com.dimab.pp.database.GetShapesOrders;
-import com.dimab.pp.dto.AJAXImagesJSON;
-import com.dimab.pp.dto.CanvasShape;
-import com.dimab.pp.dto.JsonImageID_2_GCSurl;
-import com.dimab.pp.dto.JsonSID_2_imgID;
-import com.dimab.pp.dto.OrderedResponse;
-import com.dimab.pp.dto.PPSubmitObject;
-import com.dimab.pp.dto.PlaceInfo; 
+import com.dimab.pp.dto.*;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -63,6 +57,7 @@ public class PlaceBooking extends HttpServlet {
   		AJAXImagesJSON CanvasStateEdit = new AJAXImagesJSON();
   		OrderedResponse orderedResponse = new OrderedResponse();
 		GetAJAXimageJSONfromCSfactory csFactory = new GetAJAXimageJSONfromCSfactory();
+		ConfigBookingProperties BookProperties = new ConfigBookingProperties();
 
 		double UTCoffcet ;
   		if (userCanvasState != null) {
@@ -103,8 +98,10 @@ public class PlaceBooking extends HttpServlet {
 	  		orderedResponse.setDate1970(placeStartOfDate);
 		    orderedResponse.setPeriod((long)2*24*60*60);
 		    orderedResponse.setPid(placeID_);
-	  		
-  		}
+
+			BookProperties = JsonUtils.deserialize((String) userCanvasState.getProperty("bookingProperties"), ConfigBookingProperties.class);
+
+		}
   		if (CanvasStateEdit.getJSONimageID2url().isEmpty()) {
   			//CanvasStateEdit.getJSONimageID2url().add(new JsonImageID_2_GCSurl());
   		}
@@ -121,7 +118,8 @@ public class PlaceBooking extends HttpServlet {
   		request.setAttribute("placeLat", Lat);
   		request.setAttribute("placeLng", Lng);
   		request.setAttribute("placeInfo", placeInfo);
-  		
+		request.setAttribute("bookProperties", BookProperties);
+
   		request.setAttribute("todaysOrders", orderedResponse);
   		request.setAttribute("canvasEditPlace", CanvasStateEdit);
 		RequestDispatcher dispathser  = request.getRequestDispatcher("/SinglePlaceBooking.jsp");

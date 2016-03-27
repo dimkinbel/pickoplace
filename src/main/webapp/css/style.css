@@ -8972,11 +8972,17 @@ td.wl_list_section_head_tbl_col_next_left  {
     margin-bottom: 40px;
 }
 #right_row_md_bottom_sm {
-    margin-top: 50px;
+    margin-top: 20px;
     padding-right: 25px;
     padding-left: 25px;
 }
-
+#no_booking_top_ub {
+    height: 40px;
+    background-color: white;
+    margin-top: 20px;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 10px 10px 0 0;
+}
 #floors_wrap_menu {
     position:relative;
     background-color: white;

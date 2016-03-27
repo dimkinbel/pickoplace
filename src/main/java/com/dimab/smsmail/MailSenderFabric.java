@@ -13,6 +13,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 import com.dimab.pp.dto.BookingRequestWrap;
+import com.dimab.pp.dto.MailModel;
 import com.dimab.pp.dto.PlaceInfo;
 import com.dimab.pp.login.GenericUser;
 import com.google.appengine.api.datastore.DatastoreService;
@@ -28,49 +29,59 @@ import com.google.appengine.api.datastore.Query.FilterPredicate;
 public class MailSenderFabric {
 
 
-	public void SendEmail(String type,String from , String to , BookingRequestWrap bookingRequestsWrap,PlaceInfo placeInfo,String VerificationCode) {
+	public void SendEmail(MailModel mmodel) {
 		String message = "";
 		MailGenerator mailGenerator = new MailGenerator();
-		switch(type){
+		switch(mmodel.getType()){
 			case "userConfirmation":
-				message = mailGenerator.GetConfirmationMail(bookingRequestsWrap, placeInfo);
+				message = mailGenerator.GetConfirmationMail(true,mmodel.getBookingRequestsWrap(), mmodel.getPlaceInfo());
+				break;
+			case "userBookingRequest":
+				message = mailGenerator.GetConfirmationMail(false,mmodel.getBookingRequestsWrap(), mmodel.getPlaceInfo());
 				break;
 			case "waiterCancelUserBooking":
-				message = mailGenerator.GetCancellationEmail(bookingRequestsWrap,placeInfo);
+				message = mailGenerator.GetCancellationEmail(mmodel.getBookingRequestsWrap(), mmodel.getPlaceInfo());
 				break;
 			case "NewAdminNotification":
-				message = mailGenerator.GetNewAdminConfirmationEmail(placeInfo,VerificationCode);
+				message = mailGenerator.GetNewAdminConfirmationEmail(mmodel.getPlaceInfo(),mmodel.getVerificationCode());
 				break;
 			case "RemoveAdminNotification":
-				message = mailGenerator.GetRemoveAdminConfirmationEmail(placeInfo,VerificationCode);
+				message = mailGenerator.GetRemoveAdminConfirmationEmail(mmodel.getPlaceInfo(),mmodel.getVerificationCode());
 				break;
 			case "SendVerificationCode":
-				message = mailGenerator.VerificationCodeEmail(placeInfo,VerificationCode);
+				message = mailGenerator.VerificationCodeEmail(mmodel.getPlaceInfo(),mmodel.getVerificationCode());
 				break;
 			case "SendVerificationCodeForAutomatic":
-				message = mailGenerator.VerificationCodeEmailAuto(placeInfo,VerificationCode);
+				message = mailGenerator.VerificationCodeEmailAuto(mmodel.getPlaceInfo(),mmodel.getVerificationCode());
 				break;
 			case "RemoveConfirmationEmail":
-				message = mailGenerator.RemoveConfirmationEmail(placeInfo);
+				message = mailGenerator.RemoveConfirmationEmail(mmodel.getPlaceInfo());
 				break;
 			case "RemoveAutoNotificationEmail":
-				message = mailGenerator.RemoveNotificationEmail(placeInfo);
+				message = mailGenerator.RemoveNotificationEmail(mmodel.getPlaceInfo());
 				break;
-			case "BBBBAa": break;
-			case "BBBBBB": break;
+			case "waiterAutomaticBookingNotification":
+				message = mailGenerator.waiterBookingNotification(true,mmodel.getBookingRequestsWrap(),mmodel.getPlaceInfo(),mmodel.getGenuser(),"");
+				break;
+			case "waiterManualBookingNotification":
+				message = mailGenerator.waiterBookingNotification(false,mmodel.getBookingRequestsWrap(),mmodel.getPlaceInfo(),mmodel.getGenuser(),mmodel.getVerificationCode());
+				break;
 		}
 
 		Properties props = new Properties();
 		Session session = Session.getDefaultInstance(props, null);
 		try {
 			Message msg = new MimeMessage(session);
-			msg.setFrom(new InternetAddress(from, "PickoPlace"));
+			msg.setFrom(new InternetAddress(mmodel.getFrom(), "PickoPlace"));
 			msg.addRecipient(Message.RecipientType.TO,
-					new InternetAddress(to, "You"));
+					new InternetAddress(mmodel.getTo(), "You"));
 
-			switch(type){
+			switch(mmodel.getType()){
 				case "userConfirmation":
 					msg.setSubject("Order Confirmation");
+					break;
+				case "userBookingRequest":
+					msg.setSubject("Pickoplace - Booking request sent");
 					break;
 				case "waiterCancelUserBooking":
 					msg.setSubject("Order Cancellation");
@@ -93,7 +104,12 @@ public class MailSenderFabric {
 				case "RemoveAutoNotificationEmail":
 					msg.setSubject("Pickoplace: Notification eMail removal");
 					break;
-
+				case "waiterAutomaticBookingNotification":
+					msg.setSubject("Pickoplace: New Booking");
+					break;
+				case "waiterManualBookingNotification":
+					msg.setSubject("Pickoplace: New Booking - Approval REQUIRED");
+					break;
 			}
 
 			System.out.println(message);

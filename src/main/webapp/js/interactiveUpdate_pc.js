@@ -593,7 +593,7 @@ $(document).ready(function() {
 						 document.getElementById("server_iFrameID").value = ifid; // Next saves will be to existing ifid
 					}
 					var ifsave = currentIframeSettings;
-					
+					ifsave.booking =  $("#iframe_bookable").is(":checked")
 					var jsonData = {ifsave:JSON.stringify(ifsave),pid:pid,ifid:ifid};
 					$.ajax({
 					      url : "/saveIframe",
@@ -1065,12 +1065,12 @@ function createSaveObject(goto) {
   
   
   SaveObject.bookingProperties = {};
-  if($("#pc_placeBookable").attr("checked") == "checked") {
-	  SaveObject.BookingAvailable = true;
+  if($("#pc_placeBookable").is(":checked") == true) {
+	  SaveObject.bookingProperties.BookingAvailable = true;
   } else {
-	  SaveObject.BookingAvailable = false;
+	  SaveObject.bookingProperties.BookingAvailable = false;
   }
-  if($("#pc_order_type_").attr("checked") != "checked") {
+  if($("#pc_order_type_").is(":checked") != true) {
      SaveObject.bookingProperties.allDay = false;
 	 SaveObject.bookingProperties.bookLength = [];
 	 var allLeng =  document.getElementsByName("order_leng");   

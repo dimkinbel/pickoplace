@@ -54,6 +54,8 @@ function ifShape(state, x, y, w, h,type,options,angle_) {
    this.w = parseInt(ctx.measureText(txt).width + 2);
   }
     this.isAvailable = true;
+  this.ordered = false;
+  this.placeClosed = false;
     this.sid = randomString(12);
 	this.choosen = false;
   

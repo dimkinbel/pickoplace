@@ -1,15 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 		 pageEncoding="UTF-8"
-		 import = "com.dimab.pp.dto.ConfigurationObject"
-		 import = "com.dimab.pp.dto.PPSubmitObject"
-		 import = "com.dimab.pp.dto.JsonSID_2_imgID"
-		 import = "com.dimab.pp.dto.JsonImageID_2_GCSurl"
-		 import = "com.dimab.pp.dto.CanvasState"
-		 import = "com.dimab.pp.dto.JsonimgID_2_data"
 		 import = "java.util.List"
 		 import = "java.util.TreeSet"%>
 <%@ page import="com.dimab.pickoplace.utils.JsonUtils" %>
 <%@ page import="java.util.Set" %>
+<%@ page import="com.dimab.pp.dto.*" %>
 <%@taglib prefix="common" tagdir="/WEB-INF/tags/common" %>
 
 
@@ -239,11 +234,11 @@
 						<div class="col-md-12">מקומות שנבחרו</div>
 					</div>
 					<div class="row" id="hz_mt_top">
-						<div class="col-md-2"></div>
-						<div class="col-md-3">קומה</div>
-						<div class="col-md-3">אנשים</div>
-						<div class="col-md-3">מקום</div>
-						<div class="col-md-1"></div>
+						<div class="col-xs-2"></div>
+						<div class="col-xs-3">קומה</div>
+						<div class="col-xs-3">אנשים</div>
+						<div class="col-xs-3">מקום</div>
+						<div class="col-xs-1"></div>
 					</div>
 					<div id="modal_sid_lines">
 
@@ -1220,7 +1215,10 @@
 											<div class="row" class="contact_row_">
 												<div class="col-sm-6" >
 													<div id="manual_phones_column_append">
-														<% for(String phone : configuration.getBookingProperties().getApprovalPhones()) {%>
+														<% for(String phoneObject : configuration.getBookingProperties().getApprovalPhones()) {
+															PlivoSMSRequestJSON phoneJSON = JsonUtils.deserialize(phoneObject,PlivoSMSRequestJSON.class);
+															String phone = phoneJSON.getNumber();
+														%>
 														<div class="single_phone_contact" id="single_phone_contact-<%=phone.replace("+","_")%>">
 															<div name="single_phone_contact"  id="single_phone_value-<%=phone.replace("+","_")%>"  class="single_phone_contact_val"><%=phone%></div>
 															<div class="remove_single_phone_contact material-icons" onclick="removePhoneConfirmationContact('<%=phone.replace("+","_")%>')"  id="remove_single_phone-<%=phone.replace("+","_")%>">clear</div>

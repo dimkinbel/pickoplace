@@ -2,6 +2,16 @@
 <appengine-web-app xmlns="http://appengine.google.com/ns/1.0">
   <application>${app.id}</application>
   <version>${app.version}</version>
+  <instance-class>F1</instance-class>
+  <automatic-scaling>
+    <min-idle-instances>1</min-idle-instances>
+    <!-- ‘automatic’ is the default value. -->
+    <max-idle-instances>1</max-idle-instances>
+    <!-- ‘automatic’ is the default value. -->
+    <min-pending-latency>5s</min-pending-latency>
+    <max-pending-latency>automatic</max-pending-latency>
+    <max-concurrent-requests>50</max-concurrent-requests>
+  </automatic-scaling>
 <admin-console>
   <page name="Appstats" url="/appstats" />
 </admin-console>

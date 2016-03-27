@@ -1560,7 +1560,6 @@ BCanvasState.prototype.getMouse = function(e) {
     my = parseInt((e.pageY -  parentOffset.top)/this.zoom);
 
     // We return a simple javascript object (a hash) with x and y defined
-    console.log(mx+" "+my)
     return {x: mx, y: my , orgx: e.pageX , orgy: e.pageY};
 };
 // If you dont want to use <body onLoad='init()'>

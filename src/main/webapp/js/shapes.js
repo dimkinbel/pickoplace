@@ -18,7 +18,7 @@ var rotate_Shape = new CustomEvent("rotateShape", {
     }
 });
 
-function Shape(state, x, y, w, h,type,options,angle_,sid_) {
+function Shape(state, x, y, w, h,type,options,angle_,sid_,booking_options_) {
   "use strict";
   // This is a very simple and unsafe constructor. All we're doing is checking if the values exist.
   // "x || 0" just means "if there is a value for x, use that. Otherwise use 0."
@@ -51,6 +51,10 @@ function Shape(state, x, y, w, h,type,options,angle_,sid_) {
   this.booking_options.minPersons = 1;
   this.booking_options.maxPersons = 1;
   this.booking_options.description = "";
+  if(booking_options_ != undefined )  {
+      this.booking_options = booking_options_;
+      this.booking_options.givenName = null;
+  }
   // Line angle
    if (type == "line") {
     state.ctx.save();
@@ -74,7 +78,7 @@ function Shape(state, x, y, w, h,type,options,angle_,sid_) {
    var txt = this.options.text;
    this.w = parseInt(ctx.measureText(txt).width + 2);
   }
-  if(sid_==undefined) {
+  if(sid_==undefined || sid_ == "") {
     this.sid = randomString(12);
   } else {
     this.sid = sid_;
@@ -1682,7 +1686,7 @@ CanvasState.prototype.copyShape = function(shape) {
   "use strict";
   var newShape = JSON.parse(JSON.stringify(shape,["x","y","w","h","rotate","angle","type","options","prevMX","prevMY","sid"]));
   var shapeOptions = JSON.parse(JSON.stringify(shape.options));
-  var bookingOptions = JSON.parse(JSON.stringify(shape.booking_options))
+  var bookingOptions = JSON.parse(JSON.stringify(shape.booking_options));
   newShape.options = shapeOptions;
   newShape.booking_options = bookingOptions;
 
@@ -1742,7 +1746,9 @@ CanvasState.prototype.pasteMultiple = function(x_,y_) {
 		   var shape = list[s];
 		   var newShape = JSON.parse(JSON.stringify(shape,["x","y","w","h","rotate","angle","type","options","prevMX","prevMY","sid"]));
 	       var shapeOptions = JSON.parse(JSON.stringify(shape.options));
+           var bookingOptions = JSON.parse(JSON.stringify(shape.booking_options));
 	       newShape.options = shapeOptions;
+             newShape.booking_options = bookingOptions;
 	       if (newShape.type != "line") {
 	          newShape.x = 10; //default
 	          newShape.y = 10; //default
@@ -1789,6 +1795,7 @@ CanvasState.prototype.pasteMultiple = function(x_,y_) {
 	  var h = this.pasteReady.h;
 	  var type = this.pasteReady.type;
 	  var options = JSON.parse(JSON.stringify(this.pasteReady.options));
+      var bookingOptions = JSON.parse(JSON.stringify(this.pasteReady.booking_options));
 	  var angle = this.pasteReady.angle;
 	 if ( type == "line" ) {
 	     var difx1 = this.pasteReady.options.x1 - this.pasteReady.x;
@@ -1802,9 +1809,9 @@ CanvasState.prototype.pasteMultiple = function(x_,y_) {
 
 	  } 
 	  if(sid!=undefined) {
-	    this.addShape(new Shape(this, x , y , w, h, type , options,angle ,sid));
+	    this.addShape(new Shape(this, x , y , w, h, type , options,angle ,sid , bookingOptions));
 	  } else {
-	    this.addShape(new Shape(this, x , y , w, h, type , options,angle ));
+	    this.addShape(new Shape(this, x , y , w, h, type , options,angle , "" , bookingOptions));
 	  }
 	  this.valid=false;
 	};
@@ -1929,7 +1936,6 @@ CanvasState.prototype.getMouse = function(e) {
         my = parseInt((e.pageY -  parentOffset.top)/this.zoom);
 
         // We return a simple javascript object (a hash) with x and y defined
-        console.log(mx+" "+my)
         return {x: mx, y: my , orgx: e.pageX , orgy: e.pageY};
     };
 // If you dont want to use <body onLoad='init()'>

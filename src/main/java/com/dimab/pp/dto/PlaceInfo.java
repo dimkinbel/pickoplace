@@ -29,6 +29,15 @@ public class PlaceInfo {
     List<JsonimgID_2_data> placeImageThumbnails = new ArrayList<JsonimgID_2_data>();
     PlaceRatingSummary ratingSummary;
     Set<String> personsList = new HashSet<String>();
+    List<Integer> closeDates = new ArrayList<Integer>();
+
+    public List<Integer> getCloseDates() {
+        return closeDates;
+    }
+
+    public void setCloseDates(List<Integer> closeDates) {
+        this.closeDates = closeDates;
+    }
 
     public Set<String> getPersonsList() {
         return personsList;

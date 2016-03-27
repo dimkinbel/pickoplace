@@ -59,6 +59,8 @@ function Shape(state, x, y, w, h,type,options,angle_) {
    this.w = parseInt(ctx.measureText(txt).width + 2);
   }
     this.isAvailable = true;
+    this.ordered = false;
+    this.placeClosed = false;
     this.sid = randomString(12);
 	this.choosen = false;
   
@@ -421,10 +423,7 @@ function CanvasState(canvas) {
 				myState.mousemoveclicked = null;
 		        if( myState.selection == null) {
 				   myState.listSelected.push(mySel);
-				   myState.selection = mySel;		
-				   //tcanvas_.addTshapeList(mySel.sid);
-				   
-				   //appendSelectedImage(mySel);
+				   myState.selection = mySel;
 				   showFloorPopover(e.pageX, e.pageY,mySel);
 				} else {
 				  if(myState.selection == mySel) {
@@ -532,7 +531,7 @@ CanvasState.prototype.mouseMoveEvent = function(e) {
 	//   }
 		 myState.prevCmx = mox ;
 	     myState.prevCmy = moy ;	
-		 myState.valid = false;
+		// myState.valid = false;
 	}
 	
 	 var contains = false;	 
@@ -764,18 +763,21 @@ CanvasState.prototype.draw = function() {
 	 l = shapes.length;
 	for (i = 0; i < l; i += 1) { 
 		  shapes[i].draw(ctx);
-		  if(shapes[i].choosen == true) {
-			  var mins;
-			  if (shapes[i].h < 50 || shapes[i].w < 50) {
-			     mins = (shapes[i].h < shapes[i].w ? shapes[i].h : shapes[i].w) * 0.8;
-			     
-			  } else {
-			     mins = 40;
-			  }
-			  ctx.drawImage(document.getElementById("server_v_logo"),shapes[i].x ,shapes[i].y-mins,mins,mins);	
-		  }
-		
-	}     
+	}
+    //draw "V"
+      for (i = 0; i < l; i += 1) {
+          if(shapes[i].choosen == true) {
+              var mins;
+              if (shapes[i].h < 50 || shapes[i].w < 50) {
+                  mins = (shapes[i].h < shapes[i].w ? shapes[i].h : shapes[i].w) * 0.8;
+
+              } else {
+                  mins = 40;
+              }
+              ctx.drawImage(document.getElementById("server_v_logo"),shapes[i].x ,shapes[i].y-mins,mins,mins);
+          }
+
+      }
     // draw selection
     // right now this is just a stroke along the edge of the selected Shape
 	
@@ -848,7 +850,6 @@ CanvasState.prototype.getMouse = function(e) {
   my = parseInt((e.pageY -  parentOffset.top)/this.zoom);
 
   // We return a simple javascript object (a hash) with x and y defined
-    console.log(mx+" "+my)
   return {x: mx, y: my , orgx: e.pageX , orgy: e.pageY};
 };
 

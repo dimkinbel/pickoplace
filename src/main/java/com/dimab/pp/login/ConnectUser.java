@@ -122,7 +122,9 @@ public class ConnectUser extends HttpServlet {
 	                new GoogleAuthorizationCodeTokenRequest(TRANSPORT, JSON_FACTORY,
 	                    CLIENT_ID, CLIENT_SECRET, gcode, "postmessage").execute();
 	        accessToken =  tokenResponse.getAccessToken();
-	        System.out.println("GOOGLE ACCESS-TOKEN:"+accessToken);
+
+	        System.out.println("GOOGLE ACCESS-TOKEN:" +accessToken);
+			System.out.println("GOOGLE REFRESH-TOKEN:"+tokenResponse.getRefreshToken());
 	    	
 	    	GoogVerifyToken tokenVerifier = new GoogVerifyToken(accessToken);
 			 if(tokenVerifier.isValid()) {

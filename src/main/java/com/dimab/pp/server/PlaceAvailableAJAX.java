@@ -109,9 +109,8 @@ public class PlaceAvailableAJAX extends HttpServlet {
             openRanges = tempRanges;
             orderedResponse.setPlaceOpen(openRanges);
             orderedResponse.setCloseDays(closeDates);
-            orderedResponse.setMinPeriod(1800); // TBD
 
-
+            orderedResponse.setBookProperties(JsonUtils.deserialize((String) CanvasStateEntity.getProperty("bookingProperties"), ConfigBookingProperties.class));
 
         }
         System.out.println(JsonUtils.serialize(orderedResponse));

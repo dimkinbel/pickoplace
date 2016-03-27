@@ -597,26 +597,54 @@ function checkFBStatus() {
         console.log("NOT SIGNED IN FACEBOOK");
     }
 }
-
+// https://www.googleapis.com/oauth2/v1/tokeninfo?access_token={access_token}
+// Get access token expiration
+/*
+ {
+ "issued_to": "542083885391-iqtnhm3jjc6if0sgkstvkfj4oksjg3m5.apps.googleusercontent.com",
+ "audience": "542083885391-iqtnhm3jjc6if0sgkstvkfj4oksjg3m5.apps.googleusercontent.com",
+ "user_id": "100527707859876973934",
+ "scope": "https://www.googleapis.com/auth/plus.me https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/plus.login https://www.googleapis.com/auth/plus.moments.write https://www.googleapis.com/auth/plus.profile.agerange.read https://www.googleapis.com/auth/plus.profile.language.read https://www.googleapis.com/auth/plus.circles.members.read",
+ "expires_in": 3409,
+ "email": "dimkinbel@gmail.com",
+ "verified_email": true,
+ "access_type": "offline"
+ }
+ */
+function verifyGoogleTokenExpired(callback) {
+    var curTime = new Date();
+    var curTimeMill  = curTime.getTime();
+    var accessExpire = auth2.currentUser.get().getAuthResponse().expires_at;
+    if(curTimeMill + 1000*60 < accessExpire) {
+        callback(auth2.currentUser.get().getAuthResponse().access_token);
+    } else {
+        // Generate new access_token
+        auth2.grantOfflineAccess().then(callback(auth2.currentUser.get().getAuthResponse().access_token));
+    }
+}
 function setSessionData(callback) {
     if (gconnected) {
         if (auth2.isSignedIn.get()) {
-            var token = auth2.currentUser.get().getAuthResponse().access_token;
-            var data_ = {provider: "google", access_token: token};
-            $.ajax({
-                url: '/setsessiontoken',
-                dataType: "JSON",
-                type: "post",
-                success: function (result) {
-                    console.log(result);
-                    callback(result.valid);
-                },
-                error: function (e) {
-                    console.log(e);
-                    callback(false);
-                },
-                data: data_
+
+            verifyGoogleTokenExpired(function(access_token) {
+                var token = access_token;
+                var data_ = {provider: "google", access_token: token};
+                $.ajax({
+                    url: '/setsessiontoken',
+                    dataType: "JSON",
+                    type: "post",
+                    success: function (result) {
+                        console.log(result);
+                        callback(result.valid);
+                    },
+                    error: function (e) {
+                        console.log(e);
+                        callback(false);
+                    },
+                    data: data_
+                });
             });
+
         } else {
             gconnected = false;
             updatePageView();
