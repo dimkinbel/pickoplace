@@ -57,6 +57,7 @@ public class ConfigurationRest {
             if (allowedUser) {
                 ConfigBookingProperties bookProperties = JsonUtils.deserialize((String)userCanvasState.getProperty("bookingProperties"),ConfigBookingProperties.class);
                 List<String> existingPlivoPhones = bookProperties.getApprovalPhones();
+                List<String> updatedPlivoPhones = new ArrayList<String>();
                 Boolean phoneExists = false;
                 PlivoSMSRequestJSON foundPhone = new PlivoSMSRequestJSON();
                 for(String plivoData : existingPlivoPhones) {
@@ -64,11 +65,14 @@ public class ConfigurationRest {
                     if(smsRequestObject.getNumber().equals(param.getPhone())) {
                         phoneExists = true;
                         foundPhone = smsRequestObject;
+                    } else {
+                        updatedPlivoPhones.add(plivoData);
                     }
 
                 }
                 if(phoneExists) {
-                    bookProperties.getApprovalPhones().remove(foundPhone);
+
+                    bookProperties.setApprovalPhones(updatedPlivoPhones);
                     if(bookProperties.getApprovalPhones().size() > 0 || bookProperties.getApprovalMails().size() > 0) {
                         bookProperties.setAutomatic(false);
                         map.put("automatic", false);

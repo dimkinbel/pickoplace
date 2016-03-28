@@ -27,7 +27,52 @@ public class BookingRequestWrap {
     String userEntityKeyString;
     String address;
     Date reservationMadeUTC = new Date();
+    List<BookingRequestPlaceView> bookingView;
+    String reviewCode;
+Integer persons;
 
+    public String getReviewCode() {
+        return reviewCode;
+    }
+
+    public void setReviewCode(String reviewCode) {
+        this.reviewCode = reviewCode;
+    }
+
+    public Integer getPersons() {
+        return persons;
+    }
+
+    public void setPersons(Integer persons) {
+        this.persons = persons;
+    }
+
+    String placeName;
+    String branchName;
+
+    public String getPlaceName() {
+        return placeName;
+    }
+
+    public void setPlaceName(String placeName) {
+        this.placeName = placeName;
+    }
+
+    public String getBranchName() {
+        return branchName;
+    }
+
+    public void setBranchName(String branchName) {
+        this.branchName = branchName;
+    }
+
+    public List<BookingRequestPlaceView> getBookingView() {
+        return bookingView;
+    }
+
+    public void setBookingView(List<BookingRequestPlaceView> bookingView) {
+        this.bookingView = bookingView;
+    }
 
     public Date getReservationMadeUTC() {
         return reservationMadeUTC;

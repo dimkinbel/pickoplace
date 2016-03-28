@@ -128,21 +128,8 @@ public class CreatePlaceInfo extends HttpServlet {
         		     
         		      
         		      // Create canvasStates and ImageVersions
-        		      Entity imageVersionEntity;
         			  Entity canvasState;
-        			  try {
-        				    Key pidKey = KeyFactory.createKey("ImageVersion", Placerandom);
-        				    imageVersionEntity = datastore.get(pidKey);
-        				    // TBD Place exists        				    
-        				    String returnurl = "/welcome.jsp";
-        	        		response.addHeader("Access-Control-Allow-Origin", "*");
-        	    			response.sendRedirect(returnurl);
-        	    			return;
-        				} catch (EntityNotFoundException e) {
-        					imageVersionEntity = new Entity("ImageVersion", Placerandom);
-        					imageVersionEntity.setProperty("PID", Placerandom);
-        				    datastore.put(imageVersionEntity);
-        				}
+
         			  try {
 	      				    Key pidKey = KeyFactory.createKey(userPlaceKey,"CanvasState", Placerandom);
 	      				    canvasState = datastore.get(pidKey);

@@ -288,7 +288,16 @@
        <servlet-name>clientBookingHistory</servlet-name>
        <url-pattern>/clientBookingHistory</url-pattern>
     </servlet-mapping>
-    
+
+    <servlet>
+        <servlet-name>bookingReviewFromSMS</servlet-name>
+        <servlet-class>com.dimab.pp.account.ClientBookingHistoryServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>bookingReviewFromSMS</servlet-name>
+        <url-pattern>/wl/r</url-pattern>
+    </servlet-mapping>
+
        <servlet>
        <servlet-name>deletePlace</servlet-name>
        <servlet-class>com.dimab.pp.account.DeletePlaceData</servlet-class>

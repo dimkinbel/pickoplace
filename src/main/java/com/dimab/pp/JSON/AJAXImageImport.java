@@ -162,11 +162,8 @@ public class AJAXImageImport extends HttpServlet {
             final GcsService gcsService = GcsServiceFactory.createGcsService(RetryParams.getDefaultInstance());
             // Floor loop
             String mainFloorID = "";
-            int backgroundVersion;
-            int backgroundOnlyVersion;
-            int overviewVersion;
 
-            Entity imageVersionEntity;
+
             Entity canvasState;
             Entity userPlaceEntity;
             Entity freeSpaceEntity;
@@ -181,17 +178,7 @@ public class AJAXImageImport extends HttpServlet {
 
 
             // Load Entities
-            try {
-                Key pidkey = KeyFactory.createKey("ImageVersion", placeID);
-                System.out.println("ImageVersion KEY:" + pidkey);
-                imageVersionEntity = datastore.get(pidkey);
-            } catch (EntityNotFoundException e) {
-                map.put("status", "No-ImageVersion-Exists");
-                response.setContentType("application/json");
-                response.setCharacterEncoding("UTF-8");
-                response.getWriter().write(JsonUtils.serialize(map));
-                return;
-            }
+
             try {
                 Key pidkey = KeyFactory.createKey(userPlaceEntity.getKey(), "CanvasState", placeID);
                 System.out.println("CanvasState KEY" + pidkey);
@@ -204,33 +191,6 @@ public class AJAXImageImport extends HttpServlet {
                 return;
             }
 
-            // Update Image Version
-            if (imageVersionEntity.getProperty("backgroundVersion") != null) {
-                backgroundVersion = (int) (long) imageVersionEntity.getProperty("backgroundVersion");
-            } else {
-                backgroundVersion = 0;
-            }
-            if (imageVersionEntity.getProperty("overviewVersion") != null) {
-                overviewVersion = (int) (long) imageVersionEntity.getProperty("overviewVersion");
-            } else {
-                overviewVersion = 0;
-            }
-            if (imageVersionEntity.getProperty("backgroundOnlyVersion") != null) {
-                backgroundOnlyVersion = (int) (long) imageVersionEntity.getProperty("backgroundOnlyVersion");
-            } else {
-                backgroundOnlyVersion = 0;
-            }
-            backgroundVersion += 1;
-            overviewVersion += 1;
-            backgroundOnlyVersion += 1;
-            imageVersionEntity.setUnindexedProperty("overviewVersion", overviewVersion);
-            imageVersionEntity.setUnindexedProperty("backgroundVersion", backgroundVersion);
-
-            if (!stage.equals("Configuration")) {
-                imageVersionEntity.setUnindexedProperty("backgroundOnlyVersion", backgroundOnlyVersion);
-            }
-
-            datastore.put(imageVersionEntity);
 
             for (PPSubmitObject floor : SaveObject.getFloors()) {
                 String backgroundByte64image = floor.getBackground();
@@ -242,33 +202,12 @@ public class AJAXImageImport extends HttpServlet {
                     mainFloorID = floorID;
                 }
 
-                String backgroundFileName;
-                String OverviewFileName;
-                String BGOnlyFileName;
-                // Delete previous versions
-                backgroundVersion -= 1;
-                overviewVersion -= 1;
-                backgroundOnlyVersion -= 1;
-                backgroundFileName = userRandom + "/" + placeID + "/" + "main" + "/" + floorID + "/backgroundImage" + "_" + backgroundVersion + ".png";
-                OverviewFileName = userRandom + "/" + placeID + "/" + "main" + "/" + floorID + "/overview" + "_" + overviewVersion + ".png";
-                BGOnlyFileName = userRandom + "/" + placeID + "/" + "main" + "/" + floorID + "/bgonly" + "_" + backgroundOnlyVersion + ".png";
-                GcsFilename bname = new GcsFilename("pp_images", backgroundFileName);
-                GcsFilename bgname = new GcsFilename("pp_images", BGOnlyFileName);
-                GcsFilename oname = new GcsFilename("pp_images", OverviewFileName);
-                gcsService.delete(bname);
-                gcsService.delete(oname);
 
-                if (!stage.equals("Configuration")) {
-                    gcsService.delete(bgname);
-                }
 
-                // Update new Version
-                backgroundVersion += 1;
-                overviewVersion += 1;
-                backgroundOnlyVersion += 1;
-                backgroundFileName = userRandom + "/" + placeID + "/" + "main" + "/" + floorID + "/backgroundImage" + "_" + backgroundVersion + ".png";
-                OverviewFileName = userRandom + "/" + placeID + "/" + "main" + "/" + floorID + "/overview" + "_" + overviewVersion + ".png";
-                BGOnlyFileName = userRandom + "/" + placeID + "/" + "main" + "/" + floorID + "/bgonly" + "_" + backgroundOnlyVersion + ".png";
+
+                String backgroundFileName = userRandom + "/" + placeID + "/" + "main" + "/" + floorID + "/backgroundImage" +   ".png";
+                String OverviewFileName = userRandom + "/" + placeID + "/" + "main" + "/" + floorID + "/overview" +   ".png";
+                String BGOnlyFileName = userRandom + "/" + placeID + "/" + "main" + "/" + floorID + "/bgonly" +   ".png";
 
 
                 // Saving background image

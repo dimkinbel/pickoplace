@@ -30,6 +30,7 @@ public class WaiterRestService {
         return JsonUtils.serialize(map);
     }
 
+
     public final static class AdminRestModel {
         private String bid;
         private String sid;

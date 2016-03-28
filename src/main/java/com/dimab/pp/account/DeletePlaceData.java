@@ -198,15 +198,7 @@ public class DeletePlaceData extends HttpServlet {
 	  				System.out.println("Removing 'ShapeOrdersList' entity:"+shapeOrderEntity.getKey().toString());
 	  				datastore.delete(shapeOrderEntity.getKey());
 	  			}
-	  			//Removing "ImageVersion" entity
-	  			pidFilter = new  FilterPredicate("PID",FilterOperator.EQUAL,placeID);
-				upsq = new Query("ImageVersion").setFilter(pidFilter);
-				upspq = datastore.prepare(upsq);
-		  		Entity ImageVersionEntity = upspq.asSingleEntity();
-		  		if(ImageVersionEntity!=null){
-			  		System.out.println("Removing 'ImageVersion' entity:"+ImageVersionEntity.getKey().toString());
-	                datastore.delete(ImageVersionEntity.getKey());
-		  		}
+
 	  			
  	  		   //Removing "BookingOrders" entity
                 pidFilter = new  FilterPredicate("pid",FilterOperator.EQUAL,placeID);

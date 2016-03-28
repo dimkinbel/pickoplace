@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.dimab.pickoplace.utils.JsonUtils;
 import com.dimab.pp.channel.ChannelMessageFactory;
 import com.dimab.pp.database.FreePlaceFactory;
+import com.dimab.pp.database.GetAJAXimageJSONfromCSfactory;
 import com.dimab.pp.database.GetPlaceInfoFactory;
 import com.dimab.pp.dto.*;
 import com.dimab.pp.functions.RandomStringGenerator;
@@ -141,7 +142,7 @@ public class ClientPlaceBooking extends HttpServlet {
         ConfigBookingProperties bookingProperties = JsonUtils.deserialize((String) canvasEntity.getProperty("bookingProperties"), ConfigBookingProperties.class);
         GetPlaceInfoFactory placeFactory = new GetPlaceInfoFactory();
         PlaceInfo placeInfo = placeFactory.getPlaceInfoNoImage(datastore, canvasEntity);
-
+        GetAJAXimageJSONfromCSfactory canvasJsonFactory = new GetAJAXimageJSONfromCSfactory();
         Text bookingListGSON = new Text(JsonUtils.serialize(bookingRequests));
         Entity bookingOrder = new Entity("BookingOrders", canvasKey);
         bookingOrder.setUnindexedProperty("bookingList", bookingListGSON);
@@ -156,7 +157,7 @@ public class ClientPlaceBooking extends HttpServlet {
         bookingOrder.setProperty("DateWhenOrderMade_atUTC", current);
         bookingOrder.setProperty("DateWhenOrderMadeSeconds_atUTC", current.getTime());
         bookingOrder.setProperty("bid", bookingRequestsWrap.getBookID());
-        bookingOrder.setProperty("Date", PlaceLocalTime.toString());
+        bookingOrder.setProperty("Date", PlaceLocalTime);
         bookingOrder.setProperty("UTCstartSeconds", secondsRelativeToClient);// Seconds as seen at UTC
         bookingOrder.setProperty("pid", bookingRequestsWrap.getPid());
         bookingOrder.setProperty("periodSeconds", bookingRequestsWrap.getPeriod());
@@ -166,7 +167,7 @@ public class ClientPlaceBooking extends HttpServlet {
         }
         bookingOrder.setProperty("weekday", bookingRequestsWrap.getWeekday());
         bookingOrder.setProperty("num", bookingsMade);
-
+        bookingOrder.setUnindexedProperty("bookingViewData",JsonUtils.serialize(canvasJsonFactory.getBookingViewData(canvasEntity,bookingRequestsWrap)));
 
         List<Integer> closeDates = placeInfo.getCloseDates();
 
@@ -337,8 +338,7 @@ public class ClientPlaceBooking extends HttpServlet {
                 String endTime = dateFormat.format(endCalendar.getTime());
                 String message = "New order request\n";
                 message += fromTime + "-" + endTime + "," + totalPersons + "persons\n";
-                message += "Approve https://pickoplace.com/w/a/" + reviewCode + "\n";
-                message += "Decline https://pickoplace.com/w/d/" + reviewCode + "\n";
+                message += "Review https://pickoplace.com/wl/r?c=" + reviewCode + "\n";
 
                 for (String phoneObject : waiterNotificationPhones) {
                     PlivoSMSRequestJSON phoneJSON = JsonUtils.deserialize(phoneObject, PlivoSMSRequestJSON.class);

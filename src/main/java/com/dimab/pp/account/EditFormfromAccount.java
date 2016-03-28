@@ -111,14 +111,7 @@ public class EditFormfromAccount extends HttpServlet {
 				if (!floor.getState().getBackgroundType().contains("color")) {
 					String floorID=floor.getFloorid();
 					String fileName_ = usernameRandom +"/"+  placeID+"/"+"main"+"/"+floorID +"/backgroundImage.png";
-			  	    Filter imageVersion = new  FilterPredicate("PID",FilterOperator.EQUAL,placeID);
-			 	    Query piq = new Query("ImageVersion").setFilter(imageVersion);
-			        PreparedQuery sbpiq = datastore.prepare(piq);
-			  		Entity imageVersionEntity = sbpiq.asSingleEntity();
-			  		if (imageVersionEntity != null) {
-			  			int backgroundVersion = (int)(long)imageVersionEntity.getProperty("backgroundVersion");
-			  			fileName_ =  usernameRandom +"/"+  placeID+"/"+"main"+"/"+floorID+"/backgroundImage"+"_"+backgroundVersion+".png";
-			  		}
+
 					String bucket = "pp_images"; 
 			  	    GcsFilename gcsFilename = new GcsFilename(bucket, fileName_);
 			  	    ImagesService is = ImagesServiceFactory.getImagesService(); 

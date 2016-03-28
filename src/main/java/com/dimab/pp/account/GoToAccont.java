@@ -70,14 +70,7 @@ public class GoToAccont extends HttpServlet {
 		  		
 		  		// Get serving Overview URL;
 		  		String fileName_ = userRnd +"/"+   placeID+"/"+"main"+"/"+mainFloorID +"/overview.png";
-		  		Filter imageVersion = new  FilterPredicate("PID",FilterOperator.EQUAL,placeID);
-		 	    Query piq = new Query("ImageVersion").setFilter(imageVersion);
-		        PreparedQuery sbpiq = datastore.prepare(piq);
-		  		Entity imageVersionEntity = sbpiq.asSingleEntity();
-		  		if (imageVersionEntity != null) {
-		  			int overviewVersion = (int)(long)imageVersionEntity.getProperty("overviewVersion");
-		  			fileName_ =  userRnd +"/"+  placeID+"/"+"main"+"/"+mainFloorID+"/overview"+"_"+overviewVersion+".png";
-		  		}
+
 		        
 		  	    String bucket = "pp_images"; 
 		  	    GcsFilename gcsFilename = new GcsFilename(bucket, fileName_);
