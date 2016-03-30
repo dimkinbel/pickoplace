@@ -43,7 +43,7 @@
     font-size: 24px;
     font-family: 'Josefin Sans', sans-serif;
     height: 40px;
-    line-height: 29px;
+    line-height: 34px;
     position: absolute;
     left: 22px;
 }
@@ -158,17 +158,25 @@
 .place_pointer {
     position: absolute;
     transform: translate(-50%, -100%);
-    font-size: 2.0em;
-    color: #FF9800;
+    font-size: 2.5em;
+    color: #0570C5;
 }
 .place_pointer:after {
     content: '';
     width: 0.3em;
     height: 0.3em;
-    background-color: white;
+    background-color: #FF3C2E;
     position: absolute;
     border-radius: 1em;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -100%);
+}
+.place_pointer_inner {
+    left: 0;
+    position: absolute;
+    top: 0;
+    transform: translate(0.12em, 0.1em);
+    font-size: 0.8em;
+    color: white;
 }

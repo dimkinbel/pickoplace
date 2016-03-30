@@ -7,6 +7,8 @@ import java.util.List;
 import com.dimab.pp.login.GenericUser;
 
 public class BookingRequestWrap {
+    Boolean isAnswer = false;
+    Boolean reviewAnswer;
     List<BookingRequest> bookingList = new ArrayList<BookingRequest>();
     String pid;
     String testID;
@@ -30,6 +32,22 @@ public class BookingRequestWrap {
     List<BookingRequestPlaceView> bookingView;
     String reviewCode;
 Integer persons;
+
+    public Boolean isAnswer() {
+        return isAnswer;
+    }
+
+    public void setAnswer(Boolean answer) {
+        isAnswer = answer;
+    }
+
+    public Boolean getReviewAnswer() {
+        return reviewAnswer;
+    }
+
+    public void setReviewAnswer(Boolean reviewAnswer) {
+        this.reviewAnswer = reviewAnswer;
+    }
 
     public String getReviewCode() {
         return reviewCode;

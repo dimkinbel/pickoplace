@@ -8,6 +8,7 @@
 	<script type="text/javascript">
 		var pagetype = 'create_new_place';
 	</script>
+	<link rel="icon"  type="image/png"  href="img/pplogomarker.png">
 	<script type="text/javascript" src="js/jquery-1.11.1.min.js" ></script>
     <script type="text/javascript" src="js/jquery-migrate-1.2.1.js" ></script>
     <script type="text/javascript" src="js/loginlogout.js" ></script>

@@ -1,6 +1,7 @@
 package com.dimab.pp.adminRequestServlets;
 
 import com.dimab.pickoplace.utils.JsonUtils;
+import com.dimab.pp.database.GetBookingShapesDataFactory;
 import com.dimab.pp.dto.BookingRequest;
 import com.dimab.pp.dto.BookingRequestPlaceView;
 import com.dimab.pp.dto.BookingRequestWrap;
@@ -34,7 +35,7 @@ import java.util.List;
 public class BookingReviewFromSMS extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String VerificationCode = request.getParameter("c");
+        String ReviewCode = request.getParameter("c");
         boolean isMobile = false;
         boolean isApple = false;
         UserAgentStringParser parser = UADetectorServiceFactory.getResourceModuleParser();
@@ -49,9 +50,9 @@ public class BookingReviewFromSMS extends HttpServlet {
         } else {
             isApple = false;
         }
-        if (isMobile) {
+        if (true) {
             DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-            Query.Filter codeFilter = new Query.FilterPredicate("reviewCode", Query.FilterOperator.EQUAL, VerificationCode);
+            Query.Filter codeFilter = new Query.FilterPredicate("reviewCode", Query.FilterOperator.EQUAL, ReviewCode);
 
             Query q = new Query("BookingOrders").setFilter(codeFilter);
             PreparedQuery pq = datastore.prepare(q);
@@ -59,86 +60,11 @@ public class BookingReviewFromSMS extends HttpServlet {
 
             if (bookingEntity != null) {
                 if (bookingEntity.getProperty("approved") != null && (boolean) bookingEntity.getProperty("approved") == false) {
+                    GetBookingShapesDataFactory bookingDataFactory = new GetBookingShapesDataFactory();
+                    BookingRequestWrap booking = bookingDataFactory.getBookData(bookingEntity);
 
-                    Integer startAt = (int) (long) bookingEntity.getProperty("UTCstartSeconds");
-                    String pid_ = (String) bookingEntity.getProperty("pid");
-                    String bid = (String) bookingEntity.getProperty("bid");
-                    String client = (String) bookingEntity.getProperty("clientid");
-                    Integer period = (int) (long) bookingEntity.getProperty("periodSeconds");
-                    Integer weekday = (int) (long) bookingEntity.getProperty("weekday");
-                    Integer num = (int) (long) bookingEntity.getProperty("num");
-                    Date placeLocalTime = (Date) bookingEntity.getProperty("Date");
-                    String placeName = (String)bookingEntity.getProperty("placeName");
-                    String branchName = (String)bookingEntity.getProperty("placeBranchName");
-                    String textRequest = "";
-                    String userPhone = "";
-                    if (bookingEntity.getProperty("textRequest") != null) {
-                        textRequest = (String) bookingEntity.getProperty("textRequest");
-                    }
-                    if (bookingEntity.getProperty("userPhone") != null) {
-                        userPhone = (String) bookingEntity.getProperty("userPhone");
-                    }
-
-                    String bookingListJSON = ((Text) bookingEntity.getProperty("bookingList")).getValue();
-                    Type bookingListType = new TypeToken<List<BookingRequest>>() {
-                    }.getType();
-                    List<BookingRequest> bookingShapesList = JsonUtils.deserialize(bookingListJSON, bookingListType);
-
-                    Integer persons = 0;
-                    for(BookingRequest singlePlace: bookingShapesList) {
-                        persons+= singlePlace.getPersons();
-                    }
-                    BookingRequestWrap booking = new BookingRequestWrap();
-                    booking.setBookID(bid);
-                    booking.setNum(num);
-                    booking.setTime(startAt);
-                    booking.setPlaceLocalTime(placeLocalTime);
-                    booking.setPid(pid_);
-                    booking.setPlaceName(placeName);
-                    booking.setPlaceName(branchName);
-                    booking.setPeriod(period);
-                    booking.setWeekday(weekday);
-                    booking.setTextRequest(textRequest);
-                    booking.setClientid(client);
-                    booking.setPhone(userPhone);
-                    booking.setBookingList(bookingShapesList);
-                    booking.setPersons(persons);
-                    booking.setReviewCode(VerificationCode);
-                    if (bookingEntity.getProperty("genuser") != null) {
-                        Type genuserType = new TypeToken<GenericUser>() {
-                        }.getType();
-                        GenericUser genuser = JsonUtils.deserialize((String) bookingEntity.getProperty("genuser"), genuserType);
-                        booking.setUser(genuser);
-                    }
-
-                    // Update place view
-                    String viewJSON = (String)bookingEntity.getProperty("bookingViewData");
-                    Type viewListType = new TypeToken<List<BookingRequestPlaceView>>() {}.getType();
-                    List<BookingRequestPlaceView> viewList = JsonUtils.deserialize(viewJSON,viewListType);
-                    for(BookingRequestPlaceView Floorview: viewList) {
-                        String fileName_ = Floorview.getUserID() + "/" + pid_ + "/" + "main" + "/" + Floorview.getFloorID() + "/overview.png";
-                        System.out.println(fileName_);
-
-                        String bucket = "pp_images";
-                        GcsFilename gcsFilename = new GcsFilename(bucket, fileName_);
-                        ImagesService is = ImagesServiceFactory.getImagesService();
-                        String filename = String.format("/gs/%s/%s", gcsFilename.getBucketName(), gcsFilename.getObjectName());
-                        String servingUrl = is.getServingUrl(ServingUrlOptions.Builder.withGoogleStorageFileName(filename).secureUrl(true));
-                        servingUrl = servingUrl + "=s" + 300;
-                        Floorview.setOverviewURL(servingUrl);
-
-                        double floorWidth = Floorview.getWidth();
-                        double floorHeight = Floorview.getHeight();
-
-                        for(ShapeDimentions shapeDim : Floorview.getShapes()) {
-                            String xper = String.format("%.2f",shapeDim.getX()/floorWidth*100);
-                            String yper = String.format("%.2f",shapeDim.getY()/floorHeight*100);
-                            shapeDim.setXperc(xper);
-                            shapeDim.setYperc(yper);
-                        }
-                    }
-                    booking.setBookingView(viewList);
-
+                    booking.setReviewCode(ReviewCode);
+                    booking.setAnswer(false);
                     request.setAttribute("bookingRequest", booking);
                     RequestDispatcher dispathser  = request.getRequestDispatcher("/smsReview.jsp");
                     response.addHeader("Access-Control-Allow-Origin", "*");

@@ -16,6 +16,24 @@ public class ShapeDimentions {
     String xperc;
     String yperc;
     Integer persons;
+    String floorName;
+    String floorId;
+
+    public String getFloorName() {
+        return floorName;
+    }
+
+    public void setFloorName(String floorName) {
+        this.floorName = floorName;
+    }
+
+    public String getFloorId() {
+        return floorId;
+    }
+
+    public void setFloorId(String floorId) {
+        this.floorId = floorId;
+    }
 
     public Integer getPersons() {
         return persons;

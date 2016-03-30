@@ -1,16 +1,12 @@
 package com.dimab.pp.database;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList; 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.dimab.pickoplace.utils.JsonUtils;
-import com.dimab.pp.dto.BookingRequest;
-import com.dimab.pp.dto.BookingRequestWrap;
-import com.dimab.pp.dto.CanvasShape;
-import com.dimab.pp.dto.PPSubmitObject; 
-import com.dimab.pp.dto.ShapeInfo;
-import com.dimab.pp.dto.SingleShapeBookingResponse;
+import com.dimab.pp.dto.*;
 import com.dimab.pp.login.GenericUser;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
@@ -23,6 +19,10 @@ import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.datastore.Query.SortDirection;
 
+import com.google.appengine.api.images.ImagesService;
+import com.google.appengine.api.images.ImagesServiceFactory;
+import com.google.appengine.api.images.ServingUrlOptions;
+import com.google.appengine.tools.cloudstorage.GcsFilename;
 import com.google.gson.reflect.TypeToken;
 //String pid;
 //String sid;
@@ -38,6 +38,92 @@ import com.google.gson.reflect.TypeToken;
 //int min;
 //int max;
 public class GetBookingShapesDataFactory {
+	public BookingRequestWrap getBookData(Entity bookingEntity) {
+		BookingRequestWrap booking = new BookingRequestWrap();
+		Integer startAt = (int) (long) bookingEntity.getProperty("UTCstartSeconds");
+		String pid_ = (String) bookingEntity.getProperty("pid");
+		String bid = (String) bookingEntity.getProperty("bid");
+		String client = (String) bookingEntity.getProperty("clientid");
+		Integer period = (int) (long) bookingEntity.getProperty("periodSeconds");
+		Integer weekday = (int) (long) bookingEntity.getProperty("weekday");
+		Integer num = (int) (long) bookingEntity.getProperty("num");
+		Date placeLocalTime = (Date) bookingEntity.getProperty("Date");
+		System.out.println("placeLocalTime:"+placeLocalTime);
+		String placeName = (String)bookingEntity.getProperty("placeName");
+		String branchName = (String)bookingEntity.getProperty("placeBranchName");
+		String address = (String)bookingEntity.getProperty("address");
+		String textRequest = "";
+		String userPhone = "";
+		if (bookingEntity.getProperty("userTextRequest") != null) {
+			textRequest = (String) bookingEntity.getProperty("userTextRequest");
+		}
+		if (bookingEntity.getProperty("userPhone") != null) {
+			userPhone = (String) bookingEntity.getProperty("userPhone");
+		}
+
+		String bookingListJSON = ((Text) bookingEntity.getProperty("bookingList")).getValue();
+		Type bookingListType = new TypeToken<List<BookingRequest>>() {
+		}.getType();
+		List<BookingRequest> bookingShapesList = JsonUtils.deserialize(bookingListJSON, bookingListType);
+
+		Integer persons = 0;
+		for(BookingRequest singlePlace: bookingShapesList) {
+			persons+= singlePlace.getPersons();
+		}
+
+		booking.setBookID(bid);
+		booking.setAddress(address);
+		booking.setNum(num);
+		booking.setTime(startAt);
+		booking.setPlaceLocalTime(placeLocalTime);
+		booking.setPid(pid_);
+		booking.setPlaceName(placeName);
+		booking.setBranchName(branchName);
+		booking.setPeriod(period);
+		booking.setWeekday(weekday);
+		booking.setTextRequest(textRequest);
+		booking.setClientid(client);
+		booking.setPhone(userPhone);
+		booking.setBookingList(bookingShapesList);
+		booking.setPersons(persons);
+
+		if (bookingEntity.getProperty("genuser") != null) {
+			Type genuserType = new TypeToken<GenericUser>() {
+			}.getType();
+			GenericUser genuser = JsonUtils.deserialize((String) bookingEntity.getProperty("genuser"), genuserType);
+			booking.setUser(genuser);
+		}
+
+		// Update place view
+		String viewJSON = (String)bookingEntity.getProperty("bookingViewData");
+		Type viewListType = new TypeToken<List<BookingRequestPlaceView>>() {}.getType();
+		List<BookingRequestPlaceView> viewList = JsonUtils.deserialize(viewJSON,viewListType);
+		for(BookingRequestPlaceView Floorview: viewList) {
+			String fileName_ = Floorview.getUserID() + "/" + pid_ + "/" + "main" + "/" + Floorview.getFloorID() + "/overview.png";
+			System.out.println(fileName_);
+
+			String bucket = "pp_images";
+			GcsFilename gcsFilename = new GcsFilename(bucket, fileName_);
+			ImagesService is = ImagesServiceFactory.getImagesService();
+			String filename = String.format("/gs/%s/%s", gcsFilename.getBucketName(), gcsFilename.getObjectName());
+			String servingUrl = is.getServingUrl(ServingUrlOptions.Builder.withGoogleStorageFileName(filename).secureUrl(true));
+			servingUrl = servingUrl + "=s" + 300;
+			Floorview.setOverviewURL(servingUrl);
+
+			double floorWidth = Floorview.getWidth();
+			double floorHeight = Floorview.getHeight();
+
+			for(ShapeDimentions shapeDim : Floorview.getShapes()) {
+				String xper = String.format("%.2f",shapeDim.getX()/floorWidth*100);
+				String yper = String.format("%.2f",shapeDim.getY()/floorHeight*100);
+				shapeDim.setXperc(xper);
+				shapeDim.setYperc(yper);
+			}
+		}
+		booking.setBookingView(viewList);
+
+		return booking;
+	}
 	  public List<SingleShapeBookingResponse> getShapeInfo(DatastoreService datastore , Entity csEntity , List<String> shapesIDs) {
 		  List<SingleShapeBookingResponse> shapesBookingList = new ArrayList<SingleShapeBookingResponse>();
 		  
@@ -105,8 +191,8 @@ public class GetBookingShapesDataFactory {
 				Integer num  = (int)(long)BookingEntity.getProperty("num");
 				String textRequest = "";
 				String userPhone = "";
-				if(BookingEntity.getProperty("textRequest") != null) {
-					textRequest = (String)BookingEntity.getProperty("textRequest");
+				if(BookingEntity.getProperty("userTextRequest") != null) {
+					textRequest = (String)BookingEntity.getProperty("userTextRequest");
 				}
 				if(BookingEntity.getProperty("userPhone") != null) {
 					userPhone = (String)BookingEntity.getProperty("userPhone");
@@ -168,8 +254,8 @@ public class GetBookingShapesDataFactory {
 			Integer num  = (int)(long)BookingEntity.getProperty("num");
 			String textRequest = "";
 			String userPhone = "";
-			if(BookingEntity.getProperty("textRequest") != null) {
-				textRequest = (String)BookingEntity.getProperty("textRequest");
+			if(BookingEntity.getProperty("userTextRequest") != null) {
+				textRequest = (String)BookingEntity.getProperty("userTextRequest");
 			}
 			if(BookingEntity.getProperty("userPhone") != null) {
 				userPhone = (String)BookingEntity.getProperty("userPhone");

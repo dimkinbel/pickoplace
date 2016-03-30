@@ -290,12 +290,20 @@
     </servlet-mapping>
 
     <servlet>
+        <servlet-name>BookingReviewResponse</servlet-name>
+        <servlet-class>com.dimab.pp.adminRequestServlets.BookingReviewResponse</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>BookingReviewResponse</servlet-name>
+        <url-pattern>/BookingRevResp</url-pattern>
+    </servlet-mapping>
+    <servlet>
         <servlet-name>bookingReviewFromSMS</servlet-name>
-        <servlet-class>com.dimab.pp.account.ClientBookingHistoryServlet</servlet-class>
+        <servlet-class>com.dimab.pp.adminRequestServlets.BookingReviewFromSMS</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>bookingReviewFromSMS</servlet-name>
-        <url-pattern>/wl/r</url-pattern>
+        <url-pattern>/wl</url-pattern>
     </servlet-mapping>
 
        <servlet>

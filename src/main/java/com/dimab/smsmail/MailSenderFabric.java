@@ -39,6 +39,12 @@ public class MailSenderFabric {
 			case "userBookingRequest":
 				message = mailGenerator.GetConfirmationMail(false,mmodel.getBookingRequestsWrap(), mmodel.getPlaceInfo());
 				break;
+			case "userReviewConfirmation":
+				message = mailGenerator.GetReviewAnswerMail(true,mmodel.getBookingRequestsWrap());
+				break;
+			case "userReviewDecline":
+				message = mailGenerator.GetReviewAnswerMail(false,mmodel.getBookingRequestsWrap());
+				break;
 			case "waiterCancelUserBooking":
 				message = mailGenerator.GetCancellationEmail(mmodel.getBookingRequestsWrap(), mmodel.getPlaceInfo());
 				break;
@@ -64,7 +70,7 @@ public class MailSenderFabric {
 				message = mailGenerator.waiterBookingNotification(true,mmodel.getBookingRequestsWrap(),mmodel.getPlaceInfo(),mmodel.getGenuser(),"");
 				break;
 			case "waiterManualBookingNotification":
-				message = mailGenerator.waiterBookingNotification(false,mmodel.getBookingRequestsWrap(),mmodel.getPlaceInfo(),mmodel.getGenuser(),mmodel.getVerificationCode());
+				message = mailGenerator.waiterBookingNotification(false,mmodel.getBookingRequestsWrap(),mmodel.getPlaceInfo(),mmodel.getGenuser(),mmodel.getReviewCode());
 				break;
 		}
 
@@ -82,6 +88,12 @@ public class MailSenderFabric {
 					break;
 				case "userBookingRequest":
 					msg.setSubject("Pickoplace - Booking request sent");
+					break;
+				case "userReviewConfirmation":
+					msg.setSubject("Pickoplace - Booking request CONFIRMED");
+					break;
+				case "userReviewDecline":
+					msg.setSubject("Pickoplace - Booking request DECLINED");
 					break;
 				case "waiterCancelUserBooking":
 					msg.setSubject("Order Cancellation");

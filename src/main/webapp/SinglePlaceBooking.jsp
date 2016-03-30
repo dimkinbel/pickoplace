@@ -23,6 +23,7 @@
 <!DOCTYPE html>
 <html style="height:100%">
 <head>
+    <link rel="icon"  type="image/png"  href="img/pplogomarker.png">
     <common:baseStyles/>
     <common:eachPageStyles/>
     <common:baseScripts/>

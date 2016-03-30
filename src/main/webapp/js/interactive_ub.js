@@ -45,7 +45,7 @@ function requestBookingAvailability() {
 					document.getElementById("server_shapes_prebooked").value=JSON.stringify(data);
 					shapesPrebookedJSON = JSON.parse(document.getElementById("server_shapes_prebooked").value);
 					bookingsManager = new BookingsManager(shapesPrebookedJSON);
-					updateSelectOptions("dropdown_start_floors","dropdown",'datepicker_ub',bookingsManager.bookingProperties.bookLength.sort()[0]);
+					updateSelectOptions("dropdown_start_floors","dropdown",'datepicker_ub');
 					initialTCanvas();
 					updateCloseShapes();
 
@@ -57,7 +57,7 @@ function requestBookingAvailability() {
 		} else {
 			shapesPrebookedJSON =  generateTestValues() ;
 			bookingsManager = new BookingsManager(shapesPrebookedJSON);
-			updateSelectOptions("dropdown_start_floors","dropdown",'datepicker_ub',minPeriodSeconds);
+			updateSelectOptions("dropdown_start_floors","dropdown",'datepicker_ub');
 			initialTCanvas();
 			updateCloseShapes();
 		}

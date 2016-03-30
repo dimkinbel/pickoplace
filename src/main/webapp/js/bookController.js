@@ -59,7 +59,7 @@ $("#datepicker_ub").datepicker({
 		 console.log(dateText);
     	 //requestBookingAvailability();
          updateShowDateDatepickerFe();
-		 updateSelectOptions("dropdown_start_floors","dropdown",'datepicker_ub',minPeriodSeconds);
+		 updateSelectOptions("dropdown_start_floors","dropdown",'datepicker_ub');
 		 updateCloseShapes();
     },
     onClose: function(dateText, inst) {

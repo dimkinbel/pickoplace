@@ -143,7 +143,7 @@ function updateShapeTimeline(canvas_id, shape, from, to) {
     currentSingleTimeCanvas = tcanvases[sid];
     currentSingleTimeCanvas.adminMoveAble = false;
 }
-function updateSelectOptions(selid, type, datepickerId, minPeriodSeconds) {
+function updateSelectOptions(selid, type, datepickerId) {
     console.log(type)
     $("#" + selid).html('');
 
@@ -156,7 +156,7 @@ function updateSelectOptions(selid, type, datepickerId, minPeriodSeconds) {
     var placeSecondsTotal = placeHours * 3600 + placeMinutes * 60;
     var selected = false;
     //console.log("ddd " + minPeriodSeconds);
-    var openStepList = bookingsManager.getOpenSecondsByDate($("#" + datepickerId).datepicker("getDate").getTime() / 1000, minPeriodSeconds);
+    var openStepList = bookingsManager.getOpenSecondsByDate($("#" + datepickerId).datepicker("getDate").getTime() / 1000);
     console.log(openStepList);
 
     var selectedTime = "";
@@ -241,7 +241,7 @@ function updateSelectOptions(selid, type, datepickerId, minPeriodSeconds) {
 }
 function updateAvailableEndPeriods(openStepList, onStartSelect) {
     if (onStartSelect == true) {
-        openStepList = bookingsManager.getOpenSecondsByDate($("#datepicker_ub").datepicker("getDate").getTime() / 1000, minPeriodSeconds);
+        openStepList = bookingsManager.getOpenSecondsByDate($("#datepicker_ub").datepicker("getDate").getTime() / 1000);
     }
     var StartVal = parseInt($("#book_start_val_").val());
     if (StartVal == -1) {

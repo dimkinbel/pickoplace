@@ -4,9 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import com.dimab.pp.dto.BookingRequest;
-import com.dimab.pp.dto.BookingRequestWrap;
-import com.dimab.pp.dto.PlaceInfo;
+import com.dimab.pp.dto.*;
 import com.dimab.pp.login.GenericUser;
 
 public class MailGenerator {
@@ -91,7 +89,7 @@ public class MailGenerator {
         message = message.concat("</tr>");
         message = message.concat("<tr style='height: 30px;text-align: center;color: grey;font-size: 14px;'>");
         message = message.concat("  <td></td>");
-        message = message.concat("  <td>name</td>");
+        message = message.concat("  <td>SeatName</td>");
         message = message.concat("  <td>floor</td>");
         message = message.concat("  <td>persons</td>");
         message = message.concat("</tr>");
@@ -301,7 +299,7 @@ public class MailGenerator {
         message = message.concat("</tr>");
         message = message.concat("<tr style='height: 30px;text-align: center;color: grey;font-size: 14px;'>");
         message = message.concat("  <td colspan='2'></td>");
-        message = message.concat("  <td>name</td>");
+        message = message.concat("  <td>Seat-Name</td>");
         message = message.concat("  <td>floor</td>");
         message = message.concat("  <td>persons</td>");
         message = message.concat("</tr>");
@@ -316,16 +314,26 @@ public class MailGenerator {
             message = message.concat("</tr>");
             ind += 1;
         }
-
+        if (!automatic) {
+            message = message.concat("<tr>");
+            message = message.concat("   <td colspan='5' style='height: 60px;vertical-align: bottom;'>");
+            message = message.concat("    <a style='text-decoration:none' target=\"_blank\" href='http://pickoplace.com/wl?c=" + code + "' style='text-decoration:none'>");
+            message = message.concat("     <div style='height: 30px;width: 30%;background-color: #428FCC;color: #F5F5F5;font-family: Calibri;font-size: 150%;text-align: center;line-height: 30px;font-weight: 700;margin-top: 30px;margin-right: 5%;border-radius: 3px;margin: auto;cursor: pointer;'>");
+            message = message.concat("        View seats");
+            message = message.concat("      </div>");
+            message = message.concat("    </a>");
+            message = message.concat("   </td>");
+            message = message.concat("</tr>");
+        }
         message = message.concat("</tbody></table>");
         message = message.concat("</div></td></tr><tr><td style='position:relative; '>");
         message = message.concat("<img src='" + topgreyIcon + "' style='width: 100%;position:absolute;top:0px;display: block;border:none;'></td></tr>");
         if (!automatic) {
             message = message.concat("<div style='position: relative;height: 100px;'>");
-            message = message.concat("    <a  target=\"_blank\" href='https://www.pickoplace.com/waiterLinkActions/declineBooking?pid=" + placeInfo.getUserPlace().getPlaceID() + "&bid=" + bookingRequestsWrap.getBookID() + "&code=" + code + "'>");
+            message = message.concat("    <a style='text-decoration:none'  target=\"_blank\" href='http://www.pickoplace.com/BookingRevResp?confirmed=false&pid=" + placeInfo.getUserPlace().getPlaceID() + "&bid=" + bookingRequestsWrap.getBookID() + "&code=" + code + "'>");
             message = message.concat("        <div style='width: 40%;min-height:40px;background-color:#ff5252;color:white;font-family:Calibri;font-size: 1.5em;text-align:center;line-height:40px;margin-top:30px;margin-left: 5%;border-radius:3px;float:left;'>Decline</div>");
             message = message.concat("    </a>");
-            message = message.concat("    <a  target=\"_blank\" href='https://www.pickoplace.com/waiterLinkActions/acceptBooking?pid=" + placeInfo.getUserPlace().getPlaceID() + "&bid=" + bookingRequestsWrap.getBookID() + "&code=" + code + "'>");
+            message = message.concat("    <a style='text-decoration:none'  target=\"_blank\" href='http://www.pickoplace.com/BookingRevResp?confirmed=true&pid=" + placeInfo.getUserPlace().getPlaceID() + "&bid=" + bookingRequestsWrap.getBookID() + "&code=" + code + "'>");
             message = message.concat("        <div style='width: 40%;min-height:40px;background-color:#4caf50;color:white;font-family:Calibri;font-size: 1.5em;text-align:center;line-height:40px;margin-top:30px;margin-right: 5%;border-radius:3px;float:right;'>Accept</div>");
             message = message.concat(" </div>");
         }
@@ -333,6 +341,124 @@ public class MailGenerator {
         message = message.concat("<img src='" + topwhiteIcon + "' style='width: 100%;position:absolute;bottom:0px;display: block;border:none;'></td></tr><tr><td>");
         message = message.concat("<div style='background-color:#ededed;vertical-align:bottom;padding:10px;width:100%;max-width:580px;display: inline-block;'>");
         message = message.concat("<div style='font-size: 12px;color: grey;font-family: inherit;text-align: center;'>You received that message cause your eMail mentioned at Pickoplace settings for " + placeInfo.getUserPlace().getPlace() + "," + placeInfo.getUserPlace().getBranch() + ".</div>");
+        message = message.concat("<div style='font-size: 12px;color: grey;font-family: inherit;text-align: center;'>In case this message was sent by mistake , please ignore it</div>");
+        message = message.concat("<div style='float: right;text-align: center;font-size: 10px;margin-top: 30px;color: #B5B5B5;'>Contact Pickoplace:<br>+972526775065<br>contact@pickoplace.com</div>");
+        message = message.concat("</div>");
+        message = message.concat("</tr></td></table>");
+        message = message.concat("</div>");
+
+        return message;
+    }
+
+
+    public String GetReviewAnswerMail(boolean accepted, BookingRequestWrap bookingRequestsWrap) {
+        String message = "";
+        String topwhiteIcon = "https://storage.googleapis.com/pp_icons/splittertopwhite.jpg";
+        String topgreyIcon = "https://storage.googleapis.com/pp_icons/splittertopgrey.jpg";
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM , HH:mm");
+
+        String fromTime = dateFormat.format(bookingRequestsWrap.getPlaceLocalTime());
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(bookingRequestsWrap.getPlaceLocalTime());
+        Calendar endCalendar = calendar;
+        endCalendar.add(Calendar.SECOND, bookingRequestsWrap.getPeriod());
+
+        String endTime = dateFormat.format(endCalendar.getTime());
+
+
+        message = message.concat("<div  border='0' cellpadding='0' cellspacing='0' height='100%' width='100%' style='background-color: #F7F7F7;width: 100%;padding-top: 50px;padding-bottom: 50px; font-family: \'Helvetica neue\',Helvetica,arial,sans-serif;'>");
+        message = message.concat("<table class='main_mail_body' style='width:100%;max-width: 600px;margin: auto;border-collapse: collapse' cellspacing='0' cellpadding='0'><tr><td>");
+        message = message.concat("<div style='background-color:white;font-family:sans-serif;font-size:19px;color: #2D2D2D;padding-left:10px;min-height:100px;padding-top:10px;text-align: left;'>");
+        message = message.concat("Hello," + bookingRequestsWrap.getUser().getName() + "<br>");
+        message = message.concat("Your booking request at:<br>");
+
+        message = message.concat("<span style='color: #2196F3;'>" + bookingRequestsWrap.getPlaceName() + "," + bookingRequestsWrap.getBranchName() + "</span><br>");
+        if(accepted) {
+            message = message.concat("<span style='color: #4CAF50;'>Confirmed.</span><br>");
+        } else {
+            message = message.concat("<span style='color: #FF6559;'>Unfortunately was Declined.</span><br>");
+
+        }
+        message = message.concat("</div></td></tr><tr><td style='position:relative; '>");
+        message = message.concat("<img src='" + topwhiteIcon + "' style='width: 100%;position:absolute;bottom:0px;display: block;border:none;'></td></tr><tr><td>");
+        message = message.concat("<div style='background-color: #EDEDED;padding: 10px;'>");
+        message = message.concat("<table class='mail_details_table' cellspacing='0' cellpadding='0' style='width: 100%; border-collapse: collapse'>");
+        message = message.concat("<tbody><tr>");
+        message = message.concat(" <td class='mdh' style='width: 100%;height: 60px;vertical-align: top;position: relative;' colspan='4'>");
+        message = message.concat("   <div style='float: left;font-size: 18px;'>Order Summary</div>");
+
+        message = message.concat("   <div style='float: right;font-size: 14px;color: grey;'>" + fromTime + "</div>");
+        message = message.concat("   <div style='position: relative;margin-top: 30px;border-bottom: 1px  #B9B9B9;border-bottom-style: dashed;'></div>");
+        message = message.concat("   <div style='margin-top: 5px;color: grey;'>Order #: <span style='color: #2196F3;'>" + bookingRequestsWrap.getBookID() + "</span></div>");
+        message = message.concat(" </td>");
+        message = message.concat("</tr>");
+        message = message.concat("<tr style='text-align: center;height: 30px;color: grey;font-size: 14px;'>");
+        message = message.concat("  <td>Name</td>");
+        message = message.concat("  <td>Persons</td>");
+        message = message.concat("  <td>Time</td>");
+        message = message.concat("  <td>Till</td>");
+        message = message.concat("</tr>");
+        message = message.concat("<tr style='text-align: center;height: 50px;border-bottom: 1px dashed #D2D2D2;'>");
+        message = message.concat("  <td>" + bookingRequestsWrap.getUser().getName() + " " + bookingRequestsWrap.getUser().getFamily() + "</td>");
+        message = message.concat("  <td>" + bookingRequestsWrap.getTotalPersons() + "</td>");
+        message = message.concat("  <td>" + fromTime + "</td>");
+        message = message.concat("  <td>" + endTime + "</td>");
+        message = message.concat("</tr>");
+        message = message.concat("<tr style='height: 30px;'><td colspan='4' style='text-align: left;height: 30px;font-size: 14px;color: grey;'>");
+        message = message.concat("  <div> Ordered places details</div>");
+        message = message.concat("  </td>");
+        message = message.concat("</tr>");
+        message = message.concat("<tr style='height: 30px;text-align: center;color: grey;font-size: 14px;'>");
+        message = message.concat("  <td></td>");
+        message = message.concat("  <td>SeatName</td>");
+        message = message.concat("  <td>floor</td>");
+        message = message.concat("  <td>persons</td>");
+        message = message.concat("</tr>");
+
+        Integer ind = 1;
+        for (BookingRequestPlaceView singlePlace : bookingRequestsWrap.getBookingView()) {
+            for(ShapeDimentions shape : singlePlace.getShapes()) {
+                message = message.concat("<tr style='text-align: center;'>");
+                message = message.concat("  <td>" + ind + "</td>");
+                message = message.concat("  <td>" + shape.getName() + "</td>");
+                message = message.concat("  <td>" + shape.getFloorName() + "</td>");
+                message = message.concat("  <td>" + shape.getPersons() + "</td>");
+                message = message.concat("</tr>");
+                ind += 1;
+            }
+
+        }
+
+        message = message.concat("</tbody></table>");
+        message = message.concat("</div></td></tr><tr><td style='position:relative; '>");
+        message = message.concat("<img src='" + topgreyIcon + "' style='width: 100%;position:absolute;top:0px;display: block;border:none;'></td></tr>");
+        message = message.concat("<tr>");
+        message = message.concat("    <td style=''>");
+        message = message.concat(" <div style='width:100%;text-align: center;line-height: 60px;font-family: Calibri,Tahoma;color: grey;font-size: 1.5em;'>Place Details</div>");
+        message = message.concat("	</td>");
+        message = message.concat("</tr>");
+       /* for (BookingRequestPlaceView singlePlace : bookingRequestsWrap.getBookingView()) {
+
+                message = message.concat("<tr>");
+                message = message.concat("    <td>");
+                message = message.concat("	  <div    style='position:relative;width: 100%;'>");
+                message = message.concat("                <img style='width: 100%;' src="+singlePlace.getOverviewURL()+">");
+                for(ShapeDimentions shape : singlePlace.getShapes()) {
+                    message = message.concat("                   <div   style='position: absolute;left:"+shape.getXperc()+"%;top:"+shape.getYperc()+"%;-webkit-transform:translate(-50%, -50%); transform: translate(-50%, -50%);background-color: #FF5722;width: 1em;height: 1em;border-radius: 1em;'> </div> ");
+                }
+                message = message.concat("            </div>");
+                message = message.concat("	</td>");
+                message = message.concat(" </tr>");
+
+        }*/
+        message = message.concat("<tr><td style='position:relative; '>");
+        message = message.concat("<img src='" + topwhiteIcon + "' style='width: 100%;position:absolute;bottom:0px;display: block;border:none;'></td></tr><tr><td>");
+        message = message.concat("<div style='background-color:#ededed;vertical-align:bottom;padding:10px;width:100%;max-width:580px;display: inline-block;'>");
+        message = message.concat("<div style='margin-top: 10px;text-align: center;'><a href='https://www.pickoplace.com/ppunsubscribe?servlet=unsubscribe&umail=" + bookingRequestsWrap.getUser().getEmail() + "&uekey=" + bookingRequestsWrap.getUserEntityKeyString() + "' style='font-size: 14px;color: #2196F3;text-decoration: none;'>You can unsubscribe from receiving future orders confirmations</a></div>");
+        message = message.concat("<div style='margin-top: 10px;margin-bottom: 20px;text-align: center;'><a href='https://www.pickoplace.com/frommailaction?servlet=userbookings' style='font-size: 14px;color: #2196F3;text-decoration: none;'>Check your orders at Pickoplace account</a></div>");
+        message = message.concat("<div style='font-size: 12px;color: grey;font-family: inherit;text-align: center;'>You received that message by making online order using Pickoplace extention.</div>");
         message = message.concat("<div style='font-size: 12px;color: grey;font-family: inherit;text-align: center;'>In case this message was sent by mistake , please ignore it</div>");
         message = message.concat("<div style='float: right;text-align: center;font-size: 10px;margin-top: 30px;color: #B5B5B5;'>Contact Pickoplace:<br>+972526775065<br>contact@pickoplace.com</div>");
         message = message.concat("</div>");

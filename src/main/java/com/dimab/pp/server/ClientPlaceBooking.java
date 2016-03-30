@@ -95,15 +95,27 @@ public class ClientPlaceBooking extends HttpServlet {
         Long secondsRelativeToClient = fromSeconds - bookingRequestsWrap.getClientOffset() * 60 - (long) (bookingRequestsWrap.getPlaceOffcet() * 3600);
         Long endBookingAsSeenAtUTC = secondsRelativeToClient + bookingRequestsWrap.getPeriod().longValue();
         Date PlaceLocalTime = new Date((secondsRelativeToClient + (long) (bookingRequestsWrap.getPlaceOffcet() * 3600)) * 1000);
+
+        Date dateForDatabase = new Date(PlaceLocalTime.getTime());
+        System.out.println(PlaceLocalTime);
+        Date secrtc = new Date(secondsRelativeToClient*1000L);
+        System.out.println(secrtc);
+
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(PlaceLocalTime);
+        Integer dayOfStartCalendar = calendar.get(Calendar.DAY_OF_MONTH);
+        System.out.println(calendar.getTime());
+
         Calendar endCalendar = calendar;
         endCalendar.add(Calendar.SECOND, bookingRequestsWrap.getPeriod());
-        calendar.get(Calendar.DAY_OF_MONTH);
+         Integer dayOfEndCalendar = endCalendar.get(Calendar.DAY_OF_MONTH);
+
         Boolean endOnNextDay = false;
-        if (calendar.get(Calendar.DAY_OF_MONTH) != endCalendar.get(Calendar.DAY_OF_MONTH)) {
+        if (dayOfStartCalendar != dayOfEndCalendar) {
             endOnNextDay = true;
         }
+        System.out.println(endCalendar.getTime());
+
         bookingRequestsWrap.setClientid(username_email);
         bookingRequestsWrap.setUser(genuser);
         bookingRequestsWrap.setPlaceLocalTime(PlaceLocalTime);
@@ -157,7 +169,7 @@ public class ClientPlaceBooking extends HttpServlet {
         bookingOrder.setProperty("DateWhenOrderMade_atUTC", current);
         bookingOrder.setProperty("DateWhenOrderMadeSeconds_atUTC", current.getTime());
         bookingOrder.setProperty("bid", bookingRequestsWrap.getBookID());
-        bookingOrder.setProperty("Date", PlaceLocalTime);
+        bookingOrder.setProperty("Date", dateForDatabase);
         bookingOrder.setProperty("UTCstartSeconds", secondsRelativeToClient);// Seconds as seen at UTC
         bookingOrder.setProperty("pid", bookingRequestsWrap.getPid());
         bookingOrder.setProperty("periodSeconds", bookingRequestsWrap.getPeriod());
@@ -338,7 +350,7 @@ public class ClientPlaceBooking extends HttpServlet {
                 String endTime = dateFormat.format(endCalendar.getTime());
                 String message = "New order request\n";
                 message += fromTime + "-" + endTime + "," + totalPersons + "persons\n";
-                message += "Review https://pickoplace.com/wl/r?c=" + reviewCode + "\n";
+                message += "Review http://pickoplace.com/wl?c=" + reviewCode + "\n";
 
                 for (String phoneObject : waiterNotificationPhones) {
                     PlivoSMSRequestJSON phoneJSON = JsonUtils.deserialize(phoneObject, PlivoSMSRequestJSON.class);

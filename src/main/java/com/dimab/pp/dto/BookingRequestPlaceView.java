@@ -13,6 +13,7 @@ public class BookingRequestPlaceView {
     double width;
     double height;
     String overviewURL;
+    List<ShapeDimentions> shapes = new ArrayList<>();
 
     public String getFloorName() {
         return floorName;
@@ -30,7 +31,7 @@ public class BookingRequestPlaceView {
         this.overviewURL = overviewURL;
     }
 
-    List<ShapeDimentions> shapes = new ArrayList<>();
+
 
     public String getFloorID() {
         return floorID;

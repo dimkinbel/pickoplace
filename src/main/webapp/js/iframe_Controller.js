@@ -79,7 +79,7 @@ var minPeriodSeconds = 15*60;
 			onSelect: function(dateText, inst) { 
 				 console.log(dateText);
 				 //requestBookingAvailability(); 
-				 updateSelectOptions("dropdown_start_floors","dropdown",'datepicker_ub',minPeriodSeconds);
+				 updateSelectOptions("dropdown_start_floors","dropdown",'datepicker_ub');
 				 updateCloseShapes();
 			},
 			onClose: function(dateText, inst) {

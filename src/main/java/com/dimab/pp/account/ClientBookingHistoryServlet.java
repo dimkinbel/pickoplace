@@ -93,8 +93,8 @@ public class ClientBookingHistoryServlet extends HttpServlet {
 				Long dateUTC = (long) 0;
 				Integer time = 0;
 				String textRequest = new String();
-				if(bookingE.getProperty("textRequest") != null) {
-					textRequest = (String)bookingE.getProperty("textRequest");
+				if(bookingE.getProperty("userTextRequest") != null) {
+					textRequest = (String)bookingE.getProperty("userTextRequest");
 				}
 				String bookingListJSON = ((Text) bookingE.getProperty("bookingList")).getValue();
 				Type bookingListType = new TypeToken<List<BookingRequest>>(){}.getType();

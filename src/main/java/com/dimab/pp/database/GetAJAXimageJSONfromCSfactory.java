@@ -57,6 +57,8 @@ public class GetAJAXimageJSONfromCSfactory {
                         shapeDim.setMaxp(shape.getBooking_options().getMaxPersons());
                         shapeDim.setSid(shape.getSid());
                         shapeDim.setPersons(sid2persons.get(shape.getSid()));
+                        shapeDim.setFloorName(floor.getFloor_name());
+                        shapeDim.setFloorId(floor.getFloorid());
                         shapeDims.add(shapeDim);
                     }
                 }

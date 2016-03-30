@@ -10,6 +10,7 @@
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	  <link rel="icon"  type="image/png"  href="img/pplogomarker.png">
     <title>PickoPlace-Edit</title>
 	  <script type="text/javascript">
 		  var pagetype = 'editplace';

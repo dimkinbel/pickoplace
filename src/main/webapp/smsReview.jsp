@@ -1,11 +1,15 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+         pageEncoding="UTF-8"
+%>
 <%@ page import="com.dimab.pp.dto.BookingRequestWrap" %>
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="java.util.Calendar" %>
 <%@ page import="com.dimab.pp.dto.BookingRequestPlaceView" %>
 <%@ page import="com.dimab.pp.dto.ShapeDimentions" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<!DOCTYPE html>
 <html>
 <head>
+    <link rel="icon"  type="image/png"  href="img/pplogomarker.png">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -32,7 +36,7 @@
     endCalendar.add(Calendar.SECOND, booking.getPeriod());
     String endTime = dateFormat.format(endCalendar.getTime());
 
-    dateFormat = new SimpleDateFormat("DD MMMM");
+    dateFormat = new SimpleDateFormat("dd MMMM");
     String dateString = dateFormat.format(booking.getPlaceLocalTime());
 
     String imgUrl = "";
@@ -57,15 +61,24 @@
     <div class="container-fluid" >
         <div class="row ">
             <div class="col-xs-12" id="ascasd">
+                <% if(booking.isAnswer()== false) {%>
                 התקבלה הזמנה חדשה ב <br>
-                <span id="place_name"><%=booking.getPlaceName()%> , <%=booking.getBranchName()%></span>
+                <%} else {
+                         if(booking.getReviewAnswer()==true) { %>
+הזמנה אושרה <br>
+                         <%} else {%>
+הזמנה בוטלה<br>
+                         <%}%>
+
+                <%}%>
+                <span id="place_name"><%=booking.getPlaceName()%>,&nbsp;<%=booking.getBranchName()%></span>
             </div>
         </div>
         <div class="details_top_text">פרטי הזמנה</div>
         <div class="row " id="order_details">
             <div class="col-xs-12">
                 <div class="row contact_header_notif">
-                    <div class="col-sm-1"><img id="fg_profile_img" src="http://graph.facebook.com/768185026593187/picture"></div>
+                    <div class="col-sm-1"><img id="fg_profile_img" src="<%=imgUrl%>"></div>
                     <div class="col-sm-11"><span class="notification_name_"><%=fullName%></span> <span
                             class="label label-success notif_phone_label"><%=booking.getPhone()%></span></div>
                 </div>
@@ -101,25 +114,29 @@
                     <div class="overview_wrap" id="overview-<%=Floorview.getFloorID()%>">
                         <img class="server_overview" src="<%=Floorview.getOverviewURL()%>">
                         <%for(ShapeDimentions sd:Floorview.getShapes()) {%>
-                           <div class="place_pointer material-icons" style="left:<%=sd.getXperc()%>;top:<%=sd.getYperc()%>">room</div>
+                           <div class="place_pointer material-icons" style="left:<%=sd.getXperc()%>&#37;;top:<%=sd.getYperc()%>&#37;;">room
+                               <div class="place_pointer_inner material-icons"  >room</div>
+                           </div>
                         <%}%>
                     </div>
                 </div>
             </div>
         <%}%>
+        <% if(booking.isAnswer()== false) {%>
         <div class="row details_top_text">יש לאשר או לבטל</div>
         <div class="row" id="review_buttons">
             <div class="col-xs-6">
-               <a  style="text-decoration: none;" href='https://www.pickoplace.com/waiterLinkActions/declineBooking?pid=<%=booking.getPid()%>&bid=<%=booking.getBookID()%>&code=<%=booking.getReviewCode()%>'>
+               <a  style="text-decoration: none;" href='http://www.pickoplace.com/BookingRevResp?confirmed=false&pid=<%=booking.getPid()%>&bid=<%=booking.getBookID()%>&code=<%=booking.getReviewCode()%>'>
                 <div class="buttons" id="decline_btn">Decline</div>
                </a>
             </div>
             <div class="col-xs-6">
-                <a  style="text-decoration: none;" href='https://www.pickoplace.com/waiterLinkActions/acceptBooking?pid=<%=booking.getPid()%>&bid=<%=booking.getBookID()%>&code=<%=booking.getReviewCode()%>'>
+                <a  style="text-decoration: none;" href='http://www.pickoplace.com/BookingRevResp?confirmed=true&pid=<%=booking.getPid()%>&bid=<%=booking.getBookID()%>&code=<%=booking.getReviewCode()%>'>
                     <div class="buttons" id="accept_btn">Accept</div>
                 </a>
             </div>
         </div>
+        <%}%>
     </div>
 </div>
 </body>

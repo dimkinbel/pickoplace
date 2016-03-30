@@ -294,7 +294,7 @@ BookingsManager.prototype.isOrderAvailableByTime = function () {
             var StartPeriod = parseInt($("#book_start_val_").val());
             var Period = parseInt($("#book_period_val_").val());
             var endOfBooking = StartPeriod + Period;
-            var endOfAvailable = openStepList[openStepList.length - 1] + bookingsManager.bookingProperties.bookLength.sort()[0];
+            var endOfAvailable = openStepList[openStepList.length - 1] + bookingsManager.bookingProperties.bookLength.sort(function(a, b){return a-b})[0]*60;
             //console.log(endOfBooking + " " + endOfAvailable);
             if (endOfBooking > endOfAvailable) {
                 return false;
@@ -322,7 +322,7 @@ BookingsManager.prototype.getOpenSecondsByDate = function (clientStartDateSecond
     if (day_.open == true) {
         if(document.getElementById("alldaybooking")== null) {
             for (var r = 0; r < day_.openList.length; r++) {
-                for (var i = day_.openList[r].from; i <= day_.openList[r].to - bookingsManager.bookingProperties.bookLength.sort()[0]; i += this.bookingProperties.bookStartStep * 60) {
+                for (var i = day_.openList[r].from; i <= day_.openList[r].to - bookingsManager.bookingProperties.bookLength.sort(function(a, b){return a-b})[0] * 60; i += this.bookingProperties.bookStartStep * 60) {
                     returnList.push(i)
                 }
             }
