@@ -3,7 +3,7 @@ package com.dimab.pp.JSON;
 import com.dimab.pickoplace.utils.JsonUtils;
 import com.dimab.pp.dto.*;
 import com.dimab.pp.login.CheckTokenValid;
-import com.dimab.pp.login.GenericUser;
+import com.dimab.pp.login.dto.GenericUser;
 import com.dimab.pp.search.SearchFabric;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -305,6 +305,8 @@ public class AJAXImageImport extends HttpServlet {
 
                 List<String> admins = new ArrayList<String>();
                 admins.add(username_email);
+                List<String> waiters = new ArrayList<String>();
+                waiters.add(username_email);
                 canvasState.setProperty("username", username_email);
                 canvasState.setProperty("usernameRandom", userRandom);
                 canvasState.setUnindexedProperty("DateCreated", date.toString());
@@ -323,6 +325,7 @@ public class AJAXImageImport extends HttpServlet {
                 canvasState.setUnindexedProperty("bookingsCount", 0);
                 canvasState.setUnindexedProperty("bookingProperties", JsonUtils.serialize(new ConfigBookingProperties()));
                 canvasState.setUnindexedProperty("adminList", JsonUtils.serialize(admins));
+                canvasState.setUnindexedProperty("waiterList", JsonUtils.serialize(waiters));
                 canvasState.setProperty("Admin_username", "admin");
                 canvasState.setProperty("Admin_password", "admin");
                 canvasState.setUnindexedProperty("password", "admin");

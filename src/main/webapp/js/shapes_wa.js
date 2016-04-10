@@ -60,6 +60,8 @@ function Shape(state, x, y, w, h,type,options,angle_) {
     }
 
     this.sid = randomString(12);
+    this.choosen = false;
+    this.isAvailable = true;
 
 }
 
@@ -282,7 +284,7 @@ Shape.prototype.getCorners = function () {
 function CanvasState(canvas) {
     "use strict";
     // **** First some setup! ****
-
+    this.adminSeatSelect = false;
     this.floorid = "floorid_"+randomString(10);
     this.mainfloor = false;
     this.canvas = canvas;
@@ -391,7 +393,7 @@ function CanvasState(canvas) {
         shapes = myState.shapes;
         l = shapes.length;
         for (i = l-1; i >= 0; i -= 1) {
-            if (shapes[i].contains(myState.ctx ,mx, my) && shapes[i].type != "text" && shapes[i].type != "line" ) {
+            if (shapes[i].contains(myState.ctx ,mx, my) && shapes[i].type != "text" && shapes[i].type != "line" && myState.adminSeatSelect == false) {
                 if(e.which == 3) //1: left, 2: middle, 3: right
                 {
                     return;
@@ -463,6 +465,29 @@ function CanvasState(canvas) {
                     myState.valid = false;
                 }
                 return;
+            } else if (shapes[i].contains(myState.ctx ,mx, my) && shapes[i].type != "text" && shapes[i].type != "line" && myState.adminSeatSelect == true ) {
+                if(e.which == 3) //1: left, 2: middle, 3: right
+                {
+                    return;
+                }
+                mySel = shapes[i];
+                    if(shapes[i].isAvailable == true) {
+                        var regular_behavior = false;
+                        myState.mousemoveclicked = null;
+                        if (mySel.choosen == false) {
+                            mySel.choosen = true;
+                            appendToAdminReservation(mySel, myState.floor_name, myState.floorid);
+                            myState.valid = false;
+                            return;
+                        } else {
+                            mySel.choosen = false;
+                            removeFromAdminReservation(mySel, myState.floor_name, myState.floorid);
+                            myState.valid = false;
+                            return;
+                        }
+                    } else {
+                        return;
+                    }
             }
         }
         // havent returned means we have failed to select anything.
@@ -471,13 +496,13 @@ function CanvasState(canvas) {
         if (myState.selection || myState.listSelected.length > 0 ) {
             myState.listSelected = [];
             myState.selection = null;
-            myState.canvasDrag  = true;
+            myState.canvasDrag  = true; myState.canvas.style.cursor='-webkit-grabbing';
 
             myState.prevCmx = mox ;
             myState.prevCmy = moy ;
             myState.valid = false; // Need to clear the old selection border
         } else {
-            myState.canvasDrag  = true;
+            myState.canvasDrag  = true; myState.canvas.style.cursor='-webkit-grabbing';
 
             myState.prevCmx = mox ;
             myState.prevCmy = moy ;
@@ -540,6 +565,7 @@ CanvasState.prototype.mouseUpEvent = function(e) {
     }
     if (myState.canvasDrag) {
         myState.canvasDrag = false;
+        this.canvas.style.cursor='auto';
     }
 }
 CanvasState.prototype.mouseMoveEvent = function(e) {
@@ -956,12 +982,22 @@ CanvasState.prototype.draw = function() {
         l = shapes.length;
         for (i = 0; i < l; i += 1) {
             shapes[i].draw(ctx);
+            if(this.adminSeatSelect == true && shapes[i].choosen == true) {
+                var mins;
+                if (shapes[i].h < 50 || shapes[i].w < 50) {
+                    mins = (shapes[i].h < shapes[i].w ? shapes[i].h : shapes[i].w) * 0.8;
+
+                } else {
+                    mins = 40;
+                }
+                ctx.drawImage(document.getElementById("server_v_logo"),shapes[i].x ,shapes[i].y-mins,mins,mins);
+            }
         }
 
         // draw selection
         // right now this is just a stroke along the edge of the selected Shape
 
-        if (this.selection !== null && this.selection.type!= "line") {
+        if (this.selection !== null && this.selection.type!= "line" && this.adminSeatSelect == false) {
             ctx.save();
             ctx.strokeStyle = "black";
             ctx.lineWidth = 1;
@@ -987,7 +1023,7 @@ CanvasState.prototype.draw = function() {
             ctx.restore();
         }
         // draw multiple selection
-        if(this.listSelected.length > 0) {
+        if(this.listSelected.length > 0  && this.adminSeatSelect == false) {
             for (var i = 0 ; i < this.listSelected.length ; i ++) {
                 mySel = this.listSelected[i];
                 var fillX = mySel.x ;
@@ -1272,218 +1308,9 @@ function dbImage(ctx,x,y,w,h,imgID,alpha) {
     ctx.drawImage(img_,x-0.5*w,y-0.5*h,w,h);
     ctx.globalAlpha = 1;
 }
-function allShapesSpreadHorisontal() {
-    if(canvas_.listSelected.length > 1) {
-        //TBD
-    }
-}
-function allShapesSpreadVertical() {
-    if(canvas_.listSelected.length > 1) {
-        //TBD
-    }
-}
-function allShapesLeft() {
-    if(canvas_.listSelected.length > 1) {
-        var list = canvas_.listSelected;
-        var mostLeft = 1000000;
-        var mostLeftShape = null;
-        var sleft = {};
-        for (var s = 0 ; s < list.length ; s ++ ) {
-            var shape = list[s];
-            console.log(shape.sid + ":x = " + shape.x);
-            var mostLefts = 1000000;
-            var listxy = shape.getCorners();
-            console.log(listxy);
-            for (var i = 0 ; i < 8; i+=2) {
-                if(listxy[i]<mostLeft) {
-                    mostLeft = listxy[i];
-                    mostLeftShape = shape;
-                }
-                if(listxy[i]<mostLefts) {
-                    mostLefts = listxy[i];
-                    sleft[shape.sid] = mostLefts;
-                }
-            }
-            console.log("Shape left= "+mostLefts);
-        }
-        console.log("Most left: "+mostLeft);
-        for (var s = 0 ; s < list.length ; s ++ ) {
-            if (list[s] != mostLeftShape) {
-                var shape = list[s];
-                var left = sleft[shape.sid];
-                var diff = left - mostLeft;
-                shape.x -= diff;
-                if (shape.type=="line") {
-                    shape.options.x1 -= diff;
-                    shape.options.x2 -= diff;
-                }
-                shape.state.valid = false;
-            }
-        }
-    }
-}
 
-function allShapesRight() {
-    if(canvas_.listSelected.length > 1) {
-        var list = canvas_.listSelected;
-        var mostRight = -1000000;
-        var mostRightShape = null;
-        var sright = {};
-        for (var s = 0 ; s < list.length ; s ++ ) {
-            var shape = list[s];
-            //console.log(shape.sid + ":x = " + shape.x);
-            var mostRights = -1000000;
-            var listxy = shape.getCorners();
-            //console.log(listxy);
-            for (var i = 0 ; i < 8; i+=2) {
-                if(listxy[i]>mostRight) {
-                    mostRight = listxy[i];
-                    mostRightShape = shape;
-                }
-                if(listxy[i]>mostRights) {
-                    mostRights = listxy[i];
-                    sright[shape.sid] = mostRights;
-                }
-            }
-            //console.log("Shape left= "+mostLefts);
-        }
-        //console.log("Most left: "+mostLeft);
-        for (var s = 0 ; s < list.length ; s ++ ) {
-            if (list[s] != mostRightShape) {
-                var shape = list[s];
-                var right = sright[shape.sid];
-                var diff = mostRight - right;
-                shape.x += diff;
-                if (shape.type=="line") {
-                    shape.options.x1 += diff;
-                    shape.options.x2 += diff;
-                }
-                shape.state.valid = false;
-            }
-        }
-    }
-}
-function allShapesCenter() {
-    if(canvas_.listSelected.length > 1) {
-        var list = canvas_.listSelected;
-        if(canvas_.selection != null) {
-            var xs = canvas_.selection.x;
-            for (var s = 0 ; s < list.length ; s ++ ) {
-                var shape = list[s];
-                if (shape!= canvas_.selection) {
-                    var diff = shape.x - xs;
-                    shape.x = xs;
-                    if (shape.type=="line") {
-                        shape.options.x1 -= diff;
-                        shape.options.x2 -= diff;
-                    }
-                    canvas_.valid = false;
-                }
-            }
-        }
-    }
-}
-function allShapesBottom() {
-    if(canvas_.listSelected.length > 1) {
-        var list = canvas_.listSelected;
-        var mostBottom = -1000000;
-        var mostBottomShape = null;
-        var sright = {};
-        for (var s = 0 ; s < list.length ; s ++ ) {
-            var shape = list[s];
-            //console.log(shape.sid + ":x = " + shape.x);
-            var mostBottoms = -1000000;
-            var listxy = shape.getCorners();
-            //console.log(listxy);
-            for (var i = 1 ; i < 8; i+=2) {
-                if(listxy[i]>mostBottom) {
-                    mostBottom = listxy[i];
-                    mostBottomShape = shape;
-                }
-                if(listxy[i]>mostBottoms) {
-                    mostBottoms = listxy[i];
-                    sright[shape.sid] = mostBottoms;
-                }
-            }
-            //console.log("Shape left= "+mostLefts);
-        }
-        //console.log("Most left: "+mostLeft);
-        for (var s = 0 ; s < list.length ; s ++ ) {
-            if (list[s] != mostBottomShape) {
-                var shape = list[s];
-                var bottom = sright[shape.sid];
-                var diff = mostBottom - bottom;
-                shape.y += diff;
-                if (shape.type=="line") {
-                    shape.options.y1 += diff;
-                    shape.options.y2 += diff;
-                }
-                shape.state.valid = false;
-            }
-        }
-    }
-}
 
-function allShapesTop() {
-    if(canvas_.listSelected.length > 1) {
-        var list = canvas_.listSelected;
-        var mostTop = 1000000;
-        var mostTopShape = null;
-        var sright = {};
-        for (var s = 0 ; s < list.length ; s ++ ) {
-            var shape = list[s];
-            //console.log(shape.sid + ":x = " + shape.x);
-            var mostTops = 1000000;
-            var listxy = shape.getCorners();
-            //console.log(listxy);
-            for (var i = 1 ; i < 8; i+=2) {
-                if(listxy[i]<mostTop) {
-                    mostTop = listxy[i];
-                    mostTopShape = shape;
-                }
-                if(listxy[i]<mostTops) {
-                    mostTops = listxy[i];
-                    sright[shape.sid] = mostTops;
-                }
-            }
-            //console.log("Shape left= "+mostLefts);
-        }
-        //console.log("Most left: "+mostLeft);
-        for (var s = 0 ; s < list.length ; s ++ ) {
-            if (list[s] != mostTopShape) {
-                var shape = list[s];
-                var top = sright[shape.sid];
-                var diff = top - mostTop;
-                shape.y -= diff;
-                if (shape.type=="line") {
-                    shape.options.y1 -= diff;
-                    shape.options.y2 -= diff;
-                }
-                shape.state.valid = false;
-            }
-        }
-    }
-}
-function allShapesMiddle() {
-    if(canvas_.listSelected.length > 1) {
-        var list = canvas_.listSelected;
-        if(canvas_.selection != null) {
-            var ys = canvas_.selection.y;
-            for (var s = 0 ; s < list.length ; s ++ ) {
-                var shape = list[s];
-                if (shape!= canvas_.selection) {
-                    var diff = shape.y - ys;
-                    shape.y = ys;
-                    if (shape.type=="line") {
-                        shape.options.y1 -= diff;
-                        shape.options.y2 -= diff;
-                    }
-                    canvas_.valid = false;
-                }
-            }
-        }
-    }
-}
+
 Array.prototype.remove = function(value) {
     var idx = this.indexOf(value);
     if (idx != -1) {

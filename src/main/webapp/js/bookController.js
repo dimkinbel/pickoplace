@@ -55,9 +55,6 @@ $("#datepicker_ub").datepicker({
 	showOptions: { direction: "up" },
 	dateFormat: "dd M yyyy",
     onSelect: function(dateText, inst) {
-         $( "#datepicker_single_main" ).datepicker("setDate", dateText);
-		 console.log(dateText);
-    	 //requestBookingAvailability();
          updateShowDateDatepickerFe();
 		 updateSelectOptions("dropdown_start_floors","dropdown",'datepicker_ub');
 		 updateCloseShapes();
@@ -73,21 +70,7 @@ endShowTime = $("#datepicker_ub").datepicker( "getDate" ).getTime()+days_*24*360
 
 updateBookingSlider();
 
-    $("#datepicker_single_main").datepicker({
-				currentText: "Now",
-				defaultDate: DatepickerSetDate,
-				autoClose:true,
-				minDate: "0d",
-				showOptions: { direction: "up" },
-				dateFormat: "dd M yyyy",
-				onSelect: function(dateText, inst) {
-                      $( "#datepicker_ub" ).datepicker("setDate", dateText);	
-                      updateShowDateDatepickerFe();					  
-				},
-				onClose: function(dateText, inst) {
-					}
-			});
-	$( "#datepicker_single_main" ).datepicker("setDate", DatepickerSetDate);
+
  
 	    $('#canvas_popover').on('show.bs.popover', function () {
 			floorPopoverOpening = true;

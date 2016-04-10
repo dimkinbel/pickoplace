@@ -6,6 +6,116 @@ var floorPopoverOpened = false;
 var floorPopoverOpening = false;
 $(document).ready(function() {
 	$(function() {
+		$("#admin_seats_add").perfectScrollbar();
+		$("#add_persons_info").click(function(){
+			$("#admin_reserve_user_data").modal('show');
+		});
+		$("#add_note_info").click(function(){
+			$("#admin_reserve_free_text").modal('show');
+		});
+		$('#admin_reserve_free_text').on('hidden.bs.modal', function () {
+			var message = $("#admin_re_free_text").val();
+			if(message != ""  ) {
+				$("#add_note_info").addClass("material_add_data_exists");
+			} else {
+				$("#add_note_info").removeClass("material_add_data_exists");
+			}
+		});
+		$('#admin_reserve_user_data').on('hidden.bs.modal', function () {
+			var name = $("#admin_re_user_name").val();
+			var email = $("#admin_re_user_mail").val();
+			var persons = parseInt($("#admin_re_persons").val());
+			if(name!= "" || email!= "" || persons > 1) {
+				$("#add_persons_info").addClass("material_add_data_exists");
+			} else {
+                $("#add_persons_info").removeClass("material_add_data_exists");
+			}
+		});
+		$("#adm_re_cnt_less").click(function(){
+			var curr = parseInt($("#admin_re_persons").val());
+			if(curr > 1) {
+				curr -=1;
+				$("#admin_re_persons").val(curr);
+			}
+		});
+		$("#adm_re_cnt_more").click(function(){
+			var curr = parseInt($("#admin_re_persons").val());
+			curr +=1;
+			$("#admin_re_persons").val(curr);
+
+		});
+		$("#datepicker_ub").datepicker({
+			currentText: "Now",
+			defaultDate: DatepickerSetDate,
+			autoClose:true,
+			showOptions: { direction: "down" },
+			dateFormat: "D ,d MM",
+			onSelect: function(dateText, inst) {
+				updateClosestAdminReservation(false);
+
+
+			},
+			onClose: function(dateText, inst) {
+			}
+		});
+		$( "#datepicker_ub" ).datepicker("setDate", DatepickerSetDate);
+
+		requestBookingAvailability();
+
+		// Waiter booking controller
+		$("#close_waiter_booking").click(function() {
+			$("#add_booking_popup").css("right","-320px");
+			for(var f = 0 ;f < floorCanvases.length ; f++) {
+				floorCanvases[f].adminSeatSelect = false;
+
+				floorCanvases[f].valid = false;
+			}
+			$(".adm_free_seat").remove();
+			$(".adm_closed_seat").remove();
+			$(".adm_saved_seat").remove();
+		});
+		$("#admin_add_reservation").click(function() {
+			SIapplyBooking();
+		});
+		$("#admin_add_booking").click(function() {
+			updateClosestAdminReservation();
+			updateCloseShapesAdminReservation();
+			$("#add_booking_popup").css("right","0px");
+			for(var f = 0 ;f < floorCanvases.length ; f++) {
+				floorCanvases[f].adminSeatSelect = true;
+				floorCanvases[f].valid = false;
+			}
+		});
+		$(document).on('click', '.adm_seat_remove', function(e){
+			var sid = $(this).attr("id").replace(/adm_seat_remove-/,"");
+			for(var f = 0 ;f < floorCanvases.length ; f++) {
+               for(var s= 0; s <floorCanvases[f].shapes.length; s++ ) {
+				   if(floorCanvases[f].shapes[s].sid==sid) {
+					   floorCanvases[f].shapes[s].choosen = false;
+					   removeFromAdminReservation(floorCanvases[f].shapes[s],floorCanvases[f].floor_name,floorCanvases[f].floorid);
+					   break;
+				   }
+			   }
+				floorCanvases[f].valid = false;
+			};
+		});
+		$("#from_now_dropdown_period").on('click', 'li a', function(){
+			$("#from_now_text").text($(this).text());
+			$("#from_period_val").val($(this).attr("data-period"));
+			updateAvailableEndPeriods();
+			updateCloseShapesAdminReservation();
+		});
+		$("#admin_reserve_start_dropdown").on('click', 'li a', function(){
+			$("#admin_reserve_start_text").text($(this).text());
+			$("#admin_reserve_start_val").val($(this).attr("data-period"));
+			updateAvailableEndPeriods();
+			updateCloseShapesAdminReservation();
+		});
+		$("#admin_reserve_end_dropdown").on('click', 'li a', function(){
+			$("#admin_reserve_end_text").text($(this).text());
+			$("#admin_reserve_end_val").val($(this).attr("data-period"));
+			updateCloseShapesAdminReservation();
+		});
 			// Bootstrap
 		$('#booking_info_modal').modal({
 			keyboard: false,
@@ -37,7 +147,10 @@ $(document).ready(function() {
 		    timelineAdminPopoverOpened = true;
 			timelineAdminPopoverOpening = false;
 		     $('#canvas_popover_hidden').children().html('');// remove same block copied to the popover
-			 
+			var all=document.getElementsByName("popover_overview_tmb");
+			for(var x=0; x < all.length; x++) {
+				updatePopoverSpots(all[x].id,'place_point_popover','popover');
+			}
 			$('.bookable_toggle').bootstrapToggle({
 				on: 'Yes',
 				off: 'No'
@@ -119,7 +232,7 @@ $(document).ready(function() {
 		$('#canvas_timeline_admin_popover').on('hidden.bs.popover', function () {
 			timelineAdminPopoverOpened = false;
 			timelineAdminPopoverOpening = false;
-			tl_canvas.adminSelection = null;
+			//tl_canvas.adminSelection = null;
 			tl_canvas.valid  = false;
 		})
 		$('#canvas_timeline_popover').on('show.bs.popover', function () {
@@ -248,7 +361,7 @@ function showPopover(x,y,tl_canvas_selection,type) {
 	  updateBidDataOnPopover('canvas_popover_hidden',tl_canvas_selection);// waiterViewService.js
       $("#canvas_timeline_popover").css({'position':'absolute','top':y,'left':x+30}).popover({
             trigger: 'click',
-            placement:'right',
+            placement:'auto',
 			container: 'body',
 			template:'<div class="popover canvas_timeline_booking_popover_body"   role="tooltip"><div class="arrow"></div><h3 class="popover-title"></h3><div class="popover-content"></div></div>',
 			html: true, 
@@ -270,18 +383,19 @@ function showPopover(x,y,tl_canvas_selection,type) {
             }
         }).popover('show');	
 		break;
-	 case 'admin_reserved': 
-	 updateAdminSelectionPopover('canvas_popover_hidden',tl_canvas_selection);// waiterViewService.js
-      $("#canvas_timeline_admin_popover").css({'position':'absolute','top':y,'left':x+30}).popover({
-            trigger: 'click',
-            placement:'right',
-			container: 'body',
-			template:'<div class="popover canvas_timeline_admin_popover_body"   role="tooltip"><div class="arrow"></div><h3 class="popover-title"></h3><div class="popover-content"></div></div>',
-			html: true, 
-	        content: function() {
-              return $('#canvas_popover_hidden').html();
-            }
-        }).popover('show');	
+	 case 'admin_reserved':
+		 updateBidDataOnPopover('canvas_popover_hidden',tl_canvas_selection);// waiterViewService.js
+		 $("#canvas_timeline_popover").css({'position':'absolute','top':y,'left':x+30}).popover({
+			 trigger: 'click',
+			 placement:'auto',
+			 container: 'body',
+			 template:'<div class="popover canvas_timeline_booking_popover_body"   role="tooltip"><div class="arrow"></div><h3 class="popover-title"></h3><div class="popover-content"></div></div>',
+			 html: true,
+			 content: function() {
+				 return $('#canvas_popover_hidden').html();
+			 }
+		 }).popover('show');
+		 break;
 	case 'line_popover': 
 	  updateAdminLinePopover('canvas_popover_hidden',tl_canvas_selection);// waiterViewService.js
       $("#canvas_timeline_admin_popover").css({'position':'absolute','top':y,'left':x+30}).popover({
@@ -293,7 +407,8 @@ function showPopover(x,y,tl_canvas_selection,type) {
 	        content: function() {
               return $('#canvas_popover_hidden').html();
             }
-        }).popover('show');	
+        }).popover('show');
+		break;
   }
 }
 
@@ -363,8 +478,13 @@ function SingleBookingButton(type,bidsid,vars) {
 		break;
 	case 'open_message_modal': 
 	    $(".modal").modal('hide');
-	    updateMessageModal(bid);
-		$('#contact_email_modal').modal('show');
+	    var hasemail = updateMessageModal(bid);
+			if(hasemail == true) {
+				$('#contact_email_modal').modal('show');
+
+			} else {
+				alert("No eMail Provided")
+			}
 		break;
 	case 'send_message': 
 	    sendMessageFromModal(vars);

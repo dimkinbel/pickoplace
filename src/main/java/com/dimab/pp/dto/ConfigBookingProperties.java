@@ -26,6 +26,21 @@ public class ConfigBookingProperties {
         this.bookLength.add(90 );
         this.bookLength.add(120 );
     }
+    public String getTimeString(Integer sec) {
+        Integer hour = sec/3600;
+        Integer min = (sec - 3600*hour)/60;
+        String timeString = "";
+        if(hour > 0 && min > 0) {
+            timeString = hour+":"+min+"";
+        } else {
+            if(hour > 0) {
+                timeString = hour+":00";
+            } else {
+                timeString = "0:"+min ;
+            }
+        }
+        return timeString;
+    }
 
     public Boolean isBookingAvailable() {
         return BookingAvailable;

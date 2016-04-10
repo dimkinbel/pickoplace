@@ -6,9 +6,17 @@ public class SingleTimeRangeLong {
 	   String bid;
 	   String testID;
 	   int persons;
-	   
-	
-	
+	   String  type = "user" ;
+
+
+	public String getType() {
+			return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
 	public int getPersons() {
 		return persons;
 	}

@@ -104,7 +104,7 @@ public List<SingleTimeRangeLong> getInRange(Long dateSeconds,Long period) {
 	requestDate.setTo(dateSeconds+period);
 	Date from = new Date(dateSeconds*1000);
 	Date to = new Date((dateSeconds+period)*1000);
-	System.out.println("GetRangeRequest:"+ from + "-----" + to);
+	//System.out.println("GetRangeRequest:"+ from + "-----" + to);
 	for (SingleTimeRangeLong shapeBooked : this.ordersList) {
 		if(rangeMatch(shapeBooked,requestDate)) {
 			SingleTimeRangeLong nobid = new SingleTimeRangeLong();
@@ -124,7 +124,7 @@ public List<SingleTimeRangeLong> getInRangeWithBID(Long dateSeconds,Long period)
 	requestDate.setTo(dateSeconds+period);
 	Date from = new Date(dateSeconds*1000);
 	Date to = new Date((dateSeconds+period)*1000);
-	System.out.println("GetRangeRequest:"+ from + "-----" + to);
+	//System.out.println("GetRangeRequest:"+ from + "-----" + to);
 	for (SingleTimeRangeLong shapeBooked : this.ordersList) {
 		if(rangeMatch(shapeBooked,requestDate)) {
 			SingleTimeRangeLong withbid = new SingleTimeRangeLong();
@@ -133,6 +133,7 @@ public List<SingleTimeRangeLong> getInRangeWithBID(Long dateSeconds,Long period)
 			withbid.setTestID(shapeBooked.getTestID());
 			withbid.setBid(shapeBooked.getBid());
 			withbid.setPersons(shapeBooked.getPersons());
+			withbid.setType(shapeBooked.getType());
 			ordersListr.add(withbid);
 		}
 	}
@@ -144,7 +145,7 @@ public boolean rangeMatch(SingleTimeRangeLong req,SingleTimeRangeLong base) {
 	} else {
 		Date from = new Date(req.getFrom()*1000);
 		Date to = new Date(req.getTo()*1000);
-		System.out.println("   RangeMatch:"+ from + "-----" + to);
+		//System.out.println("   RangeMatch:"+ from + "-----" + to);
 		return true;
 	}
 	return false;

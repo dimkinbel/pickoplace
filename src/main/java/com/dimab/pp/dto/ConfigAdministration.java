@@ -8,8 +8,17 @@ import java.util.List;
  */
 public class ConfigAdministration {
     List<String> admins = new ArrayList<String>();
+    List<String> waiters  = new ArrayList<String>();
     String adminUsername  = "admin";
     String adminPassword = "admin";
+
+    public List<String> getWaiters() {
+        return waiters;
+    }
+
+    public void setWaiters(List<String> waiters) {
+        this.waiters = waiters;
+    }
 
     public List<String> getAdmins() {
         return admins;

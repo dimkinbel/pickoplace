@@ -1,6 +1,6 @@
 package com.dimab.pp.dto;
 
-import com.dimab.pp.login.GenericUser;
+import com.dimab.pp.login.dto.GenericUser;
 
 /**
  * Created by dima on 27-Mar-16.

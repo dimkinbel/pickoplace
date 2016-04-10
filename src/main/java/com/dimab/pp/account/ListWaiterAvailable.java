@@ -3,9 +3,7 @@ package com.dimab.pp.account;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -18,7 +16,7 @@ import com.dimab.pp.database.GetPlaceInfoFactory;
 import com.dimab.pp.dto.PlaceInfo;
 import com.dimab.pp.dto.WaiterListAJAXDTO;
 import com.dimab.pp.login.CheckTokenValid;
-import com.dimab.pp.login.GenericUser;
+import com.dimab.pp.login.dto.GenericUser;
 import com.google.appengine.api.datastore.*;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;

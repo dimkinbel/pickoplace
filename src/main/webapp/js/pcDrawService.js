@@ -522,6 +522,18 @@ function appendNewAdmin(data) {
 	appendData+=' </div>';
 	$("#appended_admins").append(appendData);
 }
+function appendNewWaiter(data) {
+
+	var appendData = '';
+	appendData+=' <div class="single_admin_contact" id="single_waiter_contact-'+data.admin.replace(/\@/,"_").replace(/\./,"_")+'">';
+	appendData+=' <div name="waiter_mails" id="waiter_mails-'+data.admin.replace(/\@/,"_").replace(/\./,"_")+'" class="single_phone_contact_val">'+data.admin+'</div>';
+	appendData+=' 		<div class="remove_single_mail_contact material-icons" id="remove_waiter_mail'+data.admin.replace(/\@/,"_").replace(/\./,"_")+'" onclick="removeSiteWaiter(\''+data.admin.replace(/\@/,"_").replace(/\./,"_")+'\')">clear</div>';
+	appendData+=' </div>';
+	$("#appended_waiter_admins").append(appendData);
+}
+function removeWaiterLine(mail_coded) {
+	$("#single_waiter_contact-"+mail_coded).remove();
+}
 function removeAdminLine(mail_coded) {
 	$("#single_admin_contact-"+mail_coded).remove();
 }

@@ -1,5 +1,4 @@
 package com.dimab.smsmail;
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.Properties;
@@ -12,10 +11,8 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-import com.dimab.pp.dto.BookingRequestWrap;
 import com.dimab.pp.dto.MailModel;
-import com.dimab.pp.dto.PlaceInfo;
-import com.dimab.pp.login.GenericUser;
+import com.dimab.pp.login.dto.GenericUser;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.KeyFactory;
@@ -51,8 +48,14 @@ public class MailSenderFabric {
 			case "NewAdminNotification":
 				message = mailGenerator.GetNewAdminConfirmationEmail(mmodel.getPlaceInfo(),mmodel.getVerificationCode());
 				break;
+			case "NewWaiterNotification":
+				message = mailGenerator.GetNewWaiterConfirmationEmail(mmodel.getPlaceInfo(),mmodel.getVerificationCode());
+				break;
 			case "RemoveAdminNotification":
 				message = mailGenerator.GetRemoveAdminConfirmationEmail(mmodel.getPlaceInfo(),mmodel.getVerificationCode());
+				break;
+			case "RemoveWaiterNotification":
+				message = mailGenerator.GetRemoveWaiterConfirmationEmail(mmodel.getPlaceInfo(),mmodel.getVerificationCode());
 				break;
 			case "SendVerificationCode":
 				message = mailGenerator.VerificationCodeEmail(mmodel.getPlaceInfo(),mmodel.getVerificationCode());
@@ -101,8 +104,14 @@ public class MailSenderFabric {
 				case "NewAdminNotification":
 					msg.setSubject("Pickoplace: New Admin Confirmation ");
 					break;
+				case "NewWaiterNotification":
+					msg.setSubject("Pickoplace: New Waiter Confirmation ");
+					break;
 				case "RemoveAdminNotification":
 					msg.setSubject("Pickoplace: Admin Removal Notification");
+					break;
+				case "RemoveWaiterNotification":
+					msg.setSubject("Pickoplace: Waiter Removal Notification");
 					break;
 				case "RemoveConfirmationEmail":
 					msg.setSubject("Pickoplace: Confirmation mail removed");

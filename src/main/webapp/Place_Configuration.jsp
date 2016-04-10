@@ -74,6 +74,7 @@
 	<script type="text/javascript" src="js/iframe_Controller.js"></script>
 	<script type="text/javascript" src="js/iframe_viewService.js"></script>
 	<script type="text/javascript" src="js/bookingBookingsManger.js"></script>
+	<script type="text/javascript" src="js/OrderFunctions.js"></script>
 	<script type="text/javascript" src="js/interactiveUpdate_if.js"></script>
 	<!-- IFRAME -->
 
@@ -505,7 +506,7 @@
 
 				<div id="fg_profile_image_wrap" >
 					<div id="fg_profile_image_inner" >
-						<img id="fg_profile_img" src="" >
+						<img class="fg_profile_img" id="fg_profile_img" src="" >
 					</div>
 				</div>
 
@@ -525,10 +526,10 @@
 											<li>
 												<div id="acc_head_menu_wrap">
 													<div id="acc_arrow"></div>
-													<div id="gotoaccountmenu" class="topAccOptList" onclick="goToAccountMenu()">Go to Account</div>
-													<div id="gotobookings" class="topAccOptList">My bookings</div>
-													<div id="gotoadminzone" class="topAccOptList">AdminZone</div>
-													<div id="create_new_place_btn"  class="topAccOptList" onclick="goToCreatePlace()">Create New Place</div>
+													<a href="/gotoaccountmenu"><div id="gotoaccountmenu" class="topAccOptList"  >Go to Account</div></a>
+													<a href="/my_bookings.jsp"><div id="gotobookings" class="topAccOptList">My bookings</div></a>
+													<a href="/user_waiter_list.jsp"><div id="gotoadminzone" class="topAccOptList">AdminZone</div></a>
+													<a href="/create_new_place.jsp"><div id="create_new_place_btn"  class="topAccOptList"  >Create New Place</div></a>
 													<div id="fb_logout_div" class="topAccOptList" onClick="facebookSignOut()">Log out</div>
 													<div id="go_logout_div" class="topAccOptList" onClick="googleSignOut()">Log out</div>
 												</div>
@@ -1325,8 +1326,8 @@
 											</div>
 											<%}%>
 										</div>
-										<div id="add_admin_mail_form">
-											<div class="cont_head_text">הזן את כתובת המייל של משתמש נוסף. קוד אימות יישלח למייל אותו יש להזין בהמשך</div>
+										<div class="add_admin_mail_form">
+											<div class="cont_head_text">הזן את כתובת המייל של משתמש נוסף. משתמש חייב להיות קיים במערכת</div>
 											<table cellspacing="0" cellpadding="0" style="border-collapse:collapse;width:100%;" class="contact_phone_manual_table">
 												<tr>
 													<td>
@@ -1353,6 +1354,44 @@
 												</tr>
 											</table>
 										</div>
+									</div>
+								</div>
+								<div class="row ">
+									<div class="col-sm-6 two_column_admin">
+										<div class="two_column_admin_single_head">
+											משתמשים רשאים להיכנס למערכת ההזמנות
+										</div>
+										<div id="appended_waiter_admins">
+											<%
+												List<String> waiterList = configuration.getAdministration().getWaiters();
+											%>
+											<% for(String userMail : waiterList)  {%>
+											<div class="single_admin_contact" id="single_waiter_contact-<%=userMail.replace("@","_").replace(".","_")%>">
+												<div name="waiter_mails" id="waiter_mails-<%=userMail.replace("@","_").replace(".","_")%>" class="single_phone_contact_val"><%=userMail%></div>
+												<div class="remove_single_mail_contact material-icons"  onclick="removeSiteWaiter('<%=userMail.replace("@","_").replace(".","_")%>')" id="remove_waiter_mail<%=userMail.replace("@","_").replace(".","_")%>">clear</div>
+											</div>
+											<%}%>
+										</div>
+										<div class="add_admin_mail_form">
+											<div class="cont_head_text">הזן את כתובת המייל של משתמש נוסף. משתמש קיים</div>
+											<table cellspacing="0" cellpadding="0" style="border-collapse:collapse;width:100%;" class="contact_phone_manual_table">
+												<tr>
+													<td>
+														<div class="input-group padding_right_10" >
+															<span class="input-group-addon" id="basic-addon4">@</span>
+															<input type="text" id="waiter_email-1" class="form-control" placeholder="add waiter email" aria-describedby="basic-addon4">
+														</div>
+													</td>
+													<td>
+														<div class="confirm_contact_button" id="add_waiter_mail_button" onclick="addWaiterEmail()">שלח מייל</div>
+													</td>
+												</tr>
+
+											</table>
+										</div>
+									</div>
+									<div class="col-sm-6 two_column_admin">
+
 									</div>
 								</div>
 							</div>

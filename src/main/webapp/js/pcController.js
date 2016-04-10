@@ -1003,6 +1003,14 @@ function isEmail(email) {
   var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
   return regex.test(email);
 }
+function addWaiterEmail() {
+	var mail = $("#waiter_email-1").val();
+	if(isEmail(mail)) {
+		checkLoginAndSendWaiterEmail(mail);//interactiveUpdae_pc.js
+	} else {
+		$("#waiter_email-1").addClass("admin_email_warn");
+	}
+}
 function addAdminEmail() {
 	var mail = $("#admin_email-1").val();
 	if(isEmail(mail)) {

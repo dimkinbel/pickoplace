@@ -160,6 +160,7 @@ function createBookingJSON() {
 	  bookingRequestWrap.bookingList = bookingOrderJSONlist;
 	  bookingRequestWrap.textRequest = $("#user_input_hz").val();
 	  bookingRequestWrap.weekday = dayOfweek;
+	bookingRequestWrap.type = "user";
 }
 
 

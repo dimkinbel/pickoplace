@@ -78,7 +78,7 @@
         <div class="row " id="order_details">
             <div class="col-xs-12">
                 <div class="row contact_header_notif">
-                    <div class="col-sm-1"><img id="fg_profile_img" src="<%=imgUrl%>"></div>
+                    <div class="col-sm-1"><img class="fg_profile_img" id="fg_profile_img" src="<%=imgUrl%>"></div>
                     <div class="col-sm-11"><span class="notification_name_"><%=fullName%></span> <span
                             class="label label-success notif_phone_label"><%=booking.getPhone()%></span></div>
                 </div>

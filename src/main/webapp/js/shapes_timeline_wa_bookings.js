@@ -238,8 +238,8 @@ function BShape(state, from , to , bid , persons , type , name , sid) {
         this.colorto="#009688";
     }
     if (type=="adminReserved") {
-        this.color="red";
-        this.colorto="red";
+        this.color="#8CEF90";
+        this.colorto="#72C175";
     }
     if (type=="closed") {
         this.color="grey";
@@ -259,9 +259,7 @@ function BShape(state, from , to , bid , persons , type , name , sid) {
     this.name = name;
     this.sid = sid;
     this.bsid = "TB_"+randomString(12);
-    if(type=="adminReserved") {
-        this.bid = "ar_"+randomString(12);
-    }
+
 }
 
 // Draws this shape to a given context
@@ -305,13 +303,13 @@ BShape.prototype.draw = function(ctx, optionalColor) {
             0);
     } else if(this.type == "adminReserved") {
         //(ctx,x,y,w,h,strokeColor,fillColor,alpha,salpha,sw,R) {
-        dbRoundRectT  (ctx,this.x,this.y+1.5 ,this.w,this.h-2.5,
+        dbRoundRectT  (ctx,parseInt(this.x+1),this.y+1.5 ,parseInt(this.w-1),this.h-2.5,
+            "#4CAF50",
             grd,
-            grd,
-            0.3,
-            0,
-            0,
-            0);
+            1,
+            1,
+            1,
+            4);
     } else  {
         dbDrawRectT  (ctx,this.x,this.y,this.w,this.h,
             "white",
@@ -583,6 +581,7 @@ function BCanvasState(canvas,pfrom,pto,offset) {
 
     }, true);
     canvas.addEventListener('mousemove', function(e) {
+        //console.log("mousemove")
         var mouse = myState.getMouse(e),
             mx = mouse.x,
             my = mouse.y,
@@ -595,28 +594,36 @@ function BCanvasState(canvas,pfrom,pto,offset) {
         }
         if(myState.mousedownOnEmpty_ == true) {
             if(myState.adminSelectionStarted == false) {
-                myState.adminSelectionStarted = true;
-                var started = myState.getLeftTopTimingArea(myState.step,myState.mousedown_x,myState.mousedown_y );
+                if(Math.abs(mx - myState.mousedown_x) >= myState.oneSecondInPixels * myState.bookingProperties.bookStartStep*60) {
+                    myState.adminSelectionStarted = true;
+                    var started = myState.getLeftTopTimingArea(myState.mousedown_x, myState.mousedown_y);
 
-                myState.adminSelection   = new BShape(myState, parseInt( started.fromSec) ,
-                    parseInt( started.fromSec + myState.step * 60), "" , 0 ,
-                    "adminSelected");
-                myState.adminSelection.line = started.line;
-                myState.adminSelection.beganAt =  started.fromSec;
+                    myState.adminSelection = new BShape(myState, parseInt(started.fromSec),
+                        parseInt(started.fromSec + myState.bookingProperties.bookLength.sort(function (a, b) {
+                                return a - b
+                            })[0] * 60), "", 0,
+                        "adminSelected");
+                    myState.adminSelection.line = started.line;
+                    myState.adminSelection.beganAt = started.fromSec;
+                }
             } else {
-                var onmove = myState.getLeftTopTimingArea(myState.step,mx,my);
-                if(onmove.fromSec  != myState.adminSelection.beganAt) {
-                    if(onmove.fromSec  > myState.adminSelection.beganAt) {
+                var onmove = myState.getLeftTopTimingArea( mx,my);
+                //if(onmove.fromSec  != myState.adminSelection.beganAt) {
+                    if(onmove.fromSec  >= myState.adminSelection.beganAt) {
                         myState.adminSelection.from = myState.adminSelection.beganAt ;
-                        myState.adminSelection.to = onmove.fromSec  + myState.step * 60
+                        myState.adminSelection.to = onmove.fromSec  + myState.bookingProperties.bookLength.sort(function(a, b){return a-b})[0] * 60;
                     } else {
                         myState.adminSelection.from = onmove.fromSec ;
                         myState.adminSelection.to = myState.adminSelection.beganAt;
                     }
-                }
+                //} else {
+
+                //}
             }
-            myState.calculateAdminSelectionXY();
-            myState.valid = false;
+            if(myState.adminSelectionStarted == true) {
+                myState.calculateAdminSelectionXY();
+                myState.valid = false;
+            }
         }
 
         //document.getElementById('mouse_pos').value = "X = "+mx+" Y="+my + "OX="+orgx+" OY="+orgy;
@@ -699,6 +706,7 @@ function BCanvasState(canvas,pfrom,pto,offset) {
                 showPopover(mouse.orgx,mouse.orgy,sidSelected,'line_popover')
             }
         }
+        myState.valid = false;
     }, true);
 
 
@@ -1037,9 +1045,9 @@ BCanvasState.prototype.getCurrentSidLine = function(mouse) {
     return -1;
 }
 
-BCanvasState.prototype.getLeftTopTimingArea = function(minMinutes,x,y) {
+BCanvasState.prototype.getLeftTopTimingArea = function(x,y) {
     var returnObject = {};
-
+//bookingProperties.bookLength.sort(function(a, b){return a-b})[0]
     var xy = new xypoint();
     for (p = 0 ; p < this.SIDsorted.length ; p++) {
         var lineTop  = parseInt(p*this.shapeLineHeight );
@@ -1057,17 +1065,57 @@ BCanvasState.prototype.getLeftTopTimingArea = function(minMinutes,x,y) {
         xy.x = this.width;
         returnObject.fromSec  = this.drawPeriodto ;
     } else {
-        for(var m = this.shapeLineHeight ;
-            m < this.width - this.oneSecondInPixels * minMinutes * 60 ;
-            m += this.oneSecondInPixels * minMinutes * 60) {
-            var leftRange = m;
-            var rightRange = m + this.oneSecondInPixels * minMinutes * 60;
-            if(leftRange <= x && x < rightRange) {
-                xy.x = leftRange;
-                returnObject.fromSec =   Math.round((leftRange - this.shapeLineHeight)/this.oneSecondInPixels*1000)/1000 + this.drawPeriodfrom - this.offset * 3600;
-                break
+        var rangeStep;
+        if(this.adminSelection === null || this.adminSelection == undefined) {
+            // Set step as step point
+            rangeStep =  this.step;
+            for(var m = this.shapeLineHeight ;
+                m < this.width - this.oneSecondInPixels * this.step * 60 ;
+                m += this.oneSecondInPixels * this.step * 60) {
+                var leftRange = m;
+                var rightRange = m + this.oneSecondInPixels * rangeStep * 60;
+                if(leftRange <= x && x < rightRange) {
+                    xy.x = leftRange;
+                    returnObject.fromSec =   Math.round((leftRange - this.shapeLineHeight)/this.oneSecondInPixels*1000)/1000 + this.drawPeriodfrom - this.offset * 3600;
+                    break
+                }
+            }
+        } else {
+            // Set step as min book length
+            rangeStep = this.bookingProperties.bookLength.sort(function(a, b){return a-b})[0];
+            // Check right;
+            var found = false;
+            for(var m = this.adminSelection.x ;
+                m < this.width - this.oneSecondInPixels * rangeStep * 60 ;
+                m += this.oneSecondInPixels * rangeStep * 60) {
+                var leftRange = m;
+                var rightRange = m + this.oneSecondInPixels * rangeStep * 60;
+                if(leftRange <= x && x < rightRange) {
+                    xy.x = leftRange;
+                    returnObject.fromSec =   Math.round((leftRange - this.shapeLineHeight)/this.oneSecondInPixels*1000)/1000 + this.drawPeriodfrom - this.offset * 3600;
+                    found = true;
+                    break
+                }
+            }
+            // Check left
+            if(found==false) {
+                for (var m = this.adminSelection.x;
+                     m > this.shapeLineHeight;
+                     m -= this.oneSecondInPixels * rangeStep * 60) {
+                    var leftRange = m;
+                    var rightRange = m + this.oneSecondInPixels * rangeStep * 60;
+                    console.log(leftRange + " " + rightRange)
+                    if (leftRange <= x && x < rightRange) {
+                        xy.x = leftRange;
+                        returnObject.fromSec = Math.round((leftRange - this.shapeLineHeight) / this.oneSecondInPixels * 1000) / 1000 + this.drawPeriodfrom - this.offset * 3600;
+
+                        break
+
+                    }
+                }
             }
         }
+
     }
 
     returnObject.xy = xy;
@@ -1095,8 +1143,10 @@ BCanvasState.prototype.calculateAdminSelectionXY = function() {
         this.adminSelection.h = this.shapeLineHeight;
     }
 }
-BCanvasState.prototype.organizeShapes = function() {
-    this.sort();
+BCanvasState.prototype.organizeShapes = function(sort) {
+    if(sort == undefined || sort == true) {
+        this.sort();
+    }
     var shapeLineHeight = (this.origHeight - 0) / this.SIDsorted.length  ;
     if (shapeLineHeight > 100 ) {
         shapeLineHeight = 100;
@@ -1165,7 +1215,7 @@ BCanvasState.prototype.addPShape = function(pshape) {
     }
     this.organizeShapes();
 }
-BCanvasState.prototype.setPshapeBookings = function(sid,bshapeList) {
+BCanvasState.prototype.setPshapeBookings = function(sid,bshapeList,sort) {
     // Remove existing BShapes related to given Pshape(sid)
     for (var i = 0 ; i < this.pshapes[sid].bookings.length ; i++ ) {
         var bshape = this.pshapes[sid].bookings[i];
@@ -1176,8 +1226,37 @@ BCanvasState.prototype.setPshapeBookings = function(sid,bshapeList) {
         var bshape = this.pshapes[sid].bookings[i];
         this.addShape(bshape);
     }
-    this.organizeShapes();
+    if(sort == undefined) {
+        this.organizeShapes();
+    } else {
+        this.organizeShapes(sort);
+    }
+
 };
+BCanvasState.prototype.addBooking = function(bookingRequestWrap) {
+    var from = bookingRequestWrap.time;
+    var to = bookingRequestWrap.time + bookingRequestWrap.period;
+    var bid = bookingRequestWrap.bookID;
+
+    var num = bookingRequestWrap.num;
+    var booktype = "booked";
+    if(bookingRequestWrap.type == "admin") {
+        booktype = "adminReserved"
+    } else if(bookingRequestWrap.type == "user") {
+        booktype = "booked"
+    }
+    for (var s = 0 ; s < bookingRequestWrap.bookingList.length ; s++ ) {
+        var persons = bookingRequestWrap.bookingList[s].persons;
+        var sid = bookingRequestWrap.bookingList[s].sid;
+        console.log("Adding PSHAPE:"+sid)
+        var name = bookingRequestWrap.bookingList[s].name;
+        var bshape = new BShape(this, from , to , bid , persons , booktype,name,sid);
+        var pshape = this.pshapes[sid];
+        var bshapelist = pshape.bookings;
+        bshapelist.push(bshape);
+        tl_canvas.setPshapeBookings(sid,bshapelist,false);
+    }
+}
 BCanvasState.prototype.addShape = function(bshape) {
     "use strict";
     if(bshape.type == "drag") {
@@ -1405,8 +1484,8 @@ BCanvasState.prototype.draw = function() {
                     lineColor = "#36943A";
                 } else {
                     grd=ctx.createLinearGradient(mySel.x,mySel.y,mySel.x,mySel.y + mySel.h);
-                    grd.addColorStop(0,"#FF6767");
-                    grd.addColorStop(1,"#FF6767");
+                    grd.addColorStop(0,"#79E499");
+                    grd.addColorStop(1,"#79E499");
 
                     lineColor = "#733E3E";
                     lineWidth = 1;

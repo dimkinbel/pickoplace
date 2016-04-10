@@ -19,7 +19,7 @@ import com.dimab.pp.dto.JsonImageID_2_GCSurl;
 import com.dimab.pp.dto.JsonSID_2_imgID;
 import com.dimab.pp.dto.PPSubmitObject; 
 import com.dimab.pp.login.CheckTokenValid;
-import com.dimab.pp.login.GenericUser;
+import com.dimab.pp.login.dto.GenericUser;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;

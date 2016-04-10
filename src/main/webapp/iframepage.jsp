@@ -78,6 +78,7 @@
 
     <%if (BookProperties.isBookingAvailable() == true && ifresp.getBooking() == true) { %>
     <script type="text/javascript" src="js/bookingBookingsManger.js"></script>
+    <script type="text/javascript" src="js/OrderFunctions.js"></script>
     <script type="text/javascript" src="js/interactiveUpdate_if.js"></script>
     <%}%>
     <!-- IFRAME -->

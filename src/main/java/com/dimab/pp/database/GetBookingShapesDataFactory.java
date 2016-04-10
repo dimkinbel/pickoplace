@@ -7,7 +7,7 @@ import java.util.List;
 
 import com.dimab.pickoplace.utils.JsonUtils;
 import com.dimab.pp.dto.*;
-import com.dimab.pp.login.GenericUser;
+import com.dimab.pp.login.dto.GenericUser;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
@@ -260,12 +260,17 @@ public class GetBookingShapesDataFactory {
 			if(BookingEntity.getProperty("userPhone") != null) {
 				userPhone = (String)BookingEntity.getProperty("userPhone");
 			}
+			String booktype = "user";
+			if(BookingEntity.getProperty("type") != null) {
+				booktype = (String)BookingEntity.getProperty("type");
+			}
 
 			String bookingListJSON = ((Text) BookingEntity.getProperty("bookingList")).getValue();
 			Type bookingListType = new TypeToken<List<BookingRequest>>(){}.getType();
 			List<BookingRequest> bookingShapesList = JsonUtils.deserialize(bookingListJSON, bookingListType);
 
 			BookingRequestWrap booking = new BookingRequestWrap();
+			booking.setType(booktype);
 			booking.setBookID(bid);
 			booking.setNum(num);
 			booking.setTime(startAt);
@@ -276,11 +281,13 @@ public class GetBookingShapesDataFactory {
 			booking.setClientid(client);
 			booking.setPhone(userPhone);
 			booking.setBookingList(bookingShapesList);
-			if(BookingEntity.getProperty("genuser")!=null) {
-				Type genuserType = new TypeToken<GenericUser>(){}.getType();
-				GenericUser genuser = JsonUtils.deserialize((String)BookingEntity.getProperty("genuser"), genuserType);
-				booking.setUser(genuser);
-			}
+				if (BookingEntity.getProperty("genuser") != null) {
+					Type genuserType = new TypeToken<GenericUser>() {
+					}.getType();
+					GenericUser genuser = JsonUtils.deserialize((String) BookingEntity.getProperty("genuser"), genuserType);
+					booking.setUser(genuser);
+				}
+
 
 			bookings.add(booking);
 		}

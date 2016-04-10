@@ -314,15 +314,24 @@ function updateNotification(divid,notificationJSON) {
 		var currentDate = new Date();
 
    var userName = "";
-   var imgsrc = ""; 
-   
-   if(bookwrap.user.facebook == true) {
-       userName = bookwrap.user.fbuser.name;
-	   imgsrc = "http://graph.facebook.com/" + bookwrap.user.fbuser.id + "/picture"
-   } else if (bookwrap.user.google == true) {
-        userName = bookwrap.user.gouser.name;
-		imgsrc = bookwrap.user.gouser.picture;
-   }
+   var imgsrc = "";
+
+	if(bookwrap.booktype == undefined || bookwrap.booktype == "" || bookwrap.booktype == "user") {
+		if (bookwrap.user.facebook == true) {
+			userName = bookwrap.user.fbuser.name;
+			imgsrc = "<img class='fg_profile_img' src='http://graph.facebook.com/" + bookwrap.user.fbuser.id + "/picture'/>"
+		} else if (bookwrap.user.google == true) {
+			userName = bookwrap.user.gouser.name;
+			imgsrc = "<img class='fg_profile_img' src='"+bookwrap.user.gouser.picture+"'/>";
+		}
+	} else if(bookwrap.booktype == "admin"){
+		userName = bookwrap.user.aduser.name;
+		imgsrc = "<div class='admin_image_notif_mat material-icons'>person</div>";
+	}
+
+    if(userName == undefined || userName == "") {
+		userName = "NoName"
+	}
 	
    var phone = "";
    if(bookwrap.phone != undefined) {
@@ -364,7 +373,7 @@ function updateNotification(divid,notificationJSON) {
 		appendData +='					     <div class="col-sm-7"  >';
 		appendData +='					      <div class="row contact_header_notif">';
 		appendData +='						    <div class="col-sm-1"  >';
-		appendData +='						     <img id="fg_profile_img" src="'+imgsrc+'">';
+		appendData +='						      '+imgsrc+' ';
 		appendData +='							</div>';
 		appendData +='							<div class="col-sm-11"  >';
 		appendData +='							  <span class="notification_name_">'+userName+'</span>';
@@ -427,25 +436,35 @@ function updateBidDataOnPopover(popover_hidden_wrap_id,tl_canvas_selection) {
 	   break;
 	 }
    }
-    
+    console.log(bshape)
    var placeOffset = parseFloat(document.getElementById("server_placeUTC").value);
    var date_ = calculateShowDate(bshape.from,placeOffset,bshape.to);
 
    var userName = "";
    var imgsrc = ""; 
   // console.log(bshape);
-   if(bshape.user.facebook == true) {
-       userName = bshape.user.fbuser.name;
-	   imgsrc = "http://graph.facebook.com/" + bshape.user.fbuser.id + "/picture"
-   } else if (bshape.user.google == true) {
-        userName = bshape.user.gouser.name;
-		imgsrc = bshape.user.gouser.picture;
-   }
+	if(bshape.booktype == undefined || bshape.booktype == "" || bshape.booktype == "user") {
+		if (bshape.user.facebook == true) {
+			userName = bshape.user.fbuser.name;
+		 } else if (bshape.user.google == true) {
+			userName = bshape.user.gouser.name;
+		}
+	} else if(bshape.booktype == "admin"){
+		userName = bshape.user.aduser.name;
+	}
+
+	if(userName == undefined || userName == "") {
+		userName = "NoName"
+	}
+
+
 	
    var phone = "";
-   if(bshape.user.phone != undefined) {
+   if(bshape.user.phone != undefined && bshape.user.phone!="") {
       phone = bshape.user.phone ;
-   }   
+   } else {
+	   phone = "NO-PHONE";
+   }
    var persons = 0;
    var sidsJSON = {};
    sidsJSON.bid = bshape.bid;
@@ -511,22 +530,58 @@ function updateAdminLinePopover(popover_hidden_wrap_id,sid_shape) {
 	   ra_color_class = "grey";
 	   bookable = "";
 	}
-    var appendData = '';
+	var sidsJSON = {};
+	sidsJSON.bid = "bidTMP";
+	sidsJSON.fid ="";
+	sidsJSON.sids = [];
+
+
+		var obj = {};
+		obj.sid = sid_shape.sid;
+		sidsJSON.sids.push(obj);
+		for (var cf = 0 ; cf < floorCanvases.length ; cf++) {
+			var floor = floorCanvases[cf];
+			for (var sd = 0 ; sd < floor.shapes.length ; sd++) {
+				if(floor.shapes[sd].sid == sid_shape.sid) {
+					sidsJSON.fid = floor.floorid;
+                    break;
+				}
+			}
+		}
+
+	var appendData = '';
 	appendData+='    <div class="container-fluid">	';  
 	appendData+='	  <div class="row popup_tl_top_row admin_range_popover_head">';	    
 	appendData+='	      <div class="col-sm-12 ">		';
  	appendData+='            <button type="button" class="close close_x_popover" onclick="$(&quot;.popover&quot;).popover(&quot;hide&quot;);" aria-label="Close"><span aria-hidden="true">&times;</span></button>';
 	appendData+='		     <div class="ra_sid_name " style="background-color:'+ra_color_class+'">'+name+'</div><div class="ra_panel_bid_name"></div> 		';
 	appendData+='          </div>   ';
-	appendData+='     </div>	';  
-	appendData+='	 <div class="row ro_range_row">	  ';    
+	appendData+='     </div>	';
+	appendData+= '	  <div class="row popover_floor_img_row">';
+	appendData+= '	      <div class="col-sm-12 popover_floor_img_sm"  >';
+	appendData+= '		    <div class="thumbnail thumbnail_popover_img" name="popover_overview_tmb"  id="popover_ovrv_BID__bidTMP_FID__'+sidsJSON.fid+'">';
+	appendData +='               <input type="text" id="popover_places_input_BID__bidTMP_FID__'+sidsJSON.fid+'" style="display:none" value=\''+JSON.stringify(sidsJSON)+'\'/>';
 
-	appendData+='		<div class="col-sm-8 ">';
-	appendData+='			<div class="ro_line_book_option">Is bookable</div>';				
+	appendData+= '		        <img class="popover_tl_fl_img" id="popover_img_BID__bidTMP_FID__'+sidsJSON.fid+'" src="'+$("#server_overview_"+sidsJSON.fid).attr("src")+'"/>';
+	appendData+= '			</div>';
+	appendData+= '		  </div>';
+	appendData+= '	  </div>';
+	appendData+='	 <div class="row ro_action_row">	  ';
+
+	appendData+='		<div class="col-xs-6 ">';
+	appendData+='			<div class="ro_line_book_option_text">Is bookable</div>';
 	appendData+='		</div>	 			';
-	appendData+='		<div class="col-sm-4 ">';
+	appendData+='		<div class="col-xs-6 ">';
+	appendData+='			<div class="ro_line_book_option_text">Add reservation</div>';
+	appendData+='		</div>	 			';
+	appendData+='	</div>	 			';
+	appendData+='	 <div class="row " style="text-align: center;">';
+	appendData+='		<div class="col-xs-6 ">';
 	appendData+='			<input type="checkbox"  id="book-enable-'+sid_shape.sid+'" class="bookable_toggle" data-toggle="toggle" data-onstyle="success" '+bookable+' />';				
 	appendData+='		</div>	 			';
+	appendData+='		<div class="col-xs-6 ">';
+	appendData+='		   <div class="add_reservation" onclick="addAdminReservationInteractive(\''+sid_shape.sid+'\')">Add</div>';
+	appendData+='		</div> ';
 	appendData+='	 </div>	  ';
 	appendData+='    </div>  ';
 	$("#"+popover_hidden_wrap_id).children().html(appendData);  
@@ -599,17 +654,16 @@ function updateAdminSelectionPopover(popover_hidden_wrap_id,tl_canvas_selection 
 
  
 
-function addAdminReservation(sid) {
+function addAdminReservation(sid,bid,persons) {
    var adminSelection = tl_canvas.adminSelection; 
    var from = adminSelection.from;
    var to = adminSelection.to;
    var name = tl_canvas.shapeViews[sid].booking_options.givenName;
-   var persons = tl_canvas.shapeViews[sid].booking_options.maxPersons;
-   var bshape = new BShape(tl_canvas, from , to , "TEMP" , persons , "adminReserved",name,sid);
+   var bshape = new BShape(tl_canvas, from , to , bid , persons , "adminReserved",name,sid);
    var bshapelist = tl_canvas.pshapes[sid].bookings;
    bshapelist.push(bshape);
    tl_canvas.setPshapeBookings(sid,bshapelist);
-    $('#canvas_timeline_admin_popover').popover('hide');
+	tl_canvas.adminSelection = null;
 }
 function updateFloorSidDataOnPopover(popover_hidden_wrap_id,bidsid_) {
      //$("#canvas_popover_wrap").html(bidsid);
@@ -642,11 +696,14 @@ function updateFloorSidDataOnPopover(popover_hidden_wrap_id,bidsid_) {
 		    if(nbshape.namesList[s].sid == sid ) {
 			   if(nbshape.user.facebook == true) {
 				   nbshape.user.userName = nbshape.user.fbuser.name;
-				   nbshape.user.imgsrc = "http://graph.facebook.com/" + nbshape.user.fbuser.id + "/picture"
+				   nbshape.user.imgsrc = "<img class='pop_usr_img' src='http://graph.facebook.com/" + bshape.user.fbuser.id + "/picture'/>"
 			   } else if (nbshape.user.google == true) {
 					nbshape.user.userName = nbshape.user.gouser.name;
-					nbshape.user.imgsrc = nbshape.user.gouser.picture;
-			   }			
+					nbshape.user.imgsrc = "<img class='pop_usr_img' src='"+bshape.user.gouser.picture+"'/>";
+			   } else if (nbshape.user.admin == true) {
+				   nbshape.user.userName = nbshape.user.aduser.name;
+				   nbshape.user.imgsrc =  "<div class='admin_image_big_mat material-icons'>person</div>";
+			   }
 			   nbshape.textdate = calculateShowDate(nbshape.from,placeOffset,nbshape.to);
 			   nbshape.bidsid = nbshape.bid + "_BS_" + sid;
 			   nextbshapelist.push(nbshape);
@@ -657,15 +714,20 @@ function updateFloorSidDataOnPopover(popover_hidden_wrap_id,bidsid_) {
      var date_ = calculateShowDate(bshape.from,placeOffset,bshape.to);
 
 	   var userName = "";
-	   var imgsrc = ""; 
-	   
-	   if(bshape.user.facebook == true) {
-		   userName = bshape.user.fbuser.name;
-		   imgsrc = "http://graph.facebook.com/" + bshape.user.fbuser.id + "/picture"
-	   } else if (bshape.user.google == true) {
+	   var imgsrc = "";
+
+	if(bshape.booktype == undefined || bshape.booktype == "" || bshape.booktype == "user") {
+		if (bshape.user.facebook == true) {
+			userName = bshape.user.fbuser.name;
+			imgsrc = "<img class='pop_usr_img' src='http://graph.facebook.com/" + bshape.user.fbuser.id + "/picture'/>"
+		} else if (bshape.user.google == true) {
 			userName = bshape.user.gouser.name;
-			imgsrc = bshape.user.gouser.picture;
-	   }
+			imgsrc = "<img class='pop_usr_img' src='"+bshape.user.gouser.picture+"'/>";
+		}
+	} else if(bshape.booktype == "admin"){
+		userName = bshape.user.aduser.name;
+		imgsrc = "<div class='admin_image_big_mat material-icons'>person</div>";
+	}
 		
 	   var phone = "";
 	   if(bshape.user.phone != undefined) {
@@ -713,7 +775,7 @@ function updateFloorSidDataOnPopover(popover_hidden_wrap_id,bidsid_) {
 	 appendData += '			   <div class="single_popover_list_book" id="prapra">';
 	 appendData += '				    <div class="container-fluid padding_none">';
 	 appendData += '				      <div class="col-sm-2 padding_none single_popover_list_book">';
-	 appendData += '					     <img class="pop_usr_img" src="'+imgsrc+'"/>';
+	 appendData += '					     '+imgsrc+' ';
 	 appendData += '					  </div>';
 	 appendData += '					  <div class="col-sm-9 padding_none single_popover_list_book">';
      appendData += '                          <div class="panel_bid_name fontsize14">'+userName+'</div>';
@@ -778,7 +840,7 @@ if(nextbshapelist.length > 0 ) {
 	 appendData += '			   <div class="single_popover_list_book" id="prapra">';
 	 appendData += '				    <div class="container-fluid padding_none">';
 	 appendData += '				      <div class="col-sm-2 padding_none single_popover_list_book">';
-	 appendData += '					     <img class="pop_usr_img" src="'+bshape.user.imgsrc+'"/>';
+	 appendData += '					      '+bshape.user.imgsrc+' ';
 	 appendData += '					  </div>';
 	 appendData += '					  <div class="col-sm-9 padding_none single_popover_list_book">';
      appendData += '                          <div class="panel_bid_name fontsize14">'+bshape.user.userName+'</div>';
@@ -838,15 +900,20 @@ function updateOnclickModal(type,bid_) {
    var date_ = calculateShowDate(bshape.from,placeOffset,bshape.to);
 
    var userName = "";
-   var imgsrc = ""; 
-   
-   if(bshape.user.facebook == true) {
-       userName = bshape.user.fbuser.name;
-	   imgsrc = "http://graph.facebook.com/" + bshape.user.fbuser.id + "/picture"
-   } else if (bshape.user.google == true) {
-        userName = bshape.user.gouser.name;
-		imgsrc = bshape.user.gouser.picture;
-   }
+   var imgsrc = "";
+
+	if(bshape.booktype == undefined || bshape.booktype == "" || bshape.booktype == "user") {
+		if (bshape.user.facebook == true) {
+			userName = bshape.user.fbuser.name;
+			imgsrc = "<img class='pop_usr_img' src='http://graph.facebook.com/" + bshape.user.fbuser.id + "/picture'/>"
+		} else if (bshape.user.google == true) {
+			userName = bshape.user.gouser.name;
+			imgsrc = "<img class='pop_usr_img' src='"+bshape.user.gouser.picture+"'/>";
+		}
+	} else if(bshape.booktype == "admin"){
+		userName = bshape.user.aduser.name;
+		imgsrc = "<div class='admin_image_big_mat material-icons'>person</div>";
+	}
 	
    var phone = "";
    if(bshape.user.phone != undefined) {
@@ -879,7 +946,7 @@ function updateOnclickModal(type,bid_) {
 	var appendData = '';
     appendData+='	 <div class="row">';
 	appendData+='	    <div class="col-md-1 ">';
-	appendData+='		   <img class="pop_usr_img" src="'+imgsrc+'">';
+	appendData+='		    '+imgsrc+' ';
 	appendData+='		</div>';
 	appendData+='		<div class="col-md-7 ">';
 	appendData+='		    <span class="modal_in_name">'+userName+'</span><span class="modal_inf_pers"> ('+bshape.persons+' persons)</span><br>';
@@ -949,15 +1016,28 @@ function updateMessageModal(bid_) {
    }
  
    var email ;
-   if(bshape.user.facebook == true) {
-       bshape.userName = bshape.user.fbuser.name;
-	   bshape.imgsrc = "http://graph.facebook.com/" + bshape.user.fbuser.id + "/picture";
-	   email = bshape.user.fbuser.email;
-   } else if (bshape.user.google == true) {
-        bshape.userName = bshape.user.gouser.name;
-		bshape.imgsrc = bshape.user.gouser.picture;
-		email = bshape.user.gouser.email;
-   }
+
+	if(bshape.booktype == undefined || bshape.booktype == "" || bshape.booktype == "user") {
+		if (bshape.user.facebook == true) {
+			bshape.userName = bshape.user.fbuser.name;
+			bshape.imgsrc = "<img class='pop_usr_img' src='http://graph.facebook.com/" + bshape.user.fbuser.id + "/picture'/>"
+			email = bshape.user.fbuser.email;
+		} else if (bshape.user.google == true) {
+			bshape.userName = bshape.user.gouser.name;
+			bshape.imgsrc = "<img class='pop_usr_img' src='"+bshape.user.gouser.picture+"'/>";
+			email = bshape.user.gouser.email;
+		}
+	} else if(bshape.booktype == "admin"){
+		bshape.userName = bshape.user.aduser.name;
+		bshape.imgsrc = "<div class='admin_image_big_mat material-icons'>person</div>";
+		email = bshape.user.aduser.email;
+	}
+    if(bshape.userName == undefined || bshape.userName == "") {
+		bshape.userName == "NoName";
+	}
+	if(email == undefined || email == "") {
+		return false;
+	}
    $("#modal_email_name").html(bshape.userName);
    
    var appendData = ''
@@ -965,7 +1045,7 @@ function updateMessageModal(bid_) {
    appendData+='   <button type="button" class="btn btn-primary" onclick="SingleBookingButton(\'send_message\',\''+bid_+'\',\''+email+'\')">Send message</button>';
    $("#send_message_modal_buttonons").html(appendData);
    $("#contact_email_modal_text").val('');
-   
+   return true;
 }
 
 function highlightSids(bid_) {

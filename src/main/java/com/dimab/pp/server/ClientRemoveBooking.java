@@ -16,7 +16,7 @@ import com.dimab.pp.database.FreePlaceFactory;
 import com.dimab.pp.dto.BookingListForJSON;
 import com.dimab.pp.dto.BookingRequest; 
 import com.dimab.pp.login.CheckTokenValid;
-import com.dimab.pp.login.GenericUser;
+import com.dimab.pp.login.dto.GenericUser;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;

@@ -2,10 +2,7 @@ package com.dimab.pp.account;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -17,19 +14,9 @@ import com.dimab.pickoplace.utils.JsonUtils;
 import com.dimab.pp.database.GetAJAXimageJSONfromCSfactory;
 import com.dimab.pp.database.GetBookingShapesDataFactory; 
 import com.dimab.pp.database.GetShapesOrders;
-import com.dimab.pp.dto.AJAXImagesJSON; 
-import com.dimab.pp.dto.BookingRequestWrap;
-import com.dimab.pp.dto.CanvasShape;
-import com.dimab.pp.dto.JsonImageID_2_GCSurl; 
-import com.dimab.pp.dto.OrderedResponse;
-import com.dimab.pp.dto.PPSubmitObject;
-import com.dimab.pp.dto.PlaceCheckAvailableJSON;
-import com.dimab.pp.dto.SingleShapeBookingResponse;
-import com.dimab.pp.dto.SingleTimeRangeLong;
-import com.dimab.pp.dto.WaiterInitialDTO; 
-import com.dimab.pp.dto.WorkingWeek;
+import com.dimab.pp.dto.*;
 import com.dimab.pp.login.CheckTokenValid;
-import com.dimab.pp.login.GenericUser;
+import com.dimab.pp.login.dto.GenericUser;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -98,7 +85,8 @@ public class PlaceWaiterAdministration extends HttpServlet {
   		GetAJAXimageJSONfromCSfactory csFactory = new GetAJAXimageJSONfromCSfactory();
   		GetBookingShapesDataFactory bookingFactory = new GetBookingShapesDataFactory();
   		List<JsonImageID_2_GCSurl> JSONimageID2url = new ArrayList<JsonImageID_2_GCSurl>();
-  		
+		ConfigBookingProperties BookProperties = new ConfigBookingProperties();
+
 		PlaceCheckAvailableJSON bookingRequest = JsonUtils.deserialize(jsonString, PlaceCheckAvailableJSON.class);
 		Long date = bookingRequest.getDate1970();// Ignoring client offset
 	    Long period = bookingRequest.getPeriod(); 
@@ -118,8 +106,10 @@ public class PlaceWaiterAdministration extends HttpServlet {
   		Entity userCanvasState = pq.asSingleEntity();
   		
   		if (userCanvasState != null) {
-  			CanvasStateEdit = csFactory.getBaseData(userCanvasState, datastore);	
- 
+  			CanvasStateEdit = csFactory.getBaseData(userCanvasState, datastore);
+			BookProperties = JsonUtils.deserialize((String) userCanvasState.getProperty("bookingProperties"), ConfigBookingProperties.class);
+			Collections.sort(BookProperties.getBookLength());
+
    		   String closeDatesString = (String) userCanvasState.getProperty("closeDates");
    		   Type closeDateType = new TypeToken<List<Integer>>(){}.getType();
    		   List<Integer> closeDates  = JsonUtils.deserialize(closeDatesString, closeDateType);
@@ -195,7 +185,8 @@ public class PlaceWaiterAdministration extends HttpServlet {
 	    // Bookings datastore
 	    
 	    List<BookingRequestWrap> bookings_ = bookingFactory.getDatastoreBookingsInludeStartBefore(datastore, placeIDvalue, UTCdate.intValue(), UTCdate.intValue()+2*24*3600);
-	    request.setAttribute("waiterResponse", waiterResponse);
+		request.setAttribute("bookProperties", BookProperties);
+		request.setAttribute("waiterResponse", waiterResponse);
 	    request.setAttribute("waiterBookings", JsonUtils.serialize(bookings_));
 	    request.setAttribute("imgid2link50", JsonUtils.serialize(JSONimageID2url));
 	    RequestDispatcher dispathser  = request.getRequestDispatcher("/placewaiteradmin.jsp");

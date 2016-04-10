@@ -47,7 +47,7 @@
 					<div class="login_in_header_wrap">
 						<div id="fg_profile_image_wrap" >
                          <div id="fg_profile_image_inner" >
-                            <img id="fg_profile_img" src="" >
+                            <img class="fg_profile_img" id="fg_profile_img" src="" >
                          </div>
                        </div>
 					   	<table id="login_tbl_a" cellspacing="0" cellpadding="0" style=" border-collapse: collapse">
@@ -66,10 +66,10 @@
 							                   <li>
 											     <div id="acc_head_menu_wrap">
 												   <div id="acc_arrow"></div>
-												   <div id="gotoaccountmenu" class="topAccOptList" onclick="goToAccountMenu()">Go to Account</div>
-												   <div id="gotobookings" class="topAccOptList">My bookings</div>
-												   <div id="gotoadminzone" class="topAccOptList">AdminZone</div>
-												   <div id="create_new_place_btn"  class="topAccOptList" onclick="goToCreatePlace()">Create New Place</div>
+													 <a href="/gotoaccountmenu"><div id="gotoaccountmenu" class="topAccOptList"  >Go to Account</div></a>
+													 <a href="/my_bookings.jsp"><div id="gotobookings" class="topAccOptList">My bookings</div></a>
+													 <a href="/user_waiter_list.jsp"><div id="gotoadminzone" class="topAccOptList">AdminZone</div></a>
+													 <a href="/create_new_place.jsp"><div id="create_new_place_btn"  class="topAccOptList"  >Create New Place</div></a>
 												   <div id="fb_logout_div" class="topAccOptList" onClick="facebookSignOut()">Log out</div>
 												   <div id="go_logout_div" class="topAccOptList" onClick="googleSignOut()">Log out</div>
 												 </div>

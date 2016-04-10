@@ -434,14 +434,18 @@ function UpdateHeader() {
 }
 function InitialCanvasTimeline(cid) {
 	InitialBookings = JSON.parse(document.getElementById("server_bookingsInitial").value);
+	var BookingProperties = JSON.parse(document.getElementById("server_bookingProperties").value)
 	var from = InitialBookings.date1970;
 	var to = InitialBookings.date1970 + InitialBookings.period;
 	var offset = InitialBookings.placeOffset;
 
 	tl_canvas = new BCanvasState(document.getElementById(cid),from,to,offset);
+	tl_canvas.bookingProperties = BookingProperties;
+	tl_canvas.step = BookingProperties.bookStartStep;
 	timelinediv = new TimelineDiv(tl_canvas,"canvas_timeline_div");
 	timegrid = new TimeGrid(tl_canvas,"timegridwrap");
 	bookingsManager = new BookingListManager();
+	bookingsManager.bookingProperties = BookingProperties;
 
 	var shapesBooked = InitialBookings.shapesBooked;
 
@@ -473,11 +477,20 @@ function InitialCanvasTimeline(cid) {
 				if (bookingsbysid[sid] != undefined) {
 					var booklist = bookingsbysid[sid];
 					for (var t=0 ; t < booklist.length ; t++ ) {
+						var booktype = "booked";
+						if(booklist[t].type != undefined  ) {
+							if(booklist[t].type == "user") {
+								booktype = "booked";
+							} else if (booklist[t].type == "admin") {
+								booktype = "adminReserved";
+							}
+
+						}
 						var bid = booklist[t].bid;
 						var from = booklist[t].from;
 						var to = booklist[t].to;
 						var persons = booklist[t].persons;
-						var bshape = new BShape(tl_canvas, from , to , bid , persons , "booked",name,sid);
+						var bshape = new BShape(tl_canvas, from , to , bid , persons , booktype ,name,sid);
 
 						bookings.push(bshape);
 					}
@@ -536,6 +549,7 @@ function InitialBookingList(data) {
 		var num = Bookings[b].num;
 		var user = Bookings[b].user;
 		var type = "approved";
+		var booktype = Bookings[b].type;
 		var places = Bookings[b].bookingList.length;
 		if(Bookings[b].phone!=undefined) {
 			user.phone = Bookings[b].phone;
@@ -560,7 +574,7 @@ function InitialBookingList(data) {
 			name_.persons = Bookings[b].bookingList[s].persons;
 			names.push(name_);
 		}
-		var bshapeAll = new BShapeAll( from , to , bid , persons , type , names , places,num,user);
+		var bshapeAll = new BShapeAll( from , to , bid , persons , type , names , places,num,user,booktype);
 		bookingsManager.addBooking(bshapeAll);
 	}
 }

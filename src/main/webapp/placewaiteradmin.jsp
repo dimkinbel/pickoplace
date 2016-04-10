@@ -47,8 +47,6 @@
 	<script src="js/bootstrap-toggle-master/js/bootstrap-toggle.min.js"></script>
 
 
-
-
 	<script type="text/javascript" src="js/colpick.js" ></script>
 	<script type="text/javascript" src="js/loginlogout.js" ></script>
 
@@ -65,9 +63,10 @@
 	<script type="text/javascript" src="js/dropit.js" ></script>
 	<script type="text/javascript" src="js/jquery.slimscroll.min.js" ></script>
 	<script type="text/javascript" src="js/bookingListManagement_wa.js" ></script>
+	<script type="text/javascript" src="js/bookingBookingsManger.js"></script><!---->
 	<script type="text/javascript" src="js/waiterViewService.js" ></script>
 	<script type="text/javascript" src="js/waiterController.js" ></script>
-
+	<script type="text/javascript" src="js/AdminReservation.js" ></script>
 
 	<script type="text/javascript" src="js/interactiveUpdate_wa.js" ></script>
 	<script src='/_ah/channel/jsapi'></script>
@@ -93,6 +92,7 @@
 		$(document).ready(function() {
 			UpdateHeader();
 			InitialCanvasTimeline('timeline_canvas');
+
 			updateCanvasData();
 			setInterval(function(){
 				timelinediv.updateNowTime();
@@ -104,7 +104,7 @@
 				}
 			}, 1000);
 
-			// UpdateInitialBookingList();
+
 			var ctw = parseInt(document.getElementById('timeline_canvas').width)+10;
 			$('#canvas_slimscroll').slimScroll({
 				position: 'right',
@@ -116,12 +116,145 @@
 			updatePageDimentions();
 			ApplyInitialPosition();
 			InitialBookingList();
+
+
 		});
 
 	</script>
 
 </head>
+<%
+	ConfigBookingProperties BookProperties = (ConfigBookingProperties) request.getAttribute("bookProperties");
+
+	WaiterInitialDTO waiterResponse = (WaiterInitialDTO)request.getAttribute("waiterResponse");
+	String WaiterBookings = (String)request.getAttribute("waiterBookings");
+	String imgid2link50 = (String)request.getAttribute("imgid2link50");
+	OrderedResponse bookingsInitial = waiterResponse.getOrderedResponse();
+	String bookingsInitialJSON = JsonUtils.serialize(bookingsInitial);
+	AJAXImagesJSON responseJSON = waiterResponse.getPlaceJSON();
+
+	List<PPSubmitObject> canvasStateList = responseJSON.getFloors();
+	List<JsonSID_2_imgID> sid2imgID = responseJSON.getJSONSIDlinks();
+	List<JsonImageID_2_GCSurl> imgID2URL = responseJSON.getJSONimageID2url();
+	String placeName = responseJSON.getPlace_();
+	String placeBranchName = responseJSON.getSnif_();
+	String userRandom = responseJSON.getUsernameRandom();
+	String placeID = responseJSON.getPlaceID();
+	String placePhone = responseJSON.getPlacePhone();
+	String placeFax = responseJSON.getPlaceFax();
+	String placeMail = responseJSON.getPlaceMail();
+	String placeDescription = responseJSON.getPlaceDescription();
+	String placeSiteUrl = responseJSON.getPlaceURL();
+	String placeAddress = responseJSON.getAddress();
+	String placeLat = responseJSON.getLat();
+	String placeLng = responseJSON.getLng();
+	double    placeUTSoffset = responseJSON.getUTCoffset();
+
+
+%>
 <body style="margin: 0 ;overflow:hidden;" >
+<%if (BookProperties.getAllDay() == true) {%>
+<div id="alldaybooking" style="display: none"></div>
+<%}%>
+<div id="add_booking_popup" >
+	<div id="add_booking_popup_head" >
+        Add reservation
+		<button type="button" class="close close_x_popover" id="close_waiter_booking" onclick="" aria-label="Close"><span aria-hidden="true">×</span></button>
+	</div>
+	<div id="add_booking_popup_content" >
+		<div class="container-fluid  ">
+			<div class="row add_wa_book_row">
+				<div class="col-xs-6 ">
+					<input id="datepicker_ub" class="datepicker_ub_wa" type="text"/>
+				</div>
+				<div class="col-xs-6 ">
+					<div class="dropdown">
+						<div id="from_now_periods" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+							<div id="from_now_text"><%=BookProperties.getTimeString(BookProperties.getBookLength().get(0)*60)%></div>
+							<i class="material-icons" id="from_now_mat">arrow_drop_down</i>
+							<input type="text" id="from_period_val" style="display:none"
+								   value="<%=BookProperties.getBookLength().get(0)*60%>"/>
+						</div>
+						<ul class="dropdown-menu" id="from_now_dropdown_period"
+							aria-labelledby="from_now_periods">
+							<% for (Integer min : BookProperties.getBookLength()) {
+							%>
+							<li><a href="#" data-period="<%=min*60%>"><%=BookProperties.getTimeString(min*60)%>
+							</a></li>
+							<%}%>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="row text_row">
+				<div class="col-xs-5 ">
+					FROM
+					</div>
+				<div class="col-xs-2 ">
+
+				</div>
+				<div class="col-xs-5 ">
+					TO
+				</div>
+			</div>
+			<div class="row add_wa_book_row_2">
+				<div class="col-xs-5 ">
+					<div class="dropdown reserve_dropdown_wrap">
+						<div id="admin_reserve_start" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+							<div id="admin_reserve_start_text">01:00</div>
+
+							<input type="text" id="admin_reserve_start_val" style="display:none"
+								   value="3600"/>
+						</div>
+						<ul class="dropdown-menu reserve_dropdown"   id="admin_reserve_start_dropdown"
+							aria-labelledby="admin_reserve_start">
+							<li><a href="#" data-period="7200">02:00
+							</a></li>
+							<li><a href="#" data-period="14400">04:00
+							</a></li>
+							<li><a href="#" data-period="21600">06:00
+							</a></li>
+						</ul>
+					</div>
+				</div>
+				<div class="col-xs-2 ">
+					<i class="material-icons arrow_mat"  >arrow_right</i>
+				</div>
+				<div class="col-xs-5 ">
+					<div class="dropdown reserve_dropdown_wrap">
+						<div id="admin_reserve_end" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+							<div id="admin_reserve_end_text">01:00 </div>
+
+							<input type="text" id="admin_reserve_end_val" style="display:none"
+								   value="3600"/>
+						</div>
+						<ul class="dropdown-menu reserve_dropdown" id="admin_reserve_end_dropdown"
+							aria-labelledby="admin_reserve_start">
+							<li><a href="#" data-period="7200">02:00
+							</a></li>
+							<li><a href="#" data-period="14400">04:00
+							</a></li>
+							<li><a href="#" data-period="21600">06:00
+							</a></li>
+						</ul>
+					</div>
+				</div>
+		    </div>
+			<div class="row admin_book_sep" >SEATS <span id="addm_seats_cnt">(0)</span></div>
+			<div id="admin_seats_add">
+
+			</div>
+			<div id="addm_reserve_bottom" >
+				<div id="add_persons_info" class="material-icons ">person_add</div>
+				<div id="add_note_info"  class="material-icons">create</div>
+				<div id="admin_add_reservation_inactive" class="addreservation_object"  >ADD
+					<img id="adm_add_loader" src="/img/gif/ajax-loader-round.gif" style="display:none">
+				</div>
+				<div id="admin_add_reservation" class="addreservation_object" style="display:none" >ADD</div>
+			</div>
+		</div>
+	</div>
+</div>
 <div id="canvas_popover_hidden" class="hidden">
 	<div id="canvas_popover_wrap" style="position:relative; width:300px;min-height:100px; background-color:white;">
 
@@ -131,7 +264,85 @@
 <div id="canvas_floors_popover" style="position:absolute"  data-toggle="popover"></div>
 <div id="canvas_timeline_admin_popover" style="position:absolute"  data-toggle="popover"></div>
 <div id="canvas_timeline_menu_popover" style="position:absolute"  data-toggle="popover"></div>
+<div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" id="bookingAcceptedModal">
+	<div class="modal-dialog modal-sm">
+		<div class="modal-content">
+			<div class="modal-header" id="bookingAcceptedModal_header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+						aria-hidden="true">&times;</span></button>
 
+			</div>
+			<div class="modal-body">
+				<h4 class="modal-title" id="bookingAcceptedModal_body"></h4>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="modal fade bs-example-modal-sm"  id="admin_reserve_free_text">
+	<div class="modal-dialog modal-sm">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #2196F3;">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">×</span>
+				</button>
+				<div class="modal-title adm_re_title"  >הערות</div>
+			</div>
+			<div class="container-fluid  ">
+				<div class="row  modal_text_row">
+					<div class="col-xs-12 ">
+						<form>
+							<div class="form-group">
+								<label for="admin_re_free_text" class="float_right">הערות</label>
+								<textarea class="form-control" id="admin_re_free_text" placeholder="message"></textarea>
+							</div>
+
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="modal fade bs-example-modal-sm"  id="admin_reserve_user_data">
+	<div class="modal-dialog modal-sm">
+		<div class="modal-content">
+			<div class="modal-header" style="background-color: #2196F3;">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">×</span>
+				</button>
+				<div class="modal-title adm_re_title"  >פרטי המזמין</div>
+			</div>
+			<div class="container-fluid  ">
+				<div class="row  modal_text_row">
+					<div class="col-xs-12 ">
+						<form>
+							<div class="form-group">
+								<label for="admin_re_user_name" class="float_right">שם</label>
+								<input type="text" class="form-control" id="admin_re_user_name" placeholder="Name">
+							</div>
+							<div class="form-group">
+								<label for="admin_re_user_mail"  class="float_right">מייל</label>
+								<input type="text" class="form-control" id="admin_re_user_mail" placeholder="eMail">
+							</div>
+							<div class="form-group">
+								<label for="admin_re_user_phone"  class="float_right">טלפון</label>
+								<input type="text" class="form-control" id="admin_re_user_phone" placeholder="phone">
+							</div>
+							<div class="form-group">
+								<label for="admin_re_user_cnt"  class="float_right">מספר אנשים</label>
+								<div   id="admin_re_user_cnt"  >
+                                    <div id="adm_re_cnt_less" class="material-icons">remove</div>
+									<input type="num" id="admin_re_persons" value="1" readonly/>
+									<div id="adm_re_cnt_more" class="material-icons">add</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
 <div class="modal fade" id="booking_info_modal">
 	<div class="modal-dialog">
 		<div class="modal-content">
@@ -217,32 +428,7 @@
 </div>
 <div id="temp_appends" style="height:400px;width:400px;position:absolute!important;left:-2000px;top:-300px;"></div>
 
-<%
 
-	WaiterInitialDTO waiterResponse = (WaiterInitialDTO)request.getAttribute("waiterResponse");
-	String WaiterBookings = (String)request.getAttribute("waiterBookings");
-	String imgid2link50 = (String)request.getAttribute("imgid2link50");
-	OrderedResponse bookingsInitial = waiterResponse.getOrderedResponse();
-	String bookingsInitialJSON = JsonUtils.serialize(bookingsInitial);
-	AJAXImagesJSON responseJSON = waiterResponse.getPlaceJSON();
-
-	List<PPSubmitObject> canvasStateList = responseJSON.getFloors();
-	List<JsonSID_2_imgID> sid2imgID = responseJSON.getJSONSIDlinks();
-	List<JsonImageID_2_GCSurl> imgID2URL = responseJSON.getJSONimageID2url();
-	String placeName = responseJSON.getPlace_();
-	String placeBranchName = responseJSON.getSnif_();
-	String userRandom = responseJSON.getUsernameRandom();
-	String placeID = responseJSON.getPlaceID();
-	String placePhone = responseJSON.getPlacePhone();
-	String placeFax = responseJSON.getPlaceFax();
-	String placeMail = responseJSON.getPlaceMail();
-	String placeDescription = responseJSON.getPlaceDescription();
-	String placeSiteUrl = responseJSON.getPlaceURL();
-	String placeAddress = responseJSON.getAddress();
-	String placeLat = responseJSON.getLat();
-	String placeLng = responseJSON.getLng();
-	double    placeUTSoffset = responseJSON.getUTCoffset();
-%>
 
 <div id="hiden_values_from_edit" style="display:none">
 
@@ -300,6 +486,7 @@
 	<input type="text" id="server_logosrc" value='<%=responseJSON.getLogosrc()%>'/>
 	<input type="text" id="server_bookingsInitial" value='<%=bookingsInitialJSON%>'/>
 	<input type="text" id="server_bookings" value='<%=WaiterBookings%>'/>
+	<input type="text" id="server_bookingProperties" value='<%=JsonUtils.serialize(BookProperties)%>'/>
 	<input type="text" id="server_imgID2link50" value='<%=imgid2link50%>'/>
 
 	<%for ( JsonimgID_2_data imgID2byte64 : responseJSON.getPlacePhotos()) {
@@ -339,6 +526,7 @@
 	<input type="text" id="userSetPlaceName" name="userSetPlaceName" value='<%=placeName %>' style="display:none"/>
 	<input type="text" id="userSetPlaceBName" name="userSetPlaceBName" value='<%=placeBranchName %>' style="display:none"/>
 	<input type="text" id="userSetPlaceID" name="userSetPlaceBName" value='<%=placeID %>' style="display:none"/>
+	<img id="server_v_logo" src="img/vlogo2.png"/>
 	<div id = "right_col_ub" style="display:none">
 		<div id="right_col_scroll">
 			<div class="chosed_img " >
@@ -689,7 +877,13 @@
 							</div>
 						</div>
 					</div>
-					<div class="col-md-4 bottom_row_buttons" id="button_rigt_btns"></div>
+					<div class="col-md-4 bottom_row_buttons" id="button_rigt_btns">
+						<div class="wl_bottom_menu_button_w" id="admin_add_booking" style="float: right; margin-right: 20px;">
+							<div class="material-icons wlmbot_mat">content_paste</div>
+							<div class="wlmbot_text">Add booking</div>
+						</div>
+
+					</div>
 				</div>
 			</div>
 		</td>

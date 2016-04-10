@@ -256,6 +256,7 @@ function googleSignIn() {
     console.log("GOOGLE: googleSignIn()");
     auth2.grantOfflineAccess().then(
         function (result) {
+            console.log(result)
             gcode = result.code;
             helper.connectServer(result.code);
         });
@@ -435,25 +436,7 @@ function onSignInCallback(authResult) {
     helper.onSignInCallback(authResult);
 }
 
-function checkGoogleStatus() {
-    console.log("GOOGLE: checkGoogleStatus()");
-    var at = gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse().access_token;
-    if (at != undefined) {
-        var data_ = {at: at};
-        console.log(data_);
-        $.ajax({
-            url: '/checkGoogleToken',
-            dataType: "JSON",
-            type: "post",
-            success: function (result) {
-                console.log(result);
-            },
-            data: data_
-        });
-    } else {
-        console.log("GOOGLE NOT SIGNED IN");
-    }
-}
+
 
 // This is called with the results from from FB.getLoginStatus().
 function facebookSignOut() {
@@ -493,7 +476,8 @@ function facebookSignIn() {
 function checkLoginState() {
     console.log("FACEBOOK: checkLoginState()");
     FB.getLoginStatus(function (response) {
-        statusChangeCallback(response);
+        console.log(response)
+       statusChangeCallback(response);
     });
 }
 function statusChangeCallback(response) {
@@ -579,24 +563,7 @@ function statusChangeCallback(response) {
 
     }
 }
-function checkFBStatus() {
-    console.log("FACEBOOK: checkFBStatus()");
-    if (FB.getAuthResponse() != null) {
-        var bftoken = FB.getAuthResponse().accessToken;
-        var data_ = {at: bftoken};
-        $.ajax({
-            url: '/checkFBToken',
-            dataType: "JSON",
-            type: "post",
-            success: function (result) {
-                console.log(result);
-            },
-            data: data_
-        });
-    } else {
-        console.log("NOT SIGNED IN FACEBOOK");
-    }
-}
+
 // https://www.googleapis.com/oauth2/v1/tokeninfo?access_token={access_token}
 // Get access token expiration
 /*
@@ -625,25 +592,8 @@ function verifyGoogleTokenExpired(callback) {
 function setSessionData(callback) {
     if (gconnected) {
         if (auth2.isSignedIn.get()) {
+            callback(true);
 
-            verifyGoogleTokenExpired(function(access_token) {
-                var token = access_token;
-                var data_ = {provider: "google", access_token: token};
-                $.ajax({
-                    url: '/setsessiontoken',
-                    dataType: "JSON",
-                    type: "post",
-                    success: function (result) {
-                        console.log(result);
-                        callback(result.valid);
-                    },
-                    error: function (e) {
-                        console.log(e);
-                        callback(false);
-                    },
-                    data: data_
-                });
-            });
 
         } else {
             gconnected = false;
@@ -656,20 +606,8 @@ function setSessionData(callback) {
             if (response.status === 'connected') {
                 var token = FB.getAuthResponse().accessToken;
                 var data_ = {provider: "facebook", access_token: token};
-                $.ajax({
-                    url: '/setsessiontoken',
-                    dataType: "JSON",
-                    type: "post",
-                    success: function (result) {
-                        console.log(result);
-                        callback(result.valid);
-                    },
-                    error: function (e) {
-                        console.log(e);
-                        callback(false);
-                    },
-                    data: data_
-                });
+
+                callback(true);
             } else {
                 fconnected = false;
                 updatePageView();
@@ -708,6 +646,7 @@ function updatePageView() {
             pagetype == 'my_bookings' ||
             pagetype == 'place_config' ||
             pagetype == 'user_account' ||
+            pagetype == 'waiter_login' ||
             pagetype == 'waiter_list')) {
             $("#login_prop_d").hide();
         } else {
@@ -720,7 +659,7 @@ function updatePageView() {
         $("#login_info_resp").show();
         if (pagetype != undefined &&
             (pagetype == 'iframepage' ||
-            pagetype == 'place_booking')) {
+             pagetype == 'place_booking')) {
             $("#book_sign_ask").hide();
             $("#login_info_resp_db").empty();
             $("#login_info_resp_db").html(fudata.first_name);
@@ -761,6 +700,7 @@ function updatePageView() {
             pagetype == 'my_bookings' ||
             pagetype == 'place_config' ||
             pagetype == 'user_account' ||
+            pagetype == 'waiter_login' ||
             pagetype == 'waiter_list')) {
             $("#login_prop_d").hide();
         } else {
@@ -812,6 +752,7 @@ function updatePageView() {
             pagetype == 'my_bookings' ||
             pagetype == 'place_config' ||
             pagetype == 'user_account' ||
+            pagetype == 'waiter_login' ||
             pagetype == 'waiter_list')) {
             console.log("update_no_connected");
             location.href = "/welcome.jsp";

@@ -1,4 +1,4 @@
-
+var DatepickerSetDate = "0";
 $(document).ready(function() {
 	$(function() {
 
@@ -65,7 +65,7 @@ $(document).ready(function() {
 		var d = new Date();
 		var utc = d.getTime() + (d.getTimezoneOffset() * 60000);
 		var nd = new Date(utc + (3600000 * parseInt(placeUTCOffsetGlobal)));
-		var DatepickerSetDate = "+0";
+
 		if (d.getDate() != nd.getDate()) {
 			if(d.getTime() > nd.getTime()) {
 				// Client timezone is one day higher
@@ -222,6 +222,8 @@ function floorAppend(appendTo_,singleBoth,singleFloorID,temp) {
 			}
 
 		}
+		$("#canvas_appended_wrapper-"+singleFloorID).css("width",appendToWidth );
+		$("#canvas_appended_wrapper-"+singleFloorID).css("height",appendToHeight );
 		$("#canvas_wrap_not_scroll_conf-"+singleFloorID).css("width",appendToWidth );
 		$("#canvas_wrap_not_scroll_conf-"+singleFloorID).css("height",appendToHeight );
 		$('#canvas_wrap_not_scroll_conf-'+singleFloorID).append( $('#div_wrap-canvas_'+singleFloorID) );

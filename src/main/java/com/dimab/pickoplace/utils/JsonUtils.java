@@ -1,6 +1,7 @@
 package com.dimab.pickoplace.utils;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import java.lang.reflect.Type;
 
@@ -22,5 +23,9 @@ public final class JsonUtils {
 
     public static <T> T deserialize(String objectAsJson, Type type) {
         return GSON.fromJson(objectAsJson, type);
+    }
+
+    public static <T> T deserialize(JsonObject jso, Type type) {
+        return GSON.fromJson(jso, type);
     }
 }

@@ -7,6 +7,8 @@
         <script type="text/javascript">
             var pagetype = 'welcome';
         </script>
+        <meta name="google-site-verification" content="cVQg625z2O7cD5-I9szgj6gzeGzscX94bSnI0ZmBmok" />
+        <meta name="description" content="Create an amazing client booking experience for your buisness">
         <link rel="stylesheet" href="js/jquery-ui-1.11.2.custom/jquery-ui.css" type="text/css" media="screen" />
         <link rel="stylesheet" href="css/browserWrap.css" type="text/css" media="screen" />
         <link rel="stylesheet" href="css/login.css" type="text/css" media="screen" />
@@ -217,7 +219,7 @@
 
                     <div id="fg_profile_image_wrap" >
                         <div id="fg_profile_image_inner" >
-                            <img id="fg_profile_img" src="" >
+                            <img id="fg_profile_img" class="fg_profile_img" src="" >
                         </div>
                     </div>
 
@@ -237,17 +239,14 @@
                                                 <li>
                                                     <div id="acc_head_menu_wrap">
                                                         <div id="acc_arrow"></div>
-                                                        <div id="gotoaccountmenu" class="topAccOptList" onclick="goToAccountMenu()">Go to Account</div>
-                                                        <div id="gotobookings" class="topAccOptList">My bookings</div>
-                                                        <div id="gotoadminzone" class="topAccOptList">AdminZone</div>
-                                                        <div id="create_new_place_btn"  class="topAccOptList" onclick="goToCreatePlace()">Create New Place</div>
+                                                        <a href="/gotoaccountmenu"><div id="gotoaccountmenu" class="topAccOptList"  >Go to Account</div></a>
+                                                        <a href="/my_bookings.jsp"><div id="gotobookings" class="topAccOptList">My bookings</div></a>
+                                                        <a href="/user_waiter_list.jsp"><div id="gotoadminzone" class="topAccOptList">AdminZone</div></a>
+                                                        <a href="/create_new_place.jsp"><div id="create_new_place_btn"  class="topAccOptList"  >Create New Place</div></a>
                                                         <div id="fb_logout_div" class="topAccOptList" onClick="facebookSignOut()">Log out</div>
                                                         <div id="go_logout_div" class="topAccOptList" onClick="googleSignOut()">Log out</div>
                                                     </div>
-                                                    <div id="all_ac_forms" style="display:none">
-                                                        <form id="master_account" action="gotoaccountmenu" method="post">
-                                                        </form>
-                                                    </div>
+
                                                 </li>
                                             </ul>
                                         </li>

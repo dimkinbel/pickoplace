@@ -1,7 +1,7 @@
 /**
  *
  */
-function BShapeAll( from , to , bid , persons , type , namesList , places , num , user) {
+function BShapeAll( from , to , bid , persons , type , namesList , places , num , user,booktype) {
 	"use strict";
 	// This is a very simple and unsafe constructor. All we're doing is checking if the values exist.
 	// "x || 0" just means "if there is a value for x, use that. Otherwise use 0."
@@ -16,6 +16,7 @@ function BShapeAll( from , to , bid , persons , type , namesList , places , num 
 	this.places = places;
 	this.num = num;
 	this.user = user;
+	this.booktype = booktype;
 }
 
 function BookingListManager () {
@@ -221,6 +222,47 @@ BookingListManager.prototype.addBooking = function(bshape) {
 	this.newBookings.push(bshape);
 	this.monitore();
 }
+BookingListManager.prototype.addBookingWrapBooking = function(bookingRequestWrap) {
+
+		var from = bookingRequestWrap.time;
+		var to = bookingRequestWrap.time + bookingRequestWrap.period;
+		var bid = bookingRequestWrap.bookID;
+		var num = bookingRequestWrap.num;
+		var user = bookingRequestWrap.user;
+		var type = "approved";
+		var booktype = bookingRequestWrap.type;
+		var places = bookingRequestWrap.bookingList.length;
+		if(bookingRequestWrap.phone!=undefined) {
+			user.phone = bookingRequestWrap.phone;
+		}
+
+		var names = [];
+		var persons = 0;
+		//myState.shapeViews[myState.SIDsorted[linehover]].booking_options.givenName;
+		for (var s = 0 ; s < bookingRequestWrap.bookingList.length ; s++ ) {
+			persons+=bookingRequestWrap.bookingList[s].persons;
+			var name_={};
+			name_.name = tl_canvas.shapeViews[bookingRequestWrap.bookingList[s].sid].booking_options.givenName;
+			for (var cf = 0 ; cf < floorCanvases.length ; cf++) {
+				var floor = floorCanvases[cf];
+				for (var sd = 0 ; sd < floor.shapes.length ; sd++) {
+					if(floor.shapes[sd].sid == bookingRequestWrap.bookingList[s].sid) {
+						name_.floorname = floor.floor_name;
+						break;
+					}
+				}
+			}
+			name_.sid= bookingRequestWrap.bookingList[s].sid;
+			name_.persons = bookingRequestWrap.bookingList[s].persons;
+			names.push(name_);
+		}
+	if(bookingRequestWrap.persons != undefined && bookingRequestWrap.persons > persons ) {
+		persons = bookingRequestWrap.persons;
+	}
+		var bshapeAll = new BShapeAll( from , to , bid , persons , type , names , places,num,user,booktype);
+		this.addBooking(bshapeAll);
+
+}
 
 BookingListManager.prototype.removeBookingDraw = function(bid) {
 	var elementID  = 'wl_list_bid-'+bid;
@@ -260,13 +302,17 @@ BookingListManager.prototype.DrawToCurrent = function(bid) {
 	var userName = "";
 	var imgsrc = "";
 	var persons = bshape.persons;
-
-	if(bshape.user.facebook == true) {
-		userName = bshape.user.fbuser.name;
-		imgsrc = "http://graph.facebook.com/" + bshape.user.fbuser.id + "/picture"
-	} else if (bshape.user.google == true) {
-		userName = bshape.user.gouser.name;
-		imgsrc = bshape.user.gouser.picture;
+	if(bshape.booktype == undefined || bshape.booktype == "" || bshape.booktype == "user") {
+		if (bshape.user.facebook == true) {
+			userName = bshape.user.fbuser.name;
+			imgsrc = "<img src='http://graph.facebook.com/" + bshape.user.fbuser.id + "/picture'/>"
+		} else if (bshape.user.google == true) {
+			userName = bshape.user.gouser.name;
+			imgsrc = "<img src='"+bshape.user.gouser.picture+"'/>";
+		}
+	} else if(bshape.booktype == "admin"){
+		userName = bshape.user.aduser.name;
+		imgsrc = "<div class='admin_image_mat material-icons'>person</div>";
 	}
 	var appendData = "";
 	appendData += "<div class='single_book_list_wrap' id='wl_list_bid-"+bshape.bid+"'  name='wa_current_list'>";
@@ -278,7 +324,7 @@ BookingListManager.prototype.DrawToCurrent = function(bid) {
 	appendData += "        </td>";
 	appendData += "		<td class='bls_tags' rowspan=2>";
 	appendData += "		  <div class='loggedbyfg'>";
-	appendData += "		     <img src='"+imgsrc+"'/>";
+	appendData += "		      "+imgsrc+" ";
 	appendData += "		   </div>";
 	appendData += "		</td>";
 	appendData += "        	<td class='bls_tnumb' rowspan=2>";
@@ -369,12 +415,17 @@ BookingListManager.prototype.DrawToNext = function(bid) {
 	var imgsrc = "";
 	var persons = bshape.persons;
 
-	if(bshape.user.facebook == true) {
-		userName = bshape.user.fbuser.name;
-		imgsrc = "http://graph.facebook.com/" + bshape.user.fbuser.id + "/picture"
-	} else if (bshape.user.google == true) {
-		userName = bshape.user.gouser.name;
-		imgsrc = bshape.user.gouser.picture;
+	if(bshape.booktype == undefined || bshape.booktype == "" || bshape.booktype == "user") {
+		if (bshape.user.facebook == true) {
+			userName = bshape.user.fbuser.name;
+			imgsrc = "<img src='http://graph.facebook.com/" + bshape.user.fbuser.id + "/picture'/>"
+		} else if (bshape.user.google == true) {
+			userName = bshape.user.gouser.name;
+			imgsrc = "<img src='"+bshape.user.gouser.picture+"'/>";
+		}
+	} else if(bshape.booktype == "admin"){
+		userName = bshape.user.aduser.name;
+		imgsrc = "<div class='admin_image_mat material-icons'>person</div>";
 	}
 	var appendData = "";
 	appendData += "<div class='single_book_list_wrap' id='wl_list_bid-"+bshape.bid+"'  name='wa_next_list'>";
@@ -386,7 +437,7 @@ BookingListManager.prototype.DrawToNext = function(bid) {
 	appendData += "        </td>";
 	appendData += "		<td class='bls_tags' rowspan=2>";
 	appendData += "		  <div class='loggedbyfg'>";
-	appendData += "		     <img src='"+imgsrc+"'/>";
+	appendData += "		     "+imgsrc+" ";
 	appendData += "		   </div>";
 	appendData += "		</td>";
 	appendData += "        	<td class='bls_tnumb' rowspan=2>";
@@ -477,13 +528,17 @@ BookingListManager.prototype.DrawToPast = function(bid) {
 	var userName = "";
 	var imgsrc = "";
 	var persons = bshape.persons;
-
-	if(bshape.user.facebook == true) {
-		userName = bshape.user.fbuser.name;
-		imgsrc = "http://graph.facebook.com/" + bshape.user.fbuser.id + "/picture"
-	} else if (bshape.user.google == true) {
-		userName = bshape.user.gouser.name;
-		imgsrc = bshape.user.gouser.picture;
+	if(bshape.booktype == undefined || bshape.booktype == "" || bshape.booktype == "user") {
+		if (bshape.user.facebook == true) {
+			userName = bshape.user.fbuser.name;
+			imgsrc = "<img src='http://graph.facebook.com/" + bshape.user.fbuser.id + "/picture'/>"
+		} else if (bshape.user.google == true) {
+			userName = bshape.user.gouser.name;
+			imgsrc = "<img src='"+bshape.user.gouser.picture+"'/>";
+		}
+	} else if(bshape.booktype == "admin"){
+		userName = bshape.user.aduser.name;
+		imgsrc = "<div class='admin_image_mat material-icons'>person</div>";
 	}
 	var appendData = "";
 	appendData += "<div class='single_book_list_wrap' id='wl_list_bid-"+bshape.bid+"'  name='wa_past_list'>";
@@ -495,7 +550,7 @@ BookingListManager.prototype.DrawToPast = function(bid) {
 	appendData += "        </td>";
 	appendData += "		<td class='bls_tags' rowspan=2>";
 	appendData += "		  <div class='loggedbyfg'>";
-	appendData += "		     <img src='"+imgsrc+"'/>";
+	appendData += "		    "+imgsrc ;
 	appendData += "		   </div>";
 	appendData += "		</td>";
 	appendData += "        	<td class='bls_tnumb' rowspan=2>";

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.dimab.pp.login.GenericUser;
+import com.dimab.pp.login.dto.GenericUser;
 
 public class BookingRequestWrap {
     Boolean isAnswer = false;
@@ -31,14 +31,41 @@ public class BookingRequestWrap {
     Date reservationMadeUTC = new Date();
     List<BookingRequestPlaceView> bookingView;
     String reviewCode;
-Integer persons;
+    Integer persons;
+    String type = "user";
+    String name = "";
+    String email = "";
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 
     public Boolean isAnswer() {
         return isAnswer;
     }
 
     public void setAnswer(Boolean answer) {
-        isAnswer = answer;
+        this.isAnswer = answer;
     }
 
     public Boolean getReviewAnswer() {

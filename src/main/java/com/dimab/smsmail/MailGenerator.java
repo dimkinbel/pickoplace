@@ -5,7 +5,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import com.dimab.pp.dto.*;
-import com.dimab.pp.login.GenericUser;
+import com.dimab.pp.login.dto.GenericUser;
 
 public class MailGenerator {
 
@@ -174,6 +174,16 @@ public class MailGenerator {
         message = message.concat("</div>");
         return message;
     }
+    public String GetNewWaiterConfirmationEmail(PlaceInfo placeInfo, String verificationCode) {
+        String message = "";
+        message = message.concat("<div  border='0' cellpadding='0' cellspacing='0' height='100%' width='100%' style='background-color: #F7F7F7;width: 100%;padding-top: 50px;padding-bottom: 50px; font-family: \'Helvetica neue\',Helvetica,arial,sans-serif;'>");
+        message = message.concat("Your email was registered in Pickoplace service as waiter for:<br>");
+        message = message.concat(placeInfo.getUserPlace().getPlace() + "," + placeInfo.getUserPlace().getBranch() + "<br>");
+        message = message.concat("<br><div style=\"color:#999;text-align:center;font:11px Arial;line-height:1.4em;max-width:600px;\"><p style=\"text-decoration:none;color:#999;display:inline-block;padding-bottom:4px\">This message was sent from a notification-only email address that does not accept incoming email.</p></div> ");
+        message = message.concat("<div style=\"color:#999;text-align:center;font:11px Arial;line-height:1.4em;max-width:600px;\"><p style=\"text-decoration:none;color:#999;display:inline-block;padding-bottom:4px\">If you did not make this request, simply ignore this message.</p></div> ");
+        message = message.concat("</div>");
+        return message;
+    }
 
     public String GetRemoveAdminConfirmationEmail(PlaceInfo placeInfo, String verificationCode) {
         String message = "";
@@ -185,7 +195,16 @@ public class MailGenerator {
         message = message.concat("</div>");
         return message;
     }
-
+    public String GetRemoveWaiterConfirmationEmail(PlaceInfo placeInfo, String verificationCode) {
+        String message = "";
+        message = message.concat("<div  border='0' cellpadding='0' cellspacing='0' height='100%' width='100%' style='background-color: #F7F7F7;width: 100%;padding-top: 50px;padding-bottom: 50px; font-family: \'Helvetica neue\',Helvetica,arial,sans-serif;'>");
+        message = message.concat("Your email has been removed from Pickoplace service as waiter:<br>");
+        message = message.concat(placeInfo.getUserPlace().getPlace() + "," + placeInfo.getUserPlace().getBranch() + "<br>");
+        message = message.concat("<br><div style=\"color:#999;text-align:center;font:11px Arial;line-height:1.4em;max-width:600px;\"><p style=\"text-decoration:none;color:#999;display:inline-block;padding-bottom:4px\">This message was sent from a notification-only email address that does not accept incoming email.</p></div> ");
+        message = message.concat("<div style=\"color:#999;text-align:center;font:11px Arial;line-height:1.4em;max-width:600px;\"><p style=\"text-decoration:none;color:#999;display:inline-block;padding-bottom:4px\">If you did not make this request, simply ignore this message.</p></div> ");
+        message = message.concat("</div>");
+        return message;
+    }
     public String VerificationCodeEmail(PlaceInfo placeInfo, String verificationCode) {
         String message = "";
         message = message.concat("<div  border='0' cellpadding='0' cellspacing='0' height='100%' width='100%' style='background-color: #F7F7F7;width: 100%;padding-top: 50px;padding-bottom: 50px; font-family: \'Helvetica neue\',Helvetica,arial,sans-serif;'>");

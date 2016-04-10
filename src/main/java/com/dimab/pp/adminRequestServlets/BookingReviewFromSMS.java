@@ -1,18 +1,8 @@
 package com.dimab.pp.adminRequestServlets;
 
-import com.dimab.pickoplace.utils.JsonUtils;
 import com.dimab.pp.database.GetBookingShapesDataFactory;
-import com.dimab.pp.dto.BookingRequest;
-import com.dimab.pp.dto.BookingRequestPlaceView;
 import com.dimab.pp.dto.BookingRequestWrap;
-import com.dimab.pp.dto.ShapeDimentions;
-import com.dimab.pp.login.GenericUser;
 import com.google.appengine.api.datastore.*;
-import com.google.appengine.api.images.ImagesService;
-import com.google.appengine.api.images.ImagesServiceFactory;
-import com.google.appengine.api.images.ServingUrlOptions;
-import com.google.appengine.tools.cloudstorage.GcsFilename;
-import com.google.gson.reflect.TypeToken;
 import net.sf.uadetector.ReadableUserAgent;
 import net.sf.uadetector.UserAgentStringParser;
 import net.sf.uadetector.service.UADetectorServiceFactory;
@@ -24,9 +14,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.lang.reflect.Type;
-import java.util.Date;
-import java.util.List;
 
 /**
  * Created by dima on 28-Mar-16.

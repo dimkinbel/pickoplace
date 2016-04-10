@@ -2,11 +2,6 @@ package com.dimab.pp.account;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,10 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 
 
 import com.dimab.pickoplace.utils.JsonUtils;
-import com.dimab.pp.dto.IFresponse;
-import com.dimab.pp.dto.IFsave;
 import com.dimab.pp.login.CheckTokenValid;
-import com.dimab.pp.login.GenericUser;
+import com.dimab.pp.login.dto.GenericUser;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;

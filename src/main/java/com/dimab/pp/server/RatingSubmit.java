@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.dimab.pickoplace.utils.JsonUtils;
 import com.dimab.pp.dto.PlaceRatingDTO;
 import com.dimab.pp.login.CheckTokenValid;
-import com.dimab.pp.login.GenericUser;
+import com.dimab.pp.login.dto.GenericUser;
 import com.dimab.pp.search.SearchFabric;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;

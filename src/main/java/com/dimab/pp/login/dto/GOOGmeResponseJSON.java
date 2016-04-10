@@ -1,4 +1,6 @@
-package com.dimab.pp.login;
+package com.dimab.pp.login.dto;
+
+import com.dimab.pp.login.dto.GoogleTokenErrorWrap;
 
 public class GOOGmeResponseJSON {
 	// https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=youraccess_token
@@ -12,6 +14,18 @@ public class GOOGmeResponseJSON {
     String picture;
     String gender;
     String locale;
+
+	GoogleTokenErrorWrap error;
+
+
+	public GoogleTokenErrorWrap getError() {
+		return error;
+	}
+
+	public void setError(GoogleTokenErrorWrap error) {
+		this.error = error;
+	}
+
 	public String getId() {
 		return id;
 	}

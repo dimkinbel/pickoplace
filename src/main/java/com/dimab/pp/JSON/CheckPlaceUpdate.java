@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.dimab.pickoplace.utils.JsonUtils;
 import com.dimab.pp.dto.ValidatePlaceUpdate;
 import com.dimab.pp.login.CheckTokenValid;
-import com.dimab.pp.login.GenericUser;
+import com.dimab.pp.login.dto.GenericUser;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;

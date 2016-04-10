@@ -1,7 +1,6 @@
 package com.dimab.pp.server;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -18,7 +17,7 @@ import com.dimab.pp.database.GetPlaceInfoFactory;
 import com.dimab.pp.dto.*;
 import com.dimab.pp.functions.RandomStringGenerator;
 import com.dimab.pp.login.CheckTokenValid;
-import com.dimab.pp.login.GenericUser;
+import com.dimab.pp.login.dto.GenericUser;
 import com.dimab.smsmail.MailSenderFabric;
 import com.dimab.smsmail.PlivoSendSMS;
 import com.google.appengine.api.datastore.DatastoreService;
@@ -33,7 +32,6 @@ import com.google.appengine.api.datastore.TransactionOptions;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
-import com.google.gson.reflect.TypeToken;
 import com.plivo.helper.api.response.message.MessageResponse;
 
 
@@ -70,6 +68,9 @@ public class ClientPlaceBooking extends HttpServlet {
         }
 
         BookingRequestWrap bookingRequestsWrap = JsonUtils.deserialize(jsonString, BookingRequestWrap.class);
+        if (bookingRequestsWrap.getType() == null) {
+            bookingRequestsWrap.setType("user");
+        }
         // Check available by place open or time passed (1min)
         Date current = new Date();
         Long utcTimeSeconds = current.getTime() / 1000;
@@ -98,7 +99,7 @@ public class ClientPlaceBooking extends HttpServlet {
 
         Date dateForDatabase = new Date(PlaceLocalTime.getTime());
         System.out.println(PlaceLocalTime);
-        Date secrtc = new Date(secondsRelativeToClient*1000L);
+        Date secrtc = new Date(secondsRelativeToClient * 1000L);
         System.out.println(secrtc);
 
         Calendar calendar = Calendar.getInstance();
@@ -108,7 +109,7 @@ public class ClientPlaceBooking extends HttpServlet {
 
         Calendar endCalendar = calendar;
         endCalendar.add(Calendar.SECOND, bookingRequestsWrap.getPeriod());
-         Integer dayOfEndCalendar = endCalendar.get(Calendar.DAY_OF_MONTH);
+        Integer dayOfEndCalendar = endCalendar.get(Calendar.DAY_OF_MONTH);
 
         Boolean endOnNextDay = false;
         if (dayOfStartCalendar != dayOfEndCalendar) {
@@ -166,6 +167,7 @@ public class ClientPlaceBooking extends HttpServlet {
         bookingOrder.setUnindexedProperty("UTCdateProper", UTCdateProper);
         bookingOrder.setUnindexedProperty("userPhone", sessionPhone);
 
+        bookingOrder.setProperty("type", bookingRequestsWrap.getType());
         bookingOrder.setProperty("DateWhenOrderMade_atUTC", current);
         bookingOrder.setProperty("DateWhenOrderMadeSeconds_atUTC", current.getTime());
         bookingOrder.setProperty("bid", bookingRequestsWrap.getBookID());
@@ -179,7 +181,7 @@ public class ClientPlaceBooking extends HttpServlet {
         }
         bookingOrder.setProperty("weekday", bookingRequestsWrap.getWeekday());
         bookingOrder.setProperty("num", bookingsMade);
-        bookingOrder.setUnindexedProperty("bookingViewData",JsonUtils.serialize(canvasJsonFactory.getBookingViewData(canvasEntity,bookingRequestsWrap)));
+        bookingOrder.setUnindexedProperty("bookingViewData", JsonUtils.serialize(canvasJsonFactory.getBookingViewData(canvasEntity, bookingRequestsWrap)));
 
         List<Integer> closeDates = placeInfo.getCloseDates();
 
@@ -239,6 +241,7 @@ public class ClientPlaceBooking extends HttpServlet {
                     shapesEntities.add(shapeEntity);
                     SingleTimeRangeLong OrderBid = new SingleTimeRangeLong();
                     OrderBid.setBid(bookingRequest.getBookID());
+                    OrderBid.setType(bookingRequestsWrap.getType());
                     OrderBid.setFrom(secondsRelativeToClient);
                     OrderBid.setTo(secondsRelativeToClient + bookingRequest.getPeriod());
                     OrderBid.setTestID(bookingRequest.getTestID());

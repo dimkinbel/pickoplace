@@ -2,11 +2,8 @@ package com.dimab.pp.server;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.util.ArrayList; 
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -18,13 +15,12 @@ import com.dimab.pickoplace.utils.JsonUtils;
 import com.dimab.pp.database.GetAJAXimageJSONfromCSfactory;
 import com.dimab.pp.dto.*;
 import com.dimab.pp.login.CheckTokenValid;
-import com.dimab.pp.login.GenericUser;
+import com.dimab.pp.login.dto.GenericUser;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.Text;
 import com.google.appengine.api.datastore.Transaction;
 import com.google.appengine.api.datastore.TransactionOptions; 
 import com.google.appengine.api.datastore.Query.Filter;
@@ -111,7 +107,7 @@ public class ConfigurationEditRequest extends HttpServlet {
 				                adminAccess.setBook_admin(true);
 				                placeEditList.add(adminAccess);
 				                userCanvasState.setUnindexedProperty("placeEditList",JsonUtils.serialize(placeEditList));
-				                datastore.put(userCanvasState);
+
 						} else {
 							System.out.println("No full_name access in list");
 							String returnurl = "/welcome.jsp";
@@ -134,7 +130,7 @@ public class ConfigurationEditRequest extends HttpServlet {
 		                adminAccess.setBook_admin(true);
 		                placeEditList.add(adminAccess);
 		                userCanvasState.setUnindexedProperty("placeEditList",JsonUtils.serialize(placeEditList));
-		                datastore.put(userCanvasState);
+
 					}
 				}
 			} else {
@@ -152,10 +148,10 @@ public class ConfigurationEditRequest extends HttpServlet {
 	                adminAccess.setBook_admin(true);
 	                placeEditList.add(adminAccess);
 	                userCanvasState.setUnindexedProperty("placeEditList",JsonUtils.serialize(placeEditList));
-	                datastore.put(userCanvasState);
+
 				}
 			}
-			txn.commit();
+
 
 			String placeID = (String) userCanvasState.getProperty("placeUniqID");
 			String usernameRandom =  (String)  userCanvasState.getProperty("usernameRandom");
@@ -193,10 +189,24 @@ public class ConfigurationEditRequest extends HttpServlet {
 		ConfigBookingProperties bookingProperties = JsonUtils.deserialize((String) userCanvasState.getProperty("bookingProperties"),ConfigBookingProperties.class);
 		configuration.setBookingProperties(bookingProperties);
 		Type  collectionType = new TypeToken<List<String>>(){}.getType();
-		List<String> admins = JsonUtils.deserialize((String) userCanvasState.getProperty("adminList"),collectionType);;
+		List<String> admins = JsonUtils.deserialize((String) userCanvasState.getProperty("adminList"),collectionType);
+		List<String> waiters = new ArrayList<>();
+		if(userCanvasState.getProperty("waiterList")== null) {
+			waiters.add(username);
+			userCanvasState.setUnindexedProperty("waiterList", JsonUtils.serialize(waiters));
+		} else {
+			waiters = JsonUtils.deserialize((String) userCanvasState.getProperty("waiterList"),collectionType);
+			if(waiters.size() == 0) {
+				waiters.add(username);
+				userCanvasState.setUnindexedProperty("waiterList", JsonUtils.serialize(waiters));
+			}
+		}
+		datastore.put(userCanvasState);
+		txn.commit();
 		String Admin_username = (String)  userCanvasState.getProperty("Admin_username");
 		String Admin_password =  (String)  userCanvasState.getProperty("Admin_password");
 		configuration.getAdministration().setAdmins(admins);
+		configuration.getAdministration().setWaiters(waiters);
 		configuration.getAdministration().setAdminUsername(Admin_username);
 		configuration.getAdministration().setAdminPassword(Admin_password);
 		System.out.println(JsonUtils.serialize(configuration.getBookingProperties()));

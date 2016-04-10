@@ -1,12 +1,9 @@
 package com.dimab.pp.accountRest;
 
 import com.dimab.pickoplace.utils.JsonUtils;
-import com.dimab.pp.adminRest.WaiterDeleteBooking;
 import com.dimab.pp.database.GetPlaceInfoFactory;
 import com.dimab.pp.dto.*;
 import com.dimab.pp.functions.RandomStringGenerator;
-import com.dimab.pp.login.CheckTokenValid;
-import com.dimab.pp.login.GenericUser;
 import com.dimab.smsmail.MailSenderFabric;
 import com.dimab.smsmail.PlivoSendSMS;
 import com.google.appengine.api.datastore.*;
@@ -611,6 +608,182 @@ public class ConfigurationRest {
     }
 
     @POST
+    @Path("/updateWaiterMail/")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public String addWaiterEmail(ConfigurationRestModel param) {
+        System.out.println("param = [" +  JsonUtils.serialize(param) + "]");
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        TransactionOptions options = TransactionOptions.Builder.withXG(true);
+        Transaction txn = datastore.beginTransaction(options);
+
+        Map<String , Object> map = new HashMap<String , Object>();
+        map.put("valid",false);
+
+
+        Query.Filter placeIdFilter  = new Query.FilterPredicate("placeUniqID", Query.FilterOperator.EQUAL,param.getPid());
+        Query q = new Query("CanvasState").setFilter(placeIdFilter);
+        PreparedQuery pq = datastore.prepare(q);
+        Entity userCanvasState = pq.asSingleEntity();
+        boolean allowedUser = false;
+        if (userCanvasState != null) {
+            Type StringListType = new TypeToken<List<String>>(){}.getType();
+            List<String> admins = JsonUtils.deserialize((String) userCanvasState.getProperty("adminList"),StringListType);
+            if(admins.contains(param.getUser())) {
+                allowedUser = true;
+                map.put("valid",true);
+            }
+            if(allowedUser) {
+                Query.Filter UserEmail = new Query.FilterPredicate("username", Query.FilterOperator.EQUAL,param.getNewAdmin());
+                Query q1 = new Query("Users").setFilter(UserEmail);
+                PreparedQuery pq1 = datastore.prepare(q1);
+                Entity result = pq1.asSingleEntity();
+                if (result == null) {
+                    map.put("valid",false);
+                    map.put("reason","User not Exists in Pickoplace");
+                } else {
+
+                    Type collectionType = new TypeToken<List<String>>() {
+                    }.getType();
+                    List<String> ba_list = new ArrayList<String>();
+                    if (result.getProperty("PID_book_admin") != null) {
+                        ba_list = JsonUtils.deserialize(((Text) result.getProperty("PID_book_admin")).getValue(), collectionType);
+                    }
+                    if (!ba_list.contains(param.getPid())) {
+                        ba_list.add(param.getPid());
+                        result.setUnindexedProperty("PID_book_admin", new Text(JsonUtils.serialize(ba_list)));
+                    }
+                    List<String> waiters = new ArrayList<String>();
+                    if(userCanvasState.getProperty("waiterList") == null) {
+
+                        waiters.add(param.getUser());
+                        waiters.add(param.getNewAdmin());
+                    } else {
+                        waiters = JsonUtils.deserialize((String) userCanvasState.getProperty("waiterList"), StringListType);
+                    }
+                        if(!waiters.contains(param.getUser())) {
+                            waiters.add(param.getUser());
+                        }
+                        waiters.add(param.getNewAdmin());
+                        Set<String> hs = new HashSet<>();
+                        hs.addAll(waiters);
+                        waiters.clear();
+                        waiters.addAll(hs);
+
+                        userCanvasState.setUnindexedProperty("waiterList", JsonUtils.serialize(waiters));
+                        GetPlaceInfoFactory placeFactory = new GetPlaceInfoFactory();
+                        PlaceInfo placeInfo = placeFactory.getPlaceInfoNoImage(datastore, userCanvasState);
+                        MailSenderFabric mailFabric = new MailSenderFabric();
+                        MailModel mmodel = new MailModel();
+
+                        mmodel.setPlaceInfo(placeInfo);
+                        mmodel.setTo(param.getNewAdmin());
+                        mmodel.setType("NewWaiterNotification");
+                        mailFabric.SendEmail(mmodel);
+                        datastore.put(userCanvasState);
+                        datastore.put(result);
+                        txn.commit();
+
+                        map.put("admin", param.getNewAdmin());
+                }
+            } else {
+                map.put("reason","Not allowed user");
+            }
+        } else {
+            map.put("reason","No PID Exists");
+        }
+
+
+
+        return JsonUtils.serialize(map);
+    }
+
+    @POST
+    @Path("/removeWaiterMail/")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public String removeWaiterMail(ConfigurationRestModel param) {
+        System.out.println("param = [" + JsonUtils.serialize(param) + "]");
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        TransactionOptions options = TransactionOptions.Builder.withXG(true);
+        Transaction txn = datastore.beginTransaction(options);
+
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("valid", false);
+
+
+        Query.Filter placeIdFilter = new Query.FilterPredicate("placeUniqID", Query.FilterOperator.EQUAL, param.getPid());
+        Query q = new Query("CanvasState").setFilter(placeIdFilter);
+        PreparedQuery pq = datastore.prepare(q);
+        Entity userCanvasState = pq.asSingleEntity();
+        boolean allowedUser = false;
+        if (userCanvasState != null) {
+            Type closeDateType = new TypeToken<List<String>>() {
+            }.getType();
+            List<String> admins = JsonUtils.deserialize((String) userCanvasState.getProperty("adminList"), closeDateType);
+            if (admins.contains(param.getUser())) {
+                allowedUser = true;
+
+            }
+            if (allowedUser) {
+                    if(!param.getNewAdmin().equals(param.getUser())) {
+                        Query.Filter UserEmail = new Query.FilterPredicate("username", Query.FilterOperator.EQUAL,param.getNewAdmin());
+                        Query q1 = new Query("Users").setFilter(UserEmail);
+                        PreparedQuery pq1 = datastore.prepare(q1);
+                        Entity result = pq1.asSingleEntity();
+                        if (result == null) {
+                            map.put("reason","User not Exists in Pickoplace");
+                        } else {
+                            Type collectionType = new TypeToken<List<String>>() {
+                            }.getType();
+                            List<String> ba_list = new ArrayList<String>();
+                            if (result.getProperty("PID_book_admin") != null) {
+                                ba_list = JsonUtils.deserialize(((Text) result.getProperty("PID_book_admin")).getValue(), collectionType);
+                            }
+                            if (ba_list.contains(param.getPid())) {
+                                ba_list.remove(param.getPid());
+                                result.setUnindexedProperty("PID_book_admin", new Text(JsonUtils.serialize(ba_list)));
+                            }
+                            List<String> waiters = new ArrayList<String>();
+                            if(userCanvasState.getProperty("waiterList") == null) {
+
+                                waiters.add(param.getUser());
+                            } else {
+                                waiters = JsonUtils.deserialize((String) userCanvasState.getProperty("waiterList"), collectionType);
+                            }
+
+                            if (!waiters.contains(param.getUser())) {
+                                waiters.add(param.getUser());
+                            }
+                            waiters.remove(param.getNewAdmin());
+                            map.put("valid", true);
+                            userCanvasState.setUnindexedProperty("waiterList", JsonUtils.serialize(waiters));
+                            GetPlaceInfoFactory placeFactory = new GetPlaceInfoFactory();
+                            PlaceInfo placeInfo = placeFactory.getPlaceInfoNoImage(datastore, userCanvasState);
+                            MailSenderFabric mailFabric = new MailSenderFabric();
+                            MailModel mmodel = new MailModel();
+
+                            mmodel.setPlaceInfo(placeInfo);
+                            mmodel.setTo(param.getNewAdmin());
+                            mmodel.setType("RemoveWaiterNotification");
+                            mailFabric.SendEmail(mmodel);
+                            datastore.put(userCanvasState);
+                            datastore.put(result);
+                            txn.commit();
+                        }
+                    } else {
+                        map.put("reason","User cannot delete himself");
+                    }
+            } else {
+                map.put("reason","Not allowed user");
+            }
+        } else {
+            map.put("reason","No PID Exists");
+        }
+        return JsonUtils.serialize(map);
+    }
+
+    @POST
     @Path("/updateAdminMail/")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
@@ -630,35 +803,57 @@ public class ConfigurationRest {
         Entity userCanvasState = pq.asSingleEntity();
         boolean allowedUser = false;
         if (userCanvasState != null) {
-            Type closeDateType = new TypeToken<List<String>>(){}.getType();
-            List<String> admins = JsonUtils.deserialize((String) userCanvasState.getProperty("adminList"),closeDateType);
+            Type StringListType = new TypeToken<List<String>>(){}.getType();
+            List<String> admins = JsonUtils.deserialize((String) userCanvasState.getProperty("adminList"),StringListType);
             if(admins.contains(param.getUser())) {
                 allowedUser = true;
                 map.put("valid",true);
             }
             if(allowedUser) {
-                admins.add(param.getNewAdmin());
-                // Uniqify ArrayList
-                Set<String> hs = new HashSet<>();
-                hs.addAll(admins);
-                admins.clear();
-                admins.addAll(hs);
-                //-------------------------------
+                Query.Filter UserEmail = new Query.FilterPredicate("username", Query.FilterOperator.EQUAL,param.getNewAdmin());
+                Query q1 = new Query("Users").setFilter(UserEmail);
+                PreparedQuery pq1 = datastore.prepare(q1);
+                Entity result = pq1.asSingleEntity();
+                if (result == null) {
+                    map.put("valid",false);
+                    map.put("reason","User not Exists in Pickoplace");
+                } else {
 
-                userCanvasState.setUnindexedProperty("adminList", JsonUtils.serialize(admins));
-                GetPlaceInfoFactory placeFactory = new GetPlaceInfoFactory();
-                PlaceInfo placeInfo = placeFactory.getPlaceInfoNoImage(datastore, userCanvasState);
-                MailSenderFabric mailFabric  = new MailSenderFabric();
-                MailModel mmodel = new MailModel();
+                    Type collectionType = new TypeToken<List<String>>() {
+                    }.getType();
+                    List<String> fa_list = new ArrayList<String>();
+                    if (result.getProperty("PID_full_access") != null) {
+                        fa_list = JsonUtils.deserialize(((Text) result.getProperty("PID_full_access")).getValue(), collectionType);
+                    }
+                    if (!fa_list.contains(param.getPid())) {
+                        fa_list.add(param.getPid());
+                        result.setUnindexedProperty("PID_full_access", new Text(JsonUtils.serialize(fa_list)));
+                    }
 
-                mmodel.setPlaceInfo(placeInfo);
-                mmodel.setTo(param.getNewAdmin());
-                mmodel.setType("NewAdminNotification");
-                mailFabric.SendEmail(mmodel);
-                datastore.put(userCanvasState);
-                txn.commit();
+                    admins.add(param.getNewAdmin());
+                    // Uniqify ArrayList
+                    Set<String> hs = new HashSet<>();
+                    hs.addAll(admins);
+                    admins.clear();
+                    admins.addAll(hs);
+                    //-------------------------------
 
-                map.put("admin",param.getNewAdmin());
+                    userCanvasState.setUnindexedProperty("adminList", JsonUtils.serialize(admins));
+                    GetPlaceInfoFactory placeFactory = new GetPlaceInfoFactory();
+                    PlaceInfo placeInfo = placeFactory.getPlaceInfoNoImage(datastore, userCanvasState);
+                    MailSenderFabric mailFabric = new MailSenderFabric();
+                    MailModel mmodel = new MailModel();
+
+                    mmodel.setPlaceInfo(placeInfo);
+                    mmodel.setTo(param.getNewAdmin());
+                    mmodel.setType("NewAdminNotification");
+                    mailFabric.SendEmail(mmodel);
+                    datastore.put(userCanvasState);
+                    datastore.put(result);
+                    txn.commit();
+
+                    map.put("admin", param.getNewAdmin());
+                }
             } else {
                 map.put("reason","Not allowed user");
             }
@@ -701,20 +896,40 @@ public class ConfigurationRest {
             if (allowedUser) {
                 if(admins.size()>1) {
                     if(!param.getNewAdmin().equals(param.getUser())) {
-                        admins.remove(param.getNewAdmin());
-                        map.put("valid", true);
-                        userCanvasState.setUnindexedProperty("adminList", JsonUtils.serialize(admins));
-                        GetPlaceInfoFactory placeFactory = new GetPlaceInfoFactory();
-                        PlaceInfo placeInfo = placeFactory.getPlaceInfoNoImage(datastore, userCanvasState);
-                        MailSenderFabric mailFabric  = new MailSenderFabric();
-                        MailModel mmodel = new MailModel();
+                        Query.Filter UserEmail = new Query.FilterPredicate("username", Query.FilterOperator.EQUAL,param.getNewAdmin());
+                        Query q1 = new Query("Users").setFilter(UserEmail);
+                        PreparedQuery pq1 = datastore.prepare(q1);
+                        Entity result = pq1.asSingleEntity();
+                        if (result == null) {
+                            map.put("reason","User not Exists in Pickoplace");
+                        } else {
+                            Type collectionType = new TypeToken<List<String>>() {
+                            }.getType();
+                            List<String> fa_list = new ArrayList<String>();
+                            if (result.getProperty("PID_full_access") != null) {
+                                fa_list = JsonUtils.deserialize(((Text) result.getProperty("PID_full_access")).getValue(), collectionType);
+                            }
+                            if (fa_list.contains(param.getPid())) {
+                                fa_list.remove(param.getPid());
+                                result.setUnindexedProperty("PID_full_access", new Text(JsonUtils.serialize(fa_list)));
+                            }
 
-                        mmodel.setPlaceInfo(placeInfo);
-                        mmodel.setTo(param.getNewAdmin());
-                        mmodel.setType("RemoveAdminNotification");
-                        mailFabric.SendEmail(mmodel);
-                        datastore.put(userCanvasState);
-                        txn.commit();
+                            admins.remove(param.getNewAdmin());
+                            map.put("valid", true);
+                            userCanvasState.setUnindexedProperty("adminList", JsonUtils.serialize(admins));
+                            GetPlaceInfoFactory placeFactory = new GetPlaceInfoFactory();
+                            PlaceInfo placeInfo = placeFactory.getPlaceInfoNoImage(datastore, userCanvasState);
+                            MailSenderFabric mailFabric = new MailSenderFabric();
+                            MailModel mmodel = new MailModel();
+
+                            mmodel.setPlaceInfo(placeInfo);
+                            mmodel.setTo(param.getNewAdmin());
+                            mmodel.setType("RemoveAdminNotification");
+                            mailFabric.SendEmail(mmodel);
+                            datastore.put(userCanvasState);
+                            datastore.put(result);
+                            txn.commit();
+                        }
                     } else {
                         map.put("reason","User cannot delete himself");
                     }

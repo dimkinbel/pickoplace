@@ -15,12 +15,7 @@ $(document).ready(function () {
         }
         document.getElementById("messages_wrapper").style.display = "none";
     });
-    $("#gotobookings").click(function(){
-    	location.href = "/my_bookings.jsp";
-    });
-    $("#gotoadminzone").click(function(){
-    	location.href = "/user_waiter_list.jsp";
-    });
+
  // GOOGLE
 
 // FACEBOOK
@@ -115,4 +110,9 @@ function randomString(length) {
         str += chars[Math.floor(Math.random() * chars.length)];
     }
     return str;
+}
+function getPid() {
+    if(document.getElementById('server_placeID')!= null) {
+        console.log($("#server_placeID").val())
+    }
 }

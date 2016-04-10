@@ -1,4 +1,6 @@
-package com.dimab.pp.login;
+package com.dimab.pp.login.dto;
+
+import com.dimab.pp.login.FacebookErrorResponse;
 
 public class FBmeResponseJSON {
 	String id;
@@ -10,6 +12,16 @@ public class FBmeResponseJSON {
 	String locale;
 	String name;
 	Integer timezone;
+	FacebookErrorResponse error;
+
+	public FacebookErrorResponse getError() {
+		return error;
+	}
+
+	public void setError(FacebookErrorResponse error) {
+		this.error = error;
+	}
+
 	boolean verified;
 	public String getId() {
 		return id;

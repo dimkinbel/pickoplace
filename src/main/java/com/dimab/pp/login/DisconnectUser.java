@@ -103,7 +103,7 @@ public class DisconnectUser extends HttpServlet {
  	    if(provider.equals("google")) {        
 			System.out.println("Disonnecting GOOGLE token:"+Stoken);
 		    RevokeGoogleToken googleRevokeFactory = new RevokeGoogleToken();
-		    googleRevokeFactory.revoke(accessToken);
+		   googleRevokeFactory.revoke(accessToken);
 
         } else {
         	
@@ -135,6 +135,7 @@ public class DisconnectUser extends HttpServlet {
  	   
  	    request.getSession().removeAttribute("access_token");
    	    request.getSession().removeAttribute("provider");
+		request.getSession().removeAttribute("googleRefreshToken");
    	    
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");

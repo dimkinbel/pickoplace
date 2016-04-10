@@ -140,14 +140,7 @@
        <url-pattern>/connectUser</url-pattern>
     </servlet-mapping>
    
-   <servlet>
-       <servlet-name>checkGoogleToken</servlet-name>
-       <servlet-class>com.dimab.pp.login.CheckGoogleTokenServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-       <servlet-name>checkGoogleToken</servlet-name>
-       <url-pattern>/checkGoogleToken</url-pattern>
-    </servlet-mapping>
+
 
     
     <servlet>
@@ -159,17 +152,7 @@
        <url-pattern>/test</url-pattern>
     </servlet-mapping>
     
-    <servlet>
-       <servlet-name>checkFBToken</servlet-name>
-       <servlet-class>com.dimab.pp.login.CheckFBTokenServlet</servlet-class>
 
-    </servlet>
-    <servlet-mapping>
-       <servlet-name>checkFBToken</servlet-name>
-       <url-pattern>/checkFBToken</url-pattern>
-    </servlet-mapping>
-
-  
  	<servlet>
        <servlet-name>saveConfiguration</servlet-name>
        <servlet-class>com.dimab.pp.JSON.SaveConfiguration</servlet-class>
@@ -280,6 +263,15 @@
        <url-pattern>/clientBookingRequest</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>adminBookingRequest</servlet-name>
+        <servlet-class>com.dimab.pp.adminRest.WaiterBookingRequest</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>adminBookingRequest</servlet-name>
+        <url-pattern>/adminBookingRequest</url-pattern>
+    </servlet-mapping>
+
    <servlet>
        <servlet-name>clientBookingHistory</servlet-name>
        <servlet-class>com.dimab.pp.account.ClientBookingHistoryServlet</servlet-class>
@@ -371,7 +363,7 @@
        <servlet-name>checkGoogleStatus</servlet-name>
        <url-pattern>/checkGoogleStatus</url-pattern>
     </servlet-mapping>
-    
+
     <servlet>
        <servlet-name>signin_fb</servlet-name>
        <servlet-class>com.dimab.pp.server.FaceBookSignIn</servlet-class>
@@ -570,8 +562,19 @@
     <servlet-name>developerHome</servlet-name>
     <url-pattern>/admin</url-pattern>
   </servlet-mapping>
-  
-<servlet>
+
+
+    <servlet>
+        <servlet-name>googletokentest</servlet-name>
+        <servlet-class>com.dimab.pp.tests.GoogleTokenTest</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>googletokentest</servlet-name>
+        <url-pattern>/gtest</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
     <servlet-name>WriteDSServlet</servlet-name>
      <servlet-class>com.dimab.pp.tests.WriteDSServlet</servlet-class>
   </servlet>

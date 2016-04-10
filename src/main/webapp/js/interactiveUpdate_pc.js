@@ -147,6 +147,50 @@ function removeMailConfirmationContact(admin_mail,type){
 		}
 	});
 }
+function removeSiteWaiter(admin_mail) {
+	var mail = $("#waiter_mails-"+admin_mail).html();
+	isOrigin(function(resultOrigin) {
+		if(resultOrigin) {
+			// server connection
+			setSessionData(function (result) {
+				if (result) {
+					var pid = document.getElementById("server_placeID").value;
+					var userMail ;
+					if (fconnected == true) {
+						userMail = fudata.email;
+					} else if(gconnected == true) {
+						userMail = gudata.emails[0].value;
+					}
+					$.ajax({
+						url : "/configurationUpdate/removeWaiterMail",
+						headers: {
+							'Accept': 'application/json',
+							'Content-Type': 'application/json'
+						},
+						data: JSON.stringify({pid:pid,user:userMail,newAdmin:mail}),//
+						success : function(data){
+							console.log(data);
+							if(data.valid == true) {
+								removeWaiterLine(admin_mail);
+							} else {
+								console.log(data.reason)
+							}
+						},
+						error:function (){
+							alert("Server Error. Please try later")
+						},
+						dataType : "JSON",
+						type : "post"
+					});
+				} else {
+
+				}
+			});
+		} else {
+
+		}
+	});
+}
 function removeSiteAdmin(admin_mail) {
 	var mail = $("#admin_mails-"+admin_mail).html();
 	isOrigin(function(resultOrigin) {
@@ -490,6 +534,55 @@ function sendSMSVerification() {
 				}
 			});
 		} else {
+		}
+	});
+}
+function checkLoginAndSendWaiterEmail(email) {
+	isOrigin(function(resultOrigin) {
+		if(resultOrigin) {
+			// server connection
+			setSessionData(function(result) {
+				if (result) {
+					var pid =  document.getElementById("server_placeID").value;
+					var userMail ;
+					if (fconnected == true) {
+						userMail = fudata.email;
+					} else if(gconnected == true) {
+						userMail = gudata.emails[0].value;
+					}
+
+						$.ajax({
+							url : "/configurationUpdate/updateWaiterMail",
+							headers: {
+								'Accept': 'application/json',
+								'Content-Type': 'application/json'
+							},
+							data: JSON.stringify({pid:pid,user:userMail,newAdmin:email}),//
+							success : function(data){
+								console.log(data);
+								if(data.valid == true) {
+									appendNewWaiter(data);
+								} else {
+									if(data.reason == "User not Exists in Pickoplace") {
+										alert("This user not exists in Pickoplace database");
+
+									}
+									console.log(data.reason)
+								}
+							},
+							error:function (){
+								alert("Server Error. Please try later")
+							},
+							dataType : "JSON",
+							type : "post"
+						});
+				} else {
+					alert("Not allowed")
+				}
+
+			});
+		} else {
+
 		}
 	});
 }
@@ -1107,11 +1200,17 @@ function createSaveObject(goto) {
   // Administration
   SaveObject.administration = {};
   SaveObject.administration.admins = [];
+  SaveObject.administration.waiters = [];
   var allAdmins =  document.getElementsByName("admin_mails");   
    for(var x=0; x < allAdmins.length; x++) { 
 		var mail = $("#"+allAdmins[x].id).html(); 
 		SaveObject.administration.admins.push(mail);
    }
+	var allWaiters =  document.getElementsByName("waiter_mails");
+	for(var x=0; x < allWaiters.length; x++) {
+		var mail = $("#"+allWaiters[x].id).html();
+		SaveObject.administration.waiters.push(mail);
+	}
    SaveObject.administration.adminUsername = $("#waiter_username_change_input").val();
    SaveObject.administration.adminPassword = $("#waiter_password_change_input").val();
   

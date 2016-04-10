@@ -17,7 +17,7 @@ import com.dimab.pickoplace.utils.JsonUtils;
 import com.dimab.pp.dto.AdminUser;
 import com.dimab.pp.dto.UserPlace;
 import com.dimab.pp.login.CheckTokenValid;
-import com.dimab.pp.login.GenericUser;
+import com.dimab.pp.login.dto.GenericUser;
 import com.dimab.pp.search.SearchFabric;
 import com.google.appengine.api.datastore.*;
 import com.google.appengine.api.datastore.Query.Filter;
