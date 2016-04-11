@@ -2,6 +2,7 @@ package com.dimab.pp.account;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,7 +46,7 @@ public class EditFormfromAccount extends HttpServlet {
     }
 
 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 		String placeIDvalue = request.getParameter("placeIDvalue");
 		
@@ -66,16 +67,30 @@ public class EditFormfromAccount extends HttpServlet {
 		} else {
 			username_email = genuser.getEmail();
 		}
+		System.out.println("USERNAME = [" + username_email + "]");
 		
-		Filter usernameFilter = new  FilterPredicate("username",FilterOperator.EQUAL,username_email);
+		//Filter usernameFilter = new  FilterPredicate("username",FilterOperator.EQUAL,username_email);
 		Filter placeIdFilter = new  FilterPredicate("placeUniqID",FilterOperator.EQUAL,placeIDvalue);
-		Filter composeFilter = CompositeFilterOperator.and(usernameFilter,placeIdFilter);
-		Query q = new Query("CanvasState").setFilter(composeFilter);
+		Query q = new Query("CanvasState").setFilter(placeIdFilter);
 		PreparedQuery pq = datastore.prepare(q);
   		Entity userCanvasState = pq.asSingleEntity();
   		AJAXImagesJSON CanvasStateEdit = new AJAXImagesJSON();
-  		
+
+		String referer = request.getHeader("Referer");
+		System.out.println("REFERER = [" + referer + "]");
+
   		if (userCanvasState != null) {
+			Type StringListType = new TypeToken<List<String>>() {}.getType();
+			List<String> admins  = JsonUtils.deserialize((String) userCanvasState.getProperty("adminList"), StringListType);
+			if(!admins.contains(username_email)) {
+				/*String referer = request.getHeader("Referer");
+				response.sendRedirect(referer);*/
+
+				String returnurl = "/welcome.jsp";
+				response.addHeader("Access-Control-Allow-Origin", "*");
+				response.sendRedirect(returnurl);
+			}
+
   			String shapesJSON =  ((Text) userCanvasState.getProperty("shapesJSON")).getValue();
   			String sid2ImageIDJSON =  ((Text) userCanvasState.getProperty("sid2ImageIDJSON")).getValue();
   			String placeID = (String) userCanvasState.getProperty("placeUniqID");

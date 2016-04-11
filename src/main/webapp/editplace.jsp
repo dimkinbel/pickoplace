@@ -159,7 +159,7 @@
 		  <tr>
 			<td>
 			  <div id="google-connect" class="cbtn" onClick="googleSignIn()">
-				<div id="gpsi_img_d"><img id="gpsi_img" src="img/gplus30.png"/></div>
+				<div id="gpsi_img_d"><img id="gpsi_img" src="img/new_google_icon.png"/></div>
 				<div id="gpsi_text">Sign In with Google</div>
 			  </div>   
 			</td>
@@ -194,6 +194,11 @@
 						</div>
 					  </div>
 					<div class="login_in_header_wrap">
+						<div id="fg_profile_image_wrap" >
+							<div id="fg_profile_image_inner" >
+								<img class="fg_profile_img" id="fg_profile_img" src="" >
+							</div>
+						</div>
 					   	<table id="login_tbl_a" cellspacing="0" cellpadding="0" style=" border-collapse: collapse">
 				             <tr >
 							    <td id="login_prop" style="display:none">
@@ -353,7 +358,7 @@
 			 </div>
 			 <div id="drawingConfigButton_disabled"  class="save_buttons" style="display:none">ADMIN</div>
 			 <div id="drawingConfigButton" class="save_buttons"  onclick="SIPlaceConfiguration('<%=placeID%>')"><div class="material-icons material_config">tune</div>ADMIN</div>
-		  	<form id="<%=placeID%>_config_form"  action="placeConfiguration" method="post" style="display:none">
+		  	<form id="<%=placeID%>_config_form"  action="place-configuration" method="get" style="display:none">
                  <input name="placeIDvalue" value="<%=placeID%>">
             </form>
 		  </div>

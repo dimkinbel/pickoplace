@@ -131,9 +131,12 @@ public class DisconnectUser extends HttpServlet {
     	    map.put("disconnected",false);
     	 	map.put("reason","no_session_user");
     	}
+		System.out.println("Session email:"+userEmailsession);
+		System.out.println("Session provider:"+Sprovider);
+		System.out.println("Session token:"+Stoken);
+		System.out.println("Session refresh:"+ session.getAttribute("googleRefreshToken"));
 
- 	   
- 	    request.getSession().removeAttribute("access_token");
+		request.getSession().removeAttribute("access_token");
    	    request.getSession().removeAttribute("provider");
 		request.getSession().removeAttribute("googleRefreshToken");
    	    

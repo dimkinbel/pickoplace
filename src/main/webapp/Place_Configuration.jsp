@@ -369,7 +369,7 @@
 	<input type="text" id="server_closeDates" value='<%=JsonUtils.serialize(configuration.getWorkinghours().getCloseDates())%>'/>
 	<input type="text" id="server_logosrc" value='<%=configuration.getPlaceDetails().getPhotos().getLogosrc()%>'/>
 
-	<form id="form_editform"  action="editplacefromAccount" method="post" style="display:none">
+	<form id="form_editform"  action="edit-place" method="get" style="display:none">
 		<input name="placeIDvalue" id="placeIDvalue" value="<%=placeID%>">
 	</form>
 	<%for ( JsonimgID_2_data imgID2byte64 : configuration.getPlaceDetails().getPhotos().getPlacePhotos()) {

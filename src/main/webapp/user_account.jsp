@@ -224,10 +224,10 @@ function DeleteCancel() {
                                                 </tr>
 				    	                       </table>
 				    	                       <div class="hiddenPlaceData">
-				    	                        <form id="<%=PlaceID%>_editform"  action="editplacefromAccount" method="post">
+				    	                        <form id="<%=PlaceID%>_editform"  action="edit-place" method="get">
 				    	                          <input name="placeIDvalue" value="<%=PlaceID%>">
 				    	                        </form>
-				    	                        <form id="<%=PlaceID%>_config_form"  action="placeConfiguration" method="post" style="display:none">
+				    	                        <form id="<%=PlaceID%>_config_form"  action="place-configuration" method="get" style="display:none">
                                                   <input name="placeIDvalue" value="<%=PlaceID%>">
                                                 </form>
 												<form id="<%=PlaceID%>_iframeform"  action="editIFrame" method="post" style="display:none">

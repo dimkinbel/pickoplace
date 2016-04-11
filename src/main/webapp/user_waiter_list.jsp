@@ -64,6 +64,11 @@ function updateWaiterList(){
 				<div id="header">
 					<div id="logo_"><img src="img/pplogomarker.png" id="pplogoo"/><div id="logotext">ickoplace</div></div>
 					<div class="login_in_header_wrap">
+						<div id="fg_profile_image_wrap" >
+							<div id="fg_profile_image_inner" >
+								<img class="fg_profile_img" id="fg_profile_img" src="" >
+							</div>
+						</div>
 					   <table id="login_tbl_a" cellspacing="0" cellpadding="0" style=" border-collapse: collapse">
 				             <tr >
 							    <td id="login_prop" style="display:none">
@@ -115,7 +120,7 @@ function updateWaiterList(){
               <div id="waiter_wrap_list">
               
               </div>
-              <form id="waiter_submit_form"  action="waiterAccess" method="post" style="display:none">
+              <form id="waiter_submit_form"  action="waiter-access-login" method="post" style="display:none">
                  <input name="placeIDvalue" id="sw_form_placeIDvalue" value="">
                  <input name="bookrequest" id="sw_form_bookrequest" value="">
               </form>

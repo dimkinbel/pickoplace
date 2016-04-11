@@ -1,55 +1,15 @@
   var sid2img = {};
   var img2url = {};
-  function waiterAdmin(this_) {
-	  setSessionData(function(result) {
-		   if(result) {
-			    var spid =  this_.id;
-			    var pid = spid.replace(/^sw_single-/, "");
-			    document.getElementById("sw_form_placeIDvalue").value = pid;
-			    var placeOffset = document.getElementById("pl_offcet_"+pid).value;
-			    
-			    var d = new Date();
-			    var utc = d.getTime() + (d.getTimezoneOffset() * 60000);
-			    var nd = new Date(utc + (3600000 * parseInt(placeOffset)));
-			    var addDayOffset = 0;
-			    if (d.getDate() != nd.getDate()) {
-			    	if(d.getTime() > nd.getTime()) {
-			    		// Client timezone is one day higher
-			    		addDayOffset = -1 * 3600 * 24;
-			    	} else {
-			    		addDayOffset = +1 * 3600 * 24;
-			    	}
-			    }
-			    
-				var TimeOfTheDatePicker_1970 = +$("#datepicker").datepicker( "getDate" ).getTime()/1000 + addDayOffset; // The time is relative to client browser
-				var dayOfweek = +$("#datepicker").datepicker( "getDate" ).getDay();
-				var d = new Date();
-				var clientOffset = -1*d.getTimezoneOffset()/60;
-				
-				var placeID = pid;
-				var requestJSON = {};		
-				requestJSON.date1970 = TimeOfTheDatePicker_1970  ;// - d.getTimezoneOffset()*60 ;
-				requestJSON.weekday = dayOfweek;
-				requestJSON.period = 2*24*60*60;
-				requestJSON.clientOffset = clientOffset;
-				requestJSON.placeOffset = placeOffset;
-				requestJSON.pid = placeID;
-				
-				console.log(requestJSON);
-				document.getElementById("sw_form_bookrequest").value = JSON.stringify(requestJSON);	
-				document.getElementById("waiter_submit_form").submit();
-		   } else {
-			   updatePageView();
-		   }
-	  });
-	  }
+
   function updateWList (data) { 
 	  var places = data;
 	  
 	 for (var p=0;p < places.length ; p++) {
 		  var place = places[p];
-		  var appendData = ""; 
-		  appendData += '<div class="single_waiter_div" id="sw_single-'+place.userPlace.PlaceID+'" onclick="waiterAdmin(this)">';
+		  var appendData = "";
+		  var placeNameCoded1 = place.userPlace.place+','+place.userPlace.branch;
+		  var  placeNameCoded = encodeURIComponent(placeNameCoded1);
+		  appendData += '<a href="/waiter-login-request?pid='+place.userPlace.PlaceID+'&placeName='+placeNameCoded+'&placeAddress='+encodeURIComponent(place.userPlace.Address)+'&offset='+place.placeOffcet+'"><div class="single_waiter_div" id="sw_single-'+place.userPlace.PlaceID+'"  >';
 		  appendData += '<input style="display:none" name="pl_offcet" id="pl_offcet_'+place.userPlace.PlaceID+'" value="'+place.placeOffcet+'" />';
 		  appendData += '<table class="single_waiter_tbl cellspacing="0" cellpadding="0" style="width: 100%; height: 100%; border-collapse: collapse">';
 	      appendData += '<tr><td class="sw_img_td">';
@@ -64,7 +24,7 @@
 	      appendData += '	  </td>';
 	      appendData += '	  </tr>';
 	      appendData += '	</table>';
-	      appendData += '</div>';
+	      appendData += '</div></a>';
 	      
 	      $("#waiter_wrap_list").append(appendData);
 	 };

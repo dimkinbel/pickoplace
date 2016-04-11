@@ -113,22 +113,35 @@
         <div id="page_login_prompt" class="login_prompt stopclick" style="display:none;">
             <div id="login_prompt_wrap" class="stopclick">
                 <table id="sign_in_table_" cellspacing="0" cellpadding="0" style="width: 100%; border-collapse: collapse">
-                    <tr>
+                    <tbody><tr>
                         <td>
-                            <div id="google-connect" class="cbtn" onClick="googleSignIn()">
-                                <div id="gpsi_img_d"><img id="gpsi_img" src="img/gplus30.png"/></div>
+                            <div id="google-connect" class="cbtn" onclick="googleSignIn()">
+                                <div id="gpsi_img_d"><img id="gpsi_img" src="img/new_google_icon.png"></div>
                                 <div id="gpsi_text">Sign In with Google</div>
                             </div>
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            <div id="facebook-connect"  class="cbtn" onClick="facebookSignIn()">
+                            <div id="facebook-connect" class="cbtn" onclick="facebookSignIn()">
                                 <div id="fpsi_img_d">f</div>
                                 <div id="fpsi_text">Sign In with Facebook</div>
                             </div>
                         </td>
                     </tr>
+                    <tr><td><div class="login_separator"  ><span class="login_separator_or"  >or</span></div></td></tr>
+                    <tr><td><div class="input_with_material"  >
+                        <input type="text" id="login_email" class="waiter_login_input" placeholder="Email"  >
+                        <div class="material-icons login_mat_icon"  >mail_outline</div></div></td></tr>
+                    <tr><td><div class="input_with_material"  >
+                        <input type="text" id="login_password" class="waiter_login_input" placeholder="Password"  >
+                        <div class="material-icons login_mat_icon"  >lock_outline</div></div></td></tr>
+                    <tr><td><div class="input_with_material"  ><div id="ppuser_login"  >Log In</div> </div></td></tr>
+                    <tr><td><div class="login_separator"  ></div></td></tr>
+                    <tr><td>
+                        <div class="no_account" >Dont have an account ?</div>
+                        <div id="sign_up_button"  >Sign up</div></td></tr>
+                    </tbody>
                 </table>
                 <table id="phone_wrap_table" cellspacing="0" cellpadding="0" style=" border-collapse: collapse;display:none">
                     <tr>

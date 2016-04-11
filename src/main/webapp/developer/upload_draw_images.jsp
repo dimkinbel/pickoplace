@@ -113,7 +113,7 @@ $(document).on("click",".stopclick", function (event) {
 		  <tr>
 			<td>
 			  <div id="google-connect" class="cbtn" onClick="googleSignIn()">
-				<div id="gpsi_img_d"><img id="gpsi_img" src="img/gplus30.png"/></div>
+				<div id="gpsi_img_d"><img id="gpsi_img" src="img/new_google_icon.png"/></div>
 				<div id="gpsi_text">Sign In with Google</div>
 			  </div>   
 			</td>

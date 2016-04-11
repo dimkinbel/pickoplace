@@ -226,15 +226,24 @@
     <servlet-mapping>
        <servlet-name>saveIframe</servlet-name>
        <url-pattern>/saveIframe</url-pattern>
-    </servlet-mapping> 
-        
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>waiterAdministration</servlet-name>
+        <jsp-file>/placewaiteradmin.jsp</jsp-file>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>waiterAdministration</servlet-name>
+        <url-pattern>/waiter-side-administration</url-pattern>
+    </servlet-mapping>
+
      <servlet>
        <servlet-name>waiterAccess</servlet-name>
        <servlet-class>com.dimab.pp.account.PlaceWaiterAdministration</servlet-class>
     </servlet>
     <servlet-mapping>
        <servlet-name>waiterAccess</servlet-name>
-       <url-pattern>/waiterAccess</url-pattern>
+       <url-pattern>/waiter-access-login</url-pattern>
     </servlet-mapping>  
       
    <servlet>
@@ -244,8 +253,17 @@
     <servlet-mapping>
        <servlet-name>loadWaiterList</servlet-name>
        <url-pattern>/loadWaiterList</url-pattern>
-    </servlet-mapping>  
-    
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>checkWaiterPassword</servlet-name>
+        <servlet-class>com.dimab.pp.account.WaiterCheckPassword</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>checkWaiterPassword</servlet-name>
+        <url-pattern>/checkWaiterPassword</url-pattern>
+    </servlet-mapping>
+
      <servlet>
        <servlet-name>clientCancelBooking</servlet-name>
        <servlet-class>com.dimab.pp.server.ClientRemoveBooking</servlet-class>
@@ -427,15 +445,23 @@
         <url-pattern>/uploadCanvasImages</url-pattern>
     </servlet-mapping>
 
-  
-    
+    <servlet>
+        <servlet-name>waiterLoginRequest</servlet-name>
+        <jsp-file>/waiterLogin.jsp</jsp-file>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>waiterLoginRequest</servlet-name>
+        <url-pattern>/waiter-login-request</url-pattern>
+    </servlet-mapping>
+
+
    <servlet>
        <servlet-name>placeConfiguration</servlet-name>
        <servlet-class>com.dimab.pp.server.ConfigurationEditRequest</servlet-class>
     </servlet>
     <servlet-mapping>
        <servlet-name>placeConfiguration</servlet-name>
-       <url-pattern>/placeConfiguration</url-pattern>
+       <url-pattern>/place-configuration</url-pattern>
     </servlet-mapping>
    	
    	<servlet>
@@ -444,7 +470,7 @@
     </servlet>
     <servlet-mapping>
        <servlet-name>editFormfromAccount</servlet-name>
-       <url-pattern>/editplacefromAccount</url-pattern>
+       <url-pattern>/edit-place</url-pattern>
     </servlet-mapping>
   
  

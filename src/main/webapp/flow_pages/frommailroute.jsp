@@ -92,19 +92,22 @@ border:1px solid black;
   color: #fff;
 }
 #gpsi_img_d {
-  position: relative;
-  float: left;
-  left: 10px;
-  top: 6px;
+    position: relative;
+    float: left;
+    left: 12px;
+    top: 10px;
 }
 #gpsi_text {
-  position: relative;
-  float: left;
-  font-family: Circular, 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  font-size: 15px;
-  font-weight: bold;
-  left: 30px;
-  top: 12px;
+    position: relative;
+    float: left;
+    font-family: Circular, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 15px;
+    font-weight: bold;
+    left: 40px;
+    top: 12px;
+}
+#gpsi_img {
+    width: 17px;
 }
 #fpsi_text {
   position: relative;
@@ -165,7 +168,7 @@ width: 245px;
 		  <tr>
 			<td>
 			  <div id="google-connect" class="cbtn" onClick="googleSignIn()">
-				<div id="gpsi_img_d"><img id="gpsi_img" src="../img/gplus30.png"/></div>
+				<div id="gpsi_img_d"><img id="gpsi_img" src="../img/new_google_icon.png"/></div>
 				<div id="gpsi_text">Sign In with Google</div>
 			  </div>   
 			</td>

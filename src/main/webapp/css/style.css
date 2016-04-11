@@ -1279,7 +1279,7 @@ padding: 10px;*/
     text-decoration: none;
 }
 .userNikname {
-    color: rgb(92, 156, 255);
+   /* color: rgb(92, 156, 255);*/
 }
 #logo_ {
 
@@ -1289,7 +1289,7 @@ padding: 10px;*/
 
 .login_in_header_wrap {
     position: relative;
-    top: 3px;
+    top: 4px;
     padding-right: 50px;
     float:right;
     /*border: 1px solid rgb(82, 82, 82);*/
@@ -7181,9 +7181,10 @@ td.wl_list_section_head_tbl_col_next_left  {
 #fg_profile_image_wrap  {
     position: absolute;
     right: 10px;
-    /* background-color: #E0E0E0;*/
-    padding: 1px;
-    display:none;
+    /* background-color: #E0E0E0; */
+    padding: 0px;
+    top: -1px;
+    display: none;
 }
 #fg_profile_image_inner  {
     width: 29px;
@@ -12052,11 +12053,12 @@ td.cft-val_text {
     border-top-color: #a0a0a0;
 }
 .buttons_row {
-    height: 70px;
+    height: 60px;
     position: relative;
 }
 .waiter_login_input:focus , .waiter_login_input:active {
     border: 1px solid #4d90fe;
+    background-color: #FFFACB;
 }
 #waiter_login_button_submit:hover {
     background-color: #2196F3;
@@ -12064,4 +12066,38 @@ td.cft-val_text {
 }
 #waiter_login_button_submit:active ,  #waiter_login_button_submit:focus{
     background-color: #1565C0;
+}
+.login_panel {
+    margin-top: 100px;
+}
+.waiter_login_panel_head {
+    text-align: center;
+    height: 30px;
+    line-height: 30px;
+    font-family: Montserrat;
+    font-size: 12px;
+    color: #C7C7C7;
+}
+.waiter_login_panel_pname {
+    text-align: left;
+    font-family: Roboto,Tahoma;
+    font-size: 16px;
+    color: #1C232D;
+    line-height: 24px;
+    padding-bottom: 10px;
+}
+.login_panel_address {
+    font-size: 13px;
+    font-family: Helvetica,sans-serif;
+    color: #0896ff;
+}
+#waiter_login_error {
+    position: absolute;
+    bottom: 0px;
+    font-family: Roboto;
+    color: red;
+}
+#wl_pp_ddmenu>li>a {
+    font-family: 'Josefin Sans', sans-serif;
+    font-size: 17px;
 }

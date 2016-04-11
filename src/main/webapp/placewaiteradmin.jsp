@@ -714,9 +714,19 @@
 					<img id="pplm_img" src="img/pplogomarker.png">
 				</div>
 				<ul class="dropdown-menu  " id="wl_pp_ddmenu">
-					<li><a href="#">HTML</a></li>
-					<li><a href="#">CSS</a></li>
-					<li><a href="#">JavaScript</a></li>
+					<li><a href="/">Pickoplace</a></li>
+					<li role="separator" class="divider"></li>
+					<% Boolean isAdmin = (Boolean) request.getAttribute("isAdmin");
+					   if(isAdmin) {%>
+						<li><a href="/place-configuration?placeIDvalue=<%=placeID%>">Place configuration</a></li>
+						<li><a href="/edit-place?placeIDvalue=<%=placeID%>">Edit top view</a></li>
+					<% } else { %>
+						<li class="disabled"><a href="#">Place configuration</a></li>
+						<li class="disabled"><a href="#">Edit top view</a></li>
+					<%}%>
+					<li role="separator" class="divider"></li>
+					<li><a href="/contact-us">Contact us</a></li>
+					<li><a href="/">Exit</a></li>
 				</ul>
 			</div>
 			<div class="wl_left_menu_button_w wll_selected" id="floors_open">
