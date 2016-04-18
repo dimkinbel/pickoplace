@@ -4,10 +4,48 @@ var fudata = {};
 var gudata = {};
 var gconnected = false;
 var fconnected = false;
+var pconnected = false;
+var pudata = {};
 var initialPageLoad = true;
 var phoneflow = false;
 var phoneloggedby = "";
 var mobileInput;
+(function() {
+
+    if (!sessionStorage.length) {
+        // Ask other tabs for session storage
+        localStorage.setItem('getSessionStorage', Date.now());
+    };
+
+    window.addEventListener('storage', function(event) {
+
+        //console.log('storage event', event);
+
+        if (event.key == 'getSessionStorage') {
+            // Some tab asked for the sessionStorage -> send it
+
+            localStorage.setItem('sessionStorage', JSON.stringify(sessionStorage));
+            localStorage.removeItem('sessionStorage');
+
+        } else if (event.key == 'sessionStorage' && !sessionStorage.length) {
+            // sessionStorage is empty -> fill it
+
+            var data = JSON.parse(event.newValue),
+                value;
+
+            for (key in data) {
+                sessionStorage.setItem(key, data[key]);
+            }
+        }
+    });
+
+
+})();
+
+function isEmail(email) {
+    var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+    return regex.test(email);
+}
 $(document).ready(function () {
 
     $('head').append($('<link rel="stylesheet" type="text/css" />').attr('href', 'js/intl-tel-input-master/build/css/intlTelInput.css'));
@@ -20,6 +58,109 @@ $(document).ready(function () {
             onlyCountries: ["il", "us", "de", "ru", "ua"],
             utilsScript: "js/intl-tel-input-master/lib/libphonenumber/build/utils.js"
         });
+    });
+    $("#signup_name").on("keyup change", function () {
+        $(this).removeClass("invalid_field");
+    });
+    $("#signup_last_name").on("keyup change", function () {
+        $(this).removeClass("invalid_field");
+    });
+    $("#signup_email").on("keyup change", function () {
+        $(this).removeClass("invalid_field");
+    });
+    $("#signup_password").on("keyup change", function () {
+        $(this).removeClass("invalid_field");
+    });
+    $("#login_email").on("keyup change", function () {
+        $(this).removeClass("invalid_field");
+    });
+    $("#login_password").on("keyup change", function () {
+        $(this).removeClass("invalid_field");
+    });
+    $("#ppuser_login").click(function () {
+        connectPPlogin();
+    });
+    $("#sign_up_request").click(function () {
+        var name = $("#signup_name").val();
+        var lastName = $("#signup_last_name").val();
+        var email = $("#signup_email").val();
+        var password = $("#signup_password").val();
+        var valid = true;
+        var passwordRegex = /^[0-9A-Za-z\!\@\#\$\&\_\-]{3,}$/;
+        if(name.length < 3) {
+            $("#signup_name").addClass("invalid_field");
+            valid = false;
+        }
+        if(lastName.length < 3) {
+            $("#signup_last_name").addClass("invalid_field");
+            valid = false;
+        }
+        if(isEmail(email)==false) {
+            $("#signup_email").addClass("invalid_field");
+            valid = false;
+        }
+        if(passwordRegex.test(password) == false) {
+            $("#signup_password").addClass("invalid_field");
+            valid = false;
+        }
+        var ppuser_ = {};
+        ppuser_.name = name;
+        ppuser_.lastName = lastName;
+        ppuser_.email = email;
+        ppuser_.password = password;
+        if(valid == true) {
+            var json_ = {ppuser:JSON.stringify(ppuser_)};
+            console.log(json_);
+            $.ajax({
+                url: "/signupPPuser",
+                data: json_,//
+                beforeSend: function () {
+                    $("#sign_up_request").hide();
+                    $("#signing_up_request").show();
+                },
+                success: function (data) {
+                    console.log(data);
+                    $("#sign_up_request").hide();
+                    $("#signing_up_request").show();
+                    if (data.valid == true) {
+                        sessionStorage.setItem('ppuser', data.ppuser);
+                        pconnected = true;
+                        pudata = JSON.parse(data.ppuser);
+                        $("#phone_wrap_table").hide();
+                        $("#page_login_prompt").hide();
+                        $("#signup_modal").modal('hide');
+                        updatePageView();
+                    } else if (data.reason == "FALSE_VALUES") {
+                        if(data.name == false) {
+                            $("#signup_name").addClass("invalid_field");
+                        }
+                        if(data.lastname == false) {
+                            $("#signup_last_name").addClass("invalid_field");
+                        }
+                        if(data.email == false) {
+                            $("#signup_email").addClass("invalid_field");
+                        }
+                        if(data.password == false) {
+                            $("#signup_password").addClass("invalid_field");
+                        }
+                    } else if (data.reason == "USER_EXISTS_FALSE_PASSWORD") {
+                        $("#signup_password").addClass("invalid_field");
+                        $("#signup_password").val("");
+                    }
+                },
+                error: function (e) {
+                    $("#sign_up_request").hide();
+                    $("#signing_up_request").show();
+                },
+                dataType: "JSON",
+                type: "post"
+            });
+        }
+    });
+    $("#sign_up_button").click(function () {
+        $("#phone_wrap_table").hide();
+        $("#page_login_prompt").hide();
+        $("#signup_modal").modal('show');
     });
     $("#book_sign_ask").click(function () {
         $("#page_login_prompt").show();
@@ -279,6 +420,7 @@ var helper = (function () {
                 this.authResult = authResult;
                 gconnected = true;
                 fconnected = false;
+                pconnected = false;
                 gapi.client.load('plus', 'v1', this.renderProfile);
                 // Check if FB connected -> disconnect
                 FB.getLoginStatus(function (response) {
@@ -494,6 +636,7 @@ function statusChangeCallback(response) {
             console.log('Successful FB login for: ' + response.name);
             fudata = response;
             fconnected = true;
+            pconnected = false;
             gconnected = false;
             updatePageView();
         });
@@ -529,6 +672,7 @@ function statusChangeCallback(response) {
                             $("#page_login_prompt").show();
                             fconnected = false;
                             phoneflow = true;
+
                             phoneloggedby = "FB";
                         }
                     }
@@ -550,7 +694,15 @@ function statusChangeCallback(response) {
         //  'into this app.';
         fudata = {};
         fconnected = false;
-        updatePageView();
+        verifyPPlogin(function(result) {
+            if(result) {
+                // PPuserConnected
+                updatePageView();
+            } else {
+                updatePageView();
+            }
+        });
+
     } else {
         console.log("FACEBOOK: statusChangeCallback() - FAIL");
         // The person is not logged into Facebook, so we're not sure if
@@ -559,11 +711,115 @@ function statusChangeCallback(response) {
         //   'into Facebook.';
         fudata = {};
         fconnected = false;
-        updatePageView();
+        verifyPPlogin(function(result) {
+            if(result) {
+                // PPuserConnected
+                updatePageView();
+            } else {
+                updatePageView();
+            }
+        });
 
     }
 }
 
+function connectPPlogin() {
+    var ppmail_ = $("#login_email").val();
+    var pppassword_ = $("#login_password").val();
+    var valid = true;
+    var passwordRegex = /^[0-9A-Za-z\!\@\#\$\&\_\-]{3,}$/;
+
+    if(isEmail(ppmail_)==false) {
+        $("#login_email").addClass("invalid_field");
+        valid = false;
+    }
+    if(passwordRegex.test(pppassword_) == false) {
+        $("#login_password").addClass("invalid_field");
+        valid = false;
+    }
+    if(valid) {
+        var connectData = {access_token: "", provider: "ppuser", code: "" ,email:ppmail_,password:pppassword_};
+        console.log(connectData);
+        $.ajax({
+            type: 'POST',
+            url: '/connectUser',
+            dataType: "JSON",
+            beforeSend: function () {
+                $("#ppuser_login").hide();
+                $("#ppuser_login_request").show();
+            },
+            success: function (data) {
+                $("#ppuser_login_request").hide();
+                $("#ppuser_login").show();
+                if (data.valid == true) {
+                    sessionStorage.setItem('ppuser', data.ppuser);
+                    pconnected = true;
+                    fconnected = false;
+                    gconnected = false;
+                    pudata = JSON.parse(data.ppuser);
+                    $("#phone_wrap_table").hide();
+                    $("#page_login_prompt").hide();
+                    updatePageView();
+                } else if (data.reason == "WRONG_CREDENTIALS") {
+                    $("#login_email").val("");
+                     $("#login_password").val("");
+                } else if (data.reason == "USER_EXISTS_FALSE_PASSWORD") {
+                    $("#login_email").val("");
+                    $("#login_password").val("");
+                }
+
+            },
+            error: function (e) {
+                alert("PPLOGIN ERROR")
+                $("#login_email").val("");
+                $("#login_password").val("");;
+            },
+            data: connectData
+        });
+    }
+}
+function verifyPPlogin(callback) {
+ if(sessionStorage.getItem('ppuser') == null) {
+     callback(false);
+ } else {
+    var ppuser_ = JSON.parse(sessionStorage.getItem('ppuser'));
+     // Veirfy token is valid while connecting user
+     var connectData = {access_token: ppuser_.token, provider: "ppuser", code: "" };
+     console.log(connectData);
+     $.ajax({
+         type: 'POST',
+         url: '/connectUser',
+         dataType: "JSON",
+         beforeSend: function () {
+             $("#ppuser_login").hide();
+             $("#ppuser_login_request").show();
+         },
+         success: function (data) {
+             $("#ppuser_login_request").hide();
+             $("#ppuser_login").show();
+             if (data.valid == true) {
+                 pconnected = true;
+                 fconnected = false;
+                 gconnected = false;
+                 pudata = JSON.parse(data.ppuser);
+                 $("#phone_wrap_table").hide();
+                 $("#page_login_prompt").hide();
+                 callback(true);
+             } else if (data.reason == "NOT_VALID_TOKEN") {
+                 callback(false);
+             }  else {
+                 callback(false);
+             }
+
+         },
+         error: function (e) {
+             callback(false);
+         },
+         data: connectData
+     });
+
+ }
+}
 // https://www.googleapis.com/oauth2/v1/tokeninfo?access_token={access_token}
 // Get access token expiration
 /*
@@ -622,16 +878,57 @@ function setSessionData(callback) {
     }
 }
 
+function pickoplaceSignOut() {
+    var token = "";
+    var ppmail = "";
+    if(sessionStorage.getItem('ppuser') != null) {
+        var ppuser_ = JSON.parse(sessionStorage.getItem('ppuser'));
+        token = ppuser_.token;
+        ppmail = ppuser_.email;
+    } else {
+
+    }
+
+    var disconnectData = {access_token: token, provider: "ppuser"};
+    $.ajax({
+        type: 'POST',
+        url: '/disconnectUser',
+        async: false,
+        dataType: "JSON",
+        data: disconnectData,
+        success: function (result) {
+            console.log("DISCONNECTED SERVER");
+            console.log(result);
+
+        },
+        error: function (e) {
+            console.log(e);
+        }
+    });
+
+}
 function logoutAny() {
     if (fconnected == true) {
         facebookSignOut();
         fconnected = false;
+        gconnected = false;
+        pconnected = false;
         updatePageView();
     } else if (gconnected == true) {
         googleSignOut();
+        fconnected = false;
         gconnected = false;
+        pconnected = false;
+        updatePageView();
+    } else if (pconnected == true) {
+        pickoplaceSignOut()
+        fconnected = false;
+        gconnected = false;
+        pconnected = false;
+        pudata = {};
         updatePageView();
     }
+    sessionStorage.clear();
 }
 
 function updatePageView() {
@@ -669,11 +966,68 @@ function updatePageView() {
         }
         $("#fb_logout_div").show();
         $("#go_logout_div").hide();
+        $("#pp_logout_div").hide();
         $('#fg_profile_img').attr('src', "http://graph.facebook.com/" + fudata.id + "/picture");
         $("#fg_profile_image_wrap").show();
         if (pagetype != undefined && pagetype == 'waiter_admin') {
             var pid = $("#server_placeID").val();
             requestChannelToken(fudata.id + "___" + fudata.email + "_PPID_" + pid + "_PPID_" + randomString(5));
+        }
+        if (pagetype != undefined && pagetype == 'my_bookings') {
+            setSessionData(function (result) {
+                if (result) {
+                    loadFuture(10);
+                    loadPast(10);
+                }
+            });
+        } else if (pagetype != undefined && pagetype == 'waiter_list') {
+            setSessionData(function (result) {
+                if (result) {
+                    updateWaiterList();
+                }
+            });
+        }
+    } else if (pconnected == true) {
+        //Connected To Google
+        $("#bstartNext").show();// create_new_place
+        $("#openLoginPromptIn").hide();// create_new_place
+        $("#page_login_prompt").hide();
+        if (pagetype != undefined &&
+            (pagetype == 'editplace' ||
+            pagetype == 'iframeeditor' ||
+            pagetype == 'my_bookings' ||
+            pagetype == 'place_config' ||
+            pagetype == 'user_account' ||
+            pagetype == 'waiter_login' ||
+            pagetype == 'waiter_list')) {
+            $("#login_prop_d").hide();
+        } else {
+            $("#login_prop").hide();
+        }
+        $("#account_drop").show();
+
+        $("#login_info_resp_d").empty();
+        $("#login_info_resp_d").html(pudata.name);
+        $("#login_info_resp").show();
+        if (pagetype != undefined &&
+            (pagetype == 'iframepage' ||
+            pagetype == 'place_booking')) {
+            $("#book_sign_ask").hide();
+            $("#login_info_resp_db").empty();
+            $("#login_info_resp_db").html(pudata.name);
+            $("#blcon_r,#book_logged_in_as").show();
+            $("#lpr_b").hide();
+            $("#make_booking").show();
+        }
+
+        $("#fb_logout_div").hide();
+        $("#go_logout_div").show();
+        $("#pp_logout_div").hide();
+        $('#fg_profile_img').attr('src', "https://storage.googleapis.com/pp_icons/person-flat.png");
+        $("#fg_profile_image_wrap").show();
+        if (pagetype != undefined && pagetype == 'waiter_admin') {
+            var pid = $("#server_placeID").val();
+            requestChannelToken(gudata.id + "___" + pudata.name + "_PPID_" + pid + "_PPID_" + randomString(5));
         }
         if (pagetype != undefined && pagetype == 'my_bookings') {
             setSessionData(function (result) {
@@ -721,9 +1075,9 @@ function updatePageView() {
             $("#lpr_b").hide();
             $("#make_booking").show();
         }
-
+        $("#pp_logout_div").show();
         $("#fb_logout_div").hide();
-        $("#go_logout_div").show();
+        $("#go_logout_div").hide();
         $('#fg_profile_img').attr('src', gudata.image.url);
         $("#fg_profile_image_wrap").show();
         if (pagetype != undefined && pagetype == 'waiter_admin') {
@@ -777,6 +1131,7 @@ function updatePageView() {
 
             $("#fb_logout_div").hide();
             $("#go_logout_div").hide();
+            $("#pp_logout_div").hide();
             if (pagetype != undefined && pagetype == 'waiter_admin' && channel__ != undefined && channel__ != null) {
                 channel__.close();
             }

@@ -108,8 +108,6 @@ public class DeletePlaceData extends HttpServlet {
 	  				if (result != null) { 
 	  					Type collectionType = new TypeToken<List<String>>(){}.getType();
 	  					List<String> fa_list = new ArrayList<String>();
-	  					List<String> ep_list = new ArrayList<String>();
-	  					List<String> mo_list = new ArrayList<String>();
 	  					List<String> ba_list = new ArrayList<String>();
 	  					if(result.getProperty("PID_full_access")!=null) {
 	  						fa_list = JsonUtils.deserialize(((Text)result.getProperty("PID_full_access")).getValue(),collectionType);
@@ -118,20 +116,7 @@ public class DeletePlaceData extends HttpServlet {
 		  						result.setUnindexedProperty("PID_full_access",new Text(JsonUtils.serialize(fa_list)));
 		  					}
 	  					} 
-	  					if(result.getProperty("PID_edit_place")!=null) {
-	  						ep_list = JsonUtils.deserialize(((Text)result.getProperty("PID_edit_place")).getValue(),collectionType);
-	  						if(ep_list.contains(placeID)) {
-		  						ep_list.remove(placeID);
-		  						result.setUnindexedProperty("PID_edit_place",new Text(JsonUtils.serialize(ep_list)));
-		  					}
-	  					}
-	  					if(result.getProperty("PID_move_only")!=null) {
-	  						mo_list = JsonUtils.deserialize(((Text)result.getProperty("PID_move_only")).getValue(),collectionType);
-	  						if(mo_list.contains(placeID)) {
-		  						mo_list.remove(placeID);
-		  						result.setUnindexedProperty("PID_move_only",new Text(JsonUtils.serialize(mo_list)));
-		  					}
-	  					}
+
 	  					if(result.getProperty("PID_book_admin")!=null) {
 	  						ba_list = JsonUtils.deserialize(((Text)result.getProperty("PID_book_admin")).getValue(),collectionType);
 	  						if(ba_list.contains(placeID)) {

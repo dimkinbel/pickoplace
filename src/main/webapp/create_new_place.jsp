@@ -7,7 +7,10 @@
 	<script type="text/javascript">
 		var pagetype = 'create_new_place';
 	</script>
+	<link rel="stylesheet" href="/css/bootstrap/bootstrap.min.css" type="text/css">
+	<script type="text/javascript" src="/js/bootstrap/bootstrap.min.js"></script>
 	<link rel="icon"  type="image/png"  href="img/pplogomarker.png">
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 	<script type="text/javascript" src="js/jquery-1.11.1.min.js" ></script>
     <script type="text/javascript" src="js/jquery-migrate-1.2.1.js" ></script>
     <script type="text/javascript" src="js/loginlogout.js" ></script>
@@ -124,6 +127,37 @@ $(document).ready(function () {
 <title>PickoPlace</title>
 </head>
 <body style="margin: 0px;">
+<div class="modal fade" id="signup_modal">
+	<div class="modal-dialog modal-sm">
+		<div class="modal-content signup_modal_content">
+			<button type="button" class="close" data-dismiss="modal" id="signup_close" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			<div id="login_modal_head">Sign up</div>
+			<div class="input_with_material"  >
+				<input type="text" id="signup_name" class="waiter_login_input login_input_field" placeholder="First Name"  >
+				<div class="material-icons login_mat_icon"  >perm_identity</div>
+			</div>
+			<div class="input_with_material"  >
+				<input type="text" id="signup_last_name" class="waiter_login_input login_input_field" placeholder="Last Name"  >
+				<div class="material-icons login_mat_icon"  >perm_identity</div>
+			</div>
+			<div class="input_with_material"  >
+				<input type="text" id="signup_email" class="waiter_login_input login_input_field" placeholder="Email"  >
+				<div class="material-icons login_mat_icon"  >mail_outline</div>
+			</div>
+			<div class="input_with_material"  >
+				<input type="text" id="signup_password" class="waiter_login_input login_input_field" placeholder="Password"  >
+				<div class="material-icons login_mat_icon"  >lock_outline</div>
+			</div>
+			<div id="terms_of_service_line">
+				By signing up, you agree to Pickoplace’s <a href="/policies/Privacy-policy.html" class="policy_href"  target="_blank">Privacy policy</a>,  <a href="/policies/Terms-of-service-policy.html" class="policy_href"  target="_blank">Terms of service</a>, and <a href="/policies/Refund-policy.html" class="policy_href"  target="_blank">Refund policy</a>.
+			</div>
+			<div id="sign_up_button_wrap">
+				<div id="sign_up_request">Sign Up</div>
+				<div id="signing_up_request" style="display:none" >Signing...<img src="/img/gif/ajax-loader2.gif" ></div>
+			</div>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
    <div id="page_login_prompt" class="login_prompt stopclick" style="display:none;">
 		<div id="login_prompt_wrap" class="stopclick">
 		<table id="sign_in_table_" cellspacing="0" cellpadding="0" style="width: 100%; border-collapse: collapse">
@@ -143,6 +177,21 @@ $(document).ready(function () {
 				</div>
 			  </td>
 		  </tr>
+			<tr><td><div class="login_separator"  ><span class="login_separator_or"  >or</span></div></td></tr>
+			<tr><td><div class="input_with_material"  >
+				<input type="text" id="login_email" class="waiter_login_input login_input_field" placeholder="Email"  >
+				<div class="material-icons login_mat_icon"  >mail_outline</div></div></td></tr>
+			<tr><td><div class="input_with_material"  >
+				<input type="password" id="login_password" class="waiter_login_input login_input_field" placeholder="Password"  >
+				<div class="material-icons login_mat_icon"  >lock_outline</div></div></td></tr>
+			<tr><td><div class="input_with_material"  >
+				<div id="ppuser_login"  >Log In</div>
+				<div id="ppuser_login_request" style="display:none" >Log In...<img src="/img/gif/ajax-loader2.gif"  ></div>
+			</div></td></tr>
+			<tr><td><div class="login_separator"  ></div></td></tr>
+			<tr><td>
+				<div class="no_account" >Dont have an account ?</div>
+				<div id="sign_up_button"  >Sign up</div></td></tr>
 		</table>  
 		</div>
    </div>
@@ -180,6 +229,7 @@ $(document).ready(function () {
 													 <a href="/create_new_place.jsp"><div id="create_new_place_btn"  class="topAccOptList"  >Create New Place</div></a>
 												   <div id="fb_logout_div" class="topAccOptList" onClick="facebookSignOut()">Log out</div>
 												   <div id="go_logout_div" class="topAccOptList" onClick="googleSignOut()">Log out</div>
+													 <div id="pp_logout_div" class="topAccOptList" onClick="logoutAny()">Log out</div>
 												 </div>
 												<div id="all_ac_forms" style="display:none">
 												  <form id="master_account" action="gotoaccountmenu" method="post">

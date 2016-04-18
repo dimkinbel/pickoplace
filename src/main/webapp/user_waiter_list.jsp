@@ -91,6 +91,7 @@ function updateWaiterList(){
 													 <a href="/create_new_place.jsp"><div id="create_new_place_btn"  class="topAccOptList"  >Create New Place</div></a>
 												   <div id="fb_logout_div" class="topAccOptList" onClick="facebookSignOut()">Log out</div>
 												   <div id="go_logout_div" class="topAccOptList" onClick="googleSignOut()">Log out</div>
+													 <div id="pp_logout_div" class="topAccOptList" onClick="logoutAny()">Log out</div>
 												 </div>
 												<div id="all_ac_forms" style="display:none">
 												  <form id="master_account" action="gotoaccountmenu" method="post">

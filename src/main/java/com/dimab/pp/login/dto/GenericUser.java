@@ -5,11 +5,15 @@ import com.dimab.pp.dto.AdminSetUser;
 public class GenericUser {
 	FBmeResponseJSON fbuser = new FBmeResponseJSON();
 	GOOGmeResponseJSON gouser = new GOOGmeResponseJSON();
+	PPuser ppuser = new PPuser();
+	boolean pptype = false;
 	boolean google = false;
 	boolean facebook = false;
 	boolean admin = false;
 	AdminSetUser aduser = new AdminSetUser();
-	
+
+
+
 	public String getEmail() {
 		if(google) {
 			return gouser.getEmail();
@@ -17,6 +21,8 @@ public class GenericUser {
 			return fbuser.getEmail();
 		} else if (admin) {
 			return aduser.getEmail();
+		} else if(pptype) {
+			return ppuser.getEmail();
 		} else {
 			return "__";
 		}
@@ -28,6 +34,8 @@ public class GenericUser {
 			return fbuser.getFirst_name();
 		} else if (admin) {
 			return aduser.getName();
+		} else if(pptype) {
+			return ppuser.getName();
 		} else {
 			return "__";
 		}
@@ -39,9 +47,30 @@ public class GenericUser {
 			return fbuser.getLast_name();
 		} else if (admin) {
 			return aduser.getFamily();
+		} else if(pptype) {
+			return ppuser.getLastName();
 		} else {
 			return "__";
 		}
+	}
+	public PPuser getPpuser() {
+		return ppuser;
+	}
+
+	public void setPpuser(PPuser ppuser) {
+		this.ppuser = ppuser;
+		this.admin = false;
+		this.facebook = false;
+		this.google = false;
+		this.pptype = true;
+	}
+
+	public boolean isPptype() {
+		return pptype;
+	}
+
+	public void setPptype(boolean pptype) {
+		this.pptype = pptype;
 	}
 
 	public boolean isAdmin() {
@@ -61,6 +90,7 @@ public class GenericUser {
 		this.admin = true;
 		this.facebook = false;
 		this.google = false;
+		this.pptype = false;
 	}
 
 	public FBmeResponseJSON getFbuser() {
@@ -71,6 +101,7 @@ public class GenericUser {
 		this.facebook = true;
 		this.google = false;
 		this.admin = false;
+		this.pptype = false;
 	}
 	public GOOGmeResponseJSON getGouser() {
 		return gouser;
@@ -80,6 +111,7 @@ public class GenericUser {
 		this.google = true;
 		this.facebook = false;
 		this.admin = false;
+		this.pptype = false;
 	}
 	public boolean isGoogle() {
 		return google;

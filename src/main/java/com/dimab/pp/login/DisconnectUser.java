@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.dimab.pickoplace.utils.JsonUtils;
+import com.dimab.pp.login.dto.PPuser;
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
 
 import com.google.api.client.http.HttpTransport;
@@ -99,17 +100,25 @@ public class DisconnectUser extends HttpServlet {
  		  HttpSession session = req_.getSession();
  		  String Sprovider = (String) session.getAttribute("provider");
  		  String Stoken = (String) session.getAttribute("access_token");
+		  String userEmailsession = (String) session.getAttribute("userEmail");
  		
  	    if(provider.equals("google")) {        
 			System.out.println("Disonnecting GOOGLE token:"+Stoken);
 		    RevokeGoogleToken googleRevokeFactory = new RevokeGoogleToken();
-		   googleRevokeFactory.revoke(accessToken);
+		    googleRevokeFactory.revoke(accessToken);
 
-        } else {
-        	
+        } else if (provider.equals("ppuser")) {
+			if(Stoken!= null && !Stoken.isEmpty() && !Stoken.equals("0") && userEmailsession!= null && !userEmailsession.isEmpty()) {
+				PPuser ppuser = new PPuser();
+				ppuser.setEmail(userEmailsession);
+				PPuserLogin ppuserFactory = new PPuserLogin();
+				ppuserFactory.logout(datastore,txn,request,ppuser);
+			}
+		} else {
+        	// Facebook
         }
 
-    	String userEmailsession = (String) session.getAttribute("userEmail");
+
     	
     	if(userEmailsession != null) {
 	        System.out.println("User Logout:"+ userEmailsession);
@@ -120,7 +129,11 @@ public class DisconnectUser extends HttpServlet {
 			if (result != null) {
 				Date date = new Date();
 				result.setUnindexedProperty("lastDateInSec", date.getTime()/1000);
-				result.setUnindexedProperty("lastDate",  date.toString());   
+				result.setUnindexedProperty("lastDate",  date.toString());
+				result.setProperty("islogged",  false);
+				result.setProperty("ppuserToken", "0");
+				result.setProperty("ppuserTokenExp", date);
+
 				datastore.put(result);
 			} 
 	 	    

@@ -121,7 +121,16 @@
        <servlet-name>setsessiontoken</servlet-name>
        <url-pattern>/setsessiontoken</url-pattern>
     </servlet-mapping>
-  
+
+    <servlet>
+        <servlet-name>PPuserSignUp</servlet-name>
+        <servlet-class>com.dimab.pp.login.PPuserSignUp</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>PPuserSignUp</servlet-name>
+        <url-pattern>/signupPPuser</url-pattern>
+    </servlet-mapping>
+
    	<servlet>
        <servlet-name>disconnectUser</servlet-name>
        <servlet-class>com.dimab.pp.login.DisconnectUser</servlet-class>

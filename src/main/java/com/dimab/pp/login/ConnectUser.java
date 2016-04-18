@@ -12,6 +12,7 @@ import com.dimab.pickoplace.utils.JsonUtils;
 import com.dimab.pp.functions.RandomStringGenerator;
 import com.dimab.pp.login.dto.FBmeResponseJSON;
 import com.dimab.pp.login.dto.GOOGmeResponseJSON;
+import com.dimab.pp.login.dto.PPuser;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeTokenRequest;
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
 import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse;
@@ -101,11 +102,15 @@ public class ConnectUser extends HttpServlet {
          String accessToken = request.getParameter("access_token");
          String provider = request.getParameter("provider");
          String gcode = request.getParameter("code");
+		 String ppmail = request.getParameter("email");
+		 String pppassword =  request.getParameter("password");
          System.out.println("CONNECT USER: ");
          System.out.println("    provider: "+provider);
          System.out.println("    accessToken: "+accessToken);
          System.out.println("    code: "+gcode);
-         
+		 System.out.println("    ppmail: "+ppmail);
+		 System.out.println("    pppassword: "+pppassword);
+
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
  		TransactionOptions options = TransactionOptions.Builder.withXG(true);
  		Transaction txn = datastore.beginTransaction(options);
@@ -115,8 +120,38 @@ public class ConnectUser extends HttpServlet {
 		HttpSession session = req_.getSession();
 		String Sprovider = (String) session.getAttribute("provider");
 		String Stoken = (String) session.getAttribute("access_token");
-		
-	    if(provider.equals("google")) {
+		if(provider.equals("ppuser")) {
+
+			if(accessToken == null || accessToken.isEmpty()) {
+				// PPuser Log in
+				PPuser ppuser = new PPuser();
+				ppuser.setEmail(ppmail);
+				ppuser.setPassword(pppassword);
+				PPuserLogin ppuserFactory = new PPuserLogin();
+				ppuser = ppuserFactory.login(datastore,txn,request,ppuser);
+				if(ppuser.getValid()) {
+					map.put("valid", true);
+					map.put("provider", "ppuser");
+					map.put("ppuser", JsonUtils.serialize(ppuser));
+				} else {
+					map.put("valid", false);
+					map.put("reason", "WRONG_CREDENTIALS");
+				}
+			} else {
+				// PPuser verify access_token
+				PPuserLogin ppuserFactory = new PPuserLogin(accessToken);
+
+				if(ppuserFactory.getPpuser().getValid()) {
+					map.put("valid", true);
+					map.put("provider", "ppuser");
+					map.put("ppuser", JsonUtils.serialize(ppuserFactory.getPpuser()));
+				} else {
+					map.put("valid", false);
+					map.put("reason", "NOT_VALID_TOKEN");
+				}
+
+			}
+		} else if(provider.equals("google")) {
 			System.out.println(CLIENT_ID);
 			System.out.println(CLIENT_SECRET);
 
@@ -152,8 +187,6 @@ public class ConnectUser extends HttpServlet {
 			    	RandomStringGenerator randomGen = new RandomStringGenerator();
 			        String random =  randomGen.generateRandomString(10,RandomStringGenerator.Mode.ALPHANUMERIC);
 			    	userEntity.setProperty("username", userData.getEmail());
-			    	userEntity.setProperty("GoogleAccount",true);
-			    	userEntity.setProperty("FacebookAccount","");
 			    	userEntity.setProperty("LoggedBy","Google");
 			    	userEntity.setProperty("UserID", random);
 			    	userEntity.setProperty("emailsend", true);
@@ -167,8 +200,6 @@ public class ConnectUser extends HttpServlet {
 			    	
 			        List<String> pids = new ArrayList<String>();
 			    	userEntity.setUnindexedProperty("PID_full_access",new Text( JsonUtils.serialize(pids)));
-			    	userEntity.setUnindexedProperty("PID_edit_place",new Text( JsonUtils.serialize(pids)));
-			    	userEntity.setUnindexedProperty("PID_move_only",new Text( JsonUtils.serialize(pids)));
 			    	userEntity.setUnindexedProperty("PID_book_admin",new Text( JsonUtils.serialize(pids)));
 			    	userEntity.setUnindexedProperty("phone", "");
 			    	map.put("phone",false);
@@ -177,7 +208,6 @@ public class ConnectUser extends HttpServlet {
 			    	// User Not first login
 			    	Date date = new Date();
 			    	result.setProperty("LoggedBy","Google");
-			    	result.setProperty("GoogleAccount",true);
 			    	result.setUnindexedProperty("lastDateInSec", date.getTime()/1000);
 			    	result.setUnindexedProperty("lastDate",  date.toString());
 					if(refreshToken != null && !refreshToken.isEmpty()) {
@@ -192,31 +222,12 @@ public class ConnectUser extends HttpServlet {
 			    	if(result.getProperty("emailsend")==null) {
 			    		result.setProperty("emailsend", true);
 			    	}
-			    	if(result.getProperty("phone")!=null) {
-			    		String phone = (String) result.getProperty("phone");
-				    	if(phone.isEmpty()) {
-				    		map.put("phone",false);
-				    	} else {
-				    		if(result.getProperty("phoneValid")!=null) {				    	
-					    		Boolean phoneVerified = (boolean)result.getProperty("phoneValid");
-					    		if(!phoneVerified) {
-					    			map.put("phone",false);
-					    		} else {
-									request.getSession().setAttribute("phone", phone);
-									System.out.println(phone);
-								}
-				    		} else {
-				    			map.put("phone",false);
-				    		}
-				    	}
-			    	} else {
-			    		result.setUnindexedProperty("phone", "");
-				    	map.put("phone",false);
-			    	}
-			    	
+
+					map = isDatabasePhoneValid(map,result,request);
 			    	datastore.put(result);
 			    }
-				 
+				 txn.commit();
+
 				 map.put("valid",true);
 				 map.put("provider", "GOOG");
 				 map.put("userData", userData);
@@ -251,8 +262,6 @@ public class ConnectUser extends HttpServlet {
 					 RandomStringGenerator randomGen = new RandomStringGenerator();
 					 String random = randomGen.generateRandomString(10, RandomStringGenerator.Mode.ALPHANUMERIC);
 					 userEntity.setProperty("username", userData.getEmail());
-					 userEntity.setProperty("GoogleAccount", "");
-					 userEntity.setProperty("FacebookAccount", true);
 					 userEntity.setProperty("LoggedBy", "Facebook");
 					 userEntity.setProperty("UserID", random);
 					 userEntity.setProperty("emailsend", true);
@@ -266,41 +275,19 @@ public class ConnectUser extends HttpServlet {
 				 } else {
 					 // User Not first login
 					 Date date = new Date();
-					 if (result.getProperty("GoogleAccount") == null) {
-						 result.setProperty("GoogleAccount", true);
-					 }
+
 					 result.setProperty("LoggedBy", "Facebook");
-					 result.setProperty("FacebookAccount", true);
 					 result.setUnindexedProperty("lastDateInSec", date.getTime() / 1000);
 					 result.setUnindexedProperty("lastDate", date.toString());
 
 					 if (result.getProperty("emailsend") == null) {
 						 result.setProperty("emailsend", true);
 					 }
-					 if (result.getProperty("phone") != null) {
-						 String phone = (String) result.getProperty("phone");
-						 if (phone.isEmpty()) {
-							 map.put("phone", false);
-						 } else {
-							 if (result.getProperty("phoneValid") != null) {
-								 Boolean phoneVerified = (boolean) result.getProperty("phoneValid");
-								 if (!phoneVerified) {
-									 map.put("phone", false);
-								 } else {
-									 request.getSession().setAttribute("phone", phone);
-									 System.out.println(phone);
-								 }
-							 } else {
-								 map.put("phone", false);
-							 }
-						 }
-					 } else {
-						 result.setUnindexedProperty("phone", "");
-						 map.put("phone", false);
-					 }
+					 map = isDatabasePhoneValid(map,result,request);
+
 					 datastore.put(result);
 				 }
-
+				 txn.commit();
 				 map.put("valid", true);
 				 map.put("provider", "FB");
 				 map.put("userData", userData);
@@ -310,7 +297,7 @@ public class ConnectUser extends HttpServlet {
 
 	    }
 		  
-	    txn.commit(); 
+
 
 	   
 		response.setContentType("application/json");
@@ -365,4 +352,29 @@ public class ConnectUser extends HttpServlet {
       }
       reader.close();
     }
+	public  Map<String,Object> isDatabasePhoneValid ( Map<String , Object> map_ , Entity userEntity , HttpServletRequest request) {
+		Map<String , Object> map = map_;
+		if (userEntity.getProperty("phone") != null) {
+			String phone = (String) userEntity.getProperty("phone");
+			if (phone.isEmpty()) {
+				map.put("phone", false);
+			} else {
+				if (userEntity.getProperty("phoneValid") != null) {
+					Boolean phoneVerified = (boolean) userEntity.getProperty("phoneValid");
+					if (!phoneVerified) {
+						map.put("phone", false);
+					} else {
+						request.getSession().setAttribute("phone", phone);
+						System.out.println(phone);
+					}
+				} else {
+					map.put("phone", false);
+				}
+			}
+		} else {
+			userEntity.setUnindexedProperty("phone", "");
+			map.put("phone", false);
+		}
+		return map;
+	}
   }

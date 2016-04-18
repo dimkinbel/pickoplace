@@ -267,6 +267,37 @@
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+<div class="modal fade" id="signup_modal">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content signup_modal_content">
+            <button type="button" class="close" data-dismiss="modal" id="signup_close" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <div id="login_modal_head">Sign up</div>
+            <div class="input_with_material"  >
+                <input type="text" id="signup_name" class="waiter_login_input login_input_field" placeholder="First Name"  >
+                <div class="material-icons login_mat_icon"  >perm_identity</div>
+            </div>
+            <div class="input_with_material"  >
+                <input type="text" id="signup_last_name" class="waiter_login_input login_input_field" placeholder="Last Name"  >
+                <div class="material-icons login_mat_icon"  >perm_identity</div>
+            </div>
+            <div class="input_with_material"  >
+                <input type="text" id="signup_email" class="waiter_login_input login_input_field" placeholder="Email"  >
+                <div class="material-icons login_mat_icon"  >mail_outline</div>
+            </div>
+            <div class="input_with_material"  >
+                <input type="text" id="signup_password" class="waiter_login_input login_input_field" placeholder="Password"  >
+                <div class="material-icons login_mat_icon"  >lock_outline</div>
+            </div>
+            <div id="terms_of_service_line">
+                By signing up, you agree to Pickoplace’s <a href="/policies/Privacy-policy.html" class="policy_href"  target="_blank">Privacy policy</a>,  <a href="/policies/Terms-of-service-policy.html" class="policy_href"  target="_blank">Terms of service</a>, and <a href="/policies/Refund-policy.html" class="policy_href"  target="_blank">Refund policy</a>.
+            </div>
+            <div id="sign_up_button_wrap">
+                <div id="sign_up_request">Sign Up</div>
+                <div id="signing_up_request" style="display:none" >Signing...<img src="/img/gif/ajax-loader2.gif" ></div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 <div id="hidden_popups">
     <div id="popup_message_wrap" style="display:none">
         <div id="popup_message">
@@ -293,6 +324,21 @@
                         </div>
                     </td>
                 </tr>
+                <tr><td><div class="login_separator"  ><span class="login_separator_or"  >or</span></div></td></tr>
+                <tr><td><div class="input_with_material"  >
+                    <input type="text" id="login_email" class="waiter_login_input login_input_field" placeholder="Email"  >
+                    <div class="material-icons login_mat_icon"  >mail_outline</div></div></td></tr>
+                <tr><td><div class="input_with_material"  >
+                    <input type="password" id="login_password" class="waiter_login_input login_input_field" placeholder="Password"  >
+                    <div class="material-icons login_mat_icon"  >lock_outline</div></div></td></tr>
+                <tr><td><div class="input_with_material"  >
+                    <div id="ppuser_login"  >Log In</div>
+                    <div id="ppuser_login_request" style="display:none" >Log In...<img src="/img/gif/ajax-loader2.gif"  ></div>
+                </div></td></tr>
+                <tr><td><div class="login_separator"  ></div></td></tr>
+                <tr><td>
+                    <div class="no_account" >Dont have an account ?</div>
+                    <div id="sign_up_button"  >Sign up</div></td></tr>
             </table>
             <table id="phone_wrap_table" cellspacing="0" cellpadding="0"
                    style=" border-collapse: collapse;display:none">
@@ -576,6 +622,7 @@
                                                                                      class="topAccOptList"
                                                                                      onClick="googleSignOut()">Log out
                                                                                 </div>
+                                                                                <div id="pp_logout_div" class="topAccOptList" onClick="logoutAny()">Log out</div>
                                                                             </div>
                                                                             <div id="all_ac_forms" style="display:none">
                                                                                 <form id="master_account"

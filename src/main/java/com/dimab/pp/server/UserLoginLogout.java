@@ -61,8 +61,6 @@ public class UserLoginLogout extends HttpServlet {
     			RandomStringGenerator randomGen = new RandomStringGenerator();
     		    String random =  randomGen.generateRandomString(10,RandomStringGenerator.Mode.ALPHANUMERIC);
     			userEntity.setProperty("username", userGMail);
-    			userEntity.setProperty("GoogleAccount",true);
-    			userEntity.setProperty("FacebookAccount","");
     			userEntity.setProperty("LoggedBy","Google");
     			userEntity.setProperty("UserID", random);
     			userEntity.setUnindexedProperty("firstEntry", date.toString());
@@ -71,15 +69,12 @@ public class UserLoginLogout extends HttpServlet {
     			
                 List<String> pids = new ArrayList<String>();
     			userEntity.setUnindexedProperty("PID_full_access", new Text(JsonUtils.serialize(pids)));
-    			userEntity.setUnindexedProperty("PID_edit_place", new Text(JsonUtils.serialize(pids)));
-    			userEntity.setUnindexedProperty("PID_move_only", new Text(JsonUtils.serialize(pids)));
     			userEntity.setUnindexedProperty("PID_book_admin", new Text(JsonUtils.serialize(pids)));
     			datastore.put(userEntity);
     		} else {
     			// User Not first login
     			Date date = new Date();
     			result.setProperty("LoggedBy","Google");
-    			result.setProperty("GoogleAccount",true);
     			result.setUnindexedProperty("firstEntry", date.toString());
     			result.setUnindexedProperty("lastDateInSec", date.getTime()/1000);
     			result.setUnindexedProperty("lastDate",  date.toString());  

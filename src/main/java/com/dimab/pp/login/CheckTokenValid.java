@@ -11,6 +11,7 @@ public class CheckTokenValid {
 	String provider;
 	String accessToken;
 	String googleRefreshToken;
+
 	public CheckTokenValid(HttpServletRequest request) {
 		  HttpServletRequest req_ =   request;
 		  HttpSession session = req_.getSession();
@@ -36,6 +37,16 @@ public class CheckTokenValid {
 		  FBmeResponseJSON fuserData = tokenFactory.getData(this.accessToken);
 		  if(fuserData!=null) {
 			  userData.setFbuser(fuserData);
+		  } else {
+			  return null;
+		  }
+
+	  } else if (this.provider.equals("ppuser")) {
+		  PPuserLogin ppuserFactory = new PPuserLogin(this.accessToken);
+
+
+		  if(ppuserFactory.getPpuser().getValid()) {
+			  userData.setPpuser(ppuserFactory.getPpuser());
 		  } else {
 			  return null;
 		  }

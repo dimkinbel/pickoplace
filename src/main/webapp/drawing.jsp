@@ -151,6 +151,18 @@
 				</div>
 			  </td>
 		  </tr>
+			<tr><td><div class="login_separator"  ><span class="login_separator_or"  >or</span></div></td></tr>
+			<tr><td><div class="input_with_material"  >
+				<input type="text" id="login_email" class="waiter_login_input login_input_field" placeholder="Email"  >
+				<div class="material-icons login_mat_icon"  >mail_outline</div></div></td></tr>
+			<tr><td><div class="input_with_material"  >
+				<input type="password" id="login_password" class="waiter_login_input login_input_field" placeholder="Password"  >
+				<div class="material-icons login_mat_icon"  >lock_outline</div></div></td></tr>
+			<tr><td><div class="input_with_material"  >
+				<div id="ppuser_login"  >Log In</div>
+				<div id="ppuser_login_request" style="display:none" >Log In...<img src="/img/gif/ajax-loader2.gif"  ></div>
+			</div></td></tr>
+
 		</table>  
 		</div>
    </div>
@@ -200,7 +212,8 @@
 													 <a href="/create_new_place.jsp"><div id="create_new_place_btn"  class="topAccOptList"  >Create New Place</div></a>
 												   <div id="fb_logout_div" class="topAccOptList" onClick="facebookSignOut()">Log out</div>
 												   <div id="go_logout_div" class="topAccOptList" onClick="googleSignOut()">Log out</div>
-												 </div>
+													 <div id="pp_logout_div" class="topAccOptList" onClick="logoutAny()">Log out</div>
+												  </div>
 												<div id="all_ac_forms" style="display:none">
 												  <form id="master_account" action="gotoaccountmenu" method="post">
 												  </form>
