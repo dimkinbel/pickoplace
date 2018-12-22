@@ -1,0 +1,17 @@
+{
+  "defaultPageTitle": {
+    "english": "Pickoplace - english",
+    "hebrew": "Pickoplace - hebrew",
+    "russian": "Pickoplace - russian"
+  },
+  "someKey": {
+    "english": "some text",
+    "hebrew": "טקסט כלשהו",
+    "russian": "по русски"
+  },
+  "freePlaceWizard": {
+    "english": "FREE PLACE WIZARD",
+    "hebrew": "מקום פנוי",
+    "russian": "Поиск мест"
+  }
+}

@@ -14,3 +14,5 @@
 *.jar binary
 *.png binary
 *.jpg binary
+*.gif binary
+*.GIF binary
