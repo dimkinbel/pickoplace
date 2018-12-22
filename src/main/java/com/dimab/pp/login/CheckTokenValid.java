@@ -24,6 +24,9 @@ public class CheckTokenValid {
   public GenericUser getUser() {
 
 	  GenericUser userData = new GenericUser();
+	  if(this.provider == null) {
+		  return null;
+	  }
 	  if(this.provider.equals("google")) {
 		  GoogVerifyToken tokenVerifier = new GoogVerifyToken(this.accessToken,this.googleRefreshToken);
 			 if(tokenVerifier.isValid()) {	 

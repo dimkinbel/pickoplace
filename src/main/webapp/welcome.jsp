@@ -9,6 +9,7 @@
         </script>
         <meta name="google-site-verification" content="cVQg625z2O7cD5-I9szgj6gzeGzscX94bSnI0ZmBmok" />
         <meta name="description" content="Create an amazing client booking experience for your buisness">
+         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <link rel="stylesheet" href="js/jquery-ui-1.11.2.custom/jquery-ui.css" type="text/css" media="screen" />
         <link rel="stylesheet" href="css/browserWrap.css" type="text/css" media="screen" />
         <link rel="stylesheet" href="css/login.css" type="text/css" media="screen" />
@@ -44,7 +45,7 @@
         <link href="raty/raty.css" media="screen" rel="stylesheet" type="text/css">
         <script src="raty/raty.js" type="text/javascript"></script>
 
-        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
         <script type="text/javascript">
             var geocoder;
 
@@ -77,6 +78,9 @@
             $(document).ready(function () {
 
                 $('#advanced_material_drop').dropit({action: 'click'});
+                $("#tryit").click(function(){
+                    document.getElementById("tryit_editform").submit();
+                })
             });
             $(document).on("click",".stopclick", function (event) {
                 if(event.target.id == "page_login_prompt") {
@@ -328,7 +332,16 @@
         <div id="main_wrap_">
             <div id="main_container" class="main_container">
                 <div id="mainLastResults_wrap">
-                    <div id="free_place_finder_wrap"  >
+                    <div id="tryit_wrap"  >
+                        <div id="tryit"  >
+                            <div class="material-icons tryit_mat"  >create</div>
+                            <div id="tryit_text"  >Try our editor for free!</div>
+
+                        </div>
+                        <form id="tryit_editform" style="display:none" action="editorTryit" method="post">
+                        </form>
+                    </div>
+                    <div id="free_place_finder_wrap" style="display:none;" >
                         <div id="wiz_table_wrap">
                             <table id="wiz_table" cellspacing="0" cellpadding="0" style=" border-collapse: collapse">
                                 <tr >

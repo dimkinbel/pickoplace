@@ -7,6 +7,7 @@
 	<script type="text/javascript">
 		var pagetype = 'create_new_place';
 	</script>
+	<script type="text/javascript" src="/js/jquery-1.11.1.min.js"></script>
 	<link rel="stylesheet" href="/css/bootstrap/bootstrap.min.css" type="text/css">
 	<script type="text/javascript" src="/js/bootstrap/bootstrap.min.js"></script>
 	<link rel="icon"  type="image/png"  href="img/pplogomarker.png">

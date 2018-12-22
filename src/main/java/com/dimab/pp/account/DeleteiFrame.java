@@ -5,6 +5,7 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -39,8 +40,11 @@ public class DeleteiFrame extends HttpServlet {
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 		TransactionOptions options = TransactionOptions.Builder.withXG(true);
 		Transaction txn = datastore.beginTransaction(options);
-		
+		//Stack<Character> stack = new Stack();
+		//stack.
   		Map <String , Object> map = new HashMap<String , Object>();
+         int[] a = new int[5];
+
 
 		String username_email = new String();
 		CheckTokenValid tokenValid = new CheckTokenValid(request);

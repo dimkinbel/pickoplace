@@ -119,7 +119,20 @@
 
 	</script>
   </head>
-  	
+  <%
+	  String creatingFlow = (String)request.getAttribute("creatingFlow");
+
+	  if (creatingFlow!=null && creatingFlow.equals("true")) {
+		  String placeName = (String)request.getAttribute("placeName");
+		  String placeBranchName =(String)request.getAttribute("placeBranchName");
+		  String placeAddress =(String)request.getAttribute("placeAddress");
+		  String placeUniqID =(String)request.getAttribute("placeUniqID");
+  %>
+
+
+  <%
+	  }
+  %>
   <body onload="init()" style="margin: 0px;">
   		    <div id="message_popup_wrap" style="display:none">
 			    <div id="remove_floor_confirmation"  style="display:none">
@@ -173,6 +186,7 @@
 			<div id="header_drawing">
 				<div id="header">
 					<div id="logo_"><img src="img/pplogomarker.png" id="pplogoo"/><div id="logotext">ickoplace</div></div>
+					<%if (creatingFlow!=null && creatingFlow.equals("true")) {%>
 				       <div id="header_info_wrap"  >
 						 <div id="header_info">
 						   <table style="border-collapse: collapse;" cellspacing="0" cellpadding="0"  >
@@ -184,6 +198,7 @@
 						   </table>
 						</div>
 					  </div>
+					<%}%>
 					<div class="login_in_header_wrap">
 						<div id="fg_profile_image_wrap" >
 							<div id="fg_profile_image_inner" >
@@ -231,8 +246,7 @@
 			</div>	
 <div id="hidden_server_values" style="display:none">
         <% 
-        String creatingFlow = (String)request.getAttribute("creatingFlow");
-        
+
         if (creatingFlow!=null && creatingFlow.equals("true")) {
         	String placeName = (String)request.getAttribute("placeName");
         	String placeBranchName =(String)request.getAttribute("placeBranchName");
@@ -311,19 +325,21 @@
 
 			<input type="checkbox" id="addbgshape" style="display:none" />
 		  <input type="checkbox" id="bookingopacity"  style="display:none"  />
-		  <div id="save_buttons_wrap">
-		     <div id="drawingSaveButton" class="save_buttons" onclick="SIcreateSaveObjectPre()"> 
-			      <div class="material-icons material_save">save</div>SAVE
-			 </div>
-			 <div id="savingPH"  class="save_buttons" style="display:none"> 
-				  <img class="sfdcvsadd" src="img/gif/saving.GIF">
-			 </div>
-			 <div id="drawingConfigButton_disabled"  class="save_buttons" >ADMIN</div>
-			 <div id="drawingConfigButton" class="save_buttons" style="display:none" onclick="SIPlaceConfiguration('<%=(String)request.getAttribute("placeUniqID")%>')"><div class="material-icons material_config">tune</div>ADMIN</div>
-		  	<form id="<%=(String)request.getAttribute("placeUniqID")%>_config_form"  action="place-configuration" method="get" style="display:none">
-                 <input name="placeIDvalue" value="<%=(String)request.getAttribute("placeUniqID")%>">
-            </form>
-		  </div>
+			<%if (creatingFlow!=null && creatingFlow.equals("true")) {%>
+			  <div id="save_buttons_wrap">
+				 <div id="drawingSaveButton" class="save_buttons" onclick="SIcreateSaveObjectPre()">
+					  <div class="material-icons material_save">save</div>SAVE
+				 </div>
+				 <div id="savingPH"  class="save_buttons" style="display:none">
+					  <img class="sfdcvsadd" src="img/gif/saving.GIF">
+				 </div>
+				 <div id="drawingConfigButton_disabled"  class="save_buttons" >ADMIN</div>
+				 <div id="drawingConfigButton" class="save_buttons" style="display:none" onclick="SIPlaceConfiguration('<%=(String)request.getAttribute("placeUniqID")%>')"><div class="material-icons material_config">tune</div>ADMIN</div>
+				<form id="<%=(String)request.getAttribute("placeUniqID")%>_config_form"  action="place-configuration" method="get" style="display:none">
+					 <input name="placeIDvalue" value="<%=(String)request.getAttribute("placeUniqID")%>">
+				</form>
+			  </div>
+			<%}%>
 		</div>
 	  </div>
 	  <div id="dr_center_section">

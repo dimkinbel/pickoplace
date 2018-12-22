@@ -527,9 +527,18 @@
     <servlet-mapping>
        <servlet-name>createPlaceInfo</servlet-name>
        <url-pattern>/createPlaceInfo</url-pattern>
-    </servlet-mapping>   
-    
- 	<servlet>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>EditorExampleFlow</servlet-name>
+        <servlet-class>com.dimab.pp.server.EditorExampleFlow</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>EditorExampleFlow</servlet-name>
+        <url-pattern>/editorTryit</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
        <servlet-name>UserLoginLogout</servlet-name>
        <servlet-class>com.dimab.pp.server.UserLoginLogout</servlet-class>
     </servlet>
